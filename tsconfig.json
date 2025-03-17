@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        "module": "esnext",
+        "declaration": true,
+        "declarationDir": "dist/dts",
+        "noImplicitThis": false,
+        "sourceMap": true,
+        "outDir": "dist",
+        "strict": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": ["es2018", "dom"]
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

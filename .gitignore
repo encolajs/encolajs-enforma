@@ -1,0 +1,7 @@
+.idea/
+dist/
+node_modules/
+npm-debug.log
+tmp/coverage/*
+coverage
+temp
