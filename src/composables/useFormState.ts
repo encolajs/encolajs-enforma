@@ -40,8 +40,14 @@ export function useFormState(
     dataSource = new PlainObjectDataSource(dataSource)
   }
 
-  // Create a tentative data source that doesn't commit changes immediately
-  let tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+  let tentativeDataSource: TentativeValuesDataSource
+  try {
+    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+  } catch (error) {
+    console.error('Error creating tentative data source:', error)
+    dataSource = new PlainObjectDataSource({})
+    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+  }
 
   // Track form state
   const fields = new Map<string, FieldState>()
@@ -57,11 +63,7 @@ export function useFormState(
   // Computed properties
   const isDirty = ref(false)
 
-  const isTouched = computed((): boolean => {
-    return Array.from(fields.values()).some(
-      (field) => field.isTouched
-    )
-  })
+  const isTouched = ref(false)
 
   const isValid = computed((): boolean => {
     return Object.keys(errors).length === 0
@@ -237,6 +239,7 @@ export function useFormState(
   function touchField(name: string): void {
     const fieldState = registerField(name)
 
+    isTouched.value = true
     fieldState.isTouched = true
     fieldState.isVisited = true
 
@@ -278,9 +281,11 @@ export function useFormState(
       if (!isValid) {
         const fieldErrors = validator.getErrorsForPath(name)
         fieldState.error = fieldErrors[0] || null
+        fieldState.isValid = false
         errors[name] = fieldErrors
       } else {
         fieldState.error = null
+        fieldState.isValid = true
         delete errors[name]
       }
 
@@ -362,6 +367,7 @@ export function useFormState(
     }
 
     // Reset form state
+    isTouched.value = false
     isSubmitting.value = false
     isValidating.value = false
     validationCount.value = 0

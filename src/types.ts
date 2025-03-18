@@ -22,6 +22,7 @@ export interface FieldState {
   isDirty: boolean
   isTouched: boolean
   isValidating: boolean
+  isValid?: boolean
   isVisited: boolean
   isFocused: boolean,
   focusHandler?: () => void
@@ -63,7 +64,7 @@ export interface FormStateReturn {
   validationCount: Ref<number>
   submitted: Ref<boolean>
   isDirty: Ref<boolean>
-  isTouched: ComputedRef<boolean>
+  isTouched: Ref<boolean>
   isValid: ComputedRef<boolean>
 
   // Field management

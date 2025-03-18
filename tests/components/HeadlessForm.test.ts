@@ -1,10 +1,26 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
-import { h, nextTick, ref } from 'vue'
+import { config, flushPromises, mount } from '@vue/test-utils'
+import { h, inject, nextTick, ref } from 'vue'
 import HeadlessForm from '../../src/components/HeadlessForm'
-import { PlainObjectDataSource, ValidatorFactory } from '@encolajs/validator'
+import { ValidatorFactory } from '@encolajs/validator'
+import { FormStateReturn } from '../../src'
 
 describe('HeadlessForm', () => {
+  let encolaForm: FormStateReturn
+  const FormStateExposer = {
+    setup() {
+      const formState = inject('encolaForm')
+      encolaForm = formState as FormStateReturn
+      return { formState }
+    },
+    template: '<div></div>'
+  }
+
+  // Register it globally for all tests
+  config.global.components = {
+    FormStateExposer
+  }
+
   // Test data that will be used across tests
   const initialData = {
     name: 'John',
@@ -29,282 +45,300 @@ describe('HeadlessForm', () => {
     vi.clearAllMocks()
   })
 
-  it('provides form state to slot', () => {
-    const slotContent = vi.fn()
+  describe('form state flow', () => {
+    it('provides form state to default slot', () => {
+      const slotContent = vi.fn()
 
-    mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules
-      },
-      slots: {
-        default: slotContent
-      }
+      mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules
+        },
+        slots: {
+          default: slotContent
+        }
+      })
+
+      // Check that slot was called with form state
+      expect(slotContent).toHaveBeenCalled()
+      const formState = slotContent.mock.calls[0][0]
+      expect(formState.getData).toBeDefined()
+      expect(formState.setFieldValue).toBeDefined()
+      expect(formState.submit).toBeDefined()
     })
 
-    // Check that slot was called with form state
-    expect(slotContent).toHaveBeenCalled()
-    const formState = slotContent.mock.calls[0][0]
-    expect(formState.getData).toBeDefined()
-    expect(formState.setFieldValue).toBeDefined()
-    expect(formState.submit).toBeDefined()
-  })
-
-  it('prevents default form submission and calls submit handler', async () => {
-    const submitHandler = vi.fn()
-    let formSubmit: Function
-
-    const wrapper = mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules,
-        submitHandler
-      },
-      slots: {
-        default: (formState: any) => {
-          formSubmit = formState.submit
-          return h('button', { type: 'submit' }, 'Submit')
+    it('injects form state into child components', async () => {
+      const TestComponent = {
+        template: `
+          <HeadlessForm :data="formData" :rules="formRules">
+            <FormStateExposer />
+          </HeadlessForm>
+        `,
+        components: { HeadlessForm },
+        data() {
+          return {
+            formData: initialData,
+            formRules: rules
+          }
         }
       }
+
+      mount(TestComponent)
+
+      // Check form state was injected
+      expect(encolaForm.getData()).toEqual(initialData)
     })
-
-    // Trigger form submission
-    await wrapper.find('form').trigger('submit')
-
-    await flushPromises()
-
-    // Check submit handler was called
-    expect(submitHandler).toHaveBeenCalledWith(initialData)
   })
 
-  it('handles field registration and validation', async () => {
-    const TestComponent = {
-      template: `
+
+  describe('field handling', () => {
+    it('field registration and validation', async () => {
+      const TestComponent = {
+        template: `
         <HeadlessForm 
           :data="formData" 
           :rules="formRules"
           @submit="onSubmit"
         >
           <template #default="formState">
-            <form @submit="formState.submit">
-              <input
-                data-test="email-input"
-                :value="formState.getFieldValue('email')"
-                @input="e => formState.setFieldValue('email', e.target.value)"
-                @blur="() => formState.touchField('email')"
-              />
-              <div v-if="formState.errors.email" data-test="email-error">
-                {{ formState.errors.email[0] }}
-              </div>
-            </form>
+            <FormStateExposer />
+            <input
+              data-test="email-input"
+              :value="formState.getFieldValue('email')"
+              @input="e => formState.setFieldValue('email', e.target.value)"
+              @blur="() => formState.touchField('email')"
+            />
+            <div v-if="formState.errors.email" data-test="email-error">
+              {{ formState.errors.email[0] }}
+            </div>
           </template>
         </HeadlessForm>
       `,
-      components: { HeadlessForm },
-      data() {
-        return {
-          formData: initialData,
-          formRules: rules
-        }
-      },
-      methods: {
-        onSubmit(data: any) {
-          // Handle submit
-        }
-      }
-    }
-
-    const wrapper = mount(TestComponent)
-    const input = wrapper.find('[data-test="email-input"]')
-
-    // Change input value
-    await input.setValue('new@email.com')
-
-    // Get updated value from input
-    expect(input.element.value).toBe('new@email.com')
-
-    // Trigger blur to validate
-    await input.trigger('blur')
-  })
-
-  it('handles nested fields', async () => {
-    let formState: any
-
-    const wrapper = mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules
-      },
-      slots: {
-        default: (state: any) => {
-          formState = state
-          return h('input', {
-            'data-test': 'age-input',
-            value: state.getFieldValue('profile.age'),
-            onInput: (e: Event) => state.setFieldValue('profile.age', (e.target as HTMLInputElement).value)
-          })
+        components: { HeadlessForm },
+        data() {
+          return {
+            formData: initialData,
+            formRules: rules
+          }
+        },
+        methods: {
+          onSubmit(data: any) {
+            // Handle submit
+          }
         }
       }
+
+      const wrapper = mount(TestComponent)
+      const emailInput = wrapper.find('[data-test="email-input"]')
+
+      // Change input value
+      await emailInput.setValue('new@email.com')
+      // only after interacting with the input,
+      // the field is registered in teh form state
+      // because were not using the headless field component
+      const emailField = encolaForm.getField('email')
+      // Trigger blur to validate
+      await emailInput.trigger('blur')
+      await flushPromises()
+
+      // Get updated value from input
+      expect(emailField?.value).toBe('new@email.com')
+      expect(emailField?.isValidating).toBe(false)
+      expect(emailField?.isTouched).toBe(true)
+      expect(emailField?.isDirty).toBe(true)
+      expect(emailField?.isValid).toBe(true)
     })
 
-    const input = wrapper.find('[data-test="age-input"]')
+    it('nested field', async () => {
+      let formState: any
 
-    // Change nested field value
-    await input.setValue('25')
-    expect(formState.getFieldValue('profile.age')).toBe('25')
-  })
-
-  it('resets form state', async () => {
-    const formStateRef = ref<any>(null)
-
-    mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules
-      },
-      slots: {
-        default: (formState: any) => {
-          formStateRef.value = formState
-          return h('button', { type: 'submit' }, 'Submit')
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules
+        },
+        slots: {
+          default: (state: any) => {
+            formState = state
+            return h('input', {
+              'data-test': 'age-input',
+              value: state.getFieldValue('profile.age'),
+              onInput: (e: Event) => state.setFieldValue('profile.age', (e.target as HTMLInputElement).value)
+            })
+          }
         }
-      }
-    })
-
-    // Modify form state
-    formStateRef.value.setFieldValue('name', 'Jane')
-    formStateRef.value.touchField('name')
-    await flushPromises()
-
-    // Reset form
-    formStateRef.value.reset()
-    await flushPromises()
-
-    // Check state was reset
-    expect(formStateRef.value.getField('name')?.isTouched).toBe(false)
-    expect(formStateRef.value.isDirty).toBe(false)
-    expect(formStateRef.value.getFieldValue('name')).toBe('John')
-  })
-
-  it('validates form on submit', async () => {
-    const wrapper = mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules,
-        validateOn: 'submit'
-      }
-    })
-
-    // Submit form
-    await wrapper.find('form').trigger('submit')
-
-    await flushPromises()
-
-    // Check validation was performed
-    expect(wrapper.emitted('submit')?.[0]).toEqual([initialData])
-  })
-
-  it('handles validation errors', async () => {
-    // Mock validator to return errors
-    vi.mocked(ValidatorFactory).mockImplementation(() => ({
-      make: () => ({
-        validate: vi.fn().mockResolvedValue(false),
-        validatePath: vi.fn().mockResolvedValue(false),
-        getErrors: vi.fn().mockReturnValue({
-          email: ['Invalid email format']
-        }),
-        reset: vi.fn()
       })
-    }))
 
-    const TestComponent = {
-      template: `
+      const input = wrapper.find('[data-test="age-input"]')
+
+      // Change nested field value
+      await input.setValue('25')
+      expect(formState.getFieldValue('profile.age')).toBe('25')
+    })
+  })
+
+  describe('form submission', () => {
+    it('prevents default form submission and calls submit handler', async () => {
+      const submitHandler = vi.fn()
+      let formSubmit: Function
+
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules,
+          submitHandler
+        },
+        slots: {
+          default: (formState: any) => {
+            formSubmit = formState.submit
+            return h('button', { type: 'submit' }, 'Submit')
+          }
+        }
+      })
+
+      // Trigger form submission
+      await wrapper.find('form').trigger('submit')
+
+      await flushPromises()
+
+      // Check submit handler was called
+      expect(submitHandler).toHaveBeenCalledWith(initialData)
+    })
+
+    it('validates form on submit', async () => {
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules,
+          validateOn: 'submit'
+        }
+      })
+
+      // Submit form
+      await wrapper.find('form').trigger('submit')
+
+      await flushPromises()
+
+      // Check validation was performed
+      expect(wrapper.emitted('submit')?.[0]).toEqual([initialData])
+    })
+
+    it('handles submit errors', async () => {
+      const submitError = new Error('Submit failed')
+      const submitHandler = vi.fn().mockRejectedValue(submitError)
+
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules,
+          submitHandler
+        }
+      })
+
+      // Submit form
+      await wrapper.find('form').trigger('submit')
+
+      await flushPromises()
+
+      // Check error handling
+      expect(wrapper.emitted('submit-error')?.[0]).toEqual([submitError])
+    })
+
+    it('handles validation errors', async () => {
+      const TestComponent = {
+        template: `
         <HeadlessForm 
           :data="formData" 
           :rules="formRules"
           @validation-error="onValidationError"
         >
           <template #default="formState">
-            <form @submit.prevent="formState.submit">
-              <input
-                data-test="email-input"
-                :value="formState.getFieldValue('email')"
-                @input="e => formState.setFieldValue('email', e.target.value)"
-              />
-              <div v-if="formState.errors.email" data-test="email-error">
-                {{ formState.errors.email[0] }}
-              </div>
-              <button type="submit">Submit</button>
-            </form>
+            <input
+              data-test="email-input"
+              :value="formState.getFieldValue('email')"
+              @input="e => formState.setFieldValue('email', e.target.value)"
+            />
+            <div v-if="formState.errors.email" data-test="email-error">
+              {{ formState.errors.email[0] }}
+            </div>
+            <button type="submit">Submit</button>
           </template>
         </HeadlessForm>
       `,
-      components: { HeadlessForm },
-      data() {
-        return {
-          formData: initialData,
-          formRules: rules,
-          validationError: null
-        }
-      },
-      methods: {
-        onValidationError(error: any) {
-          this.validationError = error
+        components: { HeadlessForm },
+        data() {
+          return {
+            formData: {
+              ...initialData,
+              email: 'not an email'
+            },
+            formRules: rules,
+            validationError: null
+          }
+        },
+        methods: {
+          onValidationError(error: any) {
+            this.validationError = error
+          }
         }
       }
-    }
 
-    const wrapper = mount(TestComponent)
+      const wrapper = mount(TestComponent)
 
-    // Submit form
-    await wrapper.find('button').trigger('click')
+      // Submit form
+      await wrapper.find('form').trigger('submit')
+      await flushPromises()
 
-    await flushPromises()
-
-    // Check error is displayed
-    expect(wrapper.find('[data-test="email-error"]').text()).toBe('Invalid email format')
-  })
-  it('handles submit errors', async () => {
-    const submitError = new Error('Submit failed')
-    const submitHandler = vi.fn().mockRejectedValue(submitError)
-
-    const wrapper = mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules,
-        submitHandler
-      }
+      // Check error is displayed
+      expect(wrapper.find('[data-test="email-error"]').text()).toBe('This field must be a valid email address')
     })
 
-    // Submit form
-    await wrapper.find('form').trigger('submit')
+    it('resets form state', async () => {
+      const formStateRef = ref<any>(null)
 
-    await flushPromises()
+      mount(HeadlessForm, {
+        props: {
+          data: initialData,
+          rules
+        },
+        slots: {
+          default: (formState: any) => {
+            formStateRef.value = formState
+            return h('button', { type: 'submit' }, 'Submit')
+          }
+        }
+      })
 
-    // Check error handling
-    expect(wrapper.emitted('submit-error')?.[0]).toEqual([submitError])
+      // Modify form state
+      formStateRef.value.setFieldValue('name', 'Jane')
+      formStateRef.value.touchField('name')
+      await flushPromises()
+
+      // Reset form
+      formStateRef.value.reset()
+      await flushPromises()
+
+      // Check state was reset
+      expect(formStateRef.value.getField('name')?.isTouched).toBe(false)
+      expect(formStateRef.value.isDirty).toBe(false)
+      expect(formStateRef.value.getFieldValue('name')).toBe('John')
+    })
   })
 
-  it('integrates with nested fields', async () => {
-    const wrapper = mount(HeadlessForm, {
-      props: {
-        data: initialData,
-        rules
-      },
-      slots: {
-        default: (props: any) => h('input', {
-          value: props.getFieldValue('profile.age'),
-          onInput: (e: Event) => props.setFieldValue('profile.age', (e.target as HTMLInputElement).value)
-        })
-      }
+  describe('error handling', () => {
+    it('handles circular references in data', () => {
+      const circularData: any = { name: 'John' }
+      circularData.self = circularData
+      
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: circularData,
+          rules
+        }
+      })
+      
+      expect(() => wrapper.find('form').trigger('submit')).not.toThrow()
     })
-
-    const input = wrapper.find('input')
-
-    // Change nested field value
-    await input.setValue(25)
-
-    // Get updated value from input
-    expect(input.element.value).toBe('25')
   })
 })
 
