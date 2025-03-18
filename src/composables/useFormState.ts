@@ -1,7 +1,6 @@
 import { reactive, computed, ref } from 'vue'
 import { TentativeValuesDataSource } from '@encolajs/validator'
-import { DataSourceInterface } from '@encolajs/validator'
-import { ValidatorFactory } from '@encolajs/validator'
+import { DataSourceInterface, PlainObjectDataSource } from '@encolajs/validator'
 import {
   FormStateOptions,
   FormStateReturn,
@@ -36,8 +35,13 @@ export function useFormState(
   const validationFactory = options.validatorFactory || useValidation().factory
   const validator = validationFactory.make(rules, options.customMessages || {})
 
+  // assume we got a plain object
+  if (!dataSource.clone || !dataSource.getRawData) {
+    dataSource = new PlainObjectDataSource(dataSource)
+  }
+
   // Create a tentative data source that doesn't commit changes immediately
-  const tentativeDataSource = new TentativeValuesDataSource(dataSource, {})
+  let tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
 
   // Track form state
   const fields = new Map<string, FieldState>()
@@ -365,7 +369,7 @@ export function useFormState(
     isDirty.value = false
 
     // Reset tentative values
-    tentativeDataSource.commitAll()
+    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
 
     // Reset the validator
     validator.reset()
