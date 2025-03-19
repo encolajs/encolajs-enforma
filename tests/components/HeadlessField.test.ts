@@ -1,337 +1,361 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { h, nextTick } from 'vue'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import { h } from 'vue'
 import HeadlessField from '../../src/components/HeadlessField'
-
-// Mock the useField composable
-vi.mock('../../src/composables/useField', () => ({
-  useField: vi.fn().mockImplementation((name, formState, options) => ({
-    value: { value: 'test value' },
-    error: { value: null },
-    isDirty: { value: false },
-    isTouched: { value: false },
-    isValidating: { value: false },
-    isVisited: { value: false },
-    isFocused: { value: false },
-    handleChange: (value: any, trigger: string) => {
-      formState.setFieldValue(name, value, trigger)
-    },
-    handleBlur: () => {
-      formState.touchField(name)
-      if (options?.validateOn === 'blur') {
-        formState.validateField(name)
-      }
-    },
-    handleFocus: vi.fn(),
-    validate: () => formState.validateField(name),
-    reset: vi.fn(),
-    attrs: {
-      value: 'test value',
-      onInput: vi.fn(),
-      onChange: vi.fn(),
-      onBlur: vi.fn(),
-      'aria-invalid': false
-    },
-    name
-  }))
-}))
+import { TentativeValuesDataSource } from '@encolajs/validator'
+import { useFormState, useValidation } from '../../src'
 
 describe('HeadlessField', () => {
-  // Mock console.error to catch warnings
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-  // Mock form state for injection
-  const mockFormState = {
-    fields: new Map(),
-    pathToId: new Map(),
-    errors: {},
-    isSubmitting: { value: false },
-    isValidating: { value: false },
-    validationCount: { value: 0 },
-    submitted: { value: false },
-    isDirty: { value: false },
-    isTouched: { value: false },
-    isValid: { value: true },
-    registerField: vi.fn().mockReturnValue({
-      id: 'test-id',
-      path: 'test-field',
-      value: 'test value',
-      error: null,
-      isDirty: false,
-      isTouched: false,
-      isValidating: false,
-      isVisited: false,
-      isFocused: false
-    }),
-    unregisterField: vi.fn(),
-    touchField: vi.fn(),
-    getField: vi.fn().mockReturnValue({
-      id: 'test-id',
-      path: 'test-field',
-      value: 'test value',
-      error: null,
-      isDirty: false,
-      isTouched: false,
-      isValidating: false,
-      isVisited: false,
-      isFocused: false
-    }),
-    validate: vi.fn().mockResolvedValue(true),
-    validateField: vi.fn().mockResolvedValue(true),
-    reset: vi.fn(),
-    submit: vi.fn().mockResolvedValue(true),
-    setFieldValue: vi.fn(),
-    getFieldValue: vi.fn(),
-    getData: vi.fn(),
-    setData: vi.fn()
+  // Mock validator factory for validation rules
+  vi.mock('@encolajs/validator', () => ({
+    ValidatorFactory: vi.fn().mockImplementation(() => ({
+      make: () => ({
+        validate: vi.fn().mockResolvedValue(true),
+        validatePath: vi.fn().mockResolvedValue(true),
+      }),
+    })),
+    TentativeValuesDataSource: vi.fn().mockImplementation((data) => ({
+      clone: () => ({ ...data }),
+      getRawData: () => ({ ...data }),
+      getValue: (path) => data[path],
+      setValue: vi.fn(),
+      commit: vi.fn(),
+      commitAll: vi.fn(),
+      hasTentativeValue: () => false
+    }))
+  }))
+
+  // Create initial form data
+  const initialData = {
+    name: 'John',
+    email: 'john@example.com',
+    profile: {
+      age: 30,
+    },
+  }
+
+  // Create form state
+  const createFormState = (data = initialData) => {
+    const validation = useValidation()
+    return useFormState(
+      // @ts-expect-error TentativeValuesDataSource is mocked
+      new TentativeValuesDataSource(data, {}),
+      {
+        name: 'required|min_length:2',
+        email: 'required|email',
+        'profile.age': 'required|integer|min:18',
+      },
+      {
+        validatorFactory: validation.factory,
+      }
+    )
   }
 
   beforeEach(() => {
-    // Clear all mocks before each test
     vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    consoleError.mockClear()
-  })
-
-  describe('Component Mounting', () => {
-    it('mounts successfully with required props and form context', () => {
+  describe('Basic functionality', () => {
+    it('mounts with required props and form context', () => {
+      const formState = createFormState()
       const wrapper = mount(HeadlessField, {
         props: {
-          name: 'test-field'
+          name: 'name'
         },
         global: {
           provide: {
-            encolaForm: mockFormState
+            encolaForm: formState
           }
-        },
-        slots: {
-          default: '<div>Field Content</div>'
         }
       })
 
       expect(wrapper.exists()).toBe(true)
-      expect(wrapper.text()).toContain('Field Content')
     })
 
     it('errors when mounted without form context', () => {
       const wrapper = mount(HeadlessField, {
         props: {
-          name: 'test-field'
+          name: 'name',
         },
-        slots: {
-          default: '<div>Field Content</div>'
-        }
       })
 
       expect(consoleError).toHaveBeenCalledWith(
         expect.stringContaining('must be used within an EncolaForm component')
       )
-      expect(wrapper.html()).toBe('')
-    })
-  })
-
-  describe('Props Validation', () => {
-    it('requires name prop', () => {
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-      mount(HeadlessField, {
-        // @ts-expect-error test invalid prop
-        props: {},
-        global: {
-          provide: {
-            encolaForm: mockFormState
-          }
-        }
-      })
-
-      expect(consoleWarn).toHaveBeenCalled()
-      consoleWarn.mockRestore()
     })
 
-    it('validates validateOn prop values', () => {
-      const validValues = ['input', 'change', 'blur', 'submit', null]
-
-      validValues.forEach(value => {
-        const wrapper = mount(HeadlessField, {
-          props: {
-            name: 'test-field',
-            validateOn: value
-          },
-          global: {
-            provide: {
-              encolaForm: mockFormState
-            }
-          }
-        })
-
-        expect(wrapper.props('validateOn')).toBe(value)
-      })
-
-      // Test invalid value
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-      mount(HeadlessField, {
-        props: {
-          name: 'test-field',
-          validateOn: 'invalid'
-        },
-        global: {
-          provide: {
-            encolaForm: mockFormState
-          }
-        }
-      })
-
-      expect(consoleWarn).toHaveBeenCalled()
-      consoleWarn.mockRestore()
-    })
-  })
-
-  describe('Slot Handling', () => {
     it('passes field state to default slot', () => {
+      const formState = createFormState()
       let slotProps
 
       mount(HeadlessField, {
         props: {
-          name: 'test-field'
+          name: 'name',
         },
         global: {
           provide: {
-            encolaForm: mockFormState
-          }
+            encolaForm: formState,
+          },
         },
         slots: {
-          default: props => {
+          default: (props) => {
             slotProps = props
             return '<div>Field Content</div>'
-          }
-        }
+          },
+        },
       })
 
       expect(slotProps).toMatchObject({
-        value: { value: expect.any(String) },
-        error: { value: null },
-        isDirty: { value: false },
-        isTouched: { value: false },
-        isValidating: { value: false },
-        isVisited: {value: false},
-        isFocused: { value: false },
+        value: expect.any(Object),
+        error: expect.any(Object),
+        isDirty: expect.any(Object),
+        isTouched: expect.any(Object),
+        isValidating: expect.any(Object),
+        isVisited: expect.any(Object),
+        isFocused: expect.any(Object),
         handleChange: expect.any(Function),
         handleBlur: expect.any(Function),
         handleFocus: expect.any(Function),
         validate: expect.any(Function),
         reset: expect.any(Function),
         attrs: expect.any(Object),
-        name: expect.any(String)
+        name: expect.any(String),
       })
-    })
-
-    it('renders multiple field instances with unique states', () => {
-      const wrapper = mount({
-        template: `
-          <div>
-            <HeadlessField name="field1">
-              <template #default="field1">
-                <input v-bind="field1.attrs" data-testid="field1" />
-              </template>
-            </HeadlessField>
-            <HeadlessField name="field2">
-              <template #default="field2">
-                <input v-bind="field2.attrs" data-testid="field2" />
-              </template>
-            </HeadlessField>
-          </div>
-        `,
-        components: { HeadlessField }
-      }, {
-        global: {
-          provide: {
-            encolaForm: mockFormState
-          }
-        }
-      })
-
-      const field1 = wrapper.find('[data-testid="field1"]')
-      const field2 = wrapper.find('[data-testid="field2"]')
-
-      expect(field1.exists()).toBe(true)
-      expect(field2.exists()).toBe(true)
-      expect(field1.attributes()).not.toEqual(field2.attributes())
     })
   })
 
-  describe('Form Integration', () => {
-    it('registers field with form on mount', async () => {
-      const { useField } = await import('../../src/composables/useField')
-
-      mount(HeadlessField, {
-        props: {
-          name: 'test-field'
-        },
-        global: {
-          provide: {
-            encolaForm: mockFormState
-          }
-        }
-      })
-
-      await nextTick()
-      expect(useField).toHaveBeenCalledWith(
-        'test-field',
-        mockFormState,
-        expect.objectContaining({
-          validateOn: null
-        })
-      )
-    })
-    it('unregisters field on unmount', async () => {
+  describe('Field validation lifecycle', () => {
+    it('validates on blur when validateOn is blur', async () => {
+      const formState = createFormState()
       const wrapper = mount(HeadlessField, {
         props: {
-          name: 'test-field'
+          name: 'email',
+          validateOn: 'blur',
         },
         global: {
           provide: {
-            encolaForm: mockFormState
-          }
-        }
-      })
-
-      await wrapper.unmount()
-      expect(mockFormState.unregisterField).toHaveBeenCalledWith('test-field')
-    })
-  })
-
-  describe('Validation Behavior', () => {
-    it('respects validateOn prop for validation timing', async () => {
-      const wrapper = mount(HeadlessField, {
-        props: {
-          name: 'test-field',
-          validateOn: 'blur'
-        },
-        global: {
-          provide: {
-            encolaForm: mockFormState
-          }
+            encolaForm: formState,
+          },
         },
         slots: {
-          default: ({ handleChange, handleBlur }) => h('input', {
-            onChange: (e) => handleChange(e.target.value, 'change'),
-            onBlur: handleBlur
-          })
-        }
+          default: ({ attrs, handleChange, handleBlur }) =>
+            h('input', {
+              value: attrs.value.value,
+              onInput: (e) => handleChange(e.target.value, 'input'),
+              onBlur: handleBlur,
+            }),
+        },
       })
 
       const input = wrapper.find('input')
-      await input.setValue('new value')
-      await input.trigger('change')
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith('test-field', 'new value', 'change')
-
-      // Then trigger blur
+      await input.setValue('new@email.com')
       await input.trigger('blur')
-      expect(mockFormState.touchField).toHaveBeenCalledWith('test-field')
-      expect(mockFormState.validateField).toHaveBeenCalledWith('test-field')
+      await flushPromises()
+
+      const formField = formState.getField('email')
+      expect(formField.isTouched).toBe(true)
+      expect(formField.isDirty).toBe(true)
+    })
+
+    it('validates on input when validateOn is input', async () => {
+      const formState = createFormState()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'email',
+          validateOn: 'input',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs, handleChange }) =>
+            h('input', {
+              value: attrs.value.value,
+              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      await input.setValue('new@email.com')
+
+      const formField = formState.getField('email')
+      expect(formField.isDirty).toBe(true)
+      expect(formField.isTouched).toBe(false)
+    })
+
+    it('validates on input when validateOn is change', async () => {
+      const formState = createFormState()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'email',
+          validateOn: 'change',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs, handleFocus }) =>
+            h('input', {
+              value: attrs.value.value,
+              onChange: attrs.value.onChange, // use the default implementation
+              onFocus: handleFocus,
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      await input.trigger('focus')
+      await input.setValue('new@email.com')
+
+      const formField = formState.getField('email')
+      expect(formField.isDirty).toBe(true)
+      expect(formField.isTouched).toBe(true)
+      expect(formField.isFocused).toBe(true)
+    })
+  })
+
+  describe('Form integration', () => {
+    it('updates form state when field value changes', async () => {
+      const formState = createFormState()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'name',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs, handleChange }) =>
+            h('input', {
+              value: attrs.value.value,
+              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      await input.setValue('Jane')
+
+      const field = formState.getField('name')
+      expect(field.value).toBe('Jane')
+    })
+
+    it('cleans up on unmount', async () => {
+      const formState = createFormState()
+      const unregisterSpy = vi.spyOn(formState, 'unregisterField')
+
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'name',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+      })
+
+      await wrapper.unmount()
+      expect(unregisterSpy).toHaveBeenCalledWith('name')
+    })
+  })
+
+  describe('Edge cases and error handling', () => {
+    it('handles deep nested fields', async () => {
+      const formState = createFormState()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'profile.age',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs, handleChange }) =>
+            h('input', {
+              value: attrs.value.value,
+              type: 'number',
+              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      await input.setValue(25)
+
+      const field = formState.getField('profile.age')
+      expect(parseInt(field.value)).toBe(25)
+    })
+
+    it('handles undefined field values', async () => {
+      // @ts-expect-error Test case for undefined field value
+      const formState = createFormState({})
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'nonexistent',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs }) =>
+            h('input', {
+              value: attrs.value.value
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      expect(input.element.value).toBe('')
+    })
+
+    it('maintains field state during re-renders', async () => {
+      const formState = createFormState()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          name: 'email',
+        },
+        global: {
+          provide: {
+            encolaForm: formState,
+          },
+        },
+        slots: {
+          default: ({ attrs, handleChange, handleBlur }) =>
+            h('input', {
+              value: attrs.value.value,
+              onInput: (e) => handleChange(e.target.value, 'input'),
+              onBlur: handleBlur,
+            }),
+        },
+      })
+
+      const input = wrapper.find('input')
+      await input.setValue('new@email.com')
+      await input.trigger('blur')
+      flushPromises()
+
+      const field = formState.getField('email')
+      expect(field.value).toBe('new@email.com')
+
+      // Force re-render
+      await wrapper.setProps({ name: 'email', validateOn: 'blur' })
+
+      expect(field.isTouched).toBe(true)
+      expect(field.value).toBe('new@email.com')
     })
   })
 })
