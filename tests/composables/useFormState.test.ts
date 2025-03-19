@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFormState } from '../../src/composables/useFormState'
 import { ValidatorFactory, TentativeValuesDataSource, PlainObjectDataSource } from '@encolajs/validator'
+import { flushPromises } from '@vue/test-utils'
 
 
 // Create mock objects that we can access globally in the test file
@@ -26,7 +27,8 @@ const mockDataSource = {
   getRawData: vi.fn(() => formData),
   hasTentativeValue: vi.fn().mockReturnValue(false),
   commit: vi.fn(),
-  commitAll: vi.fn()
+  commitAll: vi.fn(),
+  clone: vi.fn(() => ({ ...formData })),
 };
 
 // Mock the validator factory to return our mock validator
@@ -35,11 +37,12 @@ const mockValidatorFactory = {
 };
 
 // Mocks for the module
-vi.mock('@encolajs/validator', () => {
+vi.mock('@encolajs/validator', async () => {
+  const { PlainObjectDataSource } = await vi.importActual('@encolajs/validator')
   return {
     ValidatorFactory: vi.fn().mockImplementation(() => mockValidatorFactory),
     TentativeValuesDataSource: vi.fn().mockImplementation(() => mockDataSource),
-    PlainObjectDataSource: vi.fn().mockImplementation((obj) => obj)
+    PlainObjectDataSource
   };
 });
 
@@ -65,7 +68,7 @@ describe('useFormState', () => {
 
   beforeEach(() => {
     // Reset our data for each test
-    formData = { ...initialData }
+    formData = initialData
 
     // Reset all mock functions
     vi.clearAllMocks()
@@ -142,14 +145,14 @@ describe('useFormState', () => {
 
     it('should set field value and mark as dirty', () => {
       const fieldName = 'name'
-      const newValue = 'Jane'
+      const newValue = 'Joana'
 
       // Register field first
       const fieldState = formState.registerField(fieldName)
       expect(fieldState.isDirty).toBe(false)
 
       // Set field value
-      formState.setFieldValue(fieldName, newValue)
+      formState.setFieldValue(fieldName, newValue, 'input')
 
       // Check field state was updated
       expect(fieldState.value).toBe(newValue)
@@ -220,7 +223,7 @@ describe('useFormState', () => {
     })
 
     it('should unregister array fields correctly', () => {
-      const formData = {
+      const formData = new PlainObjectDataSource({
         addresses: [{
           city: 'New York',
           zip: '10001'
@@ -228,7 +231,7 @@ describe('useFormState', () => {
           city: 'Boston',
           zip: '02101'
         }]
-      }
+      })
 
       const formState = useFormState(new PlainObjectDataSource(formData), {})
 
@@ -383,6 +386,7 @@ describe('useFormState', () => {
 
       // Submit form
       const result = await formWithSubmit.submit()
+      await flushPromises()
 
       // Check validation was performed
       expect(mockValidator.validate).toHaveBeenCalled()
@@ -421,21 +425,21 @@ describe('useFormState', () => {
     })
   })
 
-  describe('form state calculations', () => {
-    it('should calculate isDirty correctly', () => {
+  describe('form state updates', () => {
+    it('should calculate isDirty', () => {
       // Initially not dirty
       expect(formState.isDirty.value).toBe(false)
 
       // Register field and make it dirty
       const nameField = formState.registerField('name')
-      formState.setFieldValue('name', 'Jane')
+      formState.setFieldValue('name', 'James')
 
       // Should now be dirty
       expect(nameField.isDirty).toBe(true)
       expect(formState.isDirty.value).toBe(true)
     })
 
-    it('should calculate isTouched correctly', () => {
+    it('should calculate isTouched', () => {
       // Initially not touched
       expect(formState.isTouched.value).toBe(false)
 
