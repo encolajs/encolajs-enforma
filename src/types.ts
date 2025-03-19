@@ -24,10 +24,9 @@ export interface FieldState {
   isValidating: boolean
   isValid?: boolean
   isVisited: boolean
-  isFocused: boolean,
+  isFocused: boolean
   focusHandler?: () => void
 }
-
 
 /**
  * Type for event triggers

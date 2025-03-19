@@ -11,7 +11,9 @@ import {
 import { useValidation } from './useValidation'
 
 function generateFieldId(path: string): string {
-  return `field_${path}_${Math.random().toString(36).substring(2)}_${Date.now()}`
+  return `field_${path}_${Math.random()
+    .toString(36)
+    .substring(2)}_${Date.now()}`
 }
 
 /**
@@ -120,7 +122,7 @@ export function useFormState(
       isTouched: false,
       isValidating: false,
       isVisited: false,
-      isFocused: false
+      isFocused: false,
     })
 
     // Store field state and path mapping
@@ -140,15 +142,17 @@ export function useFormState(
       return
     }
     // Find all direct children of this path
-    const childPaths = Array.from(pathToId.keys()).filter(fieldPath => {
+    const childPaths = Array.from(pathToId.keys()).filter((fieldPath) => {
       // Since all paths use dot notation, we can simplify the check
       // We want immediate children only (one dot level deeper)
-      return fieldPath.startsWith(`${path}.`) &&
+      return (
+        fieldPath.startsWith(`${path}.`) &&
         fieldPath.slice(path.length + 1).indexOf('.') === -1
+      )
     })
 
     // Recursively unregister children first
-    childPaths.forEach(childPath => unregisterField(childPath))
+    childPaths.forEach((childPath) => unregisterField(childPath))
 
     // Now handle this field
     const fieldId = pathToId.get(path)
@@ -203,7 +207,8 @@ export function useFormState(
     }
 
     // Validate if needed
-    const shouldValidate = options?.validateOn === trigger || options?.validateOn === 'input'
+    const shouldValidate =
+      options?.validateOn === trigger || options?.validateOn === 'input'
     if (shouldValidate) {
       validateField(name)
     }
@@ -223,10 +228,7 @@ export function useFormState(
     const dependencies = validator.getDependentFields?.(name) || []
 
     for (const dependency of dependencies) {
-      if (
-        fields.has(dependency) &&
-        fields.get(dependency)!.isTouched
-      ) {
+      if (fields.has(dependency) && fields.get(dependency)!.isTouched) {
         validateField(dependency)
       }
     }

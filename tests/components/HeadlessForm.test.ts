@@ -13,12 +13,12 @@ describe('HeadlessForm', () => {
       encolaForm = formState as FormStateReturn
       return { formState }
     },
-    template: '<div></div>'
+    template: '<div></div>',
   }
 
   // Register it globally for all tests
   config.global.components = {
-    FormStateExposer
+    FormStateExposer,
   }
 
   // Test data that will be used across tests
@@ -26,19 +26,19 @@ describe('HeadlessForm', () => {
     name: 'John',
     email: 'john@example.com',
     profile: {
-      age: 30
-    }
+      age: 30,
+    },
   }
 
   const rules = {
-    'name': 'required|min_length:2',
-    'email': 'required|email',
-    'profile.age': 'required|integer|gte:18'
+    name: 'required|min_length:2',
+    email: 'required|email',
+    'profile.age': 'required|integer|gte:18',
   }
 
   const customMessages = {
     'email:required': 'Please enter your email',
-    'email:email': 'Please enter a valid email'
+    'email:email': 'Please enter a valid email',
   }
 
   beforeEach(() => {
@@ -52,11 +52,11 @@ describe('HeadlessForm', () => {
       mount(HeadlessForm, {
         props: {
           data: initialData,
-          rules
+          rules,
         },
         slots: {
-          default: slotContent
-        }
+          default: slotContent,
+        },
       })
 
       // Check that slot was called with form state
@@ -78,9 +78,9 @@ describe('HeadlessForm', () => {
         data() {
           return {
             formData: initialData,
-            formRules: rules
+            formRules: rules,
           }
-        }
+        },
       }
 
       mount(TestComponent)
@@ -89,7 +89,6 @@ describe('HeadlessForm', () => {
       expect(encolaForm.getData()).toEqual(initialData)
     })
   })
-
 
   describe('field handling', () => {
     it('field registration and validation', async () => {
@@ -118,14 +117,14 @@ describe('HeadlessForm', () => {
         data() {
           return {
             formData: initialData,
-            formRules: rules
+            formRules: rules,
           }
         },
         methods: {
           onSubmit(data: any) {
             // Handle submit
-          }
-        }
+          },
+        },
       }
 
       const wrapper = mount(TestComponent)
@@ -155,7 +154,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: initialData,
-          rules
+          rules,
         },
         slots: {
           default: (state: any) => {
@@ -163,10 +162,14 @@ describe('HeadlessForm', () => {
             return h('input', {
               'data-test': 'age-input',
               value: state.getFieldValue('profile.age'),
-              onInput: (e: Event) => state.setFieldValue('profile.age', (e.target as HTMLInputElement).value)
+              onInput: (e: Event) =>
+                state.setFieldValue(
+                  'profile.age',
+                  (e.target as HTMLInputElement).value
+                ),
             })
-          }
-        }
+          },
+        },
       })
 
       const input = wrapper.find('[data-test="age-input"]')
@@ -186,14 +189,14 @@ describe('HeadlessForm', () => {
         props: {
           data: initialData,
           rules,
-          submitHandler
+          submitHandler,
         },
         slots: {
           default: (formState: any) => {
             formSubmit = formState.submit
             return h('button', { type: 'submit' }, 'Submit')
-          }
-        }
+          },
+        },
       })
 
       // Trigger form submission
@@ -210,8 +213,8 @@ describe('HeadlessForm', () => {
         props: {
           data: initialData,
           rules,
-          validateOn: 'submit'
-        }
+          validateOn: 'submit',
+        },
       })
 
       // Submit form
@@ -231,8 +234,8 @@ describe('HeadlessForm', () => {
         props: {
           data: initialData,
           rules,
-          submitHandler
-        }
+          submitHandler,
+        },
       })
 
       // Submit form
@@ -270,17 +273,17 @@ describe('HeadlessForm', () => {
           return {
             formData: {
               ...initialData,
-              email: 'not an email'
+              email: 'not an email',
             },
             formRules: rules,
-            validationError: null
+            validationError: null,
           }
         },
         methods: {
           onValidationError(error: any) {
             this.validationError = error
-          }
-        }
+          },
+        },
       }
 
       const wrapper = mount(TestComponent)
@@ -290,7 +293,9 @@ describe('HeadlessForm', () => {
       await flushPromises()
 
       // Check error is displayed
-      expect(wrapper.find('[data-test="email-error"]').text()).toBe('This field must be a valid email address')
+      expect(wrapper.find('[data-test="email-error"]').text()).toBe(
+        'This field must be a valid email address'
+      )
     })
 
     it('resets form state', async () => {
@@ -299,14 +304,14 @@ describe('HeadlessForm', () => {
       mount(HeadlessForm, {
         props: {
           data: initialData,
-          rules
+          rules,
         },
         slots: {
           default: (formState: any) => {
             formStateRef.value = formState
             return h('button', { type: 'submit' }, 'Submit')
-          }
-        }
+          },
+        },
       })
 
       // Modify form state
@@ -329,16 +334,15 @@ describe('HeadlessForm', () => {
     it('handles circular references in data', () => {
       const circularData: any = { name: 'John' }
       circularData.self = circularData
-      
+
       const wrapper = mount(HeadlessForm, {
         props: {
           data: circularData,
-          rules
-        }
+          rules,
+        },
       })
-      
+
       expect(() => wrapper.find('form').trigger('submit')).not.toThrow()
     })
   })
 })
-

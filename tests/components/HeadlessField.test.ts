@@ -23,8 +23,8 @@ describe('HeadlessField', () => {
       setValue: vi.fn(),
       commit: vi.fn(),
       commitAll: vi.fn(),
-      hasTentativeValue: () => false
-    }))
+      hasTentativeValue: () => false,
+    })),
   }))
 
   // Create initial form data
@@ -62,13 +62,13 @@ describe('HeadlessField', () => {
       const formState = createFormState()
       const wrapper = mount(HeadlessField, {
         props: {
-          name: 'name'
+          name: 'name',
         },
         global: {
           provide: {
-            encolaForm: formState
-          }
-        }
+            encolaForm: formState,
+          },
+        },
       })
 
       expect(wrapper.exists()).toBe(true)
@@ -175,7 +175,8 @@ describe('HeadlessField', () => {
           default: ({ attrs, handleChange }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: (e) =>
+                handleChange((e.target as HTMLInputElement).value, 'input'),
             }),
         },
       })
@@ -237,7 +238,8 @@ describe('HeadlessField', () => {
           default: ({ attrs, handleChange }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: (e) =>
+                handleChange((e.target as HTMLInputElement).value, 'input'),
             }),
         },
       })
@@ -286,7 +288,8 @@ describe('HeadlessField', () => {
             h('input', {
               value: attrs.value.value,
               type: 'number',
-              onInput: (e) => handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: (e) =>
+                handleChange((e.target as HTMLInputElement).value, 'input'),
             }),
         },
       })
@@ -313,7 +316,7 @@ describe('HeadlessField', () => {
         slots: {
           default: ({ attrs }) =>
             h('input', {
-              value: attrs.value.value
+              value: attrs.value.value,
             }),
         },
       })

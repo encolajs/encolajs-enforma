@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFormState } from '../../src/composables/useFormState'
-import { ValidatorFactory, TentativeValuesDataSource, PlainObjectDataSource } from '@encolajs/validator'
+import {
+  ValidatorFactory,
+  TentativeValuesDataSource,
+  PlainObjectDataSource,
+} from '@encolajs/validator'
 import { flushPromises } from '@vue/test-utils'
-
 
 // Create mock objects that we can access globally in the test file
 const mockValidator = {
@@ -15,26 +18,28 @@ const mockValidator = {
   clearServerErrors: vi.fn(),
   clearErrorsForPath: vi.fn(),
   reset: vi.fn(),
-  getDependentFields: vi.fn().mockReturnValue([])
-};
+  getDependentFields: vi.fn().mockReturnValue([]),
+}
 
-let formData = {}; // We'll populate this in beforeEach
+let formData = {} // We'll populate this in beforeEach
 
 // Mock dataSource for consistent behavior
 const mockDataSource = {
-  getValue: vi.fn(path => formData[path]),
-  setValue: vi.fn((path, value) => { formData[path] = value; }),
+  getValue: vi.fn((path) => formData[path]),
+  setValue: vi.fn((path, value) => {
+    formData[path] = value
+  }),
   getRawData: vi.fn(() => formData),
   hasTentativeValue: vi.fn().mockReturnValue(false),
   commit: vi.fn(),
   commitAll: vi.fn(),
   clone: vi.fn(() => ({ ...formData })),
-};
+}
 
 // Mock the validator factory to return our mock validator
 const mockValidatorFactory = {
-  make: vi.fn().mockReturnValue(mockValidator)
-};
+  make: vi.fn().mockReturnValue(mockValidator),
+}
 
 // Mocks for the module
 vi.mock('@encolajs/validator', async () => {
@@ -42,9 +47,9 @@ vi.mock('@encolajs/validator', async () => {
   return {
     ValidatorFactory: vi.fn().mockImplementation(() => mockValidatorFactory),
     TentativeValuesDataSource: vi.fn().mockImplementation(() => mockDataSource),
-    PlainObjectDataSource
-  };
-});
+    PlainObjectDataSource,
+  }
+})
 
 describe('useFormState', () => {
   // Define test data
@@ -52,14 +57,14 @@ describe('useFormState', () => {
     name: 'John',
     email: 'john@example.com',
     profile: {
-      age: 30
-    }
+      age: 30,
+    },
   }
 
   const rules = {
-    'name': 'required',
-    'email': 'required|email',
-    'profile.age': 'required|integer|min:18'
+    name: 'required',
+    email: 'required|email',
+    'profile.age': 'required|integer|min:18',
   }
 
   // Create a mock data source
@@ -79,7 +84,7 @@ describe('useFormState', () => {
 
     // Create formState with our mocked dependencies
     formState = useFormState(dataSource, rules, {
-      validateOn: 'blur'
+      validateOn: 'blur',
     })
   })
 
@@ -96,12 +101,16 @@ describe('useFormState', () => {
     it('should create validator with provided rules', () => {
       // We should check that the factory's make method was called with our rules
       expect(ValidatorFactory).toHaveBeenCalled()
-      const mockFactoryInstance = (ValidatorFactory as unknown as ReturnType<typeof vi.fn>).mock.results[0].value
+      const mockFactoryInstance = (
+        ValidatorFactory as unknown as ReturnType<typeof vi.fn>
+      ).mock.results[0].value
       expect(mockFactoryInstance.make).toHaveBeenCalledWith(rules, {})
     })
 
     it('should throw error if dataSource is not provided', () => {
-      expect(() => useFormState(undefined as any)).toThrow('useFormState requires a dataSource')
+      expect(() => useFormState(undefined as any)).toThrow(
+        'useFormState requires a dataSource'
+      )
     })
   })
 
@@ -113,13 +122,15 @@ describe('useFormState', () => {
       const fieldState = formState.registerField(fieldName)
 
       // Check field state structure
-      expect(fieldState).toEqual(expect.objectContaining({
-        error: null,
-        isDirty: false,
-        isTouched: false,
-        isValidating: false,
-        isVisited: false
-      }))
+      expect(fieldState).toEqual(
+        expect.objectContaining({
+          error: null,
+          isDirty: false,
+          isTouched: false,
+          isValidating: false,
+          isVisited: false,
+        })
+      )
 
       // Check the value matches what our mock returns
       expect(fieldState.value).toBe(initialData.name)
@@ -185,9 +196,9 @@ describe('useFormState', () => {
           city: 'New York',
           details: {
             street: '123 Main St',
-            zip: '10001'
-          }
-        }
+            zip: '10001',
+          },
+        },
       }
 
       const formState = useFormState(new PlainObjectDataSource(formData), {})
@@ -224,13 +235,16 @@ describe('useFormState', () => {
 
     it('should unregister array fields correctly', () => {
       const formData = new PlainObjectDataSource({
-        addresses: [{
-          city: 'New York',
-          zip: '10001'
-        }, {
-          city: 'Boston',
-          zip: '02101'
-        }]
+        addresses: [
+          {
+            city: 'New York',
+            zip: '10001',
+          },
+          {
+            city: 'Boston',
+            zip: '02101',
+          },
+        ],
       })
 
       const formState = useFormState(new PlainObjectDataSource(formData), {})
@@ -270,7 +284,10 @@ describe('useFormState', () => {
       await formState.touchField(fieldName)
 
       // Check validator was called
-      expect(mockValidator.validatePath).toHaveBeenCalledWith(fieldName, expect.any(Object))
+      expect(mockValidator.validatePath).toHaveBeenCalledWith(
+        fieldName,
+        expect.any(Object)
+      )
     })
 
     it('should handle field validation failure', async () => {
@@ -318,7 +335,7 @@ describe('useFormState', () => {
       // Mock form validation failure
       mockValidator.validate.mockResolvedValueOnce(false)
       mockValidator.getErrors.mockReturnValueOnce({
-        'email': ['Invalid email format']
+        email: ['Invalid email format'],
       })
 
       // Validate form
@@ -378,7 +395,7 @@ describe('useFormState', () => {
       // Create form state with submit handler
       const formWithSubmit = useFormState(dataSource, rules, {
         validateOn: 'blur',
-        submitHandler
+        submitHandler,
       })
 
       // Mock successful validation
@@ -405,7 +422,7 @@ describe('useFormState', () => {
       // Create form state with submit handler
       const formWithSubmit = useFormState(dataSource, rules, {
         validateOn: 'blur',
-        submitHandler
+        submitHandler,
       })
 
       // Mock failed validation
@@ -497,7 +514,7 @@ describe('useFormState', () => {
       // Set new data
       const newData = {
         name: 'Alice',
-        email: 'alice@example.com'
+        email: 'alice@example.com',
       }
 
       // Set data (this should internally call reset)
@@ -505,7 +522,10 @@ describe('useFormState', () => {
 
       // Check data source was updated
       expect(mockDataSource.setValue).toHaveBeenCalledWith('name', 'Alice')
-      expect(mockDataSource.setValue).toHaveBeenCalledWith('email', 'alice@example.com')
+      expect(mockDataSource.setValue).toHaveBeenCalledWith(
+        'email',
+        'alice@example.com'
+      )
 
       // Instead of checking if reset was called, check the observable effects of reset:
       // Field should no longer be dirty or touched

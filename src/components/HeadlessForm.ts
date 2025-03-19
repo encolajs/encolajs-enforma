@@ -33,32 +33,41 @@ export default defineComponent({
   emits: ['submit', 'submit-error', 'validation-error', 'reset'],
 
   setup(props, ctx) {
-    const formState = useFormState(props.data as DataSourceInterface, props.rules, {
-      customMessages: props.customMessages,
-      validateOn: props.validateOn,
-      submitHandler: async (data) => {
-        if (props.submitHandler) {
-          try {
-            await props.submitHandler(data)
+    const formState = useFormState(
+      props.data as DataSourceInterface,
+      props.rules,
+      {
+        customMessages: props.customMessages,
+        validateOn: props.validateOn,
+        submitHandler: async (data) => {
+          if (props.submitHandler) {
+            try {
+              await props.submitHandler(data)
+              ctx.emit('submit', data)
+            } catch (error) {
+              ctx.emit('submit-error', error)
+              throw error
+            }
+          } else {
             ctx.emit('submit', data)
-          } catch (error) {
-            ctx.emit('submit-error', error)
-            throw error
           }
-        } else {
-          ctx.emit('submit', data)
-        }
-      },
-    })
+        },
+      }
+    )
 
     provide('encolaForm', formState)
 
-    return () => h('form', {
-      onSubmit: (e: Event) => {
-        e.preventDefault()
-        return formState.submit()
-      },
-      novalidate: true
-    }, ctx.slots.default?.(formState))
-  }
+    return () =>
+      h(
+        'form',
+        {
+          onSubmit: (e: Event) => {
+            e.preventDefault()
+            return formState.submit()
+          },
+          novalidate: true,
+        },
+        ctx.slots.default?.(formState)
+      )
+  },
 })

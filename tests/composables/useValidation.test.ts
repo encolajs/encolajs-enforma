@@ -9,20 +9,20 @@ const mockMake = vi.fn().mockImplementation(() => ({
   getErrors: vi.fn().mockReturnValue({}),
   getErrorsForPath: vi.fn().mockReturnValue([]),
   getDependentFields: vi.fn().mockReturnValue([]),
-  reset: vi.fn()
+  reset: vi.fn(),
 }))
 
 // Mock the ValidatorFactory
 const mockFactoryInstance = {
   register: mockRegister,
   make: mockMake,
-  _defaultMessageFormatter: null
+  _defaultMessageFormatter: null,
 }
 
 vi.mock('@encolajs/validator', () => {
   return {
     ValidatorFactory: vi.fn().mockImplementation(() => mockFactoryInstance),
-    Validator: vi.fn()
+    Validator: vi.fn(),
   }
 })
 
@@ -44,13 +44,21 @@ describe('useValidation', () => {
       const errorMessage = 'This field is invalid'
 
       // Execute
-      const result = validation.registerRule(ruleName, ruleFunction, errorMessage)
+      const result = validation.registerRule(
+        ruleName,
+        ruleFunction,
+        errorMessage
+      )
 
       // Verify
       expect(result).toBeDefined()
       // We don't need to check if ValidatorFactory was called since
       // it's created inside the composable and we've mocked the instance
-      expect(mockRegister).toHaveBeenCalledWith(ruleName, ruleFunction, errorMessage)
+      expect(mockRegister).toHaveBeenCalledWith(
+        ruleName,
+        ruleFunction,
+        errorMessage
+      )
     })
 
     it('should return the validator factory instance', () => {
@@ -60,7 +68,11 @@ describe('useValidation', () => {
       const errorMessage = 'Test error'
 
       // Execute
-      const result = validation.registerRule(ruleName, ruleFunction, errorMessage)
+      const result = validation.registerRule(
+        ruleName,
+        ruleFunction,
+        errorMessage
+      )
 
       // Verify
       expect(result).toBeTruthy()
@@ -87,8 +99,8 @@ describe('useValidation', () => {
     it('should create a validator with rules', () => {
       // Setup
       const rules = {
-        'name': 'required|min_length:2',
-        'email': 'required|email'
+        name: 'required|min_length:2',
+        email: 'required|email',
       }
 
       // Execute
@@ -102,12 +114,12 @@ describe('useValidation', () => {
     it('should create a validator with rules and custom messages', () => {
       // Setup
       const rules = {
-        'name': 'required|min_length:2',
-        'email': 'required|email'
+        name: 'required|min_length:2',
+        email: 'required|email',
       }
       const customMessages = {
         'name:required': 'Name is required',
-        'email:email': 'Please enter a valid email'
+        'email:email': 'Please enter a valid email',
       }
 
       // Execute
@@ -131,10 +143,18 @@ describe('useValidation', () => {
 
       // Execute
       // @ts-expect-error CustomRule does not extend the ValidationRule class
-      validation.registerRule('custom_class_rule', CustomRule, 'Value must be more than 5 characters')
+      validation.registerRule(
+        'custom_class_rule',
+        CustomRule,
+        'Value must be more than 5 characters'
+      )
 
       // Verify
-      expect(mockRegister).toHaveBeenCalledWith('custom_class_rule', CustomRule, 'Value must be more than 5 characters')
+      expect(mockRegister).toHaveBeenCalledWith(
+        'custom_class_rule',
+        CustomRule,
+        'Value must be more than 5 characters'
+      )
     })
 
     it('should support async validation rules', async () => {
@@ -144,14 +164,22 @@ describe('useValidation', () => {
       }
 
       // Execute
-      validation.registerRule('async_test', asyncRule, 'Async validation failed')
+      validation.registerRule(
+        'async_test',
+        asyncRule,
+        'Async validation failed'
+      )
 
       // Create validator with the async rule
-      const rules = { 'field': 'async_test' }
+      const rules = { field: 'async_test' }
       const validator = validation.makeValidator(rules)
 
       // Verify
-      expect(mockRegister).toHaveBeenCalledWith('async_test', asyncRule, 'Async validation failed')
+      expect(mockRegister).toHaveBeenCalledWith(
+        'async_test',
+        asyncRule,
+        'Async validation failed'
+      )
       expect(mockMake).toHaveBeenCalledWith(rules, {})
     })
   })

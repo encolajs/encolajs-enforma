@@ -10,7 +10,7 @@ const mockFormState = {
     isDirty: false,
     isTouched: false,
     isValidating: false,
-    isVisited: false
+    isVisited: false,
   })),
   unregisterField: vi.fn(),
   getField: vi.fn(),
@@ -29,16 +29,16 @@ const mockFormState = {
   formState: {
     fields: new Map(),
     isSubmitting: false,
-    isValidating: false
-  }
-};
+    isValidating: false,
+  },
+}
 
 // Initial test data
 const initialData = {
   name: 'John Doe',
   email: 'john@example.com',
-  age: 30
-};
+  age: 30,
+}
 
 const mocks = vi.hoisted(() => {
   return {
@@ -49,8 +49,8 @@ const mocks = vi.hoisted(() => {
     })),
     watch: vi.fn(),
     ref: vi.fn((val) => ({ value: val })),
-  };
-});
+  }
+})
 
 // Mock the vue module
 vi.mock('vue', () => {
@@ -60,185 +60,201 @@ vi.mock('vue', () => {
     computed: mocks.computed,
     watch: mocks.watch,
     ref: mocks.ref,
-  };
-});
+  }
+})
 
 describe('useField', () => {
-  let field;
+  let field
 
   beforeEach(() => {
     // Reset mocks
-    vi.clearAllMocks();
+    vi.clearAllMocks()
 
     // Reset Vue mock implementations
-    mocks.onMounted.mockImplementation((fn) => fn());
-    mocks.onBeforeUnmount.mockImplementation(() => {});
+    mocks.onMounted.mockImplementation((fn) => fn())
+    mocks.onBeforeUnmount.mockImplementation(() => {})
     mocks.computed.mockImplementation((getter) => ({
       value: getter(),
-    }));
+    }))
 
     // Create field instance
     // @ts-expect-error Incomplete mocking
     field = useField('name', mockFormState, {
-      validateOnMount: false
-    });
-  });
+      validateOnMount: false,
+    })
+  })
 
   afterEach(() => {
-    field = null;
-  });
+    field = null
+  })
 
   describe('initialization', () => {
     it('should register field with form state', () => {
-      expect(mockFormState.registerField).toHaveBeenCalledWith('name');
-    });
+      expect(mockFormState.registerField).toHaveBeenCalledWith('name')
+    })
 
     it('should throw error if field name is missing', () => {
       // @ts-expect-error Incomplete mocking
-      expect(() => useField('', mockFormState)).toThrow('Field name is required');
-    });
+      expect(() => useField('', mockFormState)).toThrow(
+        'Field name is required'
+      )
+    })
 
     it('should throw error if form state is missing', () => {
-      expect(() => useField('name', null)).toThrow('Form state is required');
-    });
+      expect(() => useField('name', null)).toThrow('Form state is required')
+    })
 
     it('should validate on mount if option is set', () => {
       // Reset mocks
-      vi.clearAllMocks();
-      mocks.onMounted.mockImplementationOnce((fn) => fn());
+      vi.clearAllMocks()
+      mocks.onMounted.mockImplementationOnce((fn) => fn())
 
       // Create field with validateOnMount: true
       // @ts-expect-error Incomplete mocking
       field = useField('name', mockFormState, {
-        validateOnMount: true
-      });
+        validateOnMount: true,
+      })
 
       // Check validate was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name');
-    });
+      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
+    })
 
     it('should set up cleanup on unmount', () => {
       // Check onBeforeUnmount was called
-      expect(mocks.onBeforeUnmount).toHaveBeenCalled();
-    });
-  });
+      expect(mocks.onBeforeUnmount).toHaveBeenCalled()
+    })
+  })
 
   describe('field value and state', () => {
     it('should provide access to field value', () => {
-      expect(field.value.value).toBe(initialData.name);
-    });
+      expect(field.value.value).toBe(initialData.name)
+    })
 
     it('should provide access to field error state', () => {
-      expect(field.error.value).toBeNull();
-    });
+      expect(field.error.value).toBeNull()
+    })
 
     it('should provide access to field dirty state', () => {
-      expect(field.isDirty.value).toBe(false);
-    });
+      expect(field.isDirty.value).toBe(false)
+    })
 
     it('should provide access to field touched state', () => {
-      expect(field.isTouched.value).toBe(false);
-    });
+      expect(field.isTouched.value).toBe(false)
+    })
 
     it('should provide access to field validating state', () => {
-      expect(field.isValidating.value).toBe(false);
-    });
-  });
+      expect(field.isValidating.value).toBe(false)
+    })
+  })
 
   describe('event handlers', () => {
     it('should handle change events', () => {
-      const newValue = 'Jane Doe';
+      const newValue = 'Jane Doe'
 
       // Call handleChange
-      field.handleChange(newValue);
+      field.handleChange(newValue)
 
       // Check form state was updated
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith('name', newValue, 'input');
-    });
+      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
+        'name',
+        newValue,
+        'input'
+      )
+    })
 
     it('should handle change events with custom trigger', () => {
-      const newValue = 'Jane Doe';
+      const newValue = 'Jane Doe'
 
       // Call handleChange with custom trigger
-      field.handleChange(newValue, 'change');
+      field.handleChange(newValue, 'change')
 
       // Check form state was updated with correct trigger
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith('name', newValue, 'change');
-    });
+      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
+        'name',
+        newValue,
+        'change'
+      )
+    })
 
     it('should handle blur events', () => {
       // Call handleBlur
-      field.handleBlur();
+      field.handleBlur()
 
       // Check form state was updated
-      expect(mockFormState.touchField).toHaveBeenCalledWith('name');
-    });
-  });
+      expect(mockFormState.touchField).toHaveBeenCalledWith('name')
+    })
+  })
 
   describe('validation', () => {
     it('should validate field', async () => {
       // Set up mock validation result
-      mockFormState.validateField.mockResolvedValueOnce(true);
+      mockFormState.validateField.mockResolvedValueOnce(true)
 
       // Call validate
-      const result = await field.validate();
+      const result = await field.validate()
 
       // Check validation was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name');
+      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
 
       // Check result
-      expect(result).toBe(true);
-    });
+      expect(result).toBe(true)
+    })
 
     it('should handle validation failure', async () => {
       // Set up mock validation result
-      mockFormState.validateField.mockResolvedValueOnce(false);
+      mockFormState.validateField.mockResolvedValueOnce(false)
 
       // Call validate
-      const result = await field.validate();
+      const result = await field.validate()
 
       // Check validation was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name');
+      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
 
       // Check result
-      expect(result).toBe(false);
-    });
-  });
+      expect(result).toBe(false)
+    })
+  })
 
   describe('field reset', () => {
     it('should reset field to initial state', () => {
       // Clear previous calls to the mock
-      mockFormState.getFieldValue.mockClear();
-      mockFormState.setFieldValue.mockClear();
+      mockFormState.getFieldValue.mockClear()
+      mockFormState.setFieldValue.mockClear()
 
       // Set up mock original value
-      mockFormState.getFieldValue.mockReturnValueOnce('John Doe');
+      mockFormState.getFieldValue.mockReturnValueOnce('John Doe')
 
       // Call reset
-      field.reset();
+      field.reset()
 
       // Check original value was retrieved
-      expect(mockFormState.getFieldValue).toHaveBeenCalledWith('name');
+      expect(mockFormState.getFieldValue).toHaveBeenCalledWith('name')
 
       // Check form state was updated
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith('name', 'John Doe', 'input');
-    });
-  });
+      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
+        'name',
+        'John Doe',
+        'input'
+      )
+    })
+  })
 
   describe('HTML binding helpers', () => {
     it('should provide HTML binding attributes', () => {
       // Access attrs
-      const attrs = field.attrs.value;
+      const attrs = field.attrs.value
 
       // Check structure
-      expect(attrs).toEqual(expect.objectContaining({
-        value: expect.any(String),
-        onInput: expect.any(Function),
-        onChange: expect.any(Function),
-        onBlur: expect.any(Function),
-        'aria-invalid': false
-      }));
-    });
+      expect(attrs).toEqual(
+        expect.objectContaining({
+          value: expect.any(String),
+          onInput: expect.any(Function),
+          onChange: expect.any(Function),
+          onBlur: expect.any(Function),
+          'aria-invalid': false,
+        })
+      )
+    })
 
     it('should handle aria attributes for errors', () => {
       // Mock an error state
@@ -248,40 +264,44 @@ describe('useField', () => {
         isDirty: true,
         isTouched: true,
         isValidating: false,
-        isVisited: true
-      };
+        isVisited: true,
+      }
 
       // Mock registerField to return our error state
-      mockFormState.registerField.mockReturnValueOnce(fieldWithError);
+      mockFormState.registerField.mockReturnValueOnce(fieldWithError)
 
       // Create new field instance with error
       // @ts-expect-error Incomplete mocking
-      const errorField = useField('email', mockFormState);
+      const errorField = useField('email', mockFormState)
 
       // Access attrs
-      const attrs = errorField.attrs.value;
+      const attrs = errorField.attrs.value
 
       // Check aria attributes
-      expect(attrs['aria-invalid']).toBe(true);
-      expect(attrs['aria-errormessage']).toBe('error-email');
-    });
+      expect(attrs['aria-invalid']).toBe(true)
+      expect(attrs['aria-errormessage']).toBe('error-email')
+    })
 
     it('should handle input event from HTML element', () => {
       // Create mock event
       const mockEvent = {
         target: {
-          value: 'Jane Doe'
-        }
-      };
+          value: 'Jane Doe',
+        },
+      }
 
       // Get the onInput handler
-      const inputHandler = field.attrs.value.onInput;
+      const inputHandler = field.attrs.value.onInput
 
       // Call with mock event
-      inputHandler(mockEvent);
+      inputHandler(mockEvent)
 
       // Check that setFieldValue was called with the correct value
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith('name', 'Jane Doe', 'input');
-    });
-  });
-});
+      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
+        'name',
+        'Jane Doe',
+        'input'
+      )
+    })
+  })
+})

@@ -1,4 +1,11 @@
-import { defineComponent, inject, h, SetupContext, onBeforeUnmount, watch } from 'vue'
+import {
+  defineComponent,
+  inject,
+  h,
+  SetupContext,
+  onBeforeUnmount,
+  watch,
+} from 'vue'
 import { useField } from '../composables/useField'
 import { FieldOptions, FormStateReturn, FieldReturn } from '../types'
 
@@ -40,15 +47,21 @@ export default defineComponent({
 
     // Handle validation based on validateOn prop
     if (props.validateOn === 'blur') {
-      watch(() => field.isTouched.value, (isTouched) => {
-        if (isTouched) {
+      watch(
+        () => field.isTouched.value,
+        (isTouched) => {
+          if (isTouched) {
+            formState.validateField(props.name)
+          }
+        }
+      )
+    } else if (props.validateOn === 'input' || props.validateOn === 'change') {
+      watch(
+        () => field.value.value,
+        () => {
           formState.validateField(props.name)
         }
-      })
-    } else if (props.validateOn === 'input' || props.validateOn === 'change') {
-      watch(() => field.value.value, () => {
-        formState.validateField(props.name)
-      })
+      )
     }
 
     onBeforeUnmount(() => {

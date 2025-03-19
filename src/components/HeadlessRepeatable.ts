@@ -8,28 +8,28 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     min: {
       type: Number,
-      default: 0
+      default: 0,
     },
     max: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     defaultValue: {
       type: null,
-      default: null
+      default: null,
     },
     validateOnAdd: {
       type: Boolean,
-      default: true
+      default: true,
     },
     validateOnRemove: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
 
   setup(props, ctx) {
@@ -45,16 +45,14 @@ export default defineComponent({
       max: props.max,
       defaultValue: props.defaultValue,
       validateOnAdd: props.validateOnAdd,
-      validateOnRemove: props.validateOnRemove
+      validateOnRemove: props.validateOnRemove,
     })
 
     // Clean up field states on unmount
     ctx.expose({
-      cleanup: repeatable.cleanup
+      cleanup: repeatable.cleanup,
     })
 
-    return () => h('div', {}, [
-      ctx.slots.default?.(repeatable)
-    ])
-  }
+    return () => h('div', {}, [ctx.slots.default?.(repeatable)])
+  },
 })

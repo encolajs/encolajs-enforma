@@ -29,7 +29,7 @@ interface validationComposable {
   makeValidator: (
     rules: ValidationRules,
     customMessages?: CustomMessagesConfig
-  ) => Validator,
+  ) => Validator
   factory: ValidatorFactory
 }
 
@@ -63,7 +63,7 @@ export function useValidation(): validationComposable {
     // If it's private, you may need a proper method to set it
 
     // @ts-expect-error _defaultMessageFormatter is private
-    (factory as ValidatorFactory)._defaultMessageFormatter = formatter
+    ;(factory as ValidatorFactory)._defaultMessageFormatter = formatter
   }
 
   /**

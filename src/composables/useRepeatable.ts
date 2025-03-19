@@ -17,11 +17,12 @@ export function useRepeatable(
   // Track field IDs for the array items
   const itemIds = computed(() => {
     const arrayValue = formState.getFieldValue(basePath) || []
-    return Array.isArray(arrayValue) ?
-      arrayValue.map((_, index) => {
-        const path = `${basePath}[${index}]`
-        return formState.getField(path)?.id
-      }) : []
+    return Array.isArray(arrayValue)
+      ? arrayValue.map((_, index) => {
+          const path = `${basePath}[${index}]`
+          return formState.getField(path)?.id
+        })
+      : []
   })
 
   // Get array value from form state
@@ -39,20 +40,22 @@ export function useRepeatable(
     })
   )
 
-  const canAdd = computed(() =>
-    !options.max || value.value.length < options.max
+  const canAdd = computed(
+    () => !options.max || value.value.length < options.max
   )
 
-  const canRemove = computed(() =>
-    !options.min || value.value.length > options.min
+  const canRemove = computed(
+    () => !options.min || value.value.length > options.min
   )
 
   const add = async (position?: number) => {
     if (!canAdd.value) return false
 
     const newValue = [...value.value]
-    const insertAt = position !== undefined ?
-      Math.min(position, newValue.length) : newValue.length
+    const insertAt =
+      position !== undefined
+        ? Math.min(position, newValue.length)
+        : newValue.length
 
     // Insert new value
     newValue.splice(insertAt, 0, options.defaultValue)
@@ -135,7 +138,7 @@ export function useRepeatable(
   // Cleanup function for component unmount
   const cleanup = () => {
     // Clean up all field states when repeatable is unmounted
-    itemIds.value.forEach(id => {
+    itemIds.value.forEach((id) => {
       formState.unregisterField(id)
     })
   }
@@ -151,6 +154,6 @@ export function useRepeatable(
     moveUp,
     moveDown,
     cleanup,
-    count: computed(() => value.value.length)
+    count: computed(() => value.value.length),
   }
 }
