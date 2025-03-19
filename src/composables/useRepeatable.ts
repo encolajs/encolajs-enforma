@@ -4,7 +4,6 @@ import { FormStateReturn } from '../types'
 interface RepeatableOptions {
   min?: number
   max?: number
-  defaultValue?: any
   validateOnAdd?: boolean
   validateOnRemove?: boolean
 }
@@ -48,7 +47,7 @@ export function useRepeatable(
     () => !options.min || value.value.length > options.min
   )
 
-  const add = async (position?: number) => {
+  const add = async (newItem?: any, position?: number) => {
     if (!canAdd.value) return false
 
     const newValue = [...value.value]
@@ -58,7 +57,7 @@ export function useRepeatable(
         : newValue.length
 
     // Insert new value
-    newValue.splice(insertAt, 0, options.defaultValue)
+    newValue.splice(insertAt, 0, newItem ?? [])
 
     // Register new field to get an ID
     const newFieldPath = `${basePath}.${insertAt}`

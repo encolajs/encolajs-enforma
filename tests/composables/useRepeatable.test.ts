@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRepeatable } from '../../src/composables/useRepeatable'
-import type { FormStateReturn } from '../../src/types'
+import type { FormStateReturn } from '../../src'
 
 const createMockFormState = (): FormStateReturn => {
   const errors: Record<string, string[]> = {}
@@ -9,10 +9,10 @@ const createMockFormState = (): FormStateReturn => {
   return {
     fields: new Map(),
     pathToId: new Map(),
-    isSubmitting: false,
-    isValidating: false,
-    validationCount: 0,
-    submitted: false,
+    isSubmitting: ref(false),
+    isValidating: ref(false),
+    validationCount: ref(0),
+    submitted: ref(false),
     errors,
     isDirty: computed(() => false),
     isTouched: computed(() => false),
@@ -68,25 +68,21 @@ describe('useRepeatable', () => {
   describe('add operation', () => {
     it('should add item at the end by default', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1'])
-      const repeatable = useRepeatable('test', formState, {
-        defaultValue: 'new_item',
-      })
+      const repeatable = useRepeatable('test', formState)
 
-      await repeatable.add()
+      await repeatable.add('item2')
 
       expect(formState.setFieldValue).toHaveBeenCalledWith('test', [
         'item1',
-        'new_item',
+        'item2',
       ])
     })
 
     it('should add item at specified position', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState, {
-        defaultValue: 'new_item',
-      })
+      const repeatable = useRepeatable('test', formState)
 
-      await repeatable.add(1)
+      await repeatable.add('new_item', 1)
 
       expect(formState.setFieldValue).toHaveBeenCalledWith('test', [
         'item1',
@@ -98,7 +94,6 @@ describe('useRepeatable', () => {
     it('should validate new item if validateOnAdd is true', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1'])
       const repeatable = useRepeatable('test', formState, {
-        defaultValue: 'new_item',
         validateOnAdd: true,
       })
 
@@ -111,7 +106,6 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
       const repeatable = useRepeatable('test', formState, {
         max: 2,
-        defaultValue: 'new_item',
       })
 
       const result = await repeatable.add()

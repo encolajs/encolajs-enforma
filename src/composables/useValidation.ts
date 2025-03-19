@@ -1,4 +1,3 @@
-import { ref, reactive } from 'vue'
 import { ValidatorFactory } from '@encolajs/validator'
 import { Validator } from '@encolajs/validator'
 import { ValidationRule } from '@encolajs/validator'

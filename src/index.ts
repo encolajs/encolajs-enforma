@@ -2,6 +2,7 @@
 export { useValidation } from './composables/useValidation'
 export { useFormState } from './composables/useFormState'
 export { useField } from './composables/useField'
+export { useRepeatable } from './composables/useRepeatable'
 
 // Type exports
 export {

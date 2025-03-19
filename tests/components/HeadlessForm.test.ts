@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import { h, inject, nextTick, ref } from 'vue'
+import { h, inject, ref } from 'vue'
 import HeadlessForm from '../../src/components/HeadlessForm'
-import { ValidatorFactory } from '@encolajs/validator'
 import { FormStateReturn } from '../../src'
 
 describe('HeadlessForm', () => {
@@ -122,7 +121,7 @@ describe('HeadlessForm', () => {
         },
         methods: {
           onSubmit(data: any) {
-            // Handle submit
+            console.log(data)
           },
         },
       }
@@ -183,7 +182,6 @@ describe('HeadlessForm', () => {
   describe('form submission', () => {
     it('prevents default form submission and calls submit handler', async () => {
       const submitHandler = vi.fn()
-      let formSubmit: Function
 
       const wrapper = mount(HeadlessForm, {
         props: {
@@ -193,7 +191,6 @@ describe('HeadlessForm', () => {
         },
         slots: {
           default: (formState: any) => {
-            formSubmit = formState.submit
             return h('button', { type: 'submit' }, 'Submit')
           },
         },
@@ -253,6 +250,7 @@ describe('HeadlessForm', () => {
         <HeadlessForm 
           :data="formData" 
           :rules="formRules"
+          :custom-messages="customMessages"
           @validation-error="onValidationError"
         >
           <template #default="formState">
@@ -276,6 +274,7 @@ describe('HeadlessForm', () => {
               email: 'not an email',
             },
             formRules: rules,
+            customMessages,
             validationError: null,
           }
         },

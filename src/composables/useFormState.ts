@@ -35,7 +35,9 @@ export function useFormState(
 
   // Create validator from rules and custom messages
   const validationFactory = options.validatorFactory || useValidation().factory
-  const validator = validationFactory.make(rules, options.customMessages || {})
+  const validator = validationFactory.make(rules, {
+    ...(options.customMessages || {}),
+  })
 
   // assume we got a plain object
   if (!dataSource.clone || !dataSource.getRawData) {

@@ -1,22 +1,15 @@
 import {
   defineComponent,
   inject,
-  h,
   SetupContext,
   onBeforeUnmount,
   watch,
 } from 'vue'
 import { useField } from '../composables/useField'
-import { FieldOptions, FormStateReturn, FieldReturn } from '../types'
+import { FieldOptions, FormStateReturn } from '../types'
 
 export default defineComponent({
   name: 'HeadlessField',
-
-  template: `
-    <div>
-      <slot v-bind="field"></slot>
-    </div>
-  `,
 
   props: {
     name: {

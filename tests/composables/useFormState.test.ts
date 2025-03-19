@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useFormState } from '../../src/composables/useFormState'
+import { useFormState } from '../../src/'
 import {
   ValidatorFactory,
   TentativeValuesDataSource,
@@ -281,7 +281,7 @@ describe('useFormState', () => {
       formState.registerField(fieldName)
 
       // Touch field which should trigger validation since validateOn is 'blur'
-      await formState.touchField(fieldName)
+      formState.touchField(fieldName)
 
       // Check validator was called
       expect(mockValidator.validatePath).toHaveBeenCalledWith(
@@ -311,10 +311,6 @@ describe('useFormState', () => {
     })
 
     it('should validate entire form', async () => {
-      // Register some fields
-      const nameField = formState.registerField('name')
-      const emailField = formState.registerField('email')
-
       // Mock form validation success
       mockValidator.validate.mockResolvedValueOnce(true)
 
@@ -329,7 +325,6 @@ describe('useFormState', () => {
 
     it('should handle form validation failure', async () => {
       // Register some fields
-      const nameField = formState.registerField('name')
       const emailField = formState.registerField('email')
 
       // Mock form validation failure
@@ -474,7 +469,6 @@ describe('useFormState', () => {
       expect(formState.isValid.value).toBe(true)
 
       // Register field and add error
-      const nameField = formState.registerField('name')
       formState.errors['name'] = ['Required field']
 
       // Should now be invalid
@@ -487,7 +481,7 @@ describe('useFormState', () => {
       const fieldName = 'name'
 
       // Get field value
-      const value = formState.getFieldValue(fieldName)
+      formState.getFieldValue(fieldName)
 
       // Check data source was queried
       expect(mockDataSource.getValue).toHaveBeenCalledWith(fieldName)
@@ -495,7 +489,7 @@ describe('useFormState', () => {
 
     it('should get all form data', () => {
       // Get form data
-      const data = formState.getData()
+      formState.getData()
 
       // Check data source was queried
       expect(mockDataSource.getRawData).toHaveBeenCalled()

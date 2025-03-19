@@ -43,7 +43,6 @@ export default defineComponent({
     const repeatable = useRepeatable(props.name, formState, {
       min: props.min,
       max: props.max,
-      defaultValue: props.defaultValue,
       validateOnAdd: props.validateOnAdd,
       validateOnRemove: props.validateOnRemove,
     })

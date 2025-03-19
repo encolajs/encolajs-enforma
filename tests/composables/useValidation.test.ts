@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useValidation } from '../../src/composables/useValidation'
+import { useValidation } from '../../src'
 
 // Create mock functions
 const mockRegister = vi.fn().mockReturnThis()
@@ -142,9 +142,9 @@ describe('useValidation', () => {
       }
 
       // Execute
-      // @ts-expect-error CustomRule does not extend the ValidationRule class
       validation.registerRule(
         'custom_class_rule',
+        // @ts-expect-error CustomRule does not extend the ValidationRule class
         CustomRule,
         'Value must be more than 5 characters'
       )
@@ -160,7 +160,7 @@ describe('useValidation', () => {
     it('should support async validation rules', async () => {
       // Setup
       const asyncRule = async (value: any) => {
-        return await Promise.resolve(Boolean(value))
+        return Promise.resolve(Boolean(value))
       }
 
       // Execute
@@ -172,7 +172,7 @@ describe('useValidation', () => {
 
       // Create validator with the async rule
       const rules = { field: 'async_test' }
-      const validator = validation.makeValidator(rules)
+      const validator = validation.makeValidator(rules) // needed for by the mockMake function
 
       // Verify
       expect(mockRegister).toHaveBeenCalledWith(

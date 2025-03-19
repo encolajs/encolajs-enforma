@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '../../src/composables/useField'
+import { FieldReturn } from '../../src'
 
 // Mock the form state (normally returned from useFormState)
 const mockFormState = {
@@ -64,7 +65,7 @@ vi.mock('vue', () => {
 })
 
 describe('useField', () => {
-  let field
+  let field: FieldReturn | null
 
   beforeEach(() => {
     // Reset mocks
