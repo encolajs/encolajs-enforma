@@ -16,6 +16,6 @@ export {
 } from './types'
 
 // Components
-export { default as HeadlessForm } from './components/HeadlessForm'
-export { default as HeadlessField } from './components/HeadlessField'
-export { default as HeadlessRepeatable } from './components/HeadlessRepeatable'
+export { default as HeadlessForm } from './components/headless/HeadlessForm'
+export { default as HeadlessField } from './components/headless/HeadlessField'
+export { default as HeadlessRepeatable } from './components/headless/HeadlessRepeatable'

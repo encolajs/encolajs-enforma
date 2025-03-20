@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { h } from 'vue'
-import HeadlessField from '../../src/components/HeadlessField'
+import HeadlessField from '../../../src/components/headless/HeadlessField'
 import { TentativeValuesDataSource } from '@encolajs/validator'
-import { useFormState, useValidation } from '../../src'
+import { useFormState, useValidation } from '../../../src'
 
 describe('HeadlessField', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h } from 'vue'
-import HeadlessRepeatable from '../../src/components/HeadlessRepeatable'
-import { FormStateReturn, useFormState, useValidation } from '../../src'
+import HeadlessRepeatable from '../../../src/components/headless/HeadlessRepeatable'
+import { FormStateReturn, useFormState, useValidation } from '../../../src'
 import { PlainObjectDataSource } from '@encolajs/validator'
 
 describe('HeadlessRepeatable', () => {

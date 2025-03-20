@@ -5,8 +5,8 @@ import {
   onBeforeUnmount,
   watch,
 } from 'vue'
-import { useField } from '../composables/useField'
-import { FieldOptions, FormStateReturn } from '../types'
+import { useField } from '../../composables/useField'
+import { FieldOptions, FormStateReturn } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessField',

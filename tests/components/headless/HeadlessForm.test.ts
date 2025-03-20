@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { h, inject, ref } from 'vue'
-import HeadlessForm from '../../src/components/HeadlessForm'
-import { FormStateReturn } from '../../src'
+import HeadlessForm from '../../../src/components/headless/HeadlessForm'
+import { FormStateReturn } from '../../../src'
 
 describe('HeadlessForm', () => {
   let encolaForm: FormStateReturn

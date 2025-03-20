@@ -1,5 +1,5 @@
 import { defineComponent, provide, h, PropType } from 'vue'
-import { useFormState } from '../composables/useFormState'
+import { useFormState } from '../../composables/useFormState'
 import { DataSourceInterface } from '@encolajs/validator'
 
 export default defineComponent({

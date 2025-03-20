@@ -1,6 +1,6 @@
 import { defineComponent, h, inject } from 'vue'
-import { useRepeatable } from '../composables/useRepeatable'
-import type { FormStateReturn } from '../types'
+import { useRepeatable } from '../../composables/useRepeatable'
+import type { FormStateReturn } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessRepeatable',
