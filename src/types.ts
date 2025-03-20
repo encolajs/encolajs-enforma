@@ -1,7 +1,10 @@
 import { ComputedRef, Ref } from 'vue'
-import { CustomMessagesConfig } from '@encolajs/validator'
-import { ValidatorFactory } from '@encolajs/validator'
-import { ValidationRule } from '@encolajs/validator'
+import {
+  CustomMessagesConfig,
+  ValidatorFactory,
+  ValidationRule,
+  DataSourceInterface,
+} from '@encolajs/validator'
 
 /**
  * Type definition for validation rules
