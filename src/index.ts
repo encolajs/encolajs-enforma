@@ -19,3 +19,13 @@ export {
 export { default as HeadlessForm } from './components/headless/HeadlessForm'
 export { default as HeadlessField } from './components/headless/HeadlessField'
 export { default as HeadlessRepeatable } from './components/headless/HeadlessRepeatable'
+
+// Re-export essential validator types
+export {
+  DataSourceInterface,
+  PlainObjectDataSource,
+  TentativeValuesDataSource,
+  ValidationRule,
+  ValidatorFactory,
+  Validator,
+} from '@encolajs/validator'

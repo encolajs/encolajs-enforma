@@ -4,6 +4,7 @@
 
 import type { FormKitConfig } from '../types/config'
 import type { FormStateReturn } from '../types'
+import type { Validator, ValidatorFactory } from '@encolajs/validator'
 
 /**
  * Symbol for providing/injecting the form kit configuration
@@ -26,6 +27,16 @@ export const FORM_CONTEXT = Symbol('form-context')
 export const FIELD_REGISTRY = Symbol('field-registry')
 
 /**
+ * Symbol for providing/injecting the validator
+ */
+export const VALIDATOR = Symbol('validator')
+
+/**
+ * Symbol for providing/injecting the validator factory
+ */
+export const VALIDATOR_FACTORY = Symbol('validator-factory')
+
+/**
  * Type definitions for injectable values
  */
 export interface InjectableValues {
@@ -33,4 +44,6 @@ export interface InjectableValues {
   [FORM_STATE]: FormStateReturn
   [FORM_CONTEXT]: Record<string, any>
   [FIELD_REGISTRY]: Record<string, any>
+  [VALIDATOR]: Validator
+  [VALIDATOR_FACTORY]: ValidatorFactory
 }
