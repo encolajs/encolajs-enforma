@@ -144,7 +144,6 @@ describe('useValidation', () => {
       // Execute
       validation.registerRule(
         'custom_class_rule',
-        // @ts-expect-error CustomRule does not extend the ValidationRule class
         CustomRule,
         'Value must be more than 5 characters'
       )

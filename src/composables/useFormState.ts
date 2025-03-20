@@ -1,6 +1,9 @@
 import { reactive, computed, ref } from 'vue'
-import { TentativeValuesDataSource } from '@encolajs/validator'
-import { DataSourceInterface, PlainObjectDataSource } from '@encolajs/validator'
+import {
+  TentativeValuesDataSource,
+  DataSourceInterface,
+  PlainObjectDataSource,
+} from '@encolajs/validator'
 import {
   FormStateOptions,
   FormStateReturn,
@@ -25,7 +28,7 @@ function generateFieldId(path: string): string {
  * @returns Form state and methods
  */
 export function useFormState(
-  dataSource: DataSourceInterface,
+  dataSource: DataSourceInterface | Record<string, any>,
   rules: ValidationRules = {},
   options: FormStateOptions = {}
 ): FormStateReturn {
@@ -66,9 +69,7 @@ export function useFormState(
 
   // Computed properties
   const isDirty = ref(false)
-
   const isTouched = ref(false)
-
   const isValid = computed((): boolean => {
     return Object.keys(errors).length === 0
   })
@@ -106,6 +107,7 @@ export function useFormState(
       return existingState
     }
 
+    // Check if there's already a field at this path
     existingId = pathToId.get(name)
     if (existingId && fields.has(existingId)) {
       return fields.get(existingId)!
@@ -143,10 +145,9 @@ export function useFormState(
     if (!path) {
       return
     }
+
     // Find all direct children of this path
     const childPaths = Array.from(pathToId.keys()).filter((fieldPath) => {
-      // Since all paths use dot notation, we can simplify the check
-      // We want immediate children only (one dot level deeper)
       return (
         fieldPath.startsWith(`${path}.`) &&
         fieldPath.slice(path.length + 1).indexOf('.') === -1
@@ -206,6 +207,7 @@ export function useFormState(
     // If this is a change event, consider it as a touch event too
     if (trigger === 'change' || trigger === 'blur') {
       fieldState.isTouched = true
+      isTouched.value = true
     }
 
     // Validate if needed
@@ -226,11 +228,11 @@ export function useFormState(
       tentativeDataSource.commit(name)
     }
 
-    // Trigger any dependencies
+    // Trigger validation for dependent fields
     const dependencies = validator.getDependentFields?.(name) || []
 
     for (const dependency of dependencies) {
-      if (fields.has(dependency) && fields.get(dependency)!.isTouched) {
+      if (getField(dependency)?.isTouched) {
         validateField(dependency)
       }
     }
@@ -275,11 +277,8 @@ export function useFormState(
     isValidating.value = true
 
     try {
-      // Commit the current value to the validator's data source
-      tentativeDataSource.commit(name)
-
-      // Perform validation
-      const isValid = await validator.validatePath(name, dataSource)
+      // Perform validation using the validator
+      const isValid = await validator.validatePath(name, tentativeDataSource)
 
       // Update error state
       if (!isValid) {
@@ -318,7 +317,7 @@ export function useFormState(
       tentativeDataSource.commitAll()
 
       // Perform validation on all fields
-      const isValid = await validator.validate(dataSource)
+      const isValid = await validator.validate(tentativeDataSource)
 
       // Update error state
       if (!isValid) {
@@ -329,9 +328,10 @@ export function useFormState(
 
         // Update field-level errors
         for (const [path, fieldErrors] of Object.entries(allErrors)) {
-          if (getField(path)) {
-            const fieldState = getField(path)!
-            fieldState.error = (fieldErrors as Array<string>)[0] || null
+          const fieldState = getField(path)
+          if (fieldState) {
+            fieldState.error = (fieldErrors as string[])[0] || null
+            fieldState.isValid = false
           }
         }
       } else {
@@ -343,6 +343,7 @@ export function useFormState(
         // Clear field-level errors
         for (const fieldState of fields.values()) {
           fieldState.error = null
+          fieldState.isValid = true
         }
       }
 
@@ -362,12 +363,13 @@ export function useFormState(
     }
 
     // Reset field states
-    for (const [name, fieldState] of fields.entries()) {
-      fieldState.value = dataSource.getValue(name)
+    for (const fieldState of fields.values()) {
       fieldState.error = null
       fieldState.isDirty = false
       fieldState.isTouched = false
       fieldState.isValidating = false
+      fieldState.isValid = undefined
+      fieldState.isVisited = false
     }
 
     // Reset form state
@@ -402,9 +404,14 @@ export function useFormState(
       // Validate the form
       const isValid = await validate()
 
-      if (isValid && options.submitHandler) {
+      if (isValid) {
+        // Commit all tentative values
+        tentativeDataSource.commitAll()
+
         // Run submit handler with the current data
-        await options.submitHandler(dataSource.getRawData())
+        if (options.submitHandler) {
+          await options.submitHandler(tentativeDataSource.getRawData())
+        }
       }
 
       return isValid
@@ -450,6 +457,7 @@ export function useFormState(
     setData: (newData: Record<string, any>): void => {
       // Reset the form
       reset()
+
       // Replace the data in the data source
       for (const key of Object.keys(newData)) {
         dataSource.setValue(key, newData[key])

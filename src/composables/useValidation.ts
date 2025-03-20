@@ -1,27 +1,19 @@
-import { ValidatorFactory } from '@encolajs/validator'
-import { Validator } from '@encolajs/validator'
-import { ValidationRule } from '@encolajs/validator'
-import { messageFormatter, CustomMessagesConfig } from '@encolajs/validator'
-import { ValidationRules } from '../types.js'
-
-/**
- * Type definition for validation rule implementation
- */
-type ValidationRuleImplementation =
-  | (new (params?: any[]) => ValidationRule)
-  | ((
-      value: any,
-      path?: string,
-      datasource?: any
-    ) => boolean | Promise<boolean>)
+import {
+  ValidatorFactory,
+  Validator,
+  ValidationRule,
+  messageFormatter,
+  CustomMessagesConfig,
+} from '@encolajs/validator'
+import { ValidationRules } from '../types'
 
 /**
  * Interface for the return value of useValidation
  */
-interface validationComposable {
+interface ValidationComposable {
   registerRule: (
     name: string,
-    ruleClassOrValidationFunction: ValidationRuleImplementation,
+    ruleClassOrValidationFunction: ValidationRule | Function,
     defaultErrorMessage: string
   ) => ValidatorFactory
   setMessageFormatter: (formatter: messageFormatter) => void
@@ -32,7 +24,10 @@ interface validationComposable {
   factory: ValidatorFactory
 }
 
-export function useValidation(): validationComposable {
+/**
+ * Composable for validation integration
+ */
+export function useValidation(): ValidationComposable {
   // Create a validator factory instance
   const factory = new ValidatorFactory()
 
@@ -41,7 +36,7 @@ export function useValidation(): validationComposable {
    */
   function registerRule(
     name: string,
-    ruleClassOrValidationFunction: ValidationRuleImplementation,
+    ruleClassOrValidationFunction: any,
     defaultErrorMessage: string
   ): ValidatorFactory {
     return factory.register(
@@ -53,8 +48,6 @@ export function useValidation(): validationComposable {
 
   /**
    * Set a custom message formatter
-   *
-   * @param formatter - Custom message formatter function
    */
   function setMessageFormatter(formatter: messageFormatter): void {
     // The ValidatorFactory handles this internally
@@ -67,10 +60,6 @@ export function useValidation(): validationComposable {
 
   /**
    * Create a validator with rules and messages
-   *
-   * @param rules - Validation rules
-   * @param customMessages - Custom error messages
-   * @returns A new validator instance
    */
   function makeValidator(
     rules: ValidationRules,
