@@ -1,8 +1,4 @@
 /**
- * Type definitions for the configuration system
- */
-
-/**
  * Represents a generic configuration object
  */
 export type ConfigObject = Record<string, any>
@@ -25,14 +21,8 @@ export type DeepPartial<T> = {
  */
 export interface FieldPropsConfig {
   wrapper: ConfigObject
-  label: {
-    class?: string
-    required?: {
-      class?: string
-      text?: string
-    }
-    [key: string]: any
-  }
+  label: ConfigObject
+  required: ConfigObject
   input: ConfigObject
   error: ConfigObject
   help: ConfigObject
@@ -53,23 +43,6 @@ export interface BehaviorConfig {
 }
 
 /**
- * Configuration for field type definitions
- */
-export interface FieldTypeConfig {
-  component: string
-  props: ConfigObject
-  [key: string]: any
-}
-
-/**
- * Configuration for field type mappings
- */
-export interface FieldTypesConfig {
-  default: FieldTypeConfig
-  [fieldType: string]: FieldTypeConfig
-}
-
-/**
  * Configuration for expression handling
  */
 export interface ExpressionsConfig {
@@ -77,27 +50,16 @@ export interface ExpressionsConfig {
     start: string
     end: string
   }
-  conditionals: {
-    allowComplex: boolean
-    timeout: number
-  }
-  [key: string]: any
 }
 
 /**
  * Complete form kit configuration
  */
 export interface FormKitConfig {
-  fieldProps: FieldPropsConfig
+  props: FieldPropsConfig
   behavior: BehaviorConfig
-  fieldTypes: FieldTypesConfig
   messages: Record<string, string>
   expressions: ExpressionsConfig
-  components: {
-    field: ConfigObject
-    input: Record<string, string>
-    [key: string]: any
-  }
   [key: string]: any
 }
 

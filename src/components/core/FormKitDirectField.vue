@@ -37,7 +37,6 @@ import {
   FORM_KIT_CONFIG,
   FORM_STATE,
 } from '../../constants/symbols'
-import { FieldRegistry } from '../../composables/useFieldRegistry'
 import { FormKitConfig } from '../../types/config'
 import { DEFAULT_CONFIG } from '../../constants/defaults'
 import { FormStateReturn } from '../../types'

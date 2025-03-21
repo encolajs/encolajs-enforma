@@ -2,7 +2,7 @@
  * Composable for managing form kit configuration
  */
 
-import { inject, provide, computed, ComputedRef, InjectionKey } from 'vue'
+import { inject, provide, computed, ComputedRef } from 'vue'
 import { FormKitConfig, DeepPartial, ConfigProvider } from '../types/config'
 import { mergeConfigs } from '../utils/configUtils'
 import { DEFAULT_CONFIG } from '../constants/defaults'
@@ -14,10 +14,8 @@ let globalConfig: DeepPartial<FormKitConfig> = {}
 /**
  * Set the global configuration for all forms
  */
-export function setGlobalConfig(
-  config: DeepPartial<FormKitConfig> | (() => DeepPartial<FormKitConfig>)
-): void {
-  globalConfig = typeof config === 'function' ? config() : config
+export function setGlobalConfig(config: DeepPartial<FormKitConfig>): void {
+  globalConfig = config
 }
 
 /**
@@ -25,13 +23,6 @@ export function setGlobalConfig(
  */
 export function getGlobalConfig(): DeepPartial<FormKitConfig> {
   return globalConfig
-}
-
-/**
- * Reset the global configuration to empty
- */
-export function resetGlobalConfig(): void {
-  globalConfig = {}
 }
 
 /**
@@ -91,20 +82,4 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
     extendConfig,
     provideConfig,
   }
-}
-
-/**
- * Helper to inject configuration with proper typing
- */
-export function injectConfig<T extends keyof FormKitConfig>(
-  path?: T
-): ComputedRef<FormKitConfig[T]> {
-  const injectedConfig = inject<FormKitConfig>(FORM_KIT_CONFIG, DEFAULT_CONFIG)
-
-  return computed(() => {
-    if (path) {
-      return injectedConfig[path]
-    }
-    return injectedConfig
-  })
 }

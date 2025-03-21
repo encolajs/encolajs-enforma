@@ -33,7 +33,6 @@ import {
 } from '../../constants/symbols'
 import { FormKitConfig } from '../../types/config'
 import { DEFAULT_CONFIG } from '../../constants/defaults'
-import { FieldRegistry } from '../../composables/useFieldRegistry'
 import { FieldSchema } from '../../types/field'
 import { SectionSchema, getSectionFields } from '../../types/section'
 import { useConditions } from '../../composables/useConditions'

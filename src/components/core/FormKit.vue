@@ -86,14 +86,12 @@ import {
 import { FormKitConfig } from '../../types/config'
 import { useFormState } from '../../composables/useFormState'
 import { useConfig } from '../../composables/useConfig'
-import { useFieldRegistry } from '../../composables/useFieldRegistry'
 import {
   FIELD_REGISTRY,
   FORM_CONTEXT,
   FORM_KIT_CONFIG,
   FORM_STATE,
 } from '../../constants/symbols'
-import { ValidationRules } from '../../types/validation'
 
 export default defineComponent({
   name: 'FormKit',
