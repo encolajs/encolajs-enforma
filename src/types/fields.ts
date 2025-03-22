@@ -2,7 +2,7 @@
  * Type definitions related to form fields
  */
 
-import { FormStateReturn } from './index'
+import { FormStateReturn } from '../index'
 
 /**
  * Base field definition in form schema

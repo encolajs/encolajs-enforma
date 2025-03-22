@@ -5,7 +5,7 @@ export { useField } from './composables/useField'
 export { useRepeatable } from './composables/useRepeatable'
 
 // Type exports
-export {
+export type {
   FormStateOptions,
   FormStateReturn,
   FieldOptions,
@@ -22,10 +22,12 @@ export { default as HeadlessRepeatable } from './components/headless/HeadlessRep
 
 // Re-export essential validator types
 export {
-  DataSourceInterface,
   PlainObjectDataSource,
   TentativeValuesDataSource,
   ValidationRule,
   ValidatorFactory,
   Validator,
+} from '@encolajs/validator'
+export type {
+  DataSourceInterface,
 } from '@encolajs/validator'

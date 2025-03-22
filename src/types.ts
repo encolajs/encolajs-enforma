@@ -3,7 +3,6 @@ import {
   CustomMessagesConfig,
   ValidatorFactory,
   ValidationRule,
-  DataSourceInterface,
 } from '@encolajs/validator'
 
 /**

@@ -2,7 +2,7 @@
  * Type definitions for form sections
  */
 
-import { FieldSchema } from './field'
+import { FieldSchema } from './fields'
 
 /**
  * Definition of a form section in schema
