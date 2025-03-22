@@ -1,0 +1,12 @@
+{
+    "page": {
+        "layout": "default"
+    },
+    "users": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "email": "johndoe@gmail.com"
+        }
+    ]
+}
