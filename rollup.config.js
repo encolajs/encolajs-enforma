@@ -11,15 +11,16 @@ export default [
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.module,
-        format: 'cjs',
-        sourcemap: true,
-      },
-      {
-        file: pkg.main,
+        file: 'dist/index.js',
         format: 'esm',
         sourcemap: true,
       },
+      {
+        file: 'dist/index.cjs.js',
+        format: 'cjs',
+        sourcemap: true,
+        exports: 'named'
+      }
     ],
     plugins: [
       resolve(),

@@ -3,8 +3,12 @@
     "version": "0.1.0",
     "description": "Form",
     "type": "module",
-    "main": "dist/index.js",
-    "module": "dist/index.cjs.js",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs.js"
+        }
+    },
     "types": "dist/index.d.ts",
     "files": [
         "dist",
