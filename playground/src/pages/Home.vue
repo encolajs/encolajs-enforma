@@ -1,4 +1,5 @@
 <template>
+  <h1 class="text-2xl font-bold mb-4">Form with headless components</h1>
   <HeadlessForm
     :data="data"
     :rules="rules"

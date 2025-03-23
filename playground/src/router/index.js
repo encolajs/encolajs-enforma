@@ -12,6 +12,18 @@ const routes = [
         exact: true,
         component: () => import('../pages/Home.vue')
       },
+      {
+        path: '/formkit-fields',
+        name: 'formkit-fields',
+        exact: true,
+        component: () => import('../pages/FormKitFields.vue')
+      },
+      {
+        path: '/formkit-schema',
+        name: 'formkit-schema',
+        exact: true,
+        component: () => import('../pages/FormKitSchema.vue')
+      },
     ]
   }
 
@@ -25,10 +37,4 @@ const router = createRouter({
   }
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.params.pathMatch) {
-    to.path = '/' + to.params.pathMatch.join('/');
-  }
-  next();
-});
 export default router;
