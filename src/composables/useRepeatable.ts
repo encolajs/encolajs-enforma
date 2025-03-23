@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, ComputedRef, ref, shallowRef, triggerRef } from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -24,14 +24,20 @@ export function useRepeatable(
       : []
   })
 
+  // this is needed so we can trigger recalculation of the value
+  const updateTrigger = ref(0)
+
   // Get array value from form state
-  const value = computed(() => {
+  const value: ComputedRef<any[]> = computed(() => {
+    if (updateTrigger.value === null) {
+      return []
+    }
     const arrayValue = formState.getFieldValue(basePath) || []
     return Array.isArray(arrayValue) ? arrayValue : [arrayValue]
   })
 
   // Track fields for each array item
-  const fields = computed(() =>
+  const fields: ComputedRef<any[]> = computed(() =>
     itemIds.value.map((id, index) => {
       const fieldPath = `${basePath}.${index}`
       // Register with existing ID to preserve state
@@ -46,6 +52,10 @@ export function useRepeatable(
   const canRemove = computed(
     () => !options.min || value.value.length > options.min
   )
+
+  const triggerUpdate = () => {
+    updateTrigger.value++
+  }
 
   const add = async (newItem?: any, position?: number) => {
     if (!canAdd.value) return false
@@ -64,7 +74,9 @@ export function useRepeatable(
     formState.registerField(newFieldPath)
 
     // Update form value
-    formState.setFieldValue(basePath, newValue)
+    formState.setFieldValue(basePath, newValue, 'blur') // to commit the values to the data source
+
+    triggerUpdate()
 
     if (options.validateOnAdd) {
       // Validate the new item and all items after it
@@ -85,10 +97,12 @@ export function useRepeatable(
 
     // Remove item from array
     const newValue = value.value.filter((_, i) => i !== index)
-    formState.setFieldValue(basePath, newValue)
+    formState.setFieldValue(basePath, newValue, 'blur') // to commit the values to the data source
 
     // Cleanup the removed field's state
     formState.unregisterField(removedId)
+
+    triggerUpdate()
 
     if (options.validateOnRemove) {
       // Validate fields after the removed index
@@ -110,9 +124,7 @@ export function useRepeatable(
 
     // Update the array value
     formState.setFieldValue(basePath, values)
-
-    // The field states will be preserved through their IDs
-    // during the Vue re-render process
+    triggerUpdate()
 
     // Validate affected fields
     const minIndex = Math.min(fromIndex, toIndex)
@@ -122,6 +134,8 @@ export function useRepeatable(
       const fieldPath = `${basePath}.${i}`
       await formState.validateField(fieldPath)
     }
+
+    formState.touchField(basePath)
   }
 
   const moveUp = async (index: number) => {
@@ -142,17 +156,17 @@ export function useRepeatable(
     })
   }
 
-  return {
-    fields,
-    value,
-    canAdd,
-    canRemove,
+  return computed(() => ({
+    fields: fields.value,
+    value: value.value,
+    canAdd: canAdd.value,
+    canRemove: canRemove.value,
     add,
     remove,
     move,
     moveUp,
     moveDown,
     cleanup,
-    count: computed(() => value.value.length),
-  }
+    count: value.value.length,
+  }))
 }

@@ -11,11 +11,20 @@
           name="name">
           <template #default="{ value, attrs, error, events, id }">
             <label class="block" :for="id">Name</label>
-            <InputText
-              :id="id"
-              v-bind="attrs"
-              v-on="events"
-            />
+            <div class="flex">
+              <InputText
+                :id="id"
+                v-bind="attrs"
+                v-on="events"
+              />
+              <Button
+                severity="warn"
+                type="button"
+                @click="formState.setFieldValue('name', 'Jane Doe', 'blur')"
+              >
+                Set name to Jane Doe
+              </Button>
+            </div>
             <div v-if="error"
                  :id="attrs['aria-errormessage']"
                  class="text-red-500">
@@ -24,13 +33,7 @@
           </template>
         </HeadlessField>
       </div>
-      <Button
-        severity="warn"
-        type="button"
-        @click="formState.setFieldValue('name', 'Wow', 'blur')"
-      >
-        Set name
-      </Button>
+
 
 
       <div class="mb-4">
@@ -71,8 +74,8 @@
       </div>
 
       <HeadlessRepeatable name="friends" :min="0" :max="4">
-        <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, count }">
-          {{ value }}
+        <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, move, count }">
+
           <table class="mb-4" v-if="count > 0">
             <thead>
             <tr>
@@ -92,7 +95,7 @@
                       v-bind="attrs"
                       v-on="events"
                     />
-                    {{ id }}
+                    {{ value }}
                     <div v-if="error"
                          :id="attrs['aria-errormessage']"
                          class="text-red-500">
@@ -151,8 +154,24 @@
               type="button"
               @click="add({ name: '', origin: '' })"
               :disabled="!canAdd"
+              class="mr-2"
             >
               Add Friend
+            </Button>
+            <Button
+              severity="info"
+              type="button"
+              @click="move(value.length - 1, 0)"
+              class="mr-2"
+            >
+              Move last first
+            </Button>
+            <Button
+              severity="info"
+              type="button"
+              @click="move(0, value.length - 1)"
+            >
+              Move fist last
             </Button>
           </div>
         </template>
@@ -167,6 +186,7 @@
           {{ formState.isSubmitting.value ? 'Submitting...' : 'Submit' }}
         </Button>
       </div>
+      <pre>{{ formState.getData() }}</pre>
     </template>
   </HeadlessForm>
 </template>
@@ -180,7 +200,10 @@ const data = {
   name: '',
   email: 'john@example.com',
   age: 30,
-  friends: [],
+  friends: [
+    { name: 'John', origin: 'USA' },
+    { name: 'Doe', origin: 'UK' },
+  ],
 }
 
 const rules = {

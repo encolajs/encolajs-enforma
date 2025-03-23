@@ -102,25 +102,21 @@ export interface FieldOptions {
  */
 export interface FieldReturn {
   // Field value and state
-  value: ComputedRef<any>
-  error: ComputedRef<string | null>
-  isDirty: ComputedRef<boolean>
-  isTouched: ComputedRef<boolean>
-  isValidating: ComputedRef<boolean>
-  isVisited: ComputedRef<boolean>
-  isFocused: ComputedRef<boolean>
-
-  // Event handlers
-  handleChange: (value: any, trigger?: EventTrigger) => void
-  handleBlur: () => void
-  handleFocus: () => void
+  value: any
+  error: string | null
+  isDirty: boolean
+  isTouched: boolean
+  isValidating: boolean
+  isVisited: boolean
+  isFocused: boolean
 
   // Methods
   validate: () => Promise<boolean>
   reset: () => void
 
   // HTML binding helpers
-  attrs: ComputedRef<Record<string, any>>
+  attrs: Record<string, any>
+  events: Record<string, Function>
 
   // For arrays and custom field types
   name: string

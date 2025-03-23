@@ -1,4 +1,4 @@
-import { reactive, computed, ref } from 'vue'
+import { reactive, computed, ref, Ref } from 'vue'
 import {
   TentativeValuesDataSource,
   DataSourceInterface,
@@ -47,13 +47,17 @@ export function useFormState(
     dataSource = new PlainObjectDataSource(dataSource)
   }
 
-  let tentativeDataSource: TentativeValuesDataSource
+  let tentativeDataSource: Ref<any>
   try {
-    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+    tentativeDataSource = ref(
+      new TentativeValuesDataSource(dataSource.clone(), {})
+    )
   } catch (error) {
     console.error('Error creating tentative data source:', error)
     dataSource = new PlainObjectDataSource({})
-    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+    tentativeDataSource = ref(
+      new TentativeValuesDataSource(dataSource.clone(), {})
+    )
   }
 
   // Track form state
@@ -120,7 +124,7 @@ export function useFormState(
     const fieldState: FieldState = reactive({
       id: fieldId,
       path: name,
-      value: tentativeDataSource.getValue(name),
+      value: tentativeDataSource.value.getValue(name),
       error: null,
       isDirty: false,
       isTouched: false,
@@ -178,6 +182,30 @@ export function useFormState(
     }
   }
 
+  function refreshFieldValue(path: string): void {
+    const fieldState = fields.get(pathToId.get(path) || '')
+    if (!fieldState) return
+
+    // Simply get fresh value from data source and update field
+    fieldState.value = tentativeDataSource.value.getValue(path)
+  }
+
+  function refreshFieldParents(path: string): void {
+    let parentPath = path
+    while (parentPath.includes('.')) {
+      parentPath = parentPath.substring(0, parentPath.lastIndexOf('.'))
+      refreshFieldValue(parentPath)
+    }
+  }
+
+  function refreshFieldChildren(path: string): void {
+    for (const [_, field] of fields.entries()) {
+      if (field.path.startsWith(path + '.')) {
+        refreshFieldValue(field.path)
+      }
+    }
+  }
+
   /**
    * Update a field's value
    * @param name - Field name/path
@@ -202,7 +230,11 @@ export function useFormState(
     }
 
     // Update the tentative data source
-    tentativeDataSource.setValue(name, value)
+    tentativeDataSource.value.setValue(name, value)
+
+    // Refresh parent and child fields
+    refreshFieldChildren(name)
+    refreshFieldParents(name)
 
     // If this is a change event, consider it as a touch event too
     if (trigger === 'change' || trigger === 'blur') {
@@ -225,7 +257,7 @@ export function useFormState(
       (syncOn === 'change' && trigger === 'change') ||
       (syncOn === 'blur' && trigger === 'blur')
     ) {
-      tentativeDataSource.commit(name)
+      tentativeDataSource.value.commit(name)
     }
 
     // Trigger validation for dependent fields
@@ -260,7 +292,7 @@ export function useFormState(
     const syncOn = options.syncOn || 'blur'
 
     if (syncOn === 'blur') {
-      tentativeDataSource.commit(name)
+      tentativeDataSource.value.commit(name)
     }
   }
 
@@ -278,7 +310,10 @@ export function useFormState(
 
     try {
       // Perform validation using the validator
-      const isValid = await validator.validatePath(name, tentativeDataSource)
+      const isValid = await validator.validatePath(
+        name,
+        tentativeDataSource.value
+      )
 
       // Update error state
       if (!isValid) {
@@ -313,11 +348,8 @@ export function useFormState(
     isValidating.value = true
 
     try {
-      // Commit all tentative values
-      tentativeDataSource.commitAll()
-
       // Perform validation on all fields
-      const isValid = await validator.validate(tentativeDataSource)
+      const isValid = await validator.validate(tentativeDataSource.value)
 
       // Update error state
       if (!isValid) {
@@ -381,7 +413,9 @@ export function useFormState(
     isDirty.value = false
 
     // Reset tentative values
-    tentativeDataSource = new TentativeValuesDataSource(dataSource.clone(), {})
+    tentativeDataSource = ref(
+      new TentativeValuesDataSource(dataSource.clone(), {})
+    )
 
     // Reset the validator
     validator.reset()
@@ -392,9 +426,6 @@ export function useFormState(
    * @returns Whether the submission was successful
    */
   async function submit(): Promise<boolean> {
-    isSubmitting.value = true
-    submitted.value = true
-
     // Mark all fields as touched for validation display
     for (const fieldState of fields.values()) {
       fieldState.isTouched = true
@@ -406,11 +437,13 @@ export function useFormState(
 
       if (isValid) {
         // Commit all tentative values
-        tentativeDataSource.commitAll()
+        tentativeDataSource.value.commitAll()
 
         // Run submit handler with the current data
         if (options.submitHandler) {
-          await options.submitHandler(tentativeDataSource.getRawData())
+          isSubmitting.value = true
+          submitted.value = true
+          await options.submitHandler(tentativeDataSource.value.getRawData())
         }
       }
 
@@ -452,8 +485,9 @@ export function useFormState(
 
     // Data access
     setFieldValue,
-    getFieldValue: (name: string): any => tentativeDataSource.getValue(name),
-    getData: (): any => tentativeDataSource.getRawData(),
+    getFieldValue: (name: string): any =>
+      tentativeDataSource.value.getValue(name),
+    getData: (): any => tentativeDataSource.value.getRawData(),
     setData: (newData: Record<string, any>): void => {
       // Reset the form
       reset()

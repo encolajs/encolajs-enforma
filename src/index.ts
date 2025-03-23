@@ -28,6 +28,4 @@ export {
   ValidatorFactory,
   Validator,
 } from '@encolajs/validator'
-export type {
-  DataSourceInterface,
-} from '@encolajs/validator'
+export type { DataSourceInterface } from '@encolajs/validator'

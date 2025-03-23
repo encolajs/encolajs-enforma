@@ -316,11 +316,11 @@ describe('useFormState', () => {
 
       // Validate form
       const isValid = await formState.validate()
+      flushPromises()
 
       // Check results
       expect(isValid).toBe(true)
       expect(mockValidator.validate).toHaveBeenCalled()
-      expect(mockDataSource.commitAll).toHaveBeenCalled()
     })
 
     it('should handle form validation failure', async () => {

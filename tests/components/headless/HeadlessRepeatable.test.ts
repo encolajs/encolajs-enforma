@@ -71,16 +71,16 @@ describe('HeadlessRepeatable', () => {
       })
 
       expect(slotProps).toMatchObject({
-        fields: expect.any(Object),
-        value: expect.any(Object),
-        canAdd: expect.any(Object),
-        canRemove: expect.any(Object),
+        fields: expect.any(Array),
+        value: expect.any(Array),
+        canAdd: expect.any(Boolean),
+        canRemove: expect.any(Boolean),
         add: expect.any(Function),
         remove: expect.any(Function),
         move: expect.any(Function),
         moveUp: expect.any(Function),
         moveDown: expect.any(Function),
-        count: expect.any(Object),
+        count: expect.any(Number),
       })
     })
   })
@@ -110,12 +110,12 @@ describe('HeadlessRepeatable', () => {
       })
 
       // Can add one more item
-      expect(slotData.canAdd.value).toBe(true)
+      expect(slotData.canAdd).toBe(true)
       await slotData.add('item2')
       expect(formState.getData().items).toEqual(['item1', 'item2'])
 
       // Cannot add more items after reaching max
-      expect(slotData.canAdd.value).toBe(false)
+      expect(slotData.canAdd).toBe(false)
     })
 
     it('removes items respecting min limit', async () => {
@@ -141,12 +141,12 @@ describe('HeadlessRepeatable', () => {
       })
 
       // Can remove one item
-      expect(slotData.canRemove.value).toBe(true)
+      expect(slotData.canRemove).toBe(true)
       await slotData.remove(0)
       expect(formState.getData().items).toEqual(['item2'])
 
       // Cannot remove more items after reaching min
-      expect(slotData.canRemove.value).toBe(false)
+      expect(slotData.canRemove).toBe(false)
     })
 
     it('moves items within array', async () => {
@@ -256,7 +256,7 @@ describe('HeadlessRepeatable', () => {
       formState.registerField('items.0')
       formState.registerField('items.1')
 
-      expect(slotData.fields.value.length).toBe(2)
+      expect(slotData.fields.length).toBe(2)
       expect(formState.getField('items.0')).toBeTruthy()
       expect(formState.getField('items.1')).toBeTruthy()
     })
@@ -284,7 +284,7 @@ describe('HeadlessRepeatable', () => {
         },
       })
 
-      expect(slotData.value.value).toEqual(['not-an-array'])
+      expect(slotData.value).toEqual(['not-an-array'])
     })
 
     it('handles undefined initial values', () => {
@@ -308,7 +308,7 @@ describe('HeadlessRepeatable', () => {
         },
       })
 
-      expect(slotData.value.value).toEqual([])
+      expect(slotData.value).toEqual([])
     })
 
     it('prevents invalid move operations', async () => {

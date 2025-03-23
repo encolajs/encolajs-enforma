@@ -325,7 +325,7 @@ describe('HeadlessForm', () => {
       // Check state was reset
       expect(formStateRef.value.getField('name')?.isTouched).toBe(false)
       expect(formStateRef.value.isDirty).toBe(false)
-      expect(formStateRef.value.getFieldValue('name')).toBe('John')
+      expect(formStateRef.value.getField('name').value).toBe('John')
     })
   })
 

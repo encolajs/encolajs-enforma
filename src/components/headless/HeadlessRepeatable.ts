@@ -1,4 +1,4 @@
-import { defineComponent, h, inject } from 'vue'
+import { defineComponent, h, inject, ref, toRefs, watch } from 'vue'
 import { useRepeatable } from '../../composables/useRepeatable'
 import type { FormStateReturn } from '../../types'
 
@@ -40,6 +40,9 @@ export default defineComponent({
       return () => null
     }
 
+    // Create a trigger ref to force re-rendering when the repeatable data changes
+    const renderTrigger = ref(0)
+
     const repeatable = useRepeatable(props.name, formState, {
       min: props.min,
       max: props.max,
@@ -47,11 +50,22 @@ export default defineComponent({
       validateOnRemove: props.validateOnRemove,
     })
 
+    watch(
+      () => repeatable.value._,
+      () => {
+        renderTrigger.value++
+      }
+    )
+
     // Clean up field states on unmount
     ctx.expose({
-      cleanup: repeatable.cleanup,
+      cleanup: repeatable.value.cleanup,
     })
 
-    return () => h('div', {}, [ctx.slots.default?.(repeatable)])
+    return () => {
+      // Include renderTrigger in the render function to ensure it re-evaluates
+      const currentTrigger = renderTrigger.value
+      return ctx.slots.default?.(repeatable.value)
+    }
   },
 })

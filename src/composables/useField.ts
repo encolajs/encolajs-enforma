@@ -1,4 +1,4 @@
-import { computed, onMounted, onBeforeUnmount } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ComputedRef } from 'vue'
 // Make sure the path is correct - adjust if needed based on your file structure
 import {
   FormStateReturn,
@@ -19,7 +19,7 @@ export function useField(
   name: string,
   formState: FormStateReturn,
   options: FieldOptions = {}
-): FieldReturn {
+): ComputedRef<FieldReturn> {
   if (!name) {
     throw new Error('Field name is required')
   }
@@ -57,6 +57,12 @@ export function useField(
    */
   function handleChange(value: any, trigger: EventTrigger = 'input'): void {
     formState.setFieldValue(name, value, trigger)
+    if (
+      (trigger === 'change' && options.validateOn === 'change') ||
+      (fieldState.isDirty && fieldState.isTouched)
+    ) {
+      validate()
+    }
   }
 
   /**
@@ -65,6 +71,10 @@ export function useField(
   function handleBlur(): void {
     fieldState.isFocused = false
     formState.touchField(name)
+    formState.setFieldValue(name, fieldState.value, 'blur')
+    if (fieldState.isDirty || options.validateOn === 'blur') {
+      validate()
+    }
   }
 
   /**
@@ -85,50 +95,49 @@ export function useField(
     fieldState.isTouched = false
   }
 
-  // Generate attrs for easy binding to input elements
-  const attrs = computed((): Record<string, any> => {
-    return {
-      value: fieldState.value,
-      onInput: (e: Event) =>
-        handleChange((e.target as HTMLInputElement)?.value || e, 'input'),
-      onChange: (e: Event) =>
-        handleChange((e.target as HTMLInputElement)?.value || e, 'change'),
-      onBlur: handleBlur,
-      'aria-invalid': !!fieldState.error,
-      ...(fieldState.error
-        ? { 'aria-errormessage': `error-${name.replace(/[\[\]\.]/g, '-')}` }
-        : {}),
-    }
-  })
-
   const handleFocus = () => {
     fieldState.isFocused = true
   }
 
-  // Create exported API object with all field state and methods
-  return {
-    // Field value and state
-    value: computed(() => fieldState.value),
-    error: computed(() => fieldState.error),
-    isDirty: computed(() => fieldState.isDirty),
-    isTouched: computed(() => fieldState.isTouched),
-    isValidating: computed(() => fieldState.isValidating),
-    isVisited: computed(() => fieldState.isVisited),
-    isFocused: computed(() => fieldState.isFocused),
+  const events = {
+    input: (e: any) => {
+      handleChange(e?.value || (e.target as HTMLInputElement)?.value, 'input')
+    },
+    change: (e: any) => {
+      handleChange(e?.value || (e.target as HTMLInputElement)?.value, 'change')
+    },
+    blur: handleBlur,
+    focus: handleFocus,
+  }
 
-    // Event handlers
-    handleChange,
-    handleBlur,
-    handleFocus,
+  // Create exported API object with all field state and methods
+  return computed(() => ({
+    // Field value and state
+    value: formState.getFieldValue(name),
+    error: fieldState.error,
+    isDirty: fieldState.isDirty,
+    isTouched: fieldState.isTouched,
+    isValidating: fieldState.isValidating,
+    isVisited: fieldState.isVisited,
+    isFocused: fieldState.isFocused,
 
     // Methods
     validate,
     reset,
 
     // HTML binding helpers
-    attrs,
+    attrs: {
+      value: fieldState.value,
+
+      'aria-invalid': !!fieldState.error,
+      ...(fieldState.error
+        ? { 'aria-errormessage': `error-${fieldState.id}` }
+        : {}),
+    },
+    events,
 
     // For arrays and custom field types
     name,
-  }
+    id: fieldState.id,
+  }))
 }

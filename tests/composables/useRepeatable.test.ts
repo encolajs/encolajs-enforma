@@ -43,25 +43,25 @@ describe('useRepeatable', () => {
     it('should initialize with empty array when no value exists', () => {
       const repeatable = useRepeatable('test', formState)
       expect(repeatable.value.value).toEqual([])
-      expect(repeatable.count.value).toBe(0)
+      expect(repeatable.value.count).toBe(0)
     })
 
     it('should initialize with existing array values', () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
       const repeatable = useRepeatable('test', formState)
       expect(repeatable.value.value).toEqual(['item1', 'item2'])
-      expect(repeatable.count.value).toBe(2)
+      expect(repeatable.value.count).toBe(2)
     })
 
     it('should respect min option', () => {
       const repeatable = useRepeatable('test', formState, { min: 2 })
-      expect(repeatable.canRemove.value).toBe(false)
+      expect(repeatable.value.canRemove).toBe(false)
     })
 
     it('should respect max option', () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
       const repeatable = useRepeatable('test', formState, { max: 2 })
-      expect(repeatable.canAdd.value).toBe(false)
+      expect(repeatable.value.canAdd).toBe(false)
     })
   })
 
@@ -70,25 +70,26 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1'])
       const repeatable = useRepeatable('test', formState)
 
-      await repeatable.add('item2')
+      await repeatable.value.add('item2')
 
-      expect(formState.setFieldValue).toHaveBeenCalledWith('test', [
-        'item1',
-        'item2',
-      ])
+      expect(formState.setFieldValue).toHaveBeenCalledWith(
+        'test',
+        ['item1', 'item2'],
+        'blur'
+      )
     })
 
     it('should add item at specified position', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
       const repeatable = useRepeatable('test', formState)
 
-      await repeatable.add('new_item', 1)
+      await repeatable.value.add('new_item', 1)
 
-      expect(formState.setFieldValue).toHaveBeenCalledWith('test', [
-        'item1',
-        'new_item',
-        'item2',
-      ])
+      expect(formState.setFieldValue).toHaveBeenCalledWith(
+        'test',
+        ['item1', 'new_item', 'item2'],
+        'blur'
+      )
     })
 
     it('should validate new item if validateOnAdd is true', async () => {
@@ -97,7 +98,7 @@ describe('useRepeatable', () => {
         validateOnAdd: true,
       })
 
-      await repeatable.add()
+      await repeatable.value.add()
 
       expect(formState.validateField).toHaveBeenCalledWith('test.1')
     })
@@ -108,7 +109,7 @@ describe('useRepeatable', () => {
         max: 2,
       })
 
-      const result = await repeatable.add()
+      const result = await repeatable.value.add()
 
       expect(result).toBe(false)
       expect(formState.setFieldValue).not.toHaveBeenCalled()
@@ -120,19 +121,20 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi
         .fn()
         .mockReturnValue(['item1', 'item2', 'item3'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.remove(1)
 
-      expect(formState.setFieldValue).toHaveBeenCalledWith('test', [
-        'item1',
-        'item3',
-      ])
+      expect(formState.setFieldValue).toHaveBeenCalledWith(
+        'test',
+        ['item1', 'item3'],
+        'blur'
+      )
     })
 
     it('should not remove item if min limit is reached', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState, { min: 2 })
+      const repeatable = useRepeatable('test', formState, { min: 2 }).value
 
       const result = await repeatable.remove(0)
 
@@ -146,7 +148,7 @@ describe('useRepeatable', () => {
         .mockReturnValue(['item1', 'item2', 'item3'])
       const repeatable = useRepeatable('test', formState, {
         validateOnRemove: true,
-      })
+      }).value
 
       await repeatable.remove(1)
 
@@ -156,7 +158,7 @@ describe('useRepeatable', () => {
 
     it('should unregister removed field', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.remove(0)
 
@@ -169,7 +171,7 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi
         .fn()
         .mockReturnValue(['item1', 'item2', 'item3'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.move(0, 2)
 
@@ -184,7 +186,7 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi
         .fn()
         .mockReturnValue(['item1', 'item2', 'item3'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.move(0, 2)
 
@@ -198,7 +200,7 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi
         .fn()
         .mockReturnValue(['item1', 'item2', 'item3'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.moveUp(1)
 
@@ -213,7 +215,7 @@ describe('useRepeatable', () => {
       formState.getFieldValue = vi
         .fn()
         .mockReturnValue(['item1', 'item2', 'item3'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       await repeatable.moveDown(1)
 
@@ -226,7 +228,7 @@ describe('useRepeatable', () => {
 
     it('should not move up first item', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       const result = await repeatable.moveUp(0)
 
@@ -236,7 +238,7 @@ describe('useRepeatable', () => {
 
     it('should not move down last item', async () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       const result = await repeatable.moveDown(1)
 
@@ -248,7 +250,7 @@ describe('useRepeatable', () => {
   describe('cleanup', () => {
     it('should unregister all fields on cleanup', () => {
       formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState)
+      const repeatable = useRepeatable('test', formState).value
 
       repeatable.cleanup()
 

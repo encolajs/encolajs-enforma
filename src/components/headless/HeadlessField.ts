@@ -4,6 +4,7 @@ import {
   SetupContext,
   onBeforeUnmount,
   watch,
+  ref,
 } from 'vue'
 import { useField } from '../../composables/useField'
 import { FieldOptions, FormStateReturn } from '../../types'
@@ -33,34 +34,29 @@ export default defineComponent({
       )
       return () => null // Return null instead of trying to render
     }
+    // Create a trigger ref to force re-rendering when the repeatable data changes
+    const renderTrigger = ref(0)
 
     const field = useField(props.name, formState, {
       validateOn: props.validateOn,
     } as FieldOptions)
 
-    // Handle validation based on validateOn prop
-    if (props.validateOn === 'blur') {
-      watch(
-        () => field.isTouched.value,
-        (isTouched) => {
-          if (isTouched) {
-            formState.validateField(props.name)
-          }
-        }
-      )
-    } else if (props.validateOn === 'input' || props.validateOn === 'change') {
-      watch(
-        () => field.value.value,
-        () => {
-          formState.validateField(props.name)
-        }
-      )
-    }
+    watch(
+      () => field.value,
+      () => {
+        renderTrigger.value++
+      },
+      { deep: true }
+    )
 
     onBeforeUnmount(() => {
       formState.unregisterField(props.name)
     })
 
-    return () => slots.default?.(field)
+    return () => {
+      // Include renderTrigger in the render function to ensure it re-evaluates
+      const currentTrigger = renderTrigger.value
+      return slots.default?.(field.value)
+    }
   },
 })

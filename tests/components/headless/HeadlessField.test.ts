@@ -108,19 +108,17 @@ describe('HeadlessField', () => {
       })
 
       expect(slotProps).toMatchObject({
-        value: expect.any(Object),
-        error: expect.any(Object),
-        isDirty: expect.any(Object),
-        isTouched: expect.any(Object),
-        isValidating: expect.any(Object),
-        isVisited: expect.any(Object),
-        isFocused: expect.any(Object),
-        handleChange: expect.any(Function),
-        handleBlur: expect.any(Function),
-        handleFocus: expect.any(Function),
+        value: expect.any(String),
+        error: null,
+        isDirty: expect.any(Boolean),
+        isTouched: expect.any(Boolean),
+        isValidating: expect.any(Boolean),
+        isVisited: expect.any(Boolean),
+        isFocused: expect.any(Boolean),
         validate: expect.any(Function),
         reset: expect.any(Function),
         attrs: expect.any(Object),
+        events: expect.any(Object),
         name: expect.any(String),
       })
     })
@@ -140,11 +138,11 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleChange, handleBlur }) =>
+          default: ({ attrs, events }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) => handleChange(e.target.value, 'input'),
-              onBlur: handleBlur,
+              onInput: events.input,
+              onBlur: events.blur,
             }),
         },
       })
@@ -172,11 +170,10 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleChange }) =>
+          default: ({ attrs, events }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) =>
-                handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: events.input,
             }),
         },
       })
@@ -202,11 +199,11 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleFocus }) =>
+          default: ({ attrs, events }) =>
             h('input', {
               value: attrs.value.value,
-              onChange: attrs.value.onChange, // use the default implementation
-              onFocus: handleFocus,
+              onChange: events.change, // use the default implementation
+              onFocus: events.focus,
             }),
         },
       })
@@ -235,11 +232,10 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleChange }) =>
+          default: ({ attrs, events }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) =>
-                handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: events.input,
             }),
         },
       })
@@ -272,7 +268,7 @@ describe('HeadlessField', () => {
   })
 
   describe('Edge cases and error handling', () => {
-    it('handles deep nested fields', async () => {
+    it('supports deep nested fields', async () => {
       const formState = createFormState()
       const wrapper = mount(HeadlessField, {
         props: {
@@ -284,12 +280,11 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleChange }) =>
+          default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
               type: 'number',
-              onInput: (e) =>
-                handleChange((e.target as HTMLInputElement).value, 'input'),
+              onInput: events.input,
             }),
         },
       })
@@ -316,7 +311,7 @@ describe('HeadlessField', () => {
         slots: {
           default: ({ attrs }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
             }),
         },
       })
@@ -337,11 +332,11 @@ describe('HeadlessField', () => {
           },
         },
         slots: {
-          default: ({ attrs, handleChange, handleBlur }) =>
+          default: ({ attrs, events }) =>
             h('input', {
               value: attrs.value.value,
-              onInput: (e) => handleChange(e.target.value, 'input'),
-              onBlur: handleBlur,
+              onInput: events.input,
+              onBlur: events.blur,
             }),
         },
       })

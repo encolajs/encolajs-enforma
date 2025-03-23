@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '../../src/composables/useField'
 import { FieldReturn } from '../../src'
+import { ComputedRef } from 'vue'
 
 // Mock the form state (normally returned from useFormState)
 const mockFormState = {
@@ -65,7 +66,7 @@ vi.mock('vue', () => {
 })
 
 describe('useField', () => {
-  let field: FieldReturn | null
+  let field: ComputedRef<FieldReturn | null>
 
   beforeEach(() => {
     // Reset mocks
@@ -132,19 +133,19 @@ describe('useField', () => {
     })
 
     it('should provide access to field error state', () => {
-      expect(field.error.value).toBeNull()
+      expect(field.value.error).toBeNull()
     })
 
     it('should provide access to field dirty state', () => {
-      expect(field.isDirty.value).toBe(false)
+      expect(field.value.isDirty).toBe(false)
     })
 
     it('should provide access to field touched state', () => {
-      expect(field.isTouched.value).toBe(false)
+      expect(field.value.isTouched).toBe(false)
     })
 
     it('should provide access to field validating state', () => {
-      expect(field.isValidating.value).toBe(false)
+      expect(field.value.isValidating).toBe(false)
     })
   })
 
@@ -153,7 +154,7 @@ describe('useField', () => {
       const newValue = 'Jane Doe'
 
       // Call handleChange
-      field.handleChange(newValue)
+      field.value.events.input({ value: newValue })
 
       // Check form state was updated
       expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
@@ -167,7 +168,7 @@ describe('useField', () => {
       const newValue = 'Jane Doe'
 
       // Call handleChange with custom trigger
-      field.handleChange(newValue, 'change')
+      field.value.events.change({ value: newValue })
 
       // Check form state was updated with correct trigger
       expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
@@ -179,7 +180,7 @@ describe('useField', () => {
 
     it('should handle blur events', () => {
       // Call handleBlur
-      field.handleBlur()
+      field.value.events.blur()
 
       // Check form state was updated
       expect(mockFormState.touchField).toHaveBeenCalledWith('name')
@@ -192,7 +193,7 @@ describe('useField', () => {
       mockFormState.validateField.mockResolvedValueOnce(true)
 
       // Call validate
-      const result = await field.validate()
+      const result = await field.value.validate()
 
       // Check validation was called
       expect(mockFormState.validateField).toHaveBeenCalledWith('name')
@@ -206,7 +207,7 @@ describe('useField', () => {
       mockFormState.validateField.mockResolvedValueOnce(false)
 
       // Call validate
-      const result = await field.validate()
+      const result = await field.value.validate()
 
       // Check validation was called
       expect(mockFormState.validateField).toHaveBeenCalledWith('name')
@@ -226,7 +227,7 @@ describe('useField', () => {
       mockFormState.getFieldValue.mockReturnValueOnce('John Doe')
 
       // Call reset
-      field.reset()
+      field.value.reset()
 
       // Check original value was retrieved
       expect(mockFormState.getFieldValue).toHaveBeenCalledWith('name')
@@ -243,15 +244,12 @@ describe('useField', () => {
   describe('HTML binding helpers', () => {
     it('should provide HTML binding attributes', () => {
       // Access attrs
-      const attrs = field.attrs.value
+      const attrs = field.value.attrs
 
       // Check structure
       expect(attrs).toEqual(
         expect.objectContaining({
           value: expect.any(String),
-          onInput: expect.any(Function),
-          onChange: expect.any(Function),
-          onBlur: expect.any(Function),
           'aria-invalid': false,
         })
       )
@@ -260,6 +258,7 @@ describe('useField', () => {
     it('should handle aria attributes for errors', () => {
       // Mock an error state
       const fieldWithError = {
+        id: 'email',
         value: 'test',
         error: 'This field is invalid',
         isDirty: true,
@@ -276,7 +275,7 @@ describe('useField', () => {
       const errorField = useField('email', mockFormState)
 
       // Access attrs
-      const attrs = errorField.attrs.value
+      const attrs = errorField.value.attrs
 
       // Check aria attributes
       expect(attrs['aria-invalid']).toBe(true)
@@ -292,7 +291,7 @@ describe('useField', () => {
       }
 
       // Get the onInput handler
-      const inputHandler = field.attrs.value.onInput
+      const inputHandler = field.value.events.input
 
       // Call with mock event
       inputHandler(mockEvent)
