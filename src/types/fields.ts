@@ -18,14 +18,13 @@ export interface FieldSchema {
   visible?: boolean | string
   default?: any
   props?: Record<string, any>
+  input?: string
   input_props?: Record<string, any>
   label_props?: Record<string, any>
   error_props?: Record<string, any>
   help_props?: Record<string, any>
   wrapper_props?: Record<string, any>
   help_text?: string
-  placeholder?: string
-  readonly?: boolean
   [key: string]: any
 }
 

@@ -188,6 +188,7 @@ export function useFormState(
 
     // Simply get fresh value from data source and update field
     fieldState.value = tentativeDataSource.value.getValue(path)
+    validateField(path)
   }
 
   function refreshFieldParents(path: string): void {

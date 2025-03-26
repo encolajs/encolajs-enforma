@@ -6,10 +6,10 @@ import { inject, provide, computed, ComputedRef } from 'vue'
 import { FormKitConfig, DeepPartial, ConfigProvider } from '../types/config'
 import { mergeConfigs } from '../utils/configUtils'
 import { DEFAULT_CONFIG } from '../constants/defaults'
-import { FORM_KIT_CONFIG } from '../constants/symbols'
+import { formConfigKey } from '../constants/symbols'
 
 // Store global configuration
-let globalConfig: DeepPartial<FormKitConfig> = {}
+let globalConfig: DeepPartial<FormKitConfig> = DEFAULT_CONFIG
 
 /**
  * Set the global configuration for all forms
@@ -44,7 +44,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
 
   // Try to inject existing config from a parent component
   const injectedConfig = inject<FormKitConfig | undefined>(
-    FORM_KIT_CONFIG,
+    formConfigKey,
     undefined
   )
 
@@ -74,7 +74,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
     additionalConfig: DeepPartial<FormKitConfig> = {}
   ): void {
     const providedConfig = extendConfig(additionalConfig)
-    provide<FormKitConfig>(FORM_KIT_CONFIG, providedConfig)
+    provide<FormKitConfig>(formConfigKey, providedConfig)
   }
 
   return {

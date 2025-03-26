@@ -1,6 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
+import vue from 'rollup-plugin-vue'
 import { dts } from 'rollup-plugin-dts';
 import terser from '@rollup/plugin-terser'
 const pkg = require('./package.json');
@@ -23,8 +24,17 @@ export default [
       }
     ],
     plugins: [
-      resolve(),
+      resolve({
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+        resolve: {
+          dedupe: ['vue']
+        }
+      }),
       commonjs(),
+      vue({
+        // Options for @vue/compiler-sfc
+        preprocessStyles: true
+      }),
       typescript({
         tsconfig: './tsconfig.json',
         sourceMap: true,

@@ -3,7 +3,11 @@
  */
 
 import { computed, ComputedRef, inject } from 'vue'
-import { FORM_CONTEXT, FORM_KIT_CONFIG, FORM_STATE } from '../constants/symbols'
+import {
+  formContextKey,
+  formConfigKey,
+  formStateKey,
+} from '../constants/symbols'
 import { FormKitConfig } from '../types/config'
 import { DEFAULT_CONFIG } from '../constants/defaults'
 import { FormStateReturn } from '../types'
@@ -45,9 +49,9 @@ export function useDynamicProps(
   localContext: Record<string, any> = {}
 ): UseDynamicPropsReturn {
   // Inject dependencies
-  const formState = inject<FormStateReturn | undefined>(FORM_STATE, undefined)
-  const formContext = inject<Record<string, any>>(FORM_CONTEXT, {})
-  const config = inject<FormKitConfig>(FORM_KIT_CONFIG, DEFAULT_CONFIG)
+  const formState = inject<FormStateReturn | undefined>(formStateKey, undefined)
+  const formContext = inject<Record<string, any>>(formContextKey, {})
+  const config = inject<FormKitConfig>(formConfigKey, DEFAULT_CONFIG)
 
   /**
    * Create the context for expression evaluation
@@ -71,11 +75,9 @@ export function useDynamicProps(
   /**
    * Evaluates all expressions within props
    */
-  const evaluateProps = <T extends DynamicProps>(props: T): ComputedRef<T> => {
-    return computed(() => {
-      const context = getContext()
-      return evaluateObject<T>(props, context, config)
-    })
+  const evaluateProps = (props: DynamicProps): DynamicProps => {
+    const context = getContext()
+    return evaluateObject(props, context, config)
   }
 
   /**

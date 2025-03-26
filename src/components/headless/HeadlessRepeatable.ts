@@ -1,6 +1,7 @@
-import { defineComponent, h, inject, ref, toRefs, watch } from 'vue'
+import { defineComponent, inject, ref, watch } from 'vue'
 import { useRepeatable } from '../../composables/useRepeatable'
 import type { FormStateReturn } from '../../types'
+import { formStateKey } from '../../constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessRepeatable',
@@ -33,7 +34,7 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const formState = inject<FormStateReturn>('encolaForm')
+    const formState = inject<FormStateReturn>(formStateKey)
 
     if (!formState) {
       console.error('HeadlessRepeatable must be used within an EncolaForm')
@@ -51,10 +52,11 @@ export default defineComponent({
     })
 
     watch(
-      () => repeatable.value._,
+      () => repeatable.value,
       () => {
         renderTrigger.value++
-      }
+      },
+      { deep: true }
     )
 
     // Clean up field states on unmount

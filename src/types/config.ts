@@ -1,3 +1,5 @@
+import { messageFormatter } from '@encolajs/validator'
+
 /**
  * Represents a generic configuration object
  */
@@ -37,8 +39,6 @@ export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
   syncOn: 'input' | 'change' | 'blur' | 'submit'
   showErrorsOn: 'touched' | 'dirty' | 'focus' | 'always'
-  autoTrimValues: boolean
-  autoCommitOnValid: boolean
   [key: string]: any
 }
 
@@ -56,9 +56,11 @@ export interface ExpressionsConfig {
  * Complete form kit configuration
  */
 export interface FormKitConfig {
-  props: FieldPropsConfig
+  pt: FieldPropsConfig
   behavior: BehaviorConfig
-  messages: Record<string, string>
+  rules?: Record<string, Function>
+  messages?: Record<string, string>
+  errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
   [key: string]: any
 }

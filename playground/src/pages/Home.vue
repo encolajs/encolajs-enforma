@@ -1,6 +1,7 @@
 <template>
   <h1 class="text-2xl font-bold mb-4">Form with headless components</h1>
   <HeadlessForm
+    ref="$form"
     :data="data"
     :rules="rules"
     :custom-messages="customMessages"
@@ -18,13 +19,6 @@
                 v-bind="attrs"
                 v-on="events"
               />
-              <Button
-                severity="warn"
-                type="button"
-                @click="formState.setFieldValue('name', 'Jane Doe', 'blur')"
-              >
-                Set name to Jane Doe
-              </Button>
             </div>
             <div v-if="error"
                  :id="attrs['aria-errormessage']"
@@ -181,21 +175,38 @@
       <div>
         <Button
           severity="primary"
-          :disabled="formState.isSubmitting.value"
+          :loading="formState.isSubmitting.value"
+          :label="formState.isSubmitting.value ? 'Submitting...' : 'Submit'"
           type="submit"
-        >
-          {{ formState.isSubmitting.value ? 'Submitting...' : 'Submit' }}
-        </Button>
+        />
       </div>
-      <pre>{{ formState.getData() }}</pre>
     </template>
   </HeadlessForm>
+
+  <div class="mt-4 flex gap-2">
+    <Button
+      severity="warn"
+      type="button"
+      @click="$form?.submit"
+    >
+      Submit from outside the form
+    </Button>
+    <Button
+      severity="warn"
+      type="button"
+      @click="$form.setFieldValue('name', 'Jane Doe', 'blur')"
+    >
+      Set name to Jane Doe
+    </Button>
+  </div>
+
+  <pre>{{ $form.getData() }}</pre>
 </template>
 
 <script setup>
 import { HeadlessForm, HeadlessField, HeadlessRepeatable } from '../../../src'
 import { InputText, Select, Button} from 'primevue'
-import { nextTick } from 'vue'
+import { ref } from 'vue'
 
 const data = {
   name: '',
@@ -225,5 +236,7 @@ const submitHandler = async (formData) => {
     setTimeout(resolve, 2000)
   })
 }
+
+const $form = ref(null)
 
 </script>

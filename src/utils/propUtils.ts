@@ -18,6 +18,63 @@ export function evaluateProps(
 }
 
 /**
+ * Merges props objects similar to Object.assign but with special handling for 'class' property
+ * The 'class' values from all objects are concatenated instead of the last one overriding previous ones
+ *
+ * @param {...Object} propsObjects - Props objects to be merged
+ * @returns {Object} - A new object with all props merged
+ */
+function mergeProps(...propsObjects) {
+  // Filter out null and undefined props objects
+  const validObjects = propsObjects.filter((props) => props != null)
+
+  if (validObjects.length === 0) {
+    return {}
+  }
+
+  // Start with an empty result object
+  const result = {}
+
+  // Collect all class values
+  const classValues = []
+
+  // Process each props object
+  for (const obj of validObjects) {
+    // Extract the class value if it exists
+    if ('class' in obj && obj.class != null) {
+      // If it's an array or object, handle it specially
+      if (Array.isArray(obj.class)) {
+        classValues.push(...obj.class.filter(Boolean))
+      } else if (typeof obj.class === 'object' && !Array.isArray(obj.class)) {
+        // For object class syntax (like in Vue), add class names that have truthy values
+        for (const [key, value] of Object.entries(obj.class)) {
+          if (value) {
+            classValues.push(key)
+          }
+        }
+      } else {
+        // Handle string or other primitive class values
+        classValues.push(obj.class)
+      }
+    }
+
+    // Copy all other properties (except class) to the result
+    for (const key in obj) {
+      if (key !== 'class') {
+        result[key] = obj[key]
+      }
+    }
+  }
+
+  // Apply the concatenated class values if there are any
+  if (classValues.length > 0) {
+    // Filter out empty strings and join with spaces
+    result.class = classValues.filter(Boolean).join(' ').trim()
+  }
+
+  return result
+}
+/**
  * Normalize props by applying defaults and resolving expressions
  */
 export function normalizeProps(
@@ -62,38 +119,6 @@ export function omitProps(
 }
 
 /**
- * Extract groups of props based on prefixes
- *
- * For example: extractPropGroups({ input_class: 'foo', label_class: 'bar' }, ['input', 'label'])
- * Returns: { input: { class: 'foo' }, label: { class: 'bar' } }
- */
-export function extractPropGroups(
-  props: Record<string, any>,
-  prefixes: string[]
-): Record<string, Record<string, any>> {
-  const result: Record<string, Record<string, any>> = {}
-
-  // Initialize result objects for each prefix
-  prefixes.forEach((prefix) => {
-    result[prefix] = {}
-  })
-
-  // Extract prefixed properties
-  Object.entries(props).forEach(([key, value]) => {
-    for (const prefix of prefixes) {
-      const prefixWithUnderscore = `${prefix}_`
-
-      if (key.startsWith(prefixWithUnderscore)) {
-        const propKey = key.substring(prefixWithUnderscore.length)
-        result[prefix][propKey] = value
-      }
-    }
-  })
-
-  return result
-}
-
-/**
  * Get props for a specific component from props object
  *
  * For example: getComponentProps({ input_class: 'foo', label_class: 'bar' }, 'input')
@@ -114,60 +139,4 @@ export function getComponentProps(
   })
 
   return result
-}
-
-/**
- * Prepare props for component rendering, merging with defaults
- * and resolving expressions
- */
-export function prepareComponentProps(
-  props: Record<string, any>,
-  componentName: string,
-  config: FormKitConfig,
-  context?: ExpressionContext
-): Record<string, any> {
-  // Get component-specific props
-  const componentProps = getComponentProps(props, componentName)
-
-  // Get default props for component from config
-  const defaultProps = config.fieldProps?.[componentName] || {}
-
-  // Merge defaults with component props
-  const mergedProps = deepMerge(defaultProps, componentProps)
-
-  // Evaluate expressions if context is provided
-  if (context) {
-    return evaluateProps(mergedProps, context, config)
-  }
-
-  return mergedProps
-}
-
-/**
- * Check if an object contains dynamic expressions
- */
-export function hasDynamicProps(
-  props: Record<string, any>,
-  config: FormKitConfig
-): boolean {
-  const { start, end } = config.expressions.delimiters
-
-  // Check for expressions in string values
-  const hasExpression = (obj: any): boolean => {
-    if (typeof obj === 'string') {
-      return obj.includes(start) && obj.includes(end)
-    }
-
-    if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
-      return Object.values(obj).some((value) => hasExpression(value))
-    }
-
-    if (Array.isArray(obj)) {
-      return obj.some((item) => hasExpression(item))
-    }
-
-    return false
-  }
-
-  return hasExpression(props)
 }

@@ -1,6 +1,7 @@
 import { defineComponent, provide, h, PropType } from 'vue'
 import { useFormState } from '../../composables/useFormState'
 import { DataSourceInterface } from '@encolajs/validator'
+import { formStateKey } from '../../constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -55,7 +56,15 @@ export default defineComponent({
       }
     )
 
-    provide('encolaForm', formState)
+    provide(formStateKey, formState)
+
+    ctx.expose({
+      reset: formState.reset,
+      submit: formState.submit,
+      validate: formState.validate,
+      setFieldValue: formState.setFieldValue,
+      getData: formState.getData,
+    })
 
     return () =>
       h(

@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "allowJs": true,
         "target": "es2018",
         "module": "esnext",
         "declaration": true,
@@ -14,6 +15,11 @@
         "forceConsistentCasingInFileNames": true,
         "lib": ["es2018", "dom"]
     },
-    "include": ["src/**/*.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "src/**/*.d.ts"
+    ],
     "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

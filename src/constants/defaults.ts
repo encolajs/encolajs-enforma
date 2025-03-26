@@ -1,7 +1,7 @@
+import { type messageFormatter } from '@encolajs/validator'
 /**
  * Default configuration values for the form kit
  */
-
 import { FormKitConfig } from '../types/config'
 
 /**
@@ -13,11 +13,10 @@ export const DEFAULT_CONFIG: FormKitConfig = {
    * to the components rendered by the form kit
    */
 
-  props: {
+  pt: {
     wrapper: {
       class: 'formkit-field-wrapper',
     },
-    // Props for labels
     label: {
       class: 'formkit-label',
     },
@@ -43,9 +42,12 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     validateOn: 'blur',
     syncOn: 'blur',
     showErrorsOn: 'touched',
-    autoTrimValues: true,
-    autoCommitOnValid: true,
   },
+
+  /**
+   * Additional validation rules
+   */
+  rules: {},
 
   /**
    * Default messages for validation errors
@@ -61,5 +63,11 @@ export const DEFAULT_CONFIG: FormKitConfig = {
       start: '${',
       end: '}',
     },
+  },
+
+  // components
+  components: {
+    submitButton: 'button',
+    resetButton: 'button',
   },
 }

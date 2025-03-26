@@ -8,6 +8,7 @@ import {
 } from 'vue'
 import { useField } from '../../composables/useField'
 import { FieldOptions, FormStateReturn } from '../../types'
+import { formStateKey } from '../../constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessField',
@@ -26,7 +27,7 @@ export default defineComponent({
   },
 
   setup(props, { slots }: SetupContext) {
-    const formState = inject<FormStateReturn>('encolaForm')
+    const formState = inject<FormStateReturn>(formStateKey)
 
     if (!formState) {
       console.error(

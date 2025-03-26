@@ -27,15 +27,11 @@ export function deepMerge(target: any, source: any): any {
 
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
-      if (isObject(source[key])) {
-        if (!(key in target)) {
-          Object.assign(output, { [key]: source[key] })
-        } else {
-          output[key] = deepMerge(target[key], source[key])
-        }
-      } else if (Array.isArray(source[key])) {
+      if (Array.isArray(source[key])) {
         // For arrays, replace the entire array rather than merging
         output[key] = [...source[key]]
+      } else if (isObject(source[key])) {
+        output[key] = Object.assign(output[key] || {}, { ...source[key] })
       } else {
         Object.assign(output, { [key]: source[key] })
       }

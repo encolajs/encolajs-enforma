@@ -123,7 +123,7 @@ export function useRepeatable(
     values.splice(toIndex, 0, item)
 
     // Update the array value
-    formState.setFieldValue(basePath, values)
+    formState.setFieldValue(basePath, values, 'blur')
     triggerUpdate()
 
     // Validate affected fields
