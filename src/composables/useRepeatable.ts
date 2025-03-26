@@ -92,25 +92,26 @@ export function useRepeatable(
   const remove = async (index: number) => {
     if (!canRemove.value) return false
 
-    const oldIds = [...itemIds.value]
-    const removedId = oldIds[index]
+    const values = value.value
 
-    // Remove item from array
-    const newValue = value.value.filter((_, i) => i !== index)
-    formState.setFieldValue(basePath, newValue, 'blur') // to commit the values to the data source
+    values.splice(index, 1)
 
-    // Cleanup the removed field's state
-    formState.unregisterField(removedId)
-
+    // Update the array value
+    formState.setFieldValue(basePath, values, 'blur')
     triggerUpdate()
 
+    // Validate affected fields
+    const minIndex = Math.min(index, values.length - 1)
+    const maxIndex = Math.max(index, values.length - 1)
+
     if (options.validateOnRemove) {
-      // Validate fields after the removed index
-      for (let i = index; i < newValue.length; i++) {
+      for (let i = minIndex; i <= maxIndex; i++) {
         const fieldPath = `${basePath}.${i}`
         await formState.validateField(fieldPath)
       }
     }
+
+    formState.touchField(basePath)
 
     return true
   }
