@@ -101,17 +101,17 @@ export function useRepeatable(
     triggerUpdate()
 
     // Validate affected fields
-    nextTick(() => {
-      const minIndex = Math.min(index, values.length - 1)
-      const maxIndex = Math.max(index, values.length - 1)
+    const minIndex = Math.min(index, values.length - 1)
+    const maxIndex = Math.max(index, values.length - 1)
 
-      if (options.validateOnRemove) {
-        for (let i = minIndex; i <= maxIndex; i++) {
-          const fieldPath = `${basePath}.${i}`
-          formState.validateField(fieldPath)
-        }
+    if (options.validateOnRemove) {
+      const validations = []
+      for (let i = minIndex; i <= maxIndex; i++) {
+        const fieldPath = `${basePath}.${i}`
+        validations.push(() => formState.validateField(fieldPath))
       }
-    })
+      await Promise.all(validations)
+    }
 
     formState.touchField(basePath)
 
@@ -130,15 +130,15 @@ export function useRepeatable(
     triggerUpdate()
 
     // Validate affected fields
-    nextTick(() => {
-      const minIndex = Math.min(fromIndex, toIndex)
-      const maxIndex = Math.max(fromIndex, toIndex)
+    const minIndex = Math.min(fromIndex, toIndex)
+    const maxIndex = Math.max(fromIndex, toIndex)
 
-      for (let i = minIndex; i <= maxIndex; i++) {
-        const fieldPath = `${basePath}.${i}`
-        formState.validateField(fieldPath)
-      }
-    })
+    const validations = []
+    for (let i = minIndex; i <= maxIndex; i++) {
+      const fieldPath = `${basePath}.${i}`
+      validations.push(() => formState.validateField(fieldPath))
+    }
+    await Promise.all(validations)
 
     formState.touchField(basePath)
   }
