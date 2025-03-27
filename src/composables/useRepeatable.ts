@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, shallowRef, triggerRef } from 'vue'
+import { computed, ComputedRef, nextTick, ref, shallowRef, triggerRef } from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -82,7 +82,7 @@ export function useRepeatable(
       // Validate the new item and all items after it
       for (let i = insertAt; i < newValue.length; i++) {
         const fieldPath = `${basePath}.${i}`
-        await formState.validateField(fieldPath)
+        formState.validateField(fieldPath)
       }
     }
 
@@ -101,15 +101,17 @@ export function useRepeatable(
     triggerUpdate()
 
     // Validate affected fields
-    const minIndex = Math.min(index, values.length - 1)
-    const maxIndex = Math.max(index, values.length - 1)
+    nextTick(() => {
+      const minIndex = Math.min(index, values.length - 1)
+      const maxIndex = Math.max(index, values.length - 1)
 
-    if (options.validateOnRemove) {
-      for (let i = minIndex; i <= maxIndex; i++) {
-        const fieldPath = `${basePath}.${i}`
-        await formState.validateField(fieldPath)
+      if (options.validateOnRemove) {
+        for (let i = minIndex; i <= maxIndex; i++) {
+          const fieldPath = `${basePath}.${i}`
+          formState.validateField(fieldPath)
+        }
       }
-    }
+    })
 
     formState.touchField(basePath)
 
@@ -128,13 +130,15 @@ export function useRepeatable(
     triggerUpdate()
 
     // Validate affected fields
-    const minIndex = Math.min(fromIndex, toIndex)
-    const maxIndex = Math.max(fromIndex, toIndex)
+    nextTick(() => {
+      const minIndex = Math.min(fromIndex, toIndex)
+      const maxIndex = Math.max(fromIndex, toIndex)
 
-    for (let i = minIndex; i <= maxIndex; i++) {
-      const fieldPath = `${basePath}.${i}`
-      await formState.validateField(fieldPath)
-    }
+      for (let i = minIndex; i <= maxIndex; i++) {
+        const fieldPath = `${basePath}.${i}`
+        formState.validateField(fieldPath)
+      }
+    })
 
     formState.touchField(basePath)
   }
