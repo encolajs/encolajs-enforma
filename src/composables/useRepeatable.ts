@@ -82,7 +82,7 @@ export function useRepeatable(
       // Validate the new item and all items after it
       for (let i = insertAt; i < newValue.length; i++) {
         const fieldPath = `${basePath}.${i}`
-        formState.validateField(fieldPath)
+        formState.validateField(fieldPath, true)
       }
     }
 
@@ -108,7 +108,7 @@ export function useRepeatable(
       const validations = []
       for (let i = minIndex; i <= maxIndex; i++) {
         const fieldPath = `${basePath}.${i}`
-        validations.push(() => formState.validateField(fieldPath))
+        validations.push(() => formState.validateField(fieldPath, true))
       }
       await Promise.all(validations)
     }

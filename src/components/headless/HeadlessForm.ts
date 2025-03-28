@@ -62,7 +62,9 @@ export default defineComponent({
       reset: formState.reset,
       submit: formState.submit,
       validate: formState.validate,
+      validateField: formState.validateField,
       setFieldValue: formState.setFieldValue,
+      getField: formState.getField,
       getData: formState.getData,
     })
 

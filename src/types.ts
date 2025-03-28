@@ -76,7 +76,7 @@ export interface FormStateReturn {
 
   // Form actions
   validate: () => Promise<boolean>
-  validateField: (name: string) => Promise<boolean>
+  validateField: (name: string, onlyIfTouched?: boolean) => Promise<boolean>
   reset: () => void
   submit: () => Promise<boolean>
 

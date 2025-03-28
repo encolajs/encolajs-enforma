@@ -188,7 +188,7 @@ export function useFormState(
 
     // Simply get fresh value from data source and update field
     fieldState.value = tentativeDataSource.value.getValue(path)
-    validateField(path)
+    validateField(path, true)
   }
 
   function refreshFieldParents(path: string): void {
@@ -299,11 +299,13 @@ export function useFormState(
 
   /**
    * Validate a specific field
-   * @param name - Field name/path
-   * @returns Whether the field is valid
    */
-  async function validateField(name: string): Promise<boolean> {
+  async function validateField(name: string, onlyIfTouched: boolean = false): Promise<boolean> {
     const fieldState = registerField(name)
+
+    if (onlyIfTouched && !fieldState.isTouched) {
+      return Promise.resolve(true)
+    }
 
     fieldState.isValidating = true
     validationCount.value++
