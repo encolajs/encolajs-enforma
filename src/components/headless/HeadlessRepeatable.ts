@@ -59,11 +59,6 @@ export default defineComponent({
       { deep: true }
     )
 
-    // Clean up field states on unmount
-    ctx.expose({
-      cleanup: repeatable.value.cleanup,
-    })
-
     return () => {
       // Include renderTrigger in the render function to ensure it re-evaluates
       const currentTrigger = renderTrigger.value

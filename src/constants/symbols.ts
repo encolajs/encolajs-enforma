@@ -8,22 +8,22 @@ import type { FormStateReturn } from '../types'
 /**
  * Symbol for providing/injecting the form kit configuration
  */
-export const formConfigKey = Symbol()
+export const formConfigKey = Symbol('formConfig')
 
 /**
  * Symbol for providing/injecting the form state
  */
-export const formStateKey = Symbol()
+export const formStateKey = Symbol('formState')
 
 /**
  * Symbol for providing/injecting the form context
  */
-export const formContextKey = Symbol()
+export const formContextKey = Symbol('formContext')
 
 /**
  * Symbol for providing/injecting the form context
  */
-export const formSchemaKey = Symbol()
+export const formSchemaKey = Symbol('formSchema')
 
 /**
  * Type definitions for injectable values

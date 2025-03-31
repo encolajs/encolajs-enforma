@@ -4,6 +4,7 @@ import { h } from 'vue'
 import HeadlessField from '../../../src/components/headless/HeadlessField'
 import { TentativeValuesDataSource } from '@encolajs/validator'
 import { useFormState, useValidation } from '../../../src'
+import { formStateKey } from '../../../src/constants/symbols'
 
 describe('HeadlessField', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -66,7 +67,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
       })
@@ -96,7 +97,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -134,7 +135,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -166,7 +167,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -195,7 +196,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -228,7 +229,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -257,7 +258,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
       })
@@ -276,7 +277,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -305,7 +306,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -328,7 +329,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {

@@ -1,4 +1,4 @@
-import { computed, ComputedRef, nextTick, ref, shallowRef, triggerRef } from 'vue'
+import { computed, ComputedRef, onBeforeUnmount, onMounted, ref, shallowRef, triggerRef } from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -13,6 +13,19 @@ export function useRepeatable(
   formState: FormStateReturn,
   options: RepeatableOptions = {}
 ) {
+  if (!basePath) {
+    throw new Error('Field name is required')
+  }
+
+  if (!formState) {
+    throw new Error('Form state is required')
+  }
+
+  const fieldState = formState.getField(basePath) || formState.registerField(basePath)
+
+  // Keep track of field ID for re-registration
+  const fieldId = fieldState?.id
+
   // Track field IDs for the array items
   const itemIds = computed(() => {
     const arrayValue = formState.getFieldValue(basePath) || []
@@ -57,6 +70,22 @@ export function useRepeatable(
     updateTrigger.value++
   }
 
+  const validateItems = async (fromIndex: number, toIndex: number, onlyIfTouched: boolean = true) => {
+     const validations: Promise<boolean>[] = []
+    formState.fields.forEach((field, path) => {
+      if (!path.startsWith(`${basePath}.`)) {
+        return
+      }
+      for (let i = fromIndex; i <= toIndex; i++) {
+        const fieldPath = `${basePath}.${i}`
+        if (path.startsWith(fieldPath)) {
+          validations.push(formState.validateField(fieldPath, onlyIfTouched))
+        }
+      }
+    })
+    return await Promise.all(validations)
+  }
+
   const add = async (newItem?: any, position?: number) => {
     if (!canAdd.value) return false
 
@@ -69,21 +98,14 @@ export function useRepeatable(
     // Insert new value
     newValue.splice(insertAt, 0, newItem ?? [])
 
-    // Register new field to get an ID
-    const newFieldPath = `${basePath}.${insertAt}`
-    formState.registerField(newFieldPath)
-
     // Update form value
     formState.setFieldValue(basePath, newValue, 'blur') // to commit the values to the data source
 
     triggerUpdate()
 
+    await validateItems(insertAt, newValue.length - 1, false)
     if (options.validateOnAdd) {
-      // Validate the new item and all items after it
-      for (let i = insertAt; i < newValue.length; i++) {
-        const fieldPath = `${basePath}.${i}`
-        formState.validateField(fieldPath, true)
-      }
+      await formState.validateField(basePath, false)
     }
 
     return true
@@ -104,13 +126,9 @@ export function useRepeatable(
     const minIndex = Math.min(index, values.length - 1)
     const maxIndex = Math.max(index, values.length - 1)
 
+    await validateItems(minIndex, maxIndex, true)
     if (options.validateOnRemove) {
-      const validations = []
-      for (let i = minIndex; i <= maxIndex; i++) {
-        const fieldPath = `${basePath}.${i}`
-        validations.push(() => formState.validateField(fieldPath, true))
-      }
-      await Promise.all(validations)
+      await formState.validateField(basePath, false)
     }
 
     formState.touchField(basePath)
@@ -133,12 +151,7 @@ export function useRepeatable(
     const minIndex = Math.min(fromIndex, toIndex)
     const maxIndex = Math.max(fromIndex, toIndex)
 
-    const validations = []
-    for (let i = minIndex; i <= maxIndex; i++) {
-      const fieldPath = `${basePath}.${i}`
-      validations.push(() => formState.validateField(fieldPath))
-    }
-    await Promise.all(validations)
+    await validateItems(minIndex, maxIndex, false)
 
     formState.touchField(basePath)
   }
@@ -153,13 +166,19 @@ export function useRepeatable(
     return move(index, index + 1)
   }
 
-  // Cleanup function for component unmount
-  const cleanup = () => {
+  // Register with existing ID
+  onMounted(() => {
+    formState.registerField(basePath, fieldId)
+  })
+
+  // Unregister path
+  onBeforeUnmount(() => {
+    formState.unregisterField(basePath)
     // Clean up all field states when repeatable is unmounted
     itemIds.value.forEach((id) => {
       formState.unregisterField(id)
     })
-  }
+  })
 
   return computed(() => ({
     fields: fields.value,
@@ -171,7 +190,6 @@ export function useRepeatable(
     move,
     moveUp,
     moveDown,
-    cleanup,
     count: value.value.length,
   }))
 }

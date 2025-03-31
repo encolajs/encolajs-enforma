@@ -4,6 +4,7 @@ import { h } from 'vue'
 import HeadlessRepeatable from '../../../src/components/headless/HeadlessRepeatable'
 import { FormStateReturn, useFormState, useValidation } from '../../../src'
 import { PlainObjectDataSource } from '@encolajs/validator'
+import { formStateKey } from '../../../src/constants/symbols'
 
 describe('HeadlessRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -29,7 +30,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
       })
@@ -59,7 +60,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -98,7 +99,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -129,7 +130,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -159,7 +160,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -176,7 +177,7 @@ describe('HeadlessRepeatable', () => {
   })
 
   describe('Validation', () => {
-    it('validates new items when validateOnAdd is true', async () => {
+    it('validates the array when validateOnAdd is true', async () => {
       const formState = createFormState({ items: ['item1'] })
       const validateSpy = vi.spyOn(formState, 'validateField')
       let slotData
@@ -188,7 +189,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -200,10 +201,10 @@ describe('HeadlessRepeatable', () => {
       })
 
       await slotData.add()
-      expect(validateSpy).toHaveBeenCalledWith('items.1')
+      expect(validateSpy).toHaveBeenCalledWith('items', false)
     })
 
-    it('validates remaining items when validateOnRemove is true', async () => {
+    it('validates the array when validateOnRemove is true', async () => {
       const formState = createFormState({ items: ['item1', 'item2', 'item3'] })
       const validateSpy = vi.spyOn(formState, 'validateField')
       let slotData
@@ -215,7 +216,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -227,7 +228,7 @@ describe('HeadlessRepeatable', () => {
       })
 
       await slotData.remove(1)
-      expect(validateSpy).toHaveBeenCalledWith('items.1')
+      expect(validateSpy).toHaveBeenCalledWith('items', false)
     })
   })
 
@@ -242,7 +243,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -273,7 +274,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -297,7 +298,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -322,7 +323,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
         slots: {
@@ -354,13 +355,12 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            encolaForm: formState,
+            [formStateKey]: formState,
           },
         },
       })
 
-      // @ts-expect-error vm is a proxy
-      wrapper.vm.cleanup()
+      wrapper.unmount()
       expect(unregisterSpy).toHaveBeenCalled()
     })
   })

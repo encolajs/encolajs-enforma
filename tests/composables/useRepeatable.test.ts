@@ -98,9 +98,9 @@ describe('useRepeatable', () => {
         validateOnAdd: true,
       })
 
-      await repeatable.value.add()
+      await repeatable.value.add({a: null})
 
-      expect(formState.validateField).toHaveBeenCalledWith('test.1')
+      expect(formState.validateField).toHaveBeenCalledWith('test', false)
     })
 
     it('should not add item if max limit is reached', async () => {
@@ -153,16 +153,7 @@ describe('useRepeatable', () => {
       await repeatable.remove(1)
 
       // Should validate items after the removed index
-      expect(formState.validateField).toHaveBeenCalledWith('test.1')
-    })
-
-    it('should unregister removed field', async () => {
-      formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState).value
-
-      await repeatable.remove(0)
-
-      expect(formState.unregisterField).toHaveBeenCalledTimes(1)
+      expect(formState.validateField).toHaveBeenCalledWith('test', false)
     })
   })
 
@@ -191,9 +182,7 @@ describe('useRepeatable', () => {
       await repeatable.move(0, 2)
 
       // Should validate all items in the affected range
-      expect(formState.validateField).toHaveBeenCalledWith('test.0')
-      expect(formState.validateField).toHaveBeenCalledWith('test.1')
-      expect(formState.validateField).toHaveBeenCalledWith('test.2')
+      expect(formState.validateField).toHaveBeenCalledWith('test')
     })
 
     it('should move item up', async () => {
@@ -244,17 +233,6 @@ describe('useRepeatable', () => {
 
       expect(result).toBe(false)
       expect(formState.setFieldValue).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('cleanup', () => {
-    it('should unregister all fields on cleanup', () => {
-      formState.getFieldValue = vi.fn().mockReturnValue(['item1', 'item2'])
-      const repeatable = useRepeatable('test', formState).value
-
-      repeatable.cleanup()
-
-      expect(formState.unregisterField).toHaveBeenCalledTimes(2)
     })
   })
 })
