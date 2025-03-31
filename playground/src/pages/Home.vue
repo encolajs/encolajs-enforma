@@ -383,50 +383,41 @@
                 </template>
               </HeadlessField>
               <HeadlessField
-                :name="`experience.${index}.end`">
-                <template #default="{ value, attrs, error, events, id }">
+                :names="{end: `experience.${index}.end`, current: `experience.${index}.current`}">
+                <template #default="{end, current}">
                   <div>
-                    <label :for="id">End</label>
+                    <label :for="end.id">End</label>
                     <DatePicker
-                      :id="id"
-                      :model-value="value"
+                      :id="end.id"
+                      :model-value="end.value"
                       date-format="yy-mm-dd"
                       fluid
-                      :disabled="formState.getField(`experience.${index}.current`)?.value"
-                      v-bind="attrs"
-                      v-on="events"
-                      @date-select="(date) => events.change({value: formatDate(date)})"
+                      :disabled="current.value"
+                      v-bind="end.attrs"
+                      v-on="end.events"
+                      @date-select="(date) => end.events.change({value: formatDate(date)})"
                     />
-                    <div v-if="error"
-                         :id="attrs['aria-errormessage']"
+                    <div class="flex align-center mt-2">
+                      <ToggleSwitch
+                        :id="current.id"
+                        class="me-2"
+                        :model-value="current.value"
+                        v-bind="current.attrs"
+                        :true-value="true"
+                        :false-value="false"
+                        @change="(evt) => onChangeExperienceCurrent(index, evt.srcElement?.checked)"
+                      />
+                      <span @click="onChangeExperienceCurrent(index, !current.value)">Currently working here</span>
+                    </div>
+                    <div v-if="end.error"
+                         :id="end.attrs['aria-errormessage']"
                          class="text-red-500">
-                      {{ error }}
+                      {{ end.error }}
                     </div>
                   </div>
                 </template>
               </HeadlessField>
-              <HeadlessField
-                :name="`experience.${index}.current`">
-                <template #default="{ value, attrs, error, events, id }">
-                  <div class="flex align-center">
-                    <ToggleSwitch
-                      :id="id"
-                      class="me-2"
-                      :model-value="value"
-                      v-bind="attrs"
-                      :true-value="true"
-                      :false-value="false"
-                      @change="(evt) => onChangeExperienceCurrent(index, evt.srcElement?.checked)"
-                    />
-                    <span @click="onChangeExperienceCurrent(index, !value)">Currently working here</span>
-                  </div>
-                  <div v-if="error"
-                       :id="attrs['aria-errormessage']"
-                       class="text-red-500">
-                  </div>
-                </template>
-              </HeadlessField>
-              <div class="flex gap-2 items-right place-content-end">
+              <div class="col-span-2 flex gap-2 items-right place-content-end">
                 <Button
                   severity="danger"
                   type="button"

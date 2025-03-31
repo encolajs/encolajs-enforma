@@ -4,7 +4,7 @@ import {
   SetupContext,
   onBeforeUnmount,
   watch,
-  ref,
+  ref, computed,
 } from 'vue'
 import { useField } from '../../composables/useField'
 import { FieldOptions, FormStateReturn } from '../../types'
@@ -16,7 +16,11 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true,
+      required: false,
+    },
+    names: {
+      type: Object,
+      required: false,
     },
     validateOn: {
       type: String,
@@ -38,26 +42,66 @@ export default defineComponent({
     // Create a trigger ref to force re-rendering when the repeatable data changes
     const renderTrigger = ref(0)
 
-    const field = useField(props.name, formState, {
-      validateOn: props.validateOn,
-    } as FieldOptions)
 
-    watch(
-      () => field.value,
-      () => {
-        renderTrigger.value++
-      },
-      { deep: true }
-    )
+    // Handle single field case (backwards compatibility)
+    if (props.name && !props.names) {
+      const field = useField(props.name, formState, {
+        validateOn: props.validateOn,
+      } as FieldOptions)
 
-    onBeforeUnmount(() => {
-      formState.unregisterField(props.name)
-    })
+      const unwatch = watch(
+        () => field.value,
+        () => {
+          renderTrigger.value++
+        },
+        { deep: true }
+      )
 
-    return () => {
-      // Include renderTrigger in the render function to ensure it re-evaluates
-      const currentTrigger = renderTrigger.value
-      return slots.default?.(field.value)
+      onBeforeUnmount(() => {
+        formState.unregisterField(props.name)
+        unwatch()
+      })
+
+      return () => {
+        // Include renderTrigger in the render function to ensure it re-evaluates
+        const currentTrigger = renderTrigger.value
+        return slots.default?.(field.value)
+      }
     }
+
+    // Handle multiple fields case
+    if (props.names) {
+      const unwatchers: Record<string, Function> = {};
+      const fields = computed(() => Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
+        acc[key] = useField(fieldName, formState, {
+          validateOn: props.validateOn,
+        } as FieldOptions).value
+
+        unwatchers[key] = watch(
+          () => acc[key].value,
+          () => {
+            renderTrigger.value++
+          },
+          { deep: true }
+        )
+
+        return acc
+      }, {} as Record<string, any>))
+
+      // Cleanup on unmount
+      onBeforeUnmount(() => {
+        Object.values(props.names as Array<string>).forEach(fieldName => {
+          formState.unregisterField(fieldName)
+          unwatchers[fieldName]()
+        })
+      })
+
+      // Return slot with fields object
+      return () => slots.default?.(fields.value)
+    }
+
+
+    console.error('HeadlessField requires either name or names prop')
+    return () => null
   },
 })
