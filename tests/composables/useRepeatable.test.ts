@@ -182,7 +182,7 @@ describe('useRepeatable', () => {
       await repeatable.move(0, 2)
 
       // Should validate all items in the affected range
-      expect(formState.validateField).toHaveBeenCalledWith('test')
+      expect(formState.validateField).toHaveBeenCalledWith('test', false)
     })
 
     it('should move item up', async () => {

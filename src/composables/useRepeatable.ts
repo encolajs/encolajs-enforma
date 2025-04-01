@@ -83,6 +83,7 @@ export function useRepeatable(
         }
       }
     })
+    validations.push(formState.validateField(basePath, false))
     return await Promise.all(validations)
   }
 
@@ -144,7 +145,7 @@ export function useRepeatable(
     values.splice(toIndex, 0, item)
 
     // Update the array value
-    formState.setFieldValue(basePath, values, 'blur')
+    formState.setFieldValue(basePath, values)
     triggerUpdate()
 
     // Validate affected fields
