@@ -238,16 +238,19 @@
               <td class="p-2">
                 <HeadlessField
                   :name="`skills.${index}.name`">
-                  <template #default="{ value, attrs, error, events, id }">
+                  <template #default="field">
                     <InputText
-                      :id="id"
-                      v-bind="attrs"
-                      v-on="events"
+                      :id="field.id"
+                      v-bind="field.attrs"
+                      v-on="field.events"
                     />
-                    <div v-if="error"
-                         :id="attrs['aria-errormessage']"
+                    <div v-if="field.error"
+                         :id="field.attrs['aria-errormessage']"
                          class="text-red-500">
-                      {{ error }}
+                      {{ field.error }}
+                    </div>
+                    <div>
+                    {{field}}
                     </div>
                   </template>
                 </HeadlessField>
@@ -456,7 +459,7 @@
         </template>
       </HeadlessRepeatable>
       </div>
-{{formState.fields}}
+{{formState.getData()}}xxx
       <div class="col-start-1 col-end-4 mb-4">
         <Button
           severity="primary"
@@ -485,7 +488,7 @@ const data = {
   skills: [],
   experience: [],
 }
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 2; i++) {
   let level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
   data.skills.push({ name: Math.random().toString(36).substring(5), level })
 }

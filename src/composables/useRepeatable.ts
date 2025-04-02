@@ -1,4 +1,4 @@
-import { computed, ComputedRef, onBeforeUnmount, onMounted, ref, shallowRef, triggerRef } from 'vue'
+import { computed, ComputedRef, onBeforeUnmount, onMounted, ref} from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -6,6 +6,103 @@ interface RepeatableOptions {
   max?: number
   validateOnAdd?: boolean
   validateOnRemove?: boolean
+}
+
+interface FieldState {
+  oldPath: string
+  isDirty: boolean
+  isTouched: boolean
+  isVisited: boolean
+  error: string | null
+  value: any
+}
+
+/**
+ * Collects field states for items affected by an array operation
+ */
+function collectFieldStates(
+  formState: FormStateReturn,
+  basePath: string,
+  minIndex: number,
+  maxIndex: number = Infinity
+): Map<string, FieldState> {
+  const states = new Map<string, FieldState>()
+
+  formState.pathToId.forEach((fieldId, path) => {
+    if (path.startsWith(basePath + '.')) {
+      const pathParts = path.split('.')
+      const itemIndex = parseInt(pathParts[pathParts.length - 2])
+
+      if (itemIndex >= minIndex && (maxIndex === Infinity || itemIndex <= maxIndex)) {
+        const field = formState.fields.get(fieldId)
+        if (field) {
+          states.set(path, {
+            oldPath: path,
+            isDirty: field.isDirty,
+            isTouched: field.isTouched,
+            isVisited: field.isVisited,
+            error: field.error,
+            value: field.value
+          })
+        }
+      }
+    }
+  })
+
+  return states
+}
+
+/**
+ * Applies collected field states after an array operation
+ */
+function applyFieldStates(
+  formState: FormStateReturn,
+  basePath: string,
+  states: Map<string, FieldState>,
+  getNewIndex: (oldIndex: number) => number
+) {
+  // Get current fields after array operation
+  const currentPaths = new Set<string>()
+  formState.pathToId.forEach((_, path) => {
+    if (path.startsWith(basePath + '.')) {
+      currentPaths.add(path)
+    }
+  })
+  // Map old paths to new paths
+  const pathMap = new Map<string, string>()
+  states.forEach((state, oldPath) => {
+    const pathParts = oldPath.split('.')
+    const oldIndex = parseInt(pathParts[pathParts.length - 2])
+    const newIndex = getNewIndex(oldIndex)
+    if (newIndex !== -1) {
+      pathParts[pathParts.length - 2] = newIndex.toString()
+      const newPath = pathParts.join('.')
+      formState.errors[oldPath] = []
+      pathMap.set(oldPath, newPath)
+    }
+  })
+
+  // Apply states to new fields
+  currentPaths.forEach(newPath => {
+    // Find the old path that maps to this new path
+    for (const [oldPath, mappedNewPath] of pathMap.entries()) {
+      if (mappedNewPath === newPath) {
+        const state = states.get(oldPath)
+        if (state) {
+          const fieldId = formState.pathToId.get(newPath)
+          const field = fieldId ? formState.fields.get(fieldId) : undefined
+          if (field) {
+            field.isDirty = state.isDirty
+            field.isTouched = state.isTouched
+            field.isVisited = state.isVisited
+            field.error = state.error
+            field.value = state.value
+          }
+        }
+        break
+      }
+    }
+  })
 }
 
 export function useRepeatable(
@@ -70,7 +167,7 @@ export function useRepeatable(
     updateTrigger.value++
   }
 
-  const validateItems = async (fromIndex: number, toIndex: number, onlyIfTouched: boolean = true) => {
+  const validateItems = async (fromIndex: number, toIndex: number, onlyIfTouched: boolean = true, validateParent: boolean = false) => {
      const validations: Promise<boolean>[] = []
     formState.fields.forEach((field, path) => {
       if (!path.startsWith(`${basePath}.`)) {
@@ -83,7 +180,10 @@ export function useRepeatable(
         }
       }
     })
-    validations.push(formState.validateField(basePath, false))
+    if (validateParent) {
+      validations.push(formState.validateField(basePath, false))
+    }
+
     return await Promise.all(validations)
   }
 
@@ -104,10 +204,7 @@ export function useRepeatable(
 
     triggerUpdate()
 
-    await validateItems(insertAt, newValue.length - 1, false)
-    if (options.validateOnAdd) {
-      await formState.validateField(basePath, false)
-    }
+    await validateItems(insertAt, newValue.length - 1, true, options.validateOnAdd)
 
     return true
   }
@@ -115,7 +212,7 @@ export function useRepeatable(
   const remove = async (index: number) => {
     if (!canRemove.value) return false
 
-    const values = value.value
+    const values: any[] = value.value
 
     values.splice(index, 1)
 
@@ -127,10 +224,7 @@ export function useRepeatable(
     const minIndex = Math.min(index, values.length - 1)
     const maxIndex = Math.max(index, values.length - 1)
 
-    await validateItems(minIndex, maxIndex, true)
-    if (options.validateOnRemove) {
-      await formState.validateField(basePath, false)
-    }
+    await validateItems(minIndex, maxIndex, true, options.validateOnRemove)
 
     formState.touchField(basePath)
 
@@ -141,20 +235,32 @@ export function useRepeatable(
     const values = value.value
     if (fromIndex === toIndex) return true
 
+    const minIndex = Math.min(fromIndex, toIndex)
+    const maxIndex = Math.max(fromIndex, toIndex)
+    const states = collectFieldStates(formState, basePath, minIndex, maxIndex)
+
     const [item] = values.splice(fromIndex, 1)
     values.splice(toIndex, 0, item)
 
+    const getNewIndex = (oldIndex: number) => {
+      if (oldIndex === fromIndex) return toIndex
+      if (fromIndex < toIndex) {
+        if (oldIndex > fromIndex && oldIndex <= toIndex) return oldIndex - 1
+      } else {
+        if (oldIndex >= toIndex && oldIndex < fromIndex) return oldIndex + 1
+      }
+      return oldIndex
+    }
+    applyFieldStates(formState, basePath, states, getNewIndex)
+
     // Update the array value
     formState.setFieldValue(basePath, values)
-    triggerUpdate()
 
-    // Validate affected fields
-    const minIndex = Math.min(fromIndex, toIndex)
-    const maxIndex = Math.max(fromIndex, toIndex)
 
-    await validateItems(minIndex, maxIndex, false)
 
     formState.touchField(basePath)
+    await validateItems(minIndex, maxIndex, true, true)
+    triggerUpdate()
   }
 
   const moveUp = async (index: number) => {

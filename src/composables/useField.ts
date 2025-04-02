@@ -6,6 +6,7 @@ import {
   FieldReturn,
   EventTrigger,
 } from '../types'
+import { debounce } from '../utils/debounce'
 
 /**
  * Composable for managing a single form field
@@ -33,23 +34,6 @@ export function useField(
   // Keep track of field ID for re-registration
   const fieldId = fieldState?.id
 
-  // Register with existing ID
-  onMounted(() => {
-    formState.registerField(name, fieldId)
-  })
-
-  // Unregister path
-  onBeforeUnmount(() => {
-    formState.unregisterField(name)
-  })
-
-  // Validate on mount if requested
-  onMounted(() => {
-    if (options.validateOnMount) {
-      validate()
-    }
-  })
-
   /**
    * Handle value changes
    * @param value - New field value
@@ -61,7 +45,7 @@ export function useField(
       (trigger === 'change' && options.validateOn === 'change') ||
       (fieldState.isDirty && fieldState.isTouched)
     ) {
-      validate()
+      debouncedValidate()
     }
   }
 
@@ -70,10 +54,11 @@ export function useField(
    */
   function handleBlur(): void {
     fieldState.isFocused = false
-    formState.touchField(name)
+    fieldState.isTouched = true
+    fieldState.isVisited = true
     formState.setFieldValue(name, fieldState.value, 'blur')
     if (fieldState.isDirty || options.validateOn === 'blur') {
-      validate()
+      debouncedValidate()
     }
   }
 
@@ -81,9 +66,11 @@ export function useField(
    * Validate the field
    * @returns Whether the field is valid
    */
-  async function validate(): Promise<boolean> {
+  async function validate () {
     return await formState.validateField(name)
   }
+
+  const debouncedValidate = debounce(validate, 200)
 
   /**
    * Reset the field to its initial state
@@ -110,34 +97,50 @@ export function useField(
     focus: handleFocus,
   }
 
+  // Register with existing ID
+  onMounted(() => {
+    formState.registerField(name, fieldId)
+    if (options.validateOnMount) {
+      validate()
+    }
+  })
+
+  // Unregister path
+  onBeforeUnmount(() => {
+    formState.unregisterField(name)
+  })
+
   // Create exported API object with all field state and methods
-  return computed(() => ({
-    // Field value and state
-    value: formState.getFieldValue(name),
-    error: fieldState.error,
-    isDirty: fieldState.isDirty,
-    isTouched: fieldState.isTouched,
-    isValidating: fieldState.isValidating,
-    isVisited: fieldState.isVisited,
-    isFocused: fieldState.isFocused,
+  return computed(() => {
+    const value = formState.getFieldValue(name)
+    return {
+      // Field value and state
+      value,
+      error: fieldState.error,
+      isDirty: fieldState.isDirty,
+      isTouched: fieldState.isTouched,
+      isValidating: fieldState.isValidating,
+      isVisited: fieldState.isVisited,
+      isFocused: fieldState.isFocused,
 
-    // Methods
-    validate,
-    reset,
+      // Methods
+      validate,
+      reset,
 
-    // HTML binding helpers
-    attrs: {
-      value: fieldState.value,
+      // HTML binding helpers
+      attrs: {
+        value,
 
-      'aria-invalid': !!fieldState.error,
-      ...(fieldState.error
-        ? { 'aria-errormessage': `error-${fieldState.id}` }
-        : {}),
-    },
-    events,
+        'aria-invalid': !!fieldState.error,
+        ...(fieldState.error
+          ? { 'aria-errormessage': `error-${fieldState.id}` }
+          : {}),
+      },
+      events,
 
-    // For arrays and custom field types
-    name,
-    id: fieldState.id,
-  }))
+      // For arrays and custom field types
+      name,
+      id: fieldState.id,
+    } as FieldReturn
+  })
 }
