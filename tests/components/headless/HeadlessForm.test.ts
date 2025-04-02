@@ -12,7 +12,7 @@ describe('HeadlessForm', () => {
       const formState = inject(formStateKey)
       encolaForm = formState as FormStateReturn
       return {
-        [formStateKey]: formState
+        [formStateKey]: formState,
       }
     },
     template: '<div></div>',

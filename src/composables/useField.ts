@@ -64,7 +64,7 @@ export function useField(
    * Validate the field
    * @returns Whether the field is valid
    */
-  async function validate () {
+  async function validate() {
     return await formState.validateField(name)
   }
 

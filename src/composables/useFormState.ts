@@ -280,7 +280,10 @@ export function useFormState(
   /**
    * Validate a specific field
    */
-  async function validateField(name: string, onlyIfTouched: boolean = false): Promise<boolean> {
+  async function validateField(
+    name: string,
+    onlyIfTouched: boolean = false
+  ): Promise<boolean> {
     const fieldState = registerField(name)
 
     if (onlyIfTouched && !fieldState.isTouched) {
@@ -313,7 +316,6 @@ export function useFormState(
       if (isValid) {
         tentativeDataSource.value.commit(name)
       }
-
 
       return isValid
     } catch (error: any) {

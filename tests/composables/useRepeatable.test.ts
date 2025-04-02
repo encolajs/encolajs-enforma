@@ -98,7 +98,7 @@ describe('useRepeatable', () => {
         validateOnAdd: true,
       })
 
-      await repeatable.value.add({a: null})
+      await repeatable.value.add({ a: null })
 
       expect(formState.validateField).toHaveBeenCalledWith('test', false)
     })

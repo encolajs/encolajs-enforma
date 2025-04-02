@@ -4,7 +4,8 @@ import {
   SetupContext,
   onBeforeUnmount,
   watch,
-  ref, computed,
+  ref,
+  computed,
 } from 'vue'
 import { useField } from '../../composables/useField'
 import { FieldOptions, FormStateReturn } from '../../types'
@@ -42,7 +43,6 @@ export default defineComponent({
     // Create a trigger ref to force re-rendering when the repeatable data changes
     const renderTrigger = ref(0)
 
-
     // Handle single field case (backwards compatibility)
     if (props.name && !props.names) {
       const field = useField(props.name, formState, {
@@ -71,26 +71,28 @@ export default defineComponent({
 
     // Handle multiple fields case
     if (props.names) {
-      const unwatchers: Record<string, Function> = {};
-      const fields = computed(() => Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
-        acc[key] = useField(fieldName, formState, {
-          validateOn: props.validateOn,
-        } as FieldOptions).value
+      const unwatchers: Record<string, Function> = {}
+      const fields = computed(() =>
+        Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
+          acc[key] = useField(fieldName, formState, {
+            validateOn: props.validateOn,
+          } as FieldOptions).value
 
-        unwatchers[key] = watch(
-          () => acc[key].value,
-          () => {
-            renderTrigger.value++
-          },
-          { deep: true }
-        )
+          unwatchers[key] = watch(
+            () => acc[key].value,
+            () => {
+              renderTrigger.value++
+            },
+            { deep: true }
+          )
 
-        return acc
-      }, {} as Record<string, any>))
+          return acc
+        }, {} as Record<string, any>)
+      )
 
       // Cleanup on unmount
       onBeforeUnmount(() => {
-        Object.values(props.names as Array<string>).forEach(fieldName => {
+        Object.values(props.names as Array<string>).forEach((fieldName) => {
           formState.unregisterField(fieldName)
           unwatchers[fieldName]()
         })
@@ -99,7 +101,6 @@ export default defineComponent({
       // Return slot with fields object
       return () => slots.default?.(fields.value)
     }
-
 
     console.error('HeadlessField requires either name or names prop')
     return () => null

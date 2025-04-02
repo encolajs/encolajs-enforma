@@ -1,4 +1,4 @@
-import { computed, ComputedRef, onBeforeUnmount, onMounted, ref} from 'vue'
+import { computed, ComputedRef, onBeforeUnmount, onMounted, ref } from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -32,7 +32,10 @@ function collectFieldStates(
       const pathParts = path.split('.')
       const itemIndex = parseInt(pathParts[pathParts.length - 2])
 
-      if (itemIndex >= minIndex && (maxIndex === Infinity || itemIndex <= maxIndex)) {
+      if (
+        itemIndex >= minIndex &&
+        (maxIndex === Infinity || itemIndex <= maxIndex)
+      ) {
         const field = formState.fields.get(fieldId)
         if (field) {
           states.set(path, {
@@ -40,7 +43,7 @@ function collectFieldStates(
             isDirty: field.isDirty,
             isTouched: field.isTouched,
             error: field.error,
-            value: field.value
+            value: field.value,
           })
         }
       }
@@ -81,7 +84,7 @@ function applyFieldStates(
   })
 
   // Apply states to new fields
-  currentPaths.forEach(newPath => {
+  currentPaths.forEach((newPath) => {
     // Find the old path that maps to this new path
     for (const [oldPath, mappedNewPath] of pathMap.entries()) {
       if (mappedNewPath === newPath) {
@@ -115,7 +118,8 @@ export function useRepeatable(
     throw new Error('Form state is required')
   }
 
-  const fieldState = formState.getField(basePath) || formState.registerField(basePath)
+  const fieldState =
+    formState.getField(basePath) || formState.registerField(basePath)
 
   // Keep track of field ID for re-registration
   const fieldId = fieldState?.id
@@ -164,8 +168,13 @@ export function useRepeatable(
     updateTrigger.value++
   }
 
-  const validateItems = async (fromIndex: number, toIndex: number, onlyIfTouched: boolean = true, validateParent: boolean = false) => {
-     const validations: Promise<boolean>[] = []
+  const validateItems = async (
+    fromIndex: number,
+    toIndex: number,
+    onlyIfTouched: boolean = true,
+    validateParent: boolean = false
+  ) => {
+    const validations: Promise<boolean>[] = []
     formState.fields.forEach((field, path) => {
       if (!path.startsWith(`${basePath}.`)) {
         return
@@ -201,7 +210,12 @@ export function useRepeatable(
 
     triggerUpdate()
 
-    await validateItems(insertAt, newValue.length - 1, true, options.validateOnAdd)
+    await validateItems(
+      insertAt,
+      newValue.length - 1,
+      true,
+      options.validateOnAdd
+    )
 
     return true
   }
@@ -252,8 +266,6 @@ export function useRepeatable(
 
     // Update the array value
     formState.setFieldValue(basePath, values)
-
-
 
     formState.touchField(basePath)
     await validateItems(minIndex, maxIndex, true, true)
