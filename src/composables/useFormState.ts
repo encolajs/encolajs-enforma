@@ -129,7 +129,6 @@ export function useFormState(
       isDirty: false,
       isTouched: false,
       isValidating: false,
-      isVisited: false,
       isFocused: false,
     })
 
@@ -262,7 +261,6 @@ export function useFormState(
 
     isTouched.value = true
     fieldState.isTouched = true
-    fieldState.isVisited = true
 
     // Validate if configured to do so
     const validateOn = options.validateOn || 'blur'
@@ -391,7 +389,6 @@ export function useFormState(
       fieldState.isTouched = false
       fieldState.isValidating = false
       fieldState.isValid = undefined
-      fieldState.isVisited = false
     }
 
     // Reset form state

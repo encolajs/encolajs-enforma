@@ -12,7 +12,6 @@ interface FieldState {
   oldPath: string
   isDirty: boolean
   isTouched: boolean
-  isVisited: boolean
   error: string | null
   value: any
 }
@@ -40,7 +39,6 @@ function collectFieldStates(
             oldPath: path,
             isDirty: field.isDirty,
             isTouched: field.isTouched,
-            isVisited: field.isVisited,
             error: field.error,
             value: field.value
           })
@@ -94,7 +92,6 @@ function applyFieldStates(
           if (field) {
             field.isDirty = state.isDirty
             field.isTouched = state.isTouched
-            field.isVisited = state.isVisited
             field.error = state.error
             field.value = state.value
           }

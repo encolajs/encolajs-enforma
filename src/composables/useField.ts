@@ -54,9 +54,7 @@ export function useField(
    */
   function handleBlur(): void {
     fieldState.isFocused = false
-    fieldState.isTouched = true
-    fieldState.isVisited = true
-    formState.setFieldValue(name, fieldState.value, 'blur')
+    formState.touchField(name)
     if (fieldState.isDirty || options.validateOn === 'blur') {
       debouncedValidate()
     }
@@ -120,7 +118,6 @@ export function useField(
       isDirty: fieldState.isDirty,
       isTouched: fieldState.isTouched,
       isValidating: fieldState.isValidating,
-      isVisited: fieldState.isVisited,
       isFocused: fieldState.isFocused,
 
       // Methods

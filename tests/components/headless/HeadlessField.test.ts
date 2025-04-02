@@ -114,7 +114,6 @@ describe('HeadlessField', () => {
         isDirty: expect.any(Boolean),
         isTouched: expect.any(Boolean),
         isValidating: expect.any(Boolean),
-        isVisited: expect.any(Boolean),
         isFocused: expect.any(Boolean),
         validate: expect.any(Function),
         reset: expect.any(Function),

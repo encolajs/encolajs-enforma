@@ -12,7 +12,6 @@ const mockFormState = {
     isDirty: false,
     isTouched: false,
     isValidating: false,
-    isVisited: false,
   })),
   unregisterField: vi.fn(),
   getField: vi.fn(),
@@ -264,7 +263,6 @@ describe('useField', () => {
         isDirty: true,
         isTouched: true,
         isValidating: false,
-        isVisited: true,
       }
 
       // Mock registerField to return our error state

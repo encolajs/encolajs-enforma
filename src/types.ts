@@ -25,7 +25,6 @@ export interface FieldState {
   isTouched: boolean
   isValidating: boolean
   isValid?: boolean
-  isVisited: boolean
   isFocused: boolean
   focusHandler?: () => void
 }
@@ -105,7 +104,6 @@ export interface FieldReturn {
   isDirty: boolean
   isTouched: boolean
   isValidating: boolean
-  isVisited: boolean
   isFocused: boolean
 
   // Methods

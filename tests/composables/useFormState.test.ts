@@ -128,7 +128,6 @@ describe('useFormState', () => {
           isDirty: false,
           isTouched: false,
           isValidating: false,
-          isVisited: false,
         })
       )
 
@@ -179,14 +178,12 @@ describe('useFormState', () => {
       // Register field first
       const fieldState = formState.registerField(fieldName)
       expect(fieldState.isTouched).toBe(false)
-      expect(fieldState.isVisited).toBe(false)
 
       // Touch field
       formState.touchField(fieldName)
 
       // Check field state was updated
       expect(fieldState.isTouched).toBe(true)
-      expect(fieldState.isVisited).toBe(true)
     })
 
     it('should unregister nested fields in correct order', () => {
