@@ -263,17 +263,10 @@ export function useFormState(
     fieldState.isTouched = true
 
     // Validate if configured to do so
-    const validateOn = options.validateOn || 'blur'
+    const validateOn = options.validateOn || 'change'
 
     if (validateOn === 'blur') {
       validateField(name)
-    }
-
-    // Commit to actual data source if configured to do so
-    const syncOn = options.syncOn || 'blur'
-
-    if (syncOn === 'blur') {
-      tentativeDataSource.value.commit(name)
     }
   }
 
