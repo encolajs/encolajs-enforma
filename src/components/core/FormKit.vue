@@ -6,7 +6,6 @@
     :custom-messages="messages"
     :submit-handler="onSubmit"
     :validate-on="config.validateOn"
-    :sync-on="config.syncOn"
   >
     <template #default="formState">
       <form v-bind="$attrs" @submit.prevent="formState.submit" novalidate>

@@ -45,8 +45,6 @@ export interface FormStateOptions {
   customMessages?: CustomMessagesConfig
   /** When to run validation */
   validateOn?: 'input' | 'change' | 'blur' | 'submit'
-  /** When to sync data to the original source */
-  syncOn?: 'input' | 'change' | 'blur' | 'submit'
   /** Form submission handler */
   submitHandler?: (data: any) => Promise<void> | void
 }

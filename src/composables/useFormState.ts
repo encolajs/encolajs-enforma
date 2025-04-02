@@ -243,24 +243,6 @@ export function useFormState(
       isTouched.value = true
     }
 
-    // Validate if needed
-    const shouldValidate =
-      options?.validateOn === trigger || options?.validateOn === 'input'
-    if (shouldValidate) {
-      validateField(name)
-    }
-
-    // Commit to actual data source if configured to do so
-    const syncOn = options.syncOn || 'blur'
-
-    if (
-      syncOn === 'input' ||
-      (syncOn === 'change' && trigger === 'change') ||
-      (syncOn === 'blur' && trigger === 'blur')
-    ) {
-      tentativeDataSource.value.commit(name)
-    }
-
     // Trigger validation for dependent fields
     const dependencies = validator.getDependentFields?.(name) || []
 
@@ -329,6 +311,11 @@ export function useFormState(
         fieldState.isValid = true
         delete errors[name]
       }
+
+      if (isValid) {
+        tentativeDataSource.value.commit(name)
+      }
+
 
       return isValid
     } catch (error: any) {

@@ -40,7 +40,6 @@ export const DEFAULT_CONFIG: FormKitConfig = {
   // Default behavior configuration
   behavior: {
     validateOn: 'blur',
-    syncOn: 'blur',
     showErrorsOn: 'touched',
   },
 

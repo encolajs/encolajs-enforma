@@ -37,7 +37,6 @@ export interface FieldPropsConfig {
  */
 export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
-  syncOn: 'input' | 'change' | 'blur' | 'submit'
   showErrorsOn: 'touched' | 'dirty' | 'focus' | 'always'
   [key: string]: any
 }
