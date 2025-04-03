@@ -29,30 +29,36 @@ function collectFieldStates(
   maxIndex: number = Infinity,
   getNewIndex: (oldIndex: number) => number
 ): Map<string, FieldState> {
-  const states = new Map<string, FieldState>();
+  const states = new Map<string, FieldState>()
 
   // First pass: collect all states and determine old/new indices
   formState.pathToId.forEach((fieldId, path) => {
     if (path.startsWith(basePath + '.')) {
-      const pathParts = path.split('.');
+      const pathParts = path.split('.')
       // Find the array index part in the path
-      const arrayIndexPosition = pathParts.findIndex((part, idx) =>
-        idx > 0 && /^\d+$/.test(part) && pathParts[idx-1] === basePath.split('.').pop()
-      );
+      const arrayIndexPosition = pathParts.findIndex(
+        (part, idx) =>
+          idx > 0 &&
+          /^\d+$/.test(part) &&
+          pathParts[idx - 1] === basePath.split('.').pop()
+      )
 
       if (arrayIndexPosition !== -1) {
-        const itemIndex = parseInt(pathParts[arrayIndexPosition]);
+        const itemIndex = parseInt(pathParts[arrayIndexPosition])
 
-        if (itemIndex >= minIndex && (maxIndex === Infinity || itemIndex <= maxIndex)) {
-          const field = formState.fields.get(fieldId);
+        if (
+          itemIndex >= minIndex &&
+          (maxIndex === Infinity || itemIndex <= maxIndex)
+        ) {
+          const field = formState.fields.get(fieldId)
           if (field) {
-            const newIndex = getNewIndex(itemIndex);
+            const newIndex = getNewIndex(itemIndex)
 
             if (newIndex !== -1) {
               // Create new path with the updated index
-              const newPathParts = [...pathParts];
-              newPathParts[arrayIndexPosition] = newIndex.toString();
-              const newPath = newPathParts.join('.');
+              const newPathParts = [...pathParts]
+              newPathParts[arrayIndexPosition] = newIndex.toString()
+              const newPath = newPathParts.join('.')
 
               states.set(path, {
                 oldPath: path,
@@ -62,53 +68,53 @@ function collectFieldStates(
                 isDirty: field.isDirty,
                 isTouched: field.isTouched,
                 error: field.error,
-                value: field.value
-              });
+                value: field.value,
+              })
             }
           }
         }
       }
     }
-  });
+  })
 
-  return states;
+  return states
 }
 
 /**
  * Determines the optimal order for applying field states to prevent overwriting
  */
 function getOptimalApplyOrder(states: Map<string, FieldState>): string[] {
-  const stateEntries = Array.from(states.entries());
+  const stateEntries = Array.from(states.entries())
 
   // Group by movement direction (up or down)
-  const movingUp: [string, FieldState][] = [];
-  const movingDown: [string, FieldState][] = [];
-  const unchanged: [string, FieldState][] = [];
+  const movingUp: [string, FieldState][] = []
+  const movingDown: [string, FieldState][] = []
+  const unchanged: [string, FieldState][] = []
 
-  stateEntries.forEach(entry => {
-    const [_, state] = entry;
+  stateEntries.forEach((entry) => {
+    const [_, state] = entry
     if (state.newIndex < state.oldIndex) {
-      movingUp.push(entry);
+      movingUp.push(entry)
     } else if (state.newIndex > state.oldIndex) {
-      movingDown.push(entry);
+      movingDown.push(entry)
     } else {
-      unchanged.push(entry);
+      unchanged.push(entry)
     }
-  });
+  })
 
   // Sort movements:
   // For items moving up (to lower indices), process highest oldIndex first
-  movingUp.sort((a, b) => b[1].oldIndex - a[1].oldIndex);
+  movingUp.sort((a, b) => b[1].oldIndex - a[1].oldIndex)
 
   // For items moving down (to higher indices), process lowest oldIndex first
-  movingDown.sort((a, b) => a[1].oldIndex - b[1].oldIndex);
+  movingDown.sort((a, b) => a[1].oldIndex - b[1].oldIndex)
 
   // Combine the results in optimal order - unchanged can go anywhere
   return [
     ...movingUp.map(([path]) => path),
     ...movingDown.map(([path]) => path),
-    ...unchanged.map(([path]) => path)
-  ];
+    ...unchanged.map(([path]) => path),
+  ]
 }
 /**
  * Applies collected field states after an array operation
@@ -118,32 +124,30 @@ function applyFieldStates(
   states: Map<string, FieldState>
 ) {
   // Get the optimal order to apply the states
-  const applyOrder = getOptimalApplyOrder(states);
-console.log(applyOrder)
+  const applyOrder = getOptimalApplyOrder(states)
 
   // Apply states in the determined order
-  applyOrder.forEach(oldPath => {
-    const state = states.get(oldPath);
-    if (!state) return;
+  applyOrder.forEach((oldPath) => {
+    const state = states.get(oldPath)
+    if (!state) return
 
     // Clear errors for the old path
     if (formState.errors[oldPath]) {
-      formState.errors[oldPath] = [];
+      formState.errors[oldPath] = []
     }
-    console.log(oldPath, formState.errors)
 
     // Find the field at the new path and apply the state
-    const fieldId = formState.pathToId.get(state.newPath);
-    const field = fieldId ? formState.fields.get(fieldId) : undefined;
+    const fieldId = formState.pathToId.get(state.newPath)
+    const field = fieldId ? formState.fields.get(fieldId) : undefined
 
     if (field) {
-      field.isDirty = state.isDirty;
-      field.isTouched = state.isTouched;
-      field.error = state.error;
-      field.value = state.value;
-      formState.setFieldValue(state.newPath, state.value, 'blur');
+      field.isDirty = state.isDirty
+      field.isTouched = state.isTouched
+      field.value = state.value
+      formState.setFieldValue(state.newPath, state.value, 'blur')
+      formState.validateField(state.newPath, true)
     }
-  });
+  })
 }
 
 export function useRepeatable(
@@ -285,24 +289,30 @@ export function useRepeatable(
 
   const move = async (fromIndex: number, toIndex: number) => {
     const values = [...value.value]
-    if ( fromIndex === toIndex) return true
+    if (fromIndex === toIndex) return true
 
     const minIndex = Math.min(fromIndex, toIndex)
     const maxIndex = Math.max(fromIndex, toIndex)
 
     // Define how indices will map from old to new positions
     const getNewIndex = (oldIndex: number) => {
-      if (oldIndex === fromIndex) return toIndex;
+      if (oldIndex === fromIndex) return toIndex
       if (fromIndex < toIndex) {
-        if (oldIndex > fromIndex && oldIndex <= toIndex) return oldIndex - 1;
+        if (oldIndex > fromIndex && oldIndex <= toIndex) return oldIndex - 1
       } else {
-        if (oldIndex >= toIndex && oldIndex < fromIndex) return oldIndex + 1;
+        if (oldIndex >= toIndex && oldIndex < fromIndex) return oldIndex + 1
       }
-      return oldIndex;
-    };
+      return oldIndex
+    }
 
     // Collect states with new index calculation
-    const states = collectFieldStates(formState, basePath, minIndex, maxIndex, getNewIndex);
+    const states = collectFieldStates(
+      formState,
+      basePath,
+      minIndex,
+      maxIndex,
+      getNewIndex
+    )
 
     const [item] = values.splice(fromIndex, 1)
     values.splice(toIndex, 0, item)

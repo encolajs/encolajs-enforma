@@ -111,7 +111,6 @@ export function useField(
   // Create exported API object with all field state and methods
   return computed(() => {
     const value = formState.getFieldValue(name)
-
     return {
       // Field value and state
       value,

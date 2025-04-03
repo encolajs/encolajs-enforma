@@ -1,15 +1,15 @@
-import { reactive, computed, ref, Ref } from 'vue'
+import { computed, reactive, ref, Ref } from 'vue'
 import {
-  TentativeValuesDataSource,
   DataSourceInterface,
   PlainObjectDataSource,
+  TentativeValuesDataSource,
 } from '@encolajs/validator'
 import {
+  EventTrigger,
+  FieldState,
   FormStateOptions,
   FormStateReturn,
   ValidationRules,
-  FieldState,
-  EventTrigger,
 } from '../types'
 import { useValidation } from './useValidation'
 
@@ -125,7 +125,9 @@ export function useFormState(
       id: fieldId,
       path: name,
       value: tentativeDataSource.value.getValue(name),
-      error: null,
+      error: computed(() => {
+        return (errors[name] || [])[0] || null
+      }),
       isDirty: false,
       isTouched: false,
       isValidating: false,
@@ -276,14 +278,8 @@ export function useFormState(
 
       // Update error state
       if (!isValid) {
-        const fieldErrors = validator.getErrorsForPath(name)
-        fieldState.error = fieldErrors[0] || null
-        fieldState.isValid = false
-        console.error('validated field', name, fieldErrors, tentativeDataSource.value)
-        errors[name] = fieldErrors
+        errors[name] = validator.getErrorsForPath(name)
       } else {
-        fieldState.error = null
-        fieldState.isValid = true
         delete errors[name]
       }
 
@@ -294,7 +290,6 @@ export function useFormState(
       return isValid
     } catch (error: any) {
       console.error(`Error validating field ${name}:`, error)
-      fieldState.error = error.message
       errors[name] = [error.message]
       return false
     } finally {
@@ -325,21 +320,11 @@ export function useFormState(
         // Update field-level errors
         for (const [path, fieldErrors] of Object.entries(allErrors)) {
           const fieldState = getField(path)
-          if (fieldState) {
-            fieldState.error = (fieldErrors as string[])[0] || null
-            fieldState.isValid = false
-          }
         }
       } else {
         // Clear all errors
         for (const key of Object.keys(errors)) {
           delete errors[key]
-        }
-
-        // Clear field-level errors
-        for (const fieldState of fields.values()) {
-          fieldState.error = null
-          fieldState.isValid = true
         }
       }
 
@@ -360,11 +345,9 @@ export function useFormState(
 
     // Reset field states
     for (const fieldState of fields.values()) {
-      fieldState.error = null
       fieldState.isDirty = false
       fieldState.isTouched = false
       fieldState.isValidating = false
-      fieldState.isValid = undefined
     }
 
     // Reset form state
