@@ -183,15 +183,6 @@ export function useFormState(
     }
   }
 
-  function refreshFieldValue(path: string): void {
-    const fieldState = fields.get(pathToId.get(path) || '')
-    if (!fieldState) return
-
-    // Simply get fresh value from data source and update field
-    fieldState.value = tentativeDataSource.value.getValue(path)
-    validateField(path, true)
-  }
-
   /**
    * Update a field's value
    * @param name - Field name/path
@@ -275,7 +266,7 @@ export function useFormState(
         name,
         tentativeDataSource.value
       )
-
+console.log('validating ' + name)
       // Update error state
       if (!isValid) {
         errors[name] = validator.getErrorsForPath(name)
