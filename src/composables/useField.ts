@@ -55,7 +55,7 @@ export function useField(
   function handleBlur(): void {
     fieldState.isFocused = false
     formState.touchField(name)
-    if (fieldState.isDirty || options.validateOn === 'blur') {
+    if (options.validateOn === 'blur') {
       debouncedValidate()
     }
   }
@@ -111,6 +111,7 @@ export function useField(
   // Create exported API object with all field state and methods
   return computed(() => {
     const value = formState.getFieldValue(name)
+
     return {
       // Field value and state
       value,

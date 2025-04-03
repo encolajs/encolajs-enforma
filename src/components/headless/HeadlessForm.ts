@@ -25,7 +25,7 @@ export default defineComponent({
     },
     validateOn: {
       type: String as PropType<'input' | 'change' | 'blur' | 'submit'>,
-      default: 'blur',
+      default: 'change',
       validator: (value: string) =>
         ['input', 'change', 'blur', 'submit'].includes(value),
     },

@@ -223,7 +223,7 @@
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Skills</h3>
       <div class="col-start-1 col-end-5 mb-4">
         <HeadlessRepeatable name="skills" :min="0" :max="100">
-        <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, count }">
+        <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, move, count }">
 
           <table class="mb-4 table-auto border-spacing-2" v-if="count > 0">
             <thead>
@@ -248,9 +248,6 @@
                          :id="field.attrs['aria-errormessage']"
                          class="text-red-500">
                       {{ field.error }}
-                    </div>
-                    <div>
-                    {{field}}
                     </div>
                   </template>
                 </HeadlessField>
@@ -309,7 +306,16 @@
               type="button"
               icon="pi pi-plus"
               label="Add Skill"
-              @click="add({ name: '', level: '' })"
+              @click="add({ name: '', level: '' }, 0)"
+              :disabled="!canAdd"
+              class="mr-2"
+            />
+            <Button
+              severity="secondary"
+              type="button"
+              icon="pi pi-up"
+              label="Move last to top"
+              @click="move(value.length - 1, 0)"
               :disabled="!canAdd"
               class="mr-2"
             />
@@ -459,7 +465,7 @@
         </template>
       </HeadlessRepeatable>
       </div>
-{{formState.getData()}}xxx
+
       <div class="col-start-1 col-end-4 mb-4">
         <Button
           severity="primary"
@@ -488,7 +494,7 @@ const data = {
   skills: [],
   experience: [],
 }
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 5; i++) {
   let level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
   data.skills.push({ name: Math.random().toString(36).substring(5), level })
 }

@@ -190,22 +190,6 @@ export function useFormState(
     validateField(path, true)
   }
 
-  function refreshFieldParents(path: string): void {
-    let parentPath = path
-    while (parentPath.includes('.')) {
-      parentPath = parentPath.substring(0, parentPath.lastIndexOf('.'))
-      refreshFieldValue(parentPath)
-    }
-  }
-
-  function refreshFieldChildren(path: string): void {
-    for (const [_, field] of fields.entries()) {
-      if (field.path.startsWith(path + '.')) {
-        refreshFieldValue(field.path)
-      }
-    }
-  }
-
   /**
    * Update a field's value
    * @param name - Field name/path
@@ -231,10 +215,6 @@ export function useFormState(
 
     // Update the tentative data source
     tentativeDataSource.value.setValue(name, value)
-
-    // Refresh parent and child fields
-    refreshFieldChildren(name)
-    refreshFieldParents(name)
 
     // If this is a change event, consider it as a touch event too
     if (trigger === 'change' || trigger === 'blur') {
@@ -299,6 +279,7 @@ export function useFormState(
         const fieldErrors = validator.getErrorsForPath(name)
         fieldState.error = fieldErrors[0] || null
         fieldState.isValid = false
+        console.error('validated field', name, fieldErrors, tentativeDataSource.value)
         errors[name] = fieldErrors
       } else {
         fieldState.error = null
