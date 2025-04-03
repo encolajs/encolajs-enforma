@@ -1,4 +1,10 @@
-import { computed, ComputedRef, onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+} from 'vue'
 import { FormStateReturn } from '../types'
 
 interface RepeatableOptions {
@@ -19,6 +25,11 @@ interface FieldState {
   value: any
 }
 
+interface FieldStatesCollection {
+  states: Map<string, FieldState>
+  applyOrder: string[] // Optimal order to apply states
+}
+
 /**
  * Collects field states for items affected by an array operation
  */
@@ -27,9 +38,17 @@ function collectFieldStates(
   basePath: string,
   minIndex: number,
   maxIndex: number = Infinity,
-  getNewIndex: (oldIndex: number) => number
-): Map<string, FieldState> {
+  getNewIndex: (oldIndex: number) => number,
+  insertOperation: boolean = false,
+  insertIndex?: number
+): FieldStatesCollection {
   const states = new Map<string, FieldState>()
+
+  // Pre-categorize entries for optimal ordering
+  const movingUp: string[] = []
+  const movingDown: string[] = []
+  const unchanged: string[] = []
+  const inserted: string[] = []
 
   // First pass: collect all states and determine old/new indices
   formState.pathToId.forEach((fieldId, path) => {
@@ -68,8 +87,20 @@ function collectFieldStates(
                 isDirty: field.isDirty,
                 isTouched: field.isTouched,
                 error: field.error,
-                value: field.value,
+                // fallback to formState if something is wrong
+                // (ex: moving last item first after insert)
+                // @todo: investigate the cause for this
+                value: field.value || formState.getFieldValue(path),
               })
+
+              // Categorize by movement direction
+              if (newIndex < itemIndex) {
+                movingUp.push(path)
+              } else if (newIndex > itemIndex) {
+                movingDown.push(path)
+              } else {
+                unchanged.push(path)
+              }
             }
           }
         }
@@ -77,61 +108,88 @@ function collectFieldStates(
     }
   })
 
-  return states
-}
+  // For insert operations, we need to collect templates for the inserted fields
+  if (insertOperation && insertIndex !== undefined) {
+    // Find a representative item that has the same structure as what we're inserting
+    // This could be any item in the array
+    const representativeIndex =
+      formState.getFieldValue(basePath)?.length > 0 ? 0 : -1
 
-/**
- * Determines the optimal order for applying field states to prevent overwriting
- */
-function getOptimalApplyOrder(states: Map<string, FieldState>): string[] {
-  const stateEntries = Array.from(states.entries())
+    // If we have a representative item, use its structure to create clean states for inserted item
+    if (representativeIndex >= 0) {
+      const representativePrefix = `${basePath}.${representativeIndex}`
 
-  // Group by movement direction (up or down)
-  const movingUp: [string, FieldState][] = []
-  const movingDown: [string, FieldState][] = []
-  const unchanged: [string, FieldState][] = []
+      // Find all fields that belong to the representative item
+      formState.pathToId.forEach((fieldId, path) => {
+        if (path.startsWith(representativePrefix)) {
+          // Extract the relative path (everything after the index)
+          const relativePath = path.substring(representativePrefix.length)
 
-  stateEntries.forEach((entry) => {
-    const [_, state] = entry
-    if (state.newIndex < state.oldIndex) {
-      movingUp.push(entry)
-    } else if (state.newIndex > state.oldIndex) {
-      movingDown.push(entry)
-    } else {
-      unchanged.push(entry)
+          // Create the new path for the inserted item
+          const newPath = `${basePath}.${insertIndex}${relativePath}`
+
+          // Use a unique key for inserted fields to avoid conflicts with existing paths
+          // We prefix with "insert:" to make it clear this is a special key
+          const insertKey = `insert:${newPath}`
+
+          // Create a clean state for this field
+          states.set(insertKey, {
+            oldPath: '', // No old path since it's new
+            newPath: newPath,
+            oldIndex: -1, // No old index since it's new
+            newIndex: insertIndex,
+            isDirty: false,
+            isTouched: false,
+            error: null,
+            value: null,
+          })
+
+          // Add to inserted category
+          inserted.push(insertKey)
+        }
+      })
     }
+  }
+
+  // Sort the categories for optimal application order
+  // For items moving up (to lower indices), process highest oldIndex first
+  movingUp.sort((a, b) => {
+    const stateA = states.get(a)
+    const stateB = states.get(b)
+    return (stateB?.oldIndex ?? 0) - (stateA?.oldIndex ?? 0)
   })
 
-  // Sort movements:
-  // For items moving up (to lower indices), process highest oldIndex first
-  movingUp.sort((a, b) => b[1].oldIndex - a[1].oldIndex)
-
   // For items moving down (to higher indices), process lowest oldIndex first
-  movingDown.sort((a, b) => a[1].oldIndex - b[1].oldIndex)
+  movingDown.sort((a, b) => {
+    const stateA = states.get(a)
+    const stateB = states.get(b)
+    return (stateA?.oldIndex ?? 0) - (stateB?.oldIndex ?? 0)
+  })
 
-  // Combine the results in optimal order - unchanged can go anywhere
-  return [
-    ...movingUp.map(([path]) => path),
-    ...movingDown.map(([path]) => path),
-    ...unchanged.map(([path]) => path),
-  ]
+  // The optimal order is: moving up, moving down, unchanged, inserted
+  const applyOrder = [...movingUp, ...movingDown, ...unchanged, ...inserted]
+
+  return { states, applyOrder }
 }
+
 /**
  * Applies collected field states after an array operation
  */
 function applyFieldStates(
   formState: FormStateReturn,
-  states: Map<string, FieldState>
+  statesCollection: FieldStatesCollection
 ) {
-  // Get the optimal order to apply the states
-  const applyOrder = getOptimalApplyOrder(states)
+  const { states, applyOrder } = statesCollection
 
   // Apply states in the determined order
   applyOrder.forEach((oldPath) => {
     const state = states.get(oldPath)
     if (!state) return
 
-    // Clear errors for the old path
+    // Handle special paths for inserted items (prefixed with "insert:")
+    const isInsertedField = oldPath.startsWith('insert:')
+
+    // For normal fields (not newly inserted), clear errors for the old path
     if (formState.errors[oldPath]) {
       formState.errors[oldPath] = []
     }
@@ -141,11 +199,15 @@ function applyFieldStates(
     const field = fieldId ? formState.fields.get(fieldId) : undefined
 
     if (field) {
+      field.value = state.value
       field.isDirty = state.isDirty
       field.isTouched = state.isTouched
-      field.value = state.value
-      formState.setFieldValue(state.newPath, state.value, 'blur')
-      formState.validateField(state.newPath, true)
+
+      formState.setFieldValue(state.newPath, state.value)
+      // Only set value for existing fields, not for newly inserted fields
+      if (!isInsertedField) {
+        formState.validateField(state.newPath, true)
+      }
     }
   })
 }
@@ -247,11 +309,32 @@ export function useRepeatable(
         ? Math.min(position, newValue.length)
         : newValue.length
 
+    // Preserve states of fields after the insertion point
+    // Define how indices will map after insertion
+    const getNewIndex = (oldIndex: number) => {
+      // Items after or at the insertion point will shift down by 1
+      return oldIndex >= insertAt ? oldIndex + 1 : oldIndex
+    }
+
+    // Collect states with new index calculation
+    const states = collectFieldStates(
+      formState,
+      basePath,
+      insertAt,
+      Infinity,
+      getNewIndex,
+      true,
+      insertAt
+    )
+
     // Insert new value
-    newValue.splice(insertAt, 0, newItem ?? [])
+    newValue.splice(insertAt, 0, newItem ?? {})
 
     // Update form value
     formState.setFieldValue(basePath, newValue, 'blur') // to commit the values to the data source
+
+    // Apply the collected field states
+    applyFieldStates(formState, states)
 
     triggerUpdate()
 
@@ -270,10 +353,31 @@ export function useRepeatable(
 
     const values: any[] = [...value.value]
 
+    // Define how indices will map after removal
+    const getNewIndex = (oldIndex: number) => {
+      if (oldIndex === index) {
+        // The item being removed doesn't have a new index
+        return -1
+      }
+      // Items after the removed index will shift up by 1
+      return oldIndex > index ? oldIndex - 1 : oldIndex
+    }
+
+    // Collect states with new index calculation
+    const states = collectFieldStates(
+      formState,
+      basePath,
+      index,
+      Infinity,
+      getNewIndex
+    )
+
     values.splice(index, 1)
 
     // Update the array value
     formState.setFieldValue(basePath, values, 'blur')
+    applyFieldStates(formState, states)
+
     triggerUpdate()
 
     // Validate affected fields
@@ -318,9 +422,8 @@ export function useRepeatable(
     values.splice(toIndex, 0, item)
 
     // Update the array value
-    //formState.errors = {}
+    formState.setFieldValue(basePath, values, 'blur')
     applyFieldStates(formState, states)
-    formState.setFieldValue(basePath, values)
 
     formState.touchField(basePath)
     await validateItems(minIndex, maxIndex, true, true)

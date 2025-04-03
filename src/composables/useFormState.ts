@@ -185,14 +185,11 @@ export function useFormState(
 
   /**
    * Update a field's value
-   * @param name - Field name/path
-   * @param value - New field value
-   * @param trigger - Event trigger ('input', 'change', 'blur')
    */
   function setFieldValue(
     name: string,
     value: any,
-    trigger: EventTrigger = 'input'
+    trigger?: EventTrigger
   ): void {
     const fieldState = registerField(name)
     const oldValue = fieldState.value
@@ -266,7 +263,7 @@ export function useFormState(
         name,
         tentativeDataSource.value
       )
-console.log('validating ' + name)
+
       // Update error state
       if (!isValid) {
         errors[name] = validator.getErrorsForPath(name)

@@ -306,14 +306,13 @@
               type="button"
               icon="pi pi-plus"
               label="Add Skill"
-              @click="add({ name: '', level: '' }, 0)"
+              @click="add({ name: '', level: '' }, 2)"
               :disabled="!canAdd"
               class="mr-2"
             />
             <Button
-              severity="secondary"
+              severity="warn"
               type="button"
-              icon="pi pi-up"
               label="Move last to top"
               @click="move(value.length - 1, 0)"
               :disabled="!canAdd"
@@ -323,7 +322,9 @@
         </template>
       </HeadlessRepeatable>
       </div>
-
+      <pre>
+{{formState.getData().skills}}
+        </pre>
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Experience</h3>
       <div class="col-start-1 col-end-3 mb-4">
         <HeadlessRepeatable name="experience" :min="0" :max="100">
