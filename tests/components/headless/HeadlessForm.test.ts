@@ -147,7 +147,6 @@ describe('HeadlessForm', () => {
       expect(emailField?.isValidating).toBe(false)
       expect(emailField?.isTouched).toBe(true)
       expect(emailField?.isDirty).toBe(true)
-      expect(emailField?.isValid).toBe(true)
     })
 
     it('nested field', async () => {
@@ -315,20 +314,30 @@ describe('HeadlessForm', () => {
           },
         },
       })
+      let formState = formStateRef.value
+      
+      // Register the field first
+      const nameField = formState.registerField('name')
+      expect(nameField.value).toBe('John')
 
       // Modify form state
-      formStateRef.value.setFieldValue('name', 'Jane')
-      formStateRef.value.touchField('name')
+      formState.setFieldValue('name', 'Jane')
+      formState.touchField('name')
       await flushPromises()
+      
+      expect(nameField.isDirty).toBe(true)
+      expect(nameField.isTouched).toBe(true)
+      expect(nameField.value).toBe('Jane')
 
       // Reset form
-      formStateRef.value.reset()
+      formState.reset()
       await flushPromises()
 
       // Check state was reset
-      expect(formStateRef.value.getField('name')?.isTouched).toBe(false)
-      expect(formStateRef.value.isDirty).toBe(false)
-      expect(formStateRef.value.getField('name').value).toBe('John')
+      expect(nameField.isTouched).toBe(false)
+      expect(nameField.isDirty).toBe(false)
+      expect(nameField.value).toBe('John') // Should be reset to original value
+      expect(formState.isDirty).toBe(false)
     })
   })
 

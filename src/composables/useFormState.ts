@@ -1,4 +1,4 @@
-import { computed, reactive, ref, Ref } from 'vue'
+import { computed, nextTick, reactive, ref, Ref } from 'vue'
 import {
   DataSourceInterface,
   PlainObjectDataSource,
@@ -42,21 +42,23 @@ export function useFormState(
     ...(options.customMessages || {}),
   })
 
+  let localDataSource = dataSource
+
   // assume we got a plain object
   if (!dataSource.clone || !dataSource.getRawData) {
-    dataSource = new PlainObjectDataSource(dataSource)
+    localDataSource = new PlainObjectDataSource(localDataSource)
   }
 
   let tentativeDataSource: Ref<any>
   try {
     tentativeDataSource = ref(
-      new TentativeValuesDataSource(dataSource.clone(), {})
+      new TentativeValuesDataSource(localDataSource.clone(), {})
     )
   } catch (error) {
     console.error('Error creating tentative data source:', error)
-    dataSource = new PlainObjectDataSource({})
+    localDataSource = new PlainObjectDataSource({})
     tentativeDataSource = ref(
-      new TentativeValuesDataSource(dataSource.clone(), {})
+      new TentativeValuesDataSource(localDataSource.clone(), {})
     )
   }
 
@@ -331,11 +333,16 @@ export function useFormState(
       delete errors[key]
     }
 
+    // Create a fresh data source
+    tentativeDataSource.value = new TentativeValuesDataSource(localDataSource.clone(), {})
+    
     // Reset field states
     for (const fieldState of fields.values()) {
       fieldState.isDirty = false
       fieldState.isTouched = false
       fieldState.isValidating = false
+      // Update field value from the fresh data source
+      fieldState.value = tentativeDataSource.value.getValue(fieldState.path)
     }
 
     // Reset form state
@@ -346,13 +353,10 @@ export function useFormState(
     submitted.value = false
     isDirty.value = false
 
-    // Reset tentative values
-    tentativeDataSource = ref(
-      new TentativeValuesDataSource(dataSource.clone(), {})
-    )
-
     // Reset the validator
     validator.reset()
+
+    nextTick()
   }
 
   /**
@@ -423,13 +427,13 @@ export function useFormState(
       tentativeDataSource.value.getValue(name),
     getData: (): any => tentativeDataSource.value.getRawData(),
     setData: (newData: Record<string, any>): void => {
-      // Reset the form
-      reset()
-
-      // Replace the data in the data source
+      // Replace the data in the data source first
       for (const key of Object.keys(newData)) {
-        dataSource.setValue(key, newData[key])
+        localDataSource.setValue(key, newData[key])
       }
+      
+      // Then reset the form to apply the new values
+      reset()
     },
   }
 }
