@@ -5,22 +5,42 @@ import type { FormStateReturn } from '../../src'
 
 const createMockFormState = (): FormStateReturn => {
   const errors: Record<string, string[]> = {}
+  const fields = new Map()
+  const pathToId = new Map()
 
   return {
-    fields: new Map(),
-    pathToId: new Map(),
+    fields,
+    pathToId,
     isSubmitting: ref(false),
     isValidating: ref(false),
     validationCount: ref(0),
     submitted: ref(false),
     errors,
-    isDirty: computed(() => false),
-    isTouched: computed(() => false),
+    isDirty: ref(false),
+    isTouched: ref(false),
     isValid: computed(() => true),
-    registerField: vi.fn(),
+    registerField: vi.fn((path) => {
+      const id = `field_${path}`
+      const fieldState = {
+        id,
+        path,
+        value: [],
+        error: null,
+        isDirty: false,
+        isTouched: false,
+        isValidating: false,
+        isFocused: false
+      }
+      fields.set(id, fieldState)
+      pathToId.set(path, id)
+      return fieldState
+    }),
     unregisterField: vi.fn(),
     touchField: vi.fn(),
-    getField: vi.fn(),
+    getField: vi.fn((path) => {
+      const id = pathToId.get(path)
+      return id ? fields.get(id) : undefined
+    }),
     validate: vi.fn().mockResolvedValue(true),
     validateField: vi.fn().mockResolvedValue(true),
     reset: vi.fn(),
@@ -170,7 +190,7 @@ describe('useRepeatable', () => {
         'item2',
         'item3',
         'item1',
-      ])
+      ], 'blur')
     })
 
     it('should validate affected fields after move', async () => {
@@ -197,7 +217,7 @@ describe('useRepeatable', () => {
         'item2',
         'item1',
         'item3',
-      ])
+      ], 'blur')
     })
 
     it('should move item down', async () => {
@@ -212,7 +232,7 @@ describe('useRepeatable', () => {
         'item1',
         'item3',
         'item2',
-      ])
+      ], 'blur')
     })
 
     it('should not move up first item', async () => {
