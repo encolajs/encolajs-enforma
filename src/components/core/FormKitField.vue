@@ -73,7 +73,7 @@ const errorMessage = computed(() => field.value.error)
 const requiredIndicator = config.pt.required?.text || '*'
 
 const props = computed(() => {
-  let result = {}
+  let result: Record<string, any> = {}
   // wrapper props
   const classes = [
     errorMessage.value ? 'formkit-has-error' : '',
@@ -134,17 +134,10 @@ const props = computed(() => {
   result.component = originalProps.type || 'input'
 
   return (config.field_props_transformers || []).reduce(
-    (result, transformer) => {
+    (result: any, transformer: Function) => {
       return transformer(result, field, formState, config)
     },
     result
   )
-})
-
-const defaultSlotProps = computed(() => {
-  return {
-    ...field.value,
-    attrs: props.value.input,
-  }
 })
 </script>
