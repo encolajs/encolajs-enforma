@@ -1,10 +1,13 @@
 // tests/components/core/FormKitField.test.ts
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import FormKitField from '@/components/core/FormKitField.vue'
-import HeadlessField from '@/components/headless/HeadlessField'
 import { formConfigKey, formStateKey } from '@/constants/symbols'
 import type { FormKitConfig } from '@/types/config'
+import { useForm } from '@/composables/useForm'
+
+// Unmock the useField composable to use the real implementation
+vi.unmock('@/composables/useField')
 
 // Create a proper form config that matches the expected type
 const createFormConfig = (): FormKitConfig => ({
@@ -32,37 +35,9 @@ const createFormConfig = (): FormKitConfig => ({
   }
 })
 
-// Create a proper form state that matches the FormProxy type
-const createFormState = (fieldData = {}) => {
-  const formValues = {}
-  const formErrors = {}
-
-  return {
-    getField: () => ({
-      id: 'test-field-1',
-      value: '',
-      error: null,
-      attrs: {},
-      events: {
-        'onUpdate:modelValue': () => {}
-      },
-      ...fieldData
-    }),
-    all: () => formValues,
-    errors: () => formErrors,
-    values: formValues,
-    touched: {},
-    dirty: {},
-    validate: async () => true,
-    reset: () => {},
-    submit: async () => {},
-    setFieldValue: (name: string, value: any) => {
-      formValues[name] = value
-    },
-    setFieldError: (name: string, error: string) => {
-      formErrors[name] = error
-    }
-  }
+// Create actual form state using useForm
+const createFormState = (initialValues = {}, rules = {}) => {
+  return useForm(initialValues, rules)
 }
 
 describe('FormKitField', () => {
@@ -73,12 +48,18 @@ describe('FormKitField', () => {
     inheritAttrs: true
   }
 
+  let formState
+
+  beforeEach(() => {
+    // Create a fresh form state before each test
+    formState = createFormState({})
+  })
+
   it('renders a field with basic props', async () => {
     const wrapper = mount(FormKitField, {
       props: {
         name: 'test-field',
         label: 'Test Field',
-        // Use the component name "FormInput" instead of "input"
         type: 'FormInput',
         inputProps: {
           type: 'text'
@@ -86,13 +67,11 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
-          // Register our stub with the same name used in type prop
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: createFormState()
+          [formStateKey]: formState
         }
       }
     })
@@ -112,35 +91,6 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
-          FormInput: FormInputStub
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: createFormState()
-        }
-      }
-    })
-
-    expect(wrapper.find('.required-indicator').exists()).toBe(true)
-    expect(wrapper.find('.form-field-wrapper').classes()).toContain('formkit-required')
-  })
-
-  it('displays error messages when field has errors', async () => {
-    const formState = createFormState({
-      error: 'This field is required'
-    })
-    formState.setFieldError('error-field', 'This field is required')
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'error-field',
-        label: 'Error Field',
-        type: 'FormInput'
-      },
-      global: {
-        components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
@@ -150,13 +100,46 @@ describe('FormKitField', () => {
       }
     })
 
+    expect(wrapper.find('.required-indicator').exists()).toBe(true)
+    expect(wrapper.find('.form-field-wrapper').classes()).toContain('formkit-required')
+  })
+
+  it('displays error messages when field has errors', async () => {
+    // Create a form with initial value
+    const formWithErrors = createFormState({ error_field: '' })
+    
+    // Manually set errors directly on the field state
+    const fieldState = formWithErrors.getField('error_field')
+    fieldState.$errors = ['This field is required']
+    
+    // Mount the component with the field that has errors
+    const wrapper = mount(FormKitField, {
+      props: {
+        name: 'error_field',
+        label: 'Error Field',
+        type: 'FormInput'
+      },
+      global: {
+        components: { 
+          FormInput: FormInputStub
+        },
+        provide: {
+          [formConfigKey]: createFormConfig(),
+          [formStateKey]: formWithErrors
+        }
+      }
+    })
+
+    // Ensure reactive updates are processed
+    await flushPromises()
+
+    // Verify error message is displayed
     expect(wrapper.find('.form-error').text()).toBe('This field is required')
     expect(wrapper.find('.form-field-wrapper').classes()).toContain('formkit-has-error')
   })
 
   it('evaluates dynamic props correctly', async () => {
-    const formState = createFormState()
-    formState.setFieldValue('someField', 'test')
+    const dynamicFormState = createFormState({ someField: 'test' })
 
     const wrapper = mount(FormKitField, {
       props: {
@@ -169,16 +152,18 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState
+          [formStateKey]: dynamicFormState
         }
       }
     })
 
+    // Allow the dynamic props to be evaluated
+    await flushPromises()
+    
     expect(wrapper.find('input').attributes('disabled')).toBe('')
   })
 
@@ -192,12 +177,11 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: createFormState()
+          [formStateKey]: formState
         }
       }
     })
@@ -215,12 +199,11 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: createFormState()
+          [formStateKey]: formState
         }
       }
     })
@@ -253,12 +236,11 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: createFormState()
+          [formStateKey]: formState
         }
       }
     })
@@ -283,23 +265,22 @@ describe('FormKitField', () => {
   })
 
   it('handles field value changes', async () => {
-    // Create a mock form state that tracks value changes
-    const formState = createFormState()
+    // Create a new form state
+    const valueFormState = createFormState({ name: '' })
     
     const wrapper = mount(FormKitField, {
       props: {
-        name: 'input-field',
+        name: 'name',
         label: 'Input Field',
         type: 'FormInput'
       },
       global: {
         components: { 
-          HeadlessField,
           FormInput: FormInputStub
         },
         provide: {
           [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState
+          [formStateKey]: valueFormState
         }
       }
     })
@@ -309,17 +290,11 @@ describe('FormKitField', () => {
     expect(input.exists()).toBe(true)
     
     // We need to simulate the update event
-    // Since we can't directly test the real event handler that's provided by HeadlessField
-    // we'll verify that setValue was called on the input
     await input.setValue('new value')
-    
-    // In a real scenario, this would trigger the field's update event
-    // which would update the form state
-    // For testing purposes, we're going to set the field value directly
-    formState.setFieldValue('input-field', 'new value');
+    await flushPromises()
     
     // Verify the form state has been updated with our value
-    expect(formState.values['input-field']).toBe('new value')
+    expect(valueFormState['name']).toBe('new value')
   })
 
   it('renders custom component based on type', async () => {
@@ -341,12 +316,11 @@ describe('FormKitField', () => {
       },
       global: {
         components: { 
-          HeadlessField, 
           CustomComponent
         },
         provide: {
           [formConfigKey]: customConfig,
-          [formStateKey]: createFormState()
+          [formStateKey]: formState
         }
       }
     })
@@ -354,5 +328,33 @@ describe('FormKitField', () => {
     // Since the component is custom and registered globally, 
     // we can check if it gets rendered
     expect(wrapper.findComponent(CustomComponent).exists()).toBe(true)
+  })
+  
+  it('cleans up field on unmount', async () => {
+    const cleanupFormState = createFormState({})
+    const removeFieldSpy = vi.spyOn(cleanupFormState, 'removeField')
+    
+    const wrapper = mount(FormKitField, {
+      props: {
+        name: 'cleanup-field',
+        label: 'Cleanup Field',
+        type: 'FormInput'
+      },
+      global: {
+        components: { 
+          FormInput: FormInputStub
+        },
+        provide: {
+          [formConfigKey]: createFormConfig(),
+          [formStateKey]: cleanupFormState
+        }
+      }
+    })
+    
+    // Unmount component
+    wrapper.unmount()
+    
+    // Check removeField was called
+    expect(removeFieldSpy).toHaveBeenCalledWith('cleanup-field')
   })
 })
