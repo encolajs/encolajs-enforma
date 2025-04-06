@@ -1,9 +1,9 @@
 /**
- * Symbol definitions for the form kit for use with Vue's provide/inject
+ * Symbol definitions for the form kit for use with provide/inject
  */
 
 import type { FormKitConfig } from '../types/config'
-import type { FormProxy, FormStateReturn } from '../types'
+import type { FormProxy } from '../types'
 
 /**
  * Symbol for providing/injecting the form kit configuration
