@@ -37,7 +37,8 @@ import {
   ref,
   useAttrs,
   defineExpose,
-  defineEmits, PropType,
+  defineEmits,
+  PropType,
 } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
 import FormKitSchema from './FormKitSchema.vue'
@@ -73,7 +74,7 @@ const props = defineProps({
   },
   submitHandler: {
     type: Function as PropType<(form: FormProxy, data: any) => Promise<any>>,
-    required: true
+    required: true,
   },
   showResetButton: {
     type: Boolean,
@@ -88,7 +89,7 @@ const $attrs = useAttrs()
 const formRef = ref(null)
 
 defineExpose({
-  formRef
+  formRef,
 })
 
 const onSubmit = async (data: any) => {

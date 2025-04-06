@@ -114,24 +114,24 @@ describe('HeadlessRepeatable', () => {
         },
       })
 
-      // Wait for reactive initialization 
+      // Wait for reactive initialization
       await flushPromises()
 
       // Can add one more item
       expect(slotData.canAdd).toBe(true)
-      
+
       // Mock the add method since we're testing component behavior
       const addSpy = vi.spyOn(formState, 'add')
-      
+
       await slotData.add('item2')
-      
+
       // Verify add was called with correct parameters
       expect(addSpy).toHaveBeenCalledWith('items', 1, 'item2')
-      
+
       // Set up test to verify canAdd becomes false
       formState.items = ['item1', 'item2']
       await flushPromises()
-      
+
       // Cannot add more items after reaching max
       expect(slotData.canAdd).toBe(false)
     })
@@ -163,19 +163,19 @@ describe('HeadlessRepeatable', () => {
 
       // Can remove one item
       expect(slotData.canRemove).toBe(true)
-      
+
       // Mock the remove method
       const removeSpy = vi.spyOn(formState, 'remove')
-      
+
       await slotData.remove(0)
-      
+
       // Verify remove was called with correct parameters
       expect(removeSpy).toHaveBeenCalledWith('items', 0)
-      
+
       // Setup test to verify canRemove becomes false
       formState.items = ['item2']
       await flushPromises()
-      
+
       // Cannot remove more items after reaching min
       expect(slotData.canRemove).toBe(false)
     })
@@ -206,9 +206,9 @@ describe('HeadlessRepeatable', () => {
 
       // Mock the move method
       const moveSpy = vi.spyOn(formState, 'move')
-      
+
       await slotData.move(0, 2)
-      
+
       // Verify move was called with correct parameters
       expect(moveSpy).toHaveBeenCalledWith('items', 0, 2)
     })
@@ -242,9 +242,9 @@ describe('HeadlessRepeatable', () => {
 
       // Mock the validateField method
       const validateSpy = vi.spyOn(formState, 'validateField')
-      
+
       await slotData.add('newItem')
-      
+
       // Verify validateField was called with correct parameters
       expect(validateSpy).toHaveBeenCalledWith('items')
     })
@@ -276,9 +276,9 @@ describe('HeadlessRepeatable', () => {
 
       // Mock the validateField method
       const validateSpy = vi.spyOn(formState, 'validateField')
-      
+
       await slotData.remove(1)
-      
+
       // Verify validateField was called with correct parameters
       expect(validateSpy).toHaveBeenCalledWith('items')
     })
@@ -308,7 +308,7 @@ describe('HeadlessRepeatable', () => {
 
       // Wait for reactive initialization
       await flushPromises()
-      
+
       // Verify items are available in slot data
       expect(slotData.value).toEqual(['item1', 'item2'])
     })
@@ -338,7 +338,7 @@ describe('HeadlessRepeatable', () => {
 
       // Wait for reactive updates
       await flushPromises()
-      
+
       // We expect repeatable to convert the single value to an array
       expect(slotData.value).toEqual(['not-an-array'])
     })
@@ -363,7 +363,7 @@ describe('HeadlessRepeatable', () => {
           },
         },
       })
-      
+
       // Wait for reactive updates
       await flushPromises()
 
@@ -394,9 +394,9 @@ describe('HeadlessRepeatable', () => {
       // Wait for reactive initialization
       await flushPromises()
 
-      // Mock the setFieldValue method  
+      // Mock the setFieldValue method
       const moveSpy = vi.spyOn(formState, 'move')
-      
+
       // Cannot move up first item
       await slotData.moveUp(0)
       expect(moveSpy).not.toHaveBeenCalled()
@@ -410,7 +410,7 @@ describe('HeadlessRepeatable', () => {
   describe('Cleanup', () => {
     it('unregisters fields on cleanup', async () => {
       const formState = createFormState({ items: ['item1', 'item2'] })
-      
+
       const wrapper = mount(HeadlessRepeatable, {
         props: {
           name: 'items',
@@ -424,10 +424,10 @@ describe('HeadlessRepeatable', () => {
 
       // Wait for reactive initialization
       await flushPromises()
-      
+
       // Mock the removeField method
       const unregisterSpy = vi.spyOn(formState, 'removeField')
-      
+
       wrapper.unmount()
       expect(unregisterSpy).toHaveBeenCalled()
     })

@@ -2,7 +2,9 @@
   <div v-bind="props.wrapper" v-show="visible">
     <label v-if="!hideLabel" v-bind="props.label">
       {{ t(label) }}
-      <span v-if="required" v-bind="props.required">{{ requiredIndicator }}</span>
+      <span v-if="required" v-bind="props.required">{{
+        requiredIndicator
+      }}</span>
     </label>
 
     <!-- Field content slot -->
@@ -67,7 +69,7 @@ const field = useField(originalProps.name, formState, {
   validateOn: originalProps.validateOn,
 })
 
-// Clean up on unmount 
+// Clean up on unmount
 onBeforeUnmount(() => {
   formState?.removeField(originalProps.name)
 })
@@ -91,7 +93,7 @@ const props = computed(() => {
     errorMessage.value ? 'formkit-has-error' : '',
     originalProps.required ? 'formkit-required' : '',
   ].filter(Boolean)
-  
+
   // Wrapper props
   result.wrapper = evaluateProps(
     mergeProps(
@@ -103,7 +105,7 @@ const props = computed(() => {
       config.pt.wrapper || {}
     )
   )
-  
+
   // Label props
   result.label = evaluateProps(
     mergeProps(
@@ -114,10 +116,10 @@ const props = computed(() => {
       config.pt.label || {}
     )
   )
-  
+
   // Required indicator
   result.required = config.pt.required || {}
-  
+
   // Help text
   result.help = evaluateProps(
     mergeProps(
@@ -128,7 +130,7 @@ const props = computed(() => {
       config.pt.help || {}
     )
   )
-  
+
   // Error message
   result.error = evaluateProps(
     mergeProps(
@@ -139,7 +141,7 @@ const props = computed(() => {
       config.pt.error || {}
     )
   )
-  
+
   // Input props
   result.input = evaluateProps(
     mergeProps(
@@ -155,7 +157,7 @@ const props = computed(() => {
       config.pt.input || {}
     )
   )
-  
+
   // Component type
   result.component = originalProps.type || 'input'
 

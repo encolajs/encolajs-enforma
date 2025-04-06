@@ -38,26 +38,26 @@ export function useRepeatable(
   // Initialize fields
   const initializeFields = () => {
     // Ensure the form field exists for the array itself
-    form.getField(name);
+    form.getField(name)
 
     // Initialize array or convert single value to array if needed
-    const currentValues = form[name];
+    const currentValues = form[name]
     if (currentValues === undefined) {
       // No values yet - initialize with empty array
-      form[name] = [];
+      form[name] = []
     } else if (!Array.isArray(currentValues)) {
       // Convert non-array to array
-      form[name] = [currentValues];
+      form[name] = [currentValues]
     } else {
       // Register all array item fields
       currentValues.forEach((_, index) => {
-        form.getField(`${name}.${index}`);
-      });
+        form.getField(`${name}.${index}`)
+      })
     }
-  };
+  }
 
   // Call initialization immediately
-  initializeFields();
+  initializeFields()
 
   // Access array value through form proxy
   const value = computed(() => {

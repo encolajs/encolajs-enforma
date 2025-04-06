@@ -11,12 +11,14 @@ describe('Repeatable Field Performance Tests', () => {
       name: `Item ${i}`,
       description: `Description for item ${i}`,
       status: i % 2 === 0 ? 'active' : 'inactive',
-      tags: [`tag${i}`, `tag${i + 1}`]
+      tags: [`tag${i}`, `tag${i + 1}`],
     }))
   }
 
   // Helper to measure execution time
-  const measureTime = async (callback: () => Promise<void>): Promise<number> => {
+  const measureTime = async (
+    callback: () => Promise<void>
+  ): Promise<number> => {
     const start = performance.now()
     await callback()
     const end = performance.now()
@@ -24,7 +26,9 @@ describe('Repeatable Field Performance Tests', () => {
   }
 
   // Helper to measure memory usage
-  const measureMemory = async (callback: () => Promise<void>): Promise<number> => {
+  const measureMemory = async (
+    callback: () => Promise<void>
+  ): Promise<number> => {
     const startMemory = process.memoryUsage().heapUsed
     await callback()
     const endMemory = process.memoryUsage().heapUsed
@@ -34,7 +38,7 @@ describe('Repeatable Field Performance Tests', () => {
   describe('Array Operations Performance', () => {
     it('measures add operation performance with different array sizes', async () => {
       const sizes = [10, 50, 100, 500]
-      const results: Record<number, { time: number, memory: number }> = {}
+      const results: Record<number, { time: number; memory: number }> = {}
 
       for (const size of sizes) {
         const form = useForm({ items: createLargeArray(size) })
@@ -46,7 +50,7 @@ describe('Repeatable Field Performance Tests', () => {
             name: 'New Item',
             description: 'New Description',
             status: 'active',
-            tags: ['new']
+            tags: ['new'],
           })
           await nextTick()
         })
@@ -56,7 +60,7 @@ describe('Repeatable Field Performance Tests', () => {
             name: 'New Item',
             description: 'New Description',
             status: 'active',
-            tags: ['new']
+            tags: ['new'],
           })
           await nextTick()
         })
@@ -72,7 +76,7 @@ describe('Repeatable Field Performance Tests', () => {
 
     it('measures remove operation performance with different array sizes', async () => {
       const sizes = [10, 50, 100, 500]
-      const results: Record<number, { time: number, memory: number }> = {}
+      const results: Record<number, { time: number; memory: number }> = {}
 
       for (const size of sizes) {
         const form = useForm({ items: createLargeArray(size) })
@@ -99,7 +103,7 @@ describe('Repeatable Field Performance Tests', () => {
 
     it('measures move operation performance with different array sizes', async () => {
       const sizes = [10, 50, 100, 500]
-      const results: Record<number, { time: number, memory: number }> = {}
+      const results: Record<number, { time: number; memory: number }> = {}
 
       for (const size of sizes) {
         const form = useForm({ items: createLargeArray(size) })
@@ -152,7 +156,7 @@ describe('Repeatable Field Performance Tests', () => {
       )
       const repeatable = useRepeatable('items', form, {
         validateOnAdd: true,
-        validateOnRemove: true
+        validateOnRemove: true,
       })
       await nextTick()
 

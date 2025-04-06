@@ -84,54 +84,54 @@ class FieldManager {
 
   move(arrayPath: string, fromIndex: number, toIndex: number): void {
     // Early return if indices are the same
-    if (fromIndex === toIndex) return;
+    if (fromIndex === toIndex) return
 
-    const prefix = `${arrayPath}.`;
-    const prefixLength = prefix.length;
+    const prefix = `${arrayPath}.`
+    const prefixLength = prefix.length
 
     // Pre-compile the path parts extractor
     const getIndexAndRest = (path: string): [number, string] | null => {
-      const withoutPrefix = path.slice(prefixLength);
-      const dotIndex = withoutPrefix.indexOf('.');
-      if (dotIndex === -1) return null;
+      const withoutPrefix = path.slice(prefixLength)
+      const dotIndex = withoutPrefix.indexOf('.')
+      if (dotIndex === -1) return null
       return [
         parseInt(withoutPrefix.slice(0, dotIndex)),
-        withoutPrefix.slice(dotIndex + 1)
-      ];
-    };
+        withoutPrefix.slice(dotIndex + 1),
+      ]
+    }
 
     // Only process fields that need to change
-    const changes = new Map<string, FieldState>();
+    const changes = new Map<string, FieldState>()
 
     for (const [path, state] of this._fields) {
-      if (!path.startsWith(prefix)) continue;
+      if (!path.startsWith(prefix)) continue
 
-      const parsed = getIndexAndRest(path);
-      if (!parsed) continue;
+      const parsed = getIndexAndRest(path)
+      if (!parsed) continue
 
-      const [index, rest] = parsed;
-      let newIndex = index;
+      const [index, rest] = parsed
+      let newIndex = index
 
       if (index === fromIndex) {
-        newIndex = toIndex;
+        newIndex = toIndex
       } else if (fromIndex < toIndex && index > fromIndex && index <= toIndex) {
-        newIndex = index - 1;
+        newIndex = index - 1
       } else if (fromIndex > toIndex && index >= toIndex && index < fromIndex) {
-        newIndex = index + 1;
+        newIndex = index + 1
       } else {
-        continue; // Skip fields that don't need to move
+        continue // Skip fields that don't need to move
       }
 
       if (newIndex !== index) {
-        const newPath = `${prefix}${newIndex}.${rest}`;
-        changes.set(newPath, state);
-        this._fields.delete(path);
+        const newPath = `${prefix}${newIndex}.${rest}`
+        changes.set(newPath, state)
+        this._fields.delete(path)
       }
     }
 
     // Apply changes in batch
     for (const [newPath, state] of changes) {
-      this._fields.set(newPath, state);
+      this._fields.set(newPath, state)
     }
   }
   reorder(arrayPath: string, newPositions: Map<number, number>): void {
@@ -167,8 +167,8 @@ export function useForm<T extends object>(
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
     values.clone && typeof values?.clone === 'function'
-      // @ts-expect-error Initial values can be a complex object with a clone() method
-      ? values.clone()
+      ? // @ts-expect-error Initial values can be a complex object with a clone() method
+        values.clone()
       : JSON.parse(JSON.stringify(values))
   const fieldManager = new FieldManager()
   const formState = {

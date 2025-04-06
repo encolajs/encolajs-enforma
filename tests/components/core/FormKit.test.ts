@@ -16,13 +16,13 @@ interface FormKitSchemaProps {
 const SubmitButtonStub = {
   name: 'SubmitButton',
   template: '<button type="submit">Submit</button>',
-  props: ['disabled']
+  props: ['disabled'],
 }
 
 const ResetButtonStub = {
   name: 'ResetButton',
   template: '<button type="reset">Reset</button>',
-  props: ['disabled']
+  props: ['disabled'],
 }
 
 describe('FormKit', () => {
@@ -31,7 +31,7 @@ describe('FormKit', () => {
     setGlobalConfig({
       components: {
         submitButton: 'SubmitButton',
-        resetButton: 'ResetButton'
+        resetButton: 'ResetButton',
       },
       validateOn: 'submit',
       pt: {
@@ -42,9 +42,9 @@ describe('FormKit', () => {
         help: { class: 'formkit-help' },
         required: {
           text: '*',
-          class: 'required-indicator'
-        }
-      }
+          class: 'required-indicator',
+        },
+      },
     })
   })
 
@@ -52,17 +52,17 @@ describe('FormKit', () => {
     const wrapper = mount(FormKit, {
       props: {
         data: {},
-        submitHandler: () => {}
+        submitHandler: () => {},
       },
       slots: {
-        default: '<div class="test-content">Test Content</div>'
+        default: '<div class="test-content">Test Content</div>',
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -74,24 +74,24 @@ describe('FormKit', () => {
   it('renders form with schema when provided', async () => {
     const schema = {
       $formkit: 'text',
-      name: 'test-input'
+      name: 'test-input',
     }
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         submitHandler: () => {},
-        schema
+        schema,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
+          ResetButton: ResetButtonStub,
         },
         stubs: {
-          FormKitSchema: true
-        }
-      }
+          FormKitSchema: true,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -105,12 +105,12 @@ describe('FormKit', () => {
     const wrapper = mount(FormKit, {
       props: {
         data: testData,
-        submitHandler: () => true
+        submitHandler: () => true,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
+          ResetButton: ResetButtonStub,
         },
         stubs: {
           HeadlessForm: {
@@ -118,12 +118,12 @@ describe('FormKit', () => {
             methods: {
               submitHandler() {
                 this.$emit('submit', this.data)
-              }
+              },
             },
-            props: ['data', 'submitHandler']
-          }
-        }
-      }
+            props: ['data', 'submitHandler'],
+          },
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -138,50 +138,50 @@ describe('FormKit', () => {
 
   it('emits submit-error event when submission throws', async () => {
     const error = new Error('Submit failed')
-    
+
     // Create a mock submit handler that throws an error
     const failingSubmitHandler = vi.fn().mockImplementation(() => {
-      throw error;
-    });
+      throw error
+    })
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         // Use our failing submit handler
-        submitHandler: failingSubmitHandler
+        submitHandler: failingSubmitHandler,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
-    
+
     // Find the form and trigger submission
-    const form = wrapper.find('form');
-    await form.trigger('submit');
-    
+    const form = wrapper.find('form')
+    await form.trigger('submit')
+
     // Check if submit-error was emitted with the right error
-    const emitted = wrapper.emitted('submit-error');
-    expect(emitted).toBeTruthy();
-    expect(emitted?.[0]).toEqual([error]);
+    const emitted = wrapper.emitted('submit-error')
+    expect(emitted).toBeTruthy()
+    expect(emitted?.[0]).toEqual([error])
   })
 
   it('shows reset button by default', async () => {
     const wrapper = mount(FormKit, {
       props: {
         data: {},
-        submitHandler: () => {}
+        submitHandler: () => {},
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -195,14 +195,14 @@ describe('FormKit', () => {
       props: {
         data: {},
         submitHandler: () => {},
-        showResetButton: false
+        showResetButton: false,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -215,29 +215,29 @@ describe('FormKit', () => {
     const localConfig = {
       validateOn: 'blur',
       components: {
-        submitButton: 'CustomButton'
-      }
+        submitButton: 'CustomButton',
+      },
     }
 
     // Create a stub for the custom component
     const CustomButtonStub = {
       name: 'CustomButton',
-      template: '<button type="submit">Custom Submit</button>'
+      template: '<button type="submit">Custom Submit</button>',
     }
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         submitHandler: () => {},
-        config: localConfig
+        config: localConfig,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
           ResetButton: ResetButtonStub,
-          CustomButton: CustomButtonStub
-        }
-      }
+          CustomButton: CustomButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -248,62 +248,62 @@ describe('FormKit', () => {
 
   it('provides form context to child components', async () => {
     const context = { foo: 'bar' }
-    
+
     // Define the test child component with proper injection
     const TestChild = {
       name: 'TestChild',
       template: '<div class="test-child">{{ injectedContext.foo }}</div>',
       setup() {
         // Use the proper symbol from the constants
-        const injectedContext = inject(formContextKey, {});
-        return { injectedContext };
-      }
+        const injectedContext = inject(formContextKey, {})
+        return { injectedContext }
+      },
     }
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         submitHandler: () => {},
-        context
+        context,
       },
       slots: {
-        default: () => h(TestChild)
+        default: () => h(TestChild),
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
           ResetButton: ResetButtonStub,
-          TestChild
-        }
-      }
+          TestChild,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
-    
+
     // Find the component and check its content
-    const childComponent = wrapper.findComponent(TestChild);
-    expect(childComponent.exists()).toBe(true);
-    expect(childComponent.text()).toContain('bar');
+    const childComponent = wrapper.findComponent(TestChild)
+    expect(childComponent.exists()).toBe(true)
+    expect(childComponent.text()).toContain('bar')
   })
 
   it('passes custom validation rules to HeadlessForm', async () => {
     const rules = {
       name: 'required',
-      email: 'email'
+      email: 'email',
     }
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         submitHandler: () => {},
-        rules
+        rules,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -314,25 +314,25 @@ describe('FormKit', () => {
   it('passes custom validation messages to HeadlessForm', async () => {
     const messages = {
       'name:required': 'This field is required',
-      'email:email': 'Invalid email format'
+      'email:email': 'Invalid email format',
     }
 
     const wrapper = mount(FormKit, {
       props: {
         data: {},
         submitHandler: () => {},
-        messages
+        messages,
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub
-        }
-      }
+          ResetButton: ResetButtonStub,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
     const headlessForm = wrapper.findComponent(HeadlessForm)
     expect(headlessForm.props().customMessages).toEqual(messages)
   })
-}) 
+})

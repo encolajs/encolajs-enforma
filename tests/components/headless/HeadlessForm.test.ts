@@ -240,29 +240,30 @@ describe('HeadlessForm', () => {
 
     it('emits validation-error when validation fails', async () => {
       // Since mocking the validate method is complex, let's test the logic directly
-      
+
       // 1. Create a component implementation that simulates HeadlessForm but with a fixed mock
       const MockHeadlessForm = {
         emits: ['validation-error'],
         setup(props, { emit }) {
           const handleSubmit = async (e) => {
-            e.preventDefault();
+            e.preventDefault()
             // Simulate validation failure
-            emit('validation-error', { message: 'Validation failed' });
-          };
-          
-          return () => h('form', { onSubmit: handleSubmit }, h('div', {}, 'Form Content'));
-        }
-      };
-      
+            emit('validation-error', { message: 'Validation failed' })
+          }
+
+          return () =>
+            h('form', { onSubmit: handleSubmit }, h('div', {}, 'Form Content'))
+        },
+      }
+
       // 2. Mount our simplified component
-      const wrapper = mount(MockHeadlessForm);
-      
+      const wrapper = mount(MockHeadlessForm)
+
       // 3. Trigger form submission
-      await wrapper.find('form').trigger('submit');
-      
+      await wrapper.find('form').trigger('submit')
+
       // 4. Check validation-error was emitted
-      expect(wrapper.emitted('validation-error')).toBeTruthy();
+      expect(wrapper.emitted('validation-error')).toBeTruthy()
     })
 
     it('handles submit errors', async () => {

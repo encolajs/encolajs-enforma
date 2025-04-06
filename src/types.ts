@@ -33,7 +33,6 @@ export interface FormStateOptions {
   submitHandler?: (data: any) => Promise<void> | void
 }
 
-
 /**
  * Field options interface
  */
