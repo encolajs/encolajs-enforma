@@ -60,7 +60,7 @@ export function useDynamicProps(
     // Basic context from form state and external context
     return {
       // Form values from form state
-      form: formState?.all() || {},
+      form: formState?.values() || {},
       // External context
       context: { ...formContext },
       // Validation errors
