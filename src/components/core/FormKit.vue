@@ -4,8 +4,11 @@
     :data="data"
     :rules="rules"
     :custom-messages="messages"
-    :submit-handler="onSubmit"
+    :submit-handler="submitHandler"
     :validate-on="config.validateOn"
+    @submit="emit('submit', $event)"
+    @submit-error="emit('submit-error', $event)"
+    @validation-error="emit('validation-error', $event)"
   >
     <template #default="formState">
       <form v-bind="$attrs" @submit.prevent="formState.submit" novalidate>
@@ -34,13 +37,14 @@ import {
   ref,
   useAttrs,
   defineExpose,
-  defineEmits,
+  defineEmits, PropType,
 } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
 import FormKitSchema from './FormKitSchema.vue'
 import { mergeConfigs } from '../../utils/configUtils'
 import { getGlobalConfig } from '../../composables/useConfig'
 import { formContextKey, formConfigKey } from '../../constants/symbols'
+import { FormProxy } from '@/types'
 
 const props = defineProps({
   data: {
@@ -67,6 +71,10 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  submitHandler: {
+    type: Function as PropType<(form: FormProxy, data: any) => Promise<any>>,
+    required: true
+  },
   showResetButton: {
     type: Boolean,
     default: true,
@@ -79,10 +87,13 @@ const $attrs = useAttrs()
 
 const formRef = ref(null)
 
-defineExpose(formRef)
+defineExpose({
+  formRef
+})
 
 const onSubmit = async (data: any) => {
   try {
+    await props.submitHandler(formRef.value, data)
     emit('submit-success', data)
   } catch (error) {
     emit('submit-error', error)
