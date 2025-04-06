@@ -1,13 +1,13 @@
 // Core composables
 export { useValidation } from './composables/useValidation'
-export { useFormState } from './composables/useFormState'
 export { useField } from './composables/useField'
 export { useRepeatable } from './composables/useRepeatable'
+export { useForm } from './composables/useForm'
 
 // Type exports
 export type {
   FormStateOptions,
-  FormStateReturn,
+  FormProxy,
   FieldOptions,
   FieldReturn,
   ValidationRules,
@@ -23,7 +23,6 @@ export { default as HeadlessRepeatable } from './components/headless/HeadlessRep
 // Re-export essential validator types
 export {
   PlainObjectDataSource,
-  TentativeValuesDataSource,
   ValidationRule,
   ValidatorFactory,
   Validator,

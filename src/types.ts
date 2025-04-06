@@ -1,9 +1,10 @@
 import { ComputedRef, Ref } from 'vue'
 import {
   CustomMessagesConfig,
-  ValidatorFactory,
   ValidationRule,
+  ValidatorFactory,
 } from '@encolajs/validator'
+import { FieldState, StateChanges } from './composables/useForm'
 
 /**
  * Type definition for validation rules
@@ -12,22 +13,6 @@ export type ValidationRules = Record<
   string,
   string | { name: string; rule: ValidationRule }[]
 >
-
-/**
- * Type definition for field state
- */
-export interface FieldState {
-  id: string
-  path: string
-  value: any
-  error: string | null
-  isDirty: boolean
-  isTouched: boolean
-  isValidating: boolean
-  isValid?: boolean
-  isFocused: boolean
-  focusHandler?: () => void
-}
 
 /**
  * Type for event triggers
@@ -48,41 +33,6 @@ export interface FormStateOptions {
   submitHandler?: (data: any) => Promise<void> | void
 }
 
-/**
- * Return value of useFormState
- */
-export interface FormStateReturn {
-  fields: Map<string, FieldState>
-  pathToId: Map<string, string>
-  errors: Record<string, string[]>
-
-  // Details for UI
-  isSubmitting: Ref<boolean>
-  isValidating: Ref<boolean>
-  validationCount: Ref<number>
-  submitted: Ref<boolean>
-  isDirty: Ref<boolean>
-  isTouched: Ref<boolean>
-  isValid: ComputedRef<boolean>
-
-  // Field management
-  registerField: (name: string, existingId?: string) => FieldState
-  unregisterField: (name?: string) => void
-  touchField: (name: string) => void
-  getField: (name: string) => FieldState | undefined
-
-  // Form actions
-  validate: () => Promise<boolean>
-  validateField: (name: string, onlyIfTouched?: boolean) => Promise<boolean>
-  reset: () => void
-  submit: () => Promise<boolean>
-
-  // Data access
-  setFieldValue: (name: string, value: any, trigger?: EventTrigger) => void
-  getFieldValue: (name: string) => any
-  getData: () => any
-  setData: (newData: Record<string, any>) => void
-}
 
 /**
  * Field options interface
@@ -116,4 +66,41 @@ export interface FieldReturn {
 
   // For arrays and custom field types
   name: string
+}
+
+export interface FormProxy {
+  reset(): void
+
+  values(): object
+
+  errors(): Record<string, string[]>
+
+  submit(submitHandler: (data: any) => Promise<void>): Promise<boolean>
+
+  validate(): Promise<boolean>
+
+  validateField(path: string): Promise<boolean>
+
+  setFieldValue(
+    path: string,
+    value: any,
+    validate?: boolean,
+    stateChanges?: StateChanges
+  ): Promise<void>
+
+  getField(path: string): FieldState
+
+  removeField(path: string): void
+
+  hasField(path: string): boolean
+
+  add(arrayPath: string, index: number, item: any): void
+
+  remove(arrayPath: string, index: number): void
+
+  move(arrayPath: string, fromIndex: number, toIndex: number): void
+
+  sort(arrayPath: string, callback: (a: any, b: any) => number): void
+
+  [key: string]: any
 }

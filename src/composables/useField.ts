@@ -1,50 +1,60 @@
-import { computed, onMounted, onBeforeUnmount, ComputedRef } from 'vue'
-// Make sure the path is correct - adjust if needed based on your file structure
-import {
-  FormStateReturn,
-  FieldOptions,
-  FieldReturn,
-  EventTrigger,
-} from '../types'
+import { computed, onMounted, ComputedRef, ref } from 'vue'
+import { FieldReturn, FormProxy } from '../types'
 import { debounce } from '../utils/debounce'
 
 /**
  * Composable for managing a single form field
  *
  * @param name - Field name/path
- * @param formState - Form state from useFormState
+ * @param form - Form proxy from useForm
  * @param options - Configuration options
  * @returns Field state and methods
  */
 export function useField(
   name: string,
-  formState: FormStateReturn,
-  options: FieldOptions = {}
+  form: FormProxy,
+  options: {
+    validateOnMount?: boolean
+    validateOn?: 'input' | 'change' | 'blur' | 'submit' | null
+  } = {}
 ): ComputedRef<FieldReturn> {
   if (!name) {
     throw new Error('Field name is required')
   }
 
-  if (!formState) {
-    throw new Error('Form state is required')
+  if (!form) {
+    throw new Error('Form is required')
   }
 
-  const fieldState = formState.getField(name) || formState.registerField(name)
+  // Get field state from form
+  const getFieldState = () => form.getField(name)
 
-  // Keep track of field ID for re-registration
-  const fieldId = fieldState?.id
+  // Create a reference to track focus state
+  const isFocused = ref(false)
 
   /**
    * Handle value changes
    * @param value - New field value
    * @param trigger - Event that triggered the change ('input', 'change', 'blur')
    */
-  function handleChange(value: any, trigger: EventTrigger = 'input'): void {
-    formState.setFieldValue(name, value, trigger)
-    if (
-      (trigger === 'change' && options.validateOn === 'change') ||
-      (fieldState.isDirty && fieldState.isTouched)
-    ) {
+  function handleChange(
+    value: any,
+    trigger: 'input' | 'change' | 'blur' = 'input'
+  ): void {
+    // Update the form directly through the proxy
+    form[name] = value
+
+    // Mark field as touched on change event
+    if (trigger === 'change') {
+      form[`${name}.$isTouched`] = true
+
+      if (options.validateOn === 'change') {
+        debouncedValidate()
+      }
+    }
+
+    // If field is touched and dirty, validate
+    if (form[`${name}.$isTouched`] && form[`${name}.$isDirty`]) {
       debouncedValidate()
     }
   }
@@ -53,11 +63,19 @@ export function useField(
    * Handle blur events
    */
   function handleBlur(): void {
-    fieldState.isFocused = false
-    formState.touchField(name)
+    isFocused.value = false
+    form[`${name}.$isTouched`] = true
+
     if (options.validateOn === 'blur') {
       debouncedValidate()
     }
+  }
+
+  /**
+   * Handle focus events
+   */
+  function handleFocus(): void {
+    isFocused.value = true
   }
 
   /**
@@ -65,7 +83,7 @@ export function useField(
    * @returns Whether the field is valid
    */
   async function validate() {
-    return await formState.validateField(name)
+    return await form.validateField(name)
   }
 
   const debouncedValidate = debounce(validate, 200)
@@ -74,14 +92,14 @@ export function useField(
    * Reset the field to its initial state
    */
   function reset(): void {
-    const originalValue = formState.getFieldValue(name)
-    handleChange(originalValue)
-    fieldState.isDirty = false
-    fieldState.isTouched = false
-  }
-
-  const handleFocus = () => {
-    fieldState.isFocused = true
+    // Use form's reset mechanism to reset this specific field
+    // Since the form doesn't have a field-specific reset,
+    // we'll just set its value back to the original and clear states
+    form.setFieldValue(name, form[name], false, {
+      $isDirty: false,
+      $isTouched: false,
+      $errors: [],
+    })
   }
 
   const events = {
@@ -95,30 +113,27 @@ export function useField(
     focus: handleFocus,
   }
 
-  // Register with existing ID
+  // Initial validation if needed
   onMounted(() => {
-    formState.registerField(name, fieldId)
     if (options.validateOnMount) {
       validate()
     }
   })
 
-  // Unregister path
-  onBeforeUnmount(() => {
-    formState.unregisterField(name)
-  })
-
   // Create exported API object with all field state and methods
   return computed(() => {
-    const value = formState.getFieldValue(name)
+    const fieldState = getFieldState()
+    const value = form[name]
+    const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null
+
     return {
       // Field value and state
       value,
-      error: fieldState.error,
-      isDirty: fieldState.isDirty,
-      isTouched: fieldState.isTouched,
-      isValidating: fieldState.isValidating,
-      isFocused: fieldState.isFocused,
+      error,
+      isDirty: fieldState?.$isDirty || false,
+      isTouched: fieldState?.$isTouched || false,
+      isValidating: fieldState?.$isValidating || false,
+      isFocused: isFocused.value,
 
       // Methods
       validate,
@@ -127,17 +142,14 @@ export function useField(
       // HTML binding helpers
       attrs: {
         value,
-
-        'aria-invalid': !!fieldState.error,
-        ...(fieldState.error
-          ? { 'aria-errormessage': `error-${fieldState.id}` }
-          : {}),
+        'aria-invalid': !!error,
+        ...(error ? { 'aria-errormessage': `error-${fieldState?._id}` } : {}),
       },
       events,
 
       // For arrays and custom field types
       name,
-      id: fieldState.id,
+      id: fieldState?._id,
     } as FieldReturn
   })
 }

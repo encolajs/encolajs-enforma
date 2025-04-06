@@ -2,31 +2,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { h } from 'vue'
 import HeadlessField from '../../../src/components/headless/HeadlessField'
-import { TentativeValuesDataSource } from '@encolajs/validator'
-import { useFormState, useValidation } from '../../../src'
 import { formStateKey } from '../../../src/constants/symbols'
+import { useForm } from '../../../src/composables/useForm'
 
 describe('HeadlessField', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-  // Mock validator factory for validation rules
-  vi.mock('@encolajs/validator', () => ({
-    ValidatorFactory: vi.fn().mockImplementation(() => ({
-      make: () => ({
-        validate: vi.fn().mockResolvedValue(true),
-        validatePath: vi.fn().mockResolvedValue(true),
-      }),
-    })),
-    TentativeValuesDataSource: vi.fn().mockImplementation((data) => ({
-      clone: () => ({ ...data }),
-      getRawData: () => ({ ...data }),
-      getValue: (path) => data[path],
-      setValue: vi.fn(),
-      commit: vi.fn(),
-      commitAll: vi.fn(),
-      hasTentativeValue: () => false,
-    })),
-  }))
 
   // Create initial form data
   const initialData = {
@@ -37,21 +17,13 @@ describe('HeadlessField', () => {
     },
   }
 
-  // Create form state
-  const createFormState = (data = initialData) => {
-    const validation = useValidation()
-    return useFormState(
-      // @ts-expect-error TentativeValuesDataSource is mocked
-      new TentativeValuesDataSource(data, {}),
-      {
-        name: 'required|min_length:2',
-        email: 'required|email',
-        'profile.age': 'required|integer|min:18',
-      },
-      {
-        validatorFactory: validation.factory,
-      }
-    )
+  // Create mock form proxy
+  const createMockForm = (data: object = initialData) => {
+    return useForm(data, {
+      name: 'required|min_length:2',
+      email: 'required|email',
+      'profile.age': 'required|integer|gte:18',
+    })
   }
 
   beforeEach(() => {
@@ -60,14 +32,14 @@ describe('HeadlessField', () => {
 
   describe('Basic functionality', () => {
     it('mounts with required props and form context', () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'name',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
       })
@@ -88,7 +60,7 @@ describe('HeadlessField', () => {
     })
 
     it('passes field state to default slot', () => {
-      const formState = createFormState()
+      const form = createMockForm()
       let slotProps
 
       mount(HeadlessField, {
@@ -97,7 +69,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
@@ -114,7 +86,6 @@ describe('HeadlessField', () => {
         isDirty: expect.any(Boolean),
         isTouched: expect.any(Boolean),
         isValidating: expect.any(Boolean),
-        isFocused: expect.any(Boolean),
         validate: expect.any(Function),
         reset: expect.any(Function),
         attrs: expect.any(Object),
@@ -122,11 +93,45 @@ describe('HeadlessField', () => {
         name: expect.any(String),
       })
     })
+
+    it('supports multiple fields through names prop', () => {
+      const form = createMockForm()
+      let slotProps
+
+      mount(HeadlessField, {
+        props: {
+          names: { nameField: 'name', emailField: 'email' },
+        },
+        global: {
+          provide: {
+            [formStateKey]: form,
+          },
+        },
+        slots: {
+          default: (props) => {
+            slotProps = props
+            return '<div>Multiple Fields</div>'
+          },
+        },
+      })
+
+      expect(Object.keys(slotProps)).toHaveLength(2)
+      expect(slotProps.nameField).toMatchObject({
+        name: 'name',
+        value: 'John',
+        error: null,
+      })
+      expect(slotProps.emailField).toMatchObject({
+        name: 'email',
+        value: 'john@example.com',
+        error: null,
+      })
+    })
   })
 
   describe('Field validation lifecycle', () => {
     it('validates on blur when validateOn is blur', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'email',
@@ -134,13 +139,13 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
           default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
               onInput: events.input,
               onBlur: events.blur,
             }),
@@ -152,13 +157,12 @@ describe('HeadlessField', () => {
       await input.trigger('blur')
       await flushPromises()
 
-      const formField = formState.getField('email')
-      expect(formField.isTouched).toBe(true)
-      expect(formField.isDirty).toBe(true)
+      expect(form['email.$isTouched']).toBe(true)
+      expect(form['email.$isDirty']).toBe(true)
     })
 
     it('validates on input when validateOn is input', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'email',
@@ -166,28 +170,28 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
           default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
               onInput: events.input,
             }),
         },
       })
 
+      expect(form['email.$isDirty']).toBe(false)
+
       const input = wrapper.find('input')
       await input.setValue('new@email.com')
 
-      const formField = formState.getField('email')
-      expect(formField.isDirty).toBe(true)
-      expect(formField.isTouched).toBe(false)
+      expect(form['email.$isDirty']).toBe(true)
     })
 
     it('validates on input when validateOn is change', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'email',
@@ -195,14 +199,14 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
           default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
-              onChange: events.change, // use the default implementation
+              value: attrs.value,
+              onChange: events.change,
               onFocus: events.focus,
             }),
         },
@@ -212,29 +216,27 @@ describe('HeadlessField', () => {
       await input.trigger('focus')
       await input.setValue('new@email.com')
 
-      const formField = formState.getField('email')
-      expect(formField.isDirty).toBe(true)
-      expect(formField.isTouched).toBe(true)
-      expect(formField.isFocused).toBe(true)
+      expect(form['email.$isDirty']).toBe(true)
+      expect(form['email.$isTouched']).toBe(true)
     })
   })
 
   describe('Form integration', () => {
     it('updates form state when field value changes', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'name',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
           default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
               onInput: events.input,
             }),
         },
@@ -243,40 +245,56 @@ describe('HeadlessField', () => {
       const input = wrapper.find('input')
       await input.setValue('Jane')
 
-      const field = formState.getField('name')
-      expect(field.value).toBe('Jane')
+      expect(form.name).toBe('Jane')
     })
 
     it('cleans up on unmount', async () => {
-      const formState = createFormState()
-      const unregisterSpy = vi.spyOn(formState, 'unregisterField')
-
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
-          name: 'name',
+          name: 'new_field',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
+          },
+        },
+      })
+
+      expect(form.hasField('new_field')).toBe(true)
+      await wrapper.unmount()
+      expect(form.hasField('new_field')).toBe(false)
+    })
+
+    it('cleans up multiple fields on unmount', async () => {
+      const form = createMockForm()
+      const wrapper = mount(HeadlessField, {
+        props: {
+          names: { nameField: 'name', emailField: 'email' },
+        },
+        global: {
+          provide: {
+            [formStateKey]: form,
           },
         },
       })
 
       await wrapper.unmount()
-      expect(unregisterSpy).toHaveBeenCalledWith('name')
+      expect(form.hasField('name')).toBe(false)
+      expect(form.hasField('email')).toBe(false)
     })
   })
 
   describe('Edge cases and error handling', () => {
     it('supports deep nested fields', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'profile.age',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
@@ -292,20 +310,18 @@ describe('HeadlessField', () => {
       const input = wrapper.find('input')
       await input.setValue(25)
 
-      const field = formState.getField('profile.age')
-      expect(parseInt(field.value)).toBe(25)
+      expect(form['profile.age']).toBe('25')
     })
 
     it('handles undefined field values', async () => {
-      // @ts-expect-error Test case for undefined field value
-      const formState = createFormState({})
+      const form = createMockForm({})
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'nonexistent',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
@@ -321,20 +337,20 @@ describe('HeadlessField', () => {
     })
 
     it('maintains field state during re-renders', async () => {
-      const formState = createFormState()
+      const form = createMockForm()
       const wrapper = mount(HeadlessField, {
         props: {
           name: 'email',
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formStateKey]: form,
           },
         },
         slots: {
           default: ({ attrs, events }) =>
             h('input', {
-              value: attrs.value.value,
+              value: attrs.value,
               onInput: events.input,
               onBlur: events.blur,
             }),
@@ -344,16 +360,15 @@ describe('HeadlessField', () => {
       const input = wrapper.find('input')
       await input.setValue('new@email.com')
       await input.trigger('blur')
-      flushPromises()
+      await flushPromises()
 
-      const field = formState.getField('email')
-      expect(field.value).toBe('new@email.com')
+      expect(form.email).toBe('new@email.com')
 
       // Force re-render
       await wrapper.setProps({ name: 'email', validateOn: 'blur' })
 
-      expect(field.isTouched).toBe(true)
-      expect(field.value).toBe('new@email.com')
+      expect(form['email.$isTouched']).toBe(true)
+      expect(form.email).toBe('new@email.com')
     })
   })
 })

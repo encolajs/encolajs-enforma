@@ -1,7 +1,7 @@
 import { defineComponent, provide, h, PropType } from 'vue'
-import { useFormState } from '../../composables/useFormState'
-import { DataSourceInterface } from '@encolajs/validator'
+import { useForm } from '../../composables/useForm'
 import { formStateKey } from '../../constants/symbols'
+import { FormProxy } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -20,8 +20,10 @@ export default defineComponent({
       default: () => ({}),
     },
     submitHandler: {
-      type: Function,
-      default: null,
+      type: Function as PropType<(data: any) => Promise<void>>,
+      default: () => {
+        return Promise.resolve(true)
+      },
     },
     validateOn: {
       type: String as PropType<'input' | 'change' | 'blur' | 'submit'>,
@@ -34,51 +36,70 @@ export default defineComponent({
   emits: ['submit', 'submit-error', 'validation-error', 'reset'],
 
   setup(props, ctx) {
-    const formState = useFormState(
-      props.data as DataSourceInterface,
-      props.rules,
-      {
-        customMessages: props.customMessages,
-        validateOn: props.validateOn,
-        submitHandler: async (data) => {
+    // Create form using useForm
+    const form: FormProxy = useForm(props.data, props.rules, {
+      customMessages: props.customMessages,
+      submitHandler: props.submitHandler,
+    })
+
+    // Provide form to child components
+    provide(formStateKey, form)
+
+    // Handle form submission
+    const handleSubmit = async (e: Event) => {
+      e.preventDefault()
+      try {
+        // First validate the form
+        const isValid = await form.validate()
+
+        if (!isValid) {
+          ctx.emit('validation-error', form)
+          return
+        }
+
+        // If valid, then submit
+        const submitResult = await form.submit(async (data) => {
           if (props.submitHandler) {
-            try {
-              await props.submitHandler(data)
-              ctx.emit('submit', data)
-            } catch (error) {
-              ctx.emit('submit-error', error)
-              throw error
-            }
-          } else {
-            ctx.emit('submit', data)
+            await props.submitHandler(data)
           }
-        },
+          ctx.emit('submit', data)
+        })
+
+        // If submit returns false (unlikely but possible), also emit validation error
+        if (!submitResult) {
+          ctx.emit('validation-error', form)
+        }
+      } catch (error) {
+        ctx.emit('submit-error', error)
       }
-    )
+    }
 
-    provide(formStateKey, formState)
+    // Handle form reset
+    const handleReset = () => {
+      form.reset()
+      ctx.emit('reset', true)
+    }
 
+    // Expose form methods to parent component
     ctx.expose({
-      reset: formState.reset,
-      submit: formState.submit,
-      validate: formState.validate,
-      validateField: formState.validateField,
-      setFieldValue: formState.setFieldValue,
-      getField: formState.getField,
-      getData: formState.getData,
+      reset: form.reset,
+      submit: () => form.submit(props.submitHandler),
+      validate: form.validate,
+      validateField: form.validateField,
+      setFieldValue: form.setFieldValue,
+      getField: form.getField,
+      values: form.values,
     })
 
     return () =>
       h(
         'form',
         {
-          onSubmit: (e: Event) => {
-            e.preventDefault()
-            return formState.submit()
-          },
+          onSubmit: handleSubmit,
+          onReset: handleReset,
           novalidate: true,
         },
-        ctx.slots.default?.(formState)
+        ctx.slots.default?.(form)
       )
   },
 })

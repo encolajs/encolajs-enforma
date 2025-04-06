@@ -3,7 +3,7 @@
  */
 
 import type { FormKitConfig } from '../types/config'
-import type { FormStateReturn } from '../types'
+import type { FormProxy, FormStateReturn } from '../types'
 
 /**
  * Symbol for providing/injecting the form kit configuration
@@ -30,7 +30,7 @@ export const formSchemaKey = Symbol('formSchema')
  */
 export interface InjectableValues {
   [formConfigKey]: FormKitConfig
-  [formStateKey]: FormStateReturn
+  [formStateKey]: FormProxy
   [formContextKey]: Record<string, any>
   [formSchemaKey]: Record<string, any>
 }

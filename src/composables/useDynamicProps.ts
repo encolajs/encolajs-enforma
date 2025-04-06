@@ -4,17 +4,17 @@
 
 import { computed, ComputedRef, inject } from 'vue'
 import {
-  formContextKey,
   formConfigKey,
+  formContextKey,
   formStateKey,
 } from '../constants/symbols'
 import { FormKitConfig } from '../types/config'
 import { DEFAULT_CONFIG } from '../constants/defaults'
-import { FormStateReturn } from '../types'
+import { FormProxy } from '../types'
 import {
-  ExpressionContext,
-  evaluateObject,
   evaluateCondition,
+  evaluateObject,
+  ExpressionContext,
 } from '../utils/exprEvaluator'
 
 // Type for props that may contain expressions
@@ -27,7 +27,7 @@ export interface UseDynamicPropsReturn {
   /**
    * Evaluate all expressions in the props object
    */
-  evaluateProps: <T extends DynamicProps>(props: T) => ComputedRef<T>
+  evaluateProps: (props: DynamicProps) => DynamicProps
 
   /**
    * Evaluate a conditional expression
@@ -49,7 +49,7 @@ export function useDynamicProps(
   localContext: Record<string, any> = {}
 ): UseDynamicPropsReturn {
   // Inject dependencies
-  const formState = inject<FormStateReturn | undefined>(formStateKey, undefined)
+  const formState = inject<FormProxy | undefined>(formStateKey, undefined)
   const formContext = inject<Record<string, any>>(formContextKey, {})
   const config = inject<FormKitConfig>(formConfigKey, DEFAULT_CONFIG)
 
@@ -58,18 +58,16 @@ export function useDynamicProps(
    */
   const getContext = (): ExpressionContext => {
     // Basic context from form state and external context
-    const context: ExpressionContext = {
+    return {
       // Form values from form state
-      form: formState?.getData() || {},
+      form: formState?.all() || {},
       // External context
       context: { ...formContext },
       // Validation errors
-      errors: formState?.errors || {},
+      errors: formState?.errors() || {},
       // Local context specific to this instance
       ...localContext,
     }
-
-    return context
   }
 
   /**

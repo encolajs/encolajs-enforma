@@ -1,7 +1,8 @@
-import { defineComponent, inject, ref, watch } from 'vue'
+import { defineComponent, inject, ref, watch, onBeforeUnmount } from 'vue'
 import { useRepeatable } from '../../composables/useRepeatable'
-import type { FormStateReturn } from '../../types'
 import { formStateKey } from '../../constants/symbols'
+
+import { FormProxy } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessRepeatable',
@@ -34,7 +35,7 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const formState = inject<FormStateReturn>(formStateKey)
+    const formState = inject<FormProxy>(formStateKey)
 
     if (!formState) {
       console.error('HeadlessRepeatable must be used within an EncolaForm')
@@ -58,6 +59,11 @@ export default defineComponent({
       },
       { deep: true }
     )
+
+    // Clean up when component is unmounted
+    onBeforeUnmount(() => {
+      formState.removeField(props.name)
+    })
 
     return () => {
       // Include renderTrigger in the render function to ensure it re-evaluates

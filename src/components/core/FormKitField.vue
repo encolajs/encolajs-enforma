@@ -37,7 +37,7 @@ import { computed, ComputedRef, inject, mergeProps } from 'vue'
 import { formConfigKey, formStateKey } from '../../constants/symbols'
 import { FormKitConfig } from '../../types/config'
 import { useDynamicProps } from '../../composables/useDynamicProps'
-import { FieldState, FormStateReturn } from '../../index'
+import { FieldState, FormProxy } from '../../index'
 import HeadlessField from '../headless/HeadlessField'
 import { useTranslation } from '../../composables/useTranslation'
 
@@ -57,7 +57,7 @@ const originalProps = defineProps({
   inputProps: { type: Object, default: () => ({}) },
 })
 
-const formState = inject<FormStateReturn>(formStateKey)
+const formState = inject<FormProxy>(formStateKey)
 const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
 const field = computed(() =>
   formState?.getField(originalProps.name)

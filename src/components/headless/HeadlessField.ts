@@ -8,7 +8,7 @@ import {
   computed,
 } from 'vue'
 import { useField } from '../../composables/useField'
-import { FieldOptions, FormStateReturn } from '../../types'
+import { FieldOptions, FormProxy } from '../../types'
 import { formStateKey } from '../../constants/symbols'
 
 export default defineComponent({
@@ -32,9 +32,9 @@ export default defineComponent({
   },
 
   setup(props, { slots }: SetupContext) {
-    const formState = inject<FormStateReturn>(formStateKey)
+    const form = inject<FormProxy>(formStateKey)
 
-    if (!formState) {
+    if (!form) {
       console.error(
         `HeadlessField '${props.name}' must be used within an EncolaForm component`
       )
@@ -45,7 +45,7 @@ export default defineComponent({
 
     // Handle single field case (backwards compatibility)
     if (props.name && !props.names) {
-      const field = useField(props.name, formState, {
+      const field = useField(props.name, form, {
         validateOn: props.validateOn,
       } as FieldOptions)
 
@@ -58,7 +58,8 @@ export default defineComponent({
       )
 
       onBeforeUnmount(() => {
-        formState.unregisterField(props.name)
+        // @ts-expect-error props.name is present
+        form.removeField(props.name)
         unwatch()
       })
 
@@ -74,7 +75,7 @@ export default defineComponent({
       const unwatchers: Record<string, Function> = {}
       const fields = computed(() =>
         Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
-          acc[key] = useField(fieldName, formState, {
+          acc[key] = useField(fieldName, form, {
             validateOn: props.validateOn,
           } as FieldOptions).value
 
@@ -92,10 +93,14 @@ export default defineComponent({
 
       // Cleanup on unmount
       onBeforeUnmount(() => {
-        Object.values(props.names as Array<string>).forEach((fieldName) => {
-          formState.unregisterField(fieldName)
-          unwatchers[fieldName]()
-        })
+        Object.entries(props.names as Record<string, string>).forEach(
+          ([fieldName, field]) => {
+            form.removeField(field)
+            if (unwatchers[fieldName]) {
+              unwatchers[fieldName]()
+            }
+          }
+        )
       })
 
       // Return slot with fields object

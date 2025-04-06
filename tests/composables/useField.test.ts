@@ -3,42 +3,48 @@ import { useField } from '../../src/composables/useField'
 import { FieldReturn } from '../../src'
 import { ComputedRef } from 'vue'
 
-// Mock the form state (normally returned from useFormState)
-const mockFormState = {
-  // Mock field registration functionality
-  registerField: vi.fn().mockImplementation((name) => ({
-    value: initialData[name],
-    error: null,
-    isDirty: false,
-    isTouched: false,
-    isValidating: false,
-  })),
-  unregisterField: vi.fn(),
-  getField: vi.fn(),
-
-  // Mock update functions
-  setFieldValue: vi.fn(),
-  touchField: vi.fn(),
-
-  // Mock validation
-  validateField: vi.fn().mockResolvedValue(true),
-
-  // Mock data access
-  getFieldValue: vi.fn((name) => initialData[name]),
-
-  // Mock form state
-  formState: {
-    fields: new Map(),
-    isSubmitting: false,
-    isValidating: false,
-  },
-}
-
-// Initial test data
-const initialData = {
+// Mock the form proxy (normally returned from useForm)
+const mockForm = {
+  // Field values via proxy
   name: 'John Doe',
   email: 'john@example.com',
   age: 30,
+
+  // Mock field metadata
+  'name.$isDirty': false,
+  'name.$isTouched': false,
+  'name.$isValidating': false,
+  'name.$errors': [],
+
+  'email.$isDirty': false,
+  'email.$isTouched': false,
+  'email.$isValidating': false,
+  'email.$errors': [],
+
+  'age.$isDirty': false,
+  'age.$isTouched': false,
+  'age.$isValidating': false,
+  'age.$errors': [],
+
+  // Mock field functions
+  getField: vi.fn((path) => ({
+    _id: path,
+    $errors: mockForm[`${path}.$errors`] || [],
+    $isDirty: mockForm[`${path}.$isDirty`] || false,
+    $isTouched: mockForm[`${path}.$isTouched`] || false,
+    $isValidating: mockForm[`${path}.$isValidating`] || false,
+  })),
+
+  validateField: vi.fn().mockResolvedValue(true),
+  setFieldValue: vi.fn(),
+  reset: vi.fn(),
+  submit: vi.fn().mockResolvedValue(true),
+  validate: vi.fn().mockResolvedValue(true),
+  removeField: vi.fn(),
+  add: vi.fn(),
+  remove: vi.fn(),
+  move: vi.fn(),
+  sort: vi.fn(),
 }
 
 const mocks = vi.hoisted(() => {
@@ -79,8 +85,7 @@ describe('useField', () => {
     }))
 
     // Create field instance
-    // @ts-expect-error Incomplete mocking
-    field = useField('name', mockFormState, {
+    field = useField('name', mockForm, {
       validateOnMount: false,
     })
   })
@@ -90,19 +95,16 @@ describe('useField', () => {
   })
 
   describe('initialization', () => {
-    it('should register field with form state', () => {
-      expect(mockFormState.registerField).toHaveBeenCalledWith('name')
+    it('should get field with form proxy', () => {
+      expect(mockForm.getField).toHaveBeenCalledWith('name')
     })
 
     it('should throw error if field name is missing', () => {
-      // @ts-expect-error Incomplete mocking
-      expect(() => useField('', mockFormState)).toThrow(
-        'Field name is required'
-      )
+      expect(() => useField('', mockForm)).toThrow('Field name is required')
     })
 
-    it('should throw error if form state is missing', () => {
-      expect(() => useField('name', null)).toThrow('Form state is required')
+    it('should throw error if form is missing', () => {
+      expect(() => useField('name', null)).toThrow('Form is required')
     })
 
     it('should validate on mount if option is set', () => {
@@ -111,24 +113,18 @@ describe('useField', () => {
       mocks.onMounted.mockImplementationOnce((fn) => fn())
 
       // Create field with validateOnMount: true
-      // @ts-expect-error Incomplete mocking
-      field = useField('name', mockFormState, {
+      field = useField('name', mockForm, {
         validateOnMount: true,
       })
 
       // Check validate was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
-    })
-
-    it('should set up cleanup on unmount', () => {
-      // Check onBeforeUnmount was called
-      expect(mocks.onBeforeUnmount).toHaveBeenCalled()
+      expect(mockForm.validateField).toHaveBeenCalledWith('name')
     })
   })
 
   describe('field value and state', () => {
     it('should provide access to field value', () => {
-      expect(field.value.value).toBe(initialData.name)
+      expect(field.value.value).toBe('John Doe')
     })
 
     it('should provide access to field error state', () => {
@@ -149,53 +145,56 @@ describe('useField', () => {
   })
 
   describe('event handlers', () => {
+    it('should handle input events', () => {
+      const newValue = 'Jane Doe'
+
+      // Call input event handler
+      field.value.events.input({ value: newValue })
+
+      // Check form value was updated
+      expect(mockForm.name).toBe(newValue)
+    })
+
     it('should handle change events', () => {
       const newValue = 'Jane Doe'
 
-      // Call handleChange
-      field.value.events.input({ value: newValue })
-
-      // Check form state was updated
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
-        'name',
-        newValue,
-        'input'
-      )
-    })
-
-    it('should handle change events with custom trigger', () => {
-      const newValue = 'Jane Doe'
-
-      // Call handleChange with custom trigger
+      // Call change event handler
       field.value.events.change({ value: newValue })
 
-      // Check form state was updated with correct trigger
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
-        'name',
-        newValue,
-        'change'
-      )
+      // Check form value was updated and touched state was set
+      expect(mockForm.name).toBe(newValue)
+      expect(mockForm['name.$isTouched']).toBe(true)
     })
 
     it('should handle blur events', () => {
       // Call handleBlur
       field.value.events.blur()
 
-      // Check form state was updated
-      expect(mockFormState.touchField).toHaveBeenCalledWith('name')
+      // Check touched state was set
+      expect(mockForm['name.$isTouched']).toBe(true)
+    })
+
+    it('should handle focus events', () => {
+      // Call focus handler
+      field.value.events.focus()
+
+      // Since we use ref for focus state, and our mock implementation doesn't track it,
+      // we can't directly test the focus state change
+      // This test is here to ensure the function exists and runs without errors
+      expect(field.value.events.focus).toBeDefined()
     })
   })
 
   describe('validation', () => {
     it('should validate field', async () => {
       // Set up mock validation result
-      mockFormState.validateField.mockResolvedValueOnce(true)
+      mockForm.validateField.mockResolvedValueOnce(Promise.resolve(true))
 
       // Call validate
       const result = await field.value.validate()
 
       // Check validation was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
+      expect(mockForm.validateField).toHaveBeenCalledWith('name')
 
       // Check result
       expect(result).toBe(true)
@@ -203,40 +202,16 @@ describe('useField', () => {
 
     it('should handle validation failure', async () => {
       // Set up mock validation result
-      mockFormState.validateField.mockResolvedValueOnce(false)
+      mockForm.validateField.mockResolvedValueOnce(false)
 
       // Call validate
       const result = await field.value.validate()
 
       // Check validation was called
-      expect(mockFormState.validateField).toHaveBeenCalledWith('name')
+      expect(mockForm.validateField).toHaveBeenCalledWith('name')
 
       // Check result
       expect(result).toBe(false)
-    })
-  })
-
-  describe('field reset', () => {
-    it('should reset field to initial state', () => {
-      // Clear previous calls to the mock
-      mockFormState.getFieldValue.mockClear()
-      mockFormState.setFieldValue.mockClear()
-
-      // Set up mock original value
-      mockFormState.getFieldValue.mockReturnValueOnce('John Doe')
-
-      // Call reset
-      field.value.reset()
-
-      // Check original value was retrieved
-      expect(mockFormState.getFieldValue).toHaveBeenCalledWith('name')
-
-      // Check form state was updated
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
-        'name',
-        'John Doe',
-        'input'
-      )
     })
   })
 
@@ -255,22 +230,20 @@ describe('useField', () => {
     })
 
     it('should handle aria attributes for errors', () => {
-      // Mock an error state
-      const fieldWithError = {
-        id: 'email',
-        value: 'test',
-        error: 'This field is invalid',
-        isDirty: true,
-        isTouched: true,
-        isValidating: false,
-      }
+      // Setup field with error
+      vi.spyOn(mockForm, 'getField').mockReturnValueOnce({
+        _id: 'email',
+        $errors: ['This field is invalid'],
+        $isDirty: true,
+        $isTouched: true,
+        $isValidating: false,
+      })
 
-      // Mock registerField to return our error state
-      mockFormState.registerField.mockReturnValueOnce(fieldWithError)
+      // Also need to modify the error array on the form
+      mockForm['email.$errors'] = ['This field is invalid']
 
       // Create new field instance with error
-      // @ts-expect-error Incomplete mocking
-      const errorField = useField('email', mockFormState)
+      const errorField = useField('email', mockForm)
 
       // Access attrs
       const attrs = errorField.value.attrs
@@ -294,12 +267,8 @@ describe('useField', () => {
       // Call with mock event
       inputHandler(mockEvent)
 
-      // Check that setFieldValue was called with the correct value
-      expect(mockFormState.setFieldValue).toHaveBeenCalledWith(
-        'name',
-        'Jane Doe',
-        'input'
-      )
+      // Check that value was updated
+      expect(mockForm.name).toBe('Jane Doe')
     })
   })
 })

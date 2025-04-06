@@ -125,37 +125,7 @@ export function containsExpression(
   config: FormKitConfig
 ): boolean {
   const { start, end } = config.expressions.delimiters
-  return (
-    typeof value === 'string' && value.includes(start) && value.includes(end)
-  )
-}
-
-/**
- * Extracts all expressions from a string
- */
-export function extractExpressions(
-  value: string,
-  config: FormKitConfig
-): string[] {
-  if (typeof value !== 'string') {
-    return []
-  }
-
-  const { start, end } = config.expressions.delimiters
-  const expressions: string[] = []
-  let startIndex = value.indexOf(start)
-
-  while (startIndex !== -1) {
-    const endIndex = value.indexOf(end, startIndex + start.length)
-    if (endIndex === -1) break
-
-    const expression = value.substring(startIndex + start.length, endIndex)
-    expressions.push(expression)
-
-    startIndex = value.indexOf(start, endIndex + end.length)
-  }
-
-  return expressions
+  return value.includes(start) && value.includes(end)
 }
 
 /**
@@ -166,10 +136,6 @@ export function evaluateTemplateString(
   context: ExpressionContext,
   config: FormKitConfig
 ): string {
-  if (typeof template !== 'string') {
-    return String(template)
-  }
-
   const { start, end } = config.expressions.delimiters
   let result = template
   let startIndex = template.indexOf(start)
@@ -196,9 +162,6 @@ export function evaluateTemplateString(
         replacement +
         result.substring(endIndex + end.length)
 
-      // Adjust start index based on replacement length change
-      const lengthChange =
-        replacement.length - (expressionStr.length + start.length + end.length)
       startIndex = result.indexOf(start, startIndex + replacement.length)
     } catch (error) {
       console.error(`Error evaluating expression: ${expressionStr}`, error)

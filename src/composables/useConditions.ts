@@ -10,7 +10,7 @@ import {
 } from '../constants/symbols'
 import { FormKitConfig } from '../types/config'
 import { DEFAULT_CONFIG } from '../constants/defaults'
-import { FormStateReturn } from '../types'
+import { FormProxy } from '../types'
 import { evaluateCondition, ExpressionContext } from '../utils/exprEvaluator'
 
 /**
@@ -50,7 +50,7 @@ export function useConditions(
   localContext: Record<string, any> = {}
 ): UseConditionsReturn {
   // Inject dependencies
-  const formState = inject<FormStateReturn | undefined>(formStateKey, undefined)
+  const formState = inject<FormProxy | undefined>(formStateKey, undefined)
   const formContext = inject<Record<string, any>>(formContextKey, {})
   const config = inject<FormKitConfig>(formConfigKey, DEFAULT_CONFIG)
 
@@ -65,11 +65,11 @@ export function useConditions(
     // Basic context from form state and external context
     return {
       // Form values from form state
-      form: formState?.getData() || {},
+      form: formState?.values() || {},
       // External context
       context: { ...formContext },
       // Validation errors
-      errors: formState?.errors || {},
+      errors: formState?.errors() || {},
       // Local context specific to this instance
       ...localContext,
     }
@@ -142,7 +142,7 @@ export function useConditions(
     // Watch for form state changes to re-evaluate
     if (formState) {
       watch(
-        () => formState.getData(),
+        formState,
         () => {
           results.value[name] = evaluateIf(condition).value
         },

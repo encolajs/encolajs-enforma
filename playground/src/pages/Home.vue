@@ -146,9 +146,9 @@
                 </template>
               </HeadlessField>
             </div>
-            <div v-if="formState.errors['salary.min'] || formState.errors['salary.max']"
+            <div v-if="formState['salary.min.$errors'] || formState['salary.max.errors']"
                  class="text-red-500">
-              {{ formState.errors['salary.min'][0] || formState.errors['salary.max'][0] }}
+              {{ formState['salary.min.$errors'][0] || formState['salary.max.$errors'][0] }}
             </div>
       </div>
 
@@ -222,7 +222,7 @@
 
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Skills</h3>
       <div class="col-start-1 col-end-5 mb-4">
-        <HeadlessRepeatable name="skills" :min="0" :max="100">
+        <HeadlessRepeatable name="skills" :min="0" :max="1000">
         <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, move, count }">
 
           <table class="mb-4 table-auto border-spacing-2" v-if="count > 0">
@@ -307,7 +307,6 @@
               icon="pi pi-plus"
               label="Add Skill"
               @click="add({ name: '', level: '' }, 2)"
-              :disabled="!canAdd"
               class="mr-2"
             />
             <Button
@@ -315,7 +314,6 @@
               type="button"
               label="Move last to top"
               @click="move(value.length - 1, 0)"
-              :disabled="!canAdd"
               class="mr-2"
             />
           </div>
@@ -323,7 +321,7 @@
       </HeadlessRepeatable>
       </div>
       <pre>
-{{formState.getData().skills}}
+{{formState.values().skills}}
         </pre>
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Experience</h3>
       <div class="col-start-1 col-end-3 mb-4">
@@ -470,8 +468,8 @@
       <div class="col-start-1 col-end-4 mb-4">
         <Button
           severity="primary"
-          :loading="formState.isSubmitting.value"
-          :label="formState.isSubmitting.value ? 'Submitting...' : 'Submit'"
+          :loading="formState.$isSubmitting"
+          :label="formState.$isSubmitting ? 'Submitting...' : 'Submit'"
           type="submit"
         />
       </div>
@@ -495,9 +493,9 @@ const data = {
   skills: [],
   experience: [],
 }
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 100; i++) {
   let level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
-  data.skills.push({ name: Math.random().toString(36).substring(5), level })
+  data.skills.push({ name: `Skill ${i}`, level })
 }
 
 const rules = {
@@ -515,7 +513,7 @@ const rules = {
   'experience.*.company': 'required',
   'experience.*.position': 'required',
   'experience.*.start': 'required|date',
-  'experience.*.end': 'required_when:@experience.*.current,false|date',
+  'experience.*.end': 'required_unless:@experience.*.current,false|date',
 
 }
 
