@@ -1,45 +1,39 @@
 <template>
-  <HeadlessField :name="originalProps.name">
-    <template #default="field">
-      <div v-bind="props.wrapper" v-show="visible">
-        <label v-if="!hideLabel" v-bind="props.label">
-          {{ t(label) }}
-          <span v-if="required" v-bind="props.required">{{
-            requiredIndicator
-          }}</span>
-        </label>
+  <div v-bind="props.wrapper" v-show="visible">
+    <label v-if="!hideLabel" v-bind="props.label">
+      {{ t(label) }}
+      <span v-if="required" v-bind="props.required">{{ requiredIndicator }}</span>
+    </label>
 
-        <!-- Field content slot -->
-        <slot name="default" v-bind="{ ...field, attrs: props.input }">
-          <component
-            :is="props.component"
-            v-bind="props.input"
-            v-on="field.events"
-          />
-        </slot>
+    <!-- Field content slot -->
+    <slot name="default" v-bind="{ ...fieldState, attrs: props.input }">
+      <component
+        :is="props.component"
+        v-bind="props.input"
+        v-on="fieldState.events"
+      />
+    </slot>
 
-        <!-- Help text -->
-        <div v-if="help" v-bind="props.help">
-          {{ t(help) }}
-        </div>
+    <!-- Help text -->
+    <div v-if="help" v-bind="props.help">
+      {{ t(help) }}
+    </div>
 
-        <!-- Error message -->
-        <div v-if="errorMessage" v-bind="props.error">
-          {{ errorMessage }}
-        </div>
-      </div>
-    </template>
-  </HeadlessField>
+    <!-- Error message -->
+    <div v-if="errorMessage" v-bind="props.error">
+      {{ errorMessage }}
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, inject, mergeProps } from 'vue'
+import { computed, ComputedRef, inject, mergeProps, onBeforeUnmount } from 'vue'
 import { formConfigKey, formStateKey } from '../../constants/symbols'
 import { FormKitConfig } from '../../types/config'
 import { useDynamicProps } from '../../composables/useDynamicProps'
 import { FieldState, FormProxy } from '../../index'
-import HeadlessField from '../headless/HeadlessField'
 import { useTranslation } from '../../composables/useTranslation'
+import { useField } from '../../composables/useField'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -55,23 +49,41 @@ const originalProps = defineProps({
   helpProps: { type: Object, default: () => ({}) },
   wrapperProps: { type: Object, default: () => ({}) },
   inputProps: { type: Object, default: () => ({}) },
+  validateOn: { type: String, default: null },
 })
 
+// Get form state from context
 const formState = inject<FormProxy>(formStateKey)
 const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
-const field = computed(() =>
-  formState?.getField(originalProps.name)
-) as ComputedRef<FieldState>
-const { evaluateProps } = useDynamicProps()
 
+if (!formState) {
+  console.error(
+    `FormKitField '${originalProps.name}' must be used within a FormKit form component`
+  )
+}
+
+// Use the useField composable directly instead of via HeadlessField
+const field = useField(originalProps.name, formState, {
+  validateOn: originalProps.validateOn,
+})
+
+// Clean up on unmount 
+onBeforeUnmount(() => {
+  formState?.removeField(originalProps.name)
+})
+
+// Extract the field state from the computed ref
+const fieldState = computed(() => field.value)
+
+const { evaluateProps } = useDynamicProps()
 const { t } = useTranslation()
 
-const fieldId = computed(() => field.value.id)
-
-const errorMessage = computed(() => field.value.error)
-
+// Get computed properties
+const fieldId = computed(() => fieldState.value.id)
+const errorMessage = computed(() => fieldState.value.error)
 const requiredIndicator = config.pt.required?.text || '*'
 
+// Compute field properties with proper merging
 const props = computed(() => {
   let result: Record<string, any> = {}
   // wrapper props
@@ -79,6 +91,8 @@ const props = computed(() => {
     errorMessage.value ? 'formkit-has-error' : '',
     originalProps.required ? 'formkit-required' : '',
   ].filter(Boolean)
+  
+  // Wrapper props
   result.wrapper = evaluateProps(
     mergeProps(
       {
@@ -89,6 +103,8 @@ const props = computed(() => {
       config.pt.wrapper || {}
     )
   )
+  
+  // Label props
   result.label = evaluateProps(
     mergeProps(
       {
@@ -98,7 +114,11 @@ const props = computed(() => {
       config.pt.label || {}
     )
   )
+  
+  // Required indicator
   result.required = config.pt.required || {}
+  
+  // Help text
   result.help = evaluateProps(
     mergeProps(
       {
@@ -108,6 +128,8 @@ const props = computed(() => {
       config.pt.help || {}
     )
   )
+  
+  // Error message
   result.error = evaluateProps(
     mergeProps(
       {
@@ -117,22 +139,27 @@ const props = computed(() => {
       config.pt.error || {}
     )
   )
+  
+  // Input props
   result.input = evaluateProps(
     mergeProps(
       {
-        id: field.value.id,
-        value: field.value.value,
+        id: fieldId.value,
+        value: fieldState.value.value,
         name: originalProps.name,
         placeholder: t(originalProps.placeholder),
         invalid: !!errorMessage.value,
       },
-      field.value.attrs || {},
+      fieldState.value.attrs || {},
       originalProps.inputProps || {},
       config.pt.input || {}
     )
   )
+  
+  // Component type
   result.component = originalProps.type || 'input'
 
+  // Apply custom transformers if defined in config
   return (config.field_props_transformers || []).reduce(
     (result: any, transformer: Function) => {
       return transformer(result, field, formState, config)
