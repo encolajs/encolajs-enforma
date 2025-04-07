@@ -248,8 +248,8 @@ describe('HeadlessForm', () => {
         },
       }
 
-      let formProxy: FormProxy;
-      
+      let formProxy: FormProxy
+
       const wrapper = mount(HeadlessForm, {
         props: {
           data: invalidData,
@@ -258,20 +258,20 @@ describe('HeadlessForm', () => {
         },
         slots: {
           default: (form: FormProxy) => {
-            formProxy = form;
-            
+            formProxy = form
+
             // Register fields by accessing them through getField
-            form.getField('name');
-            form.getField('email');
-            form.getField('profile.age');
-            
-            return h('button', { type: 'submit' }, 'Submit');
-          }
+            form.getField('name')
+            form.getField('email')
+            form.getField('profile.age')
+
+            return h('button', { type: 'submit' }, 'Submit')
+          },
         },
       })
 
-      await wrapper.vm.$nextTick();
-      
+      await wrapper.vm.$nextTick()
+
       // Submit the form
       await wrapper.find('form').trigger('submit')
       await flushPromises()

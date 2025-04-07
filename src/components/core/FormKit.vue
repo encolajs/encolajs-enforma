@@ -1,43 +1,37 @@
 <template>
   <div>
     <HeadlessForm
-    ref="formRef"
-    :data="data"
-    :rules="rules"
-    :custom-messages="messages"
-    :submit-handler="submitHandler"
-    :validate-on="config.validateOn"
-    @submit-success="emit('submit-success', $event)"
-    @submit-error="emit('submit-error', $event)"
-    @validation-error="emit('validation-error', $event)"
-  >
-    <template #default="formState">
-      <slot name="default" v-bind="formState">
-        <FormKitSchema v-if="schema" :schema="schema" />
-      </slot>
+      ref="formRef"
+      :data="data"
+      :rules="rules"
+      :custom-messages="messages"
+      :submit-handler="submitHandler"
+      :validate-on="config.validateOn"
+      @submit-success="emit('submit-success', $event)"
+      @submit-error="emit('submit-error', $event)"
+      @validation-error="emit('validation-error', $event)"
+    >
+      <template #default="formState">
+        <slot name="default" v-bind="formState">
+          <FormKitSchema v-if="schema" :schema="schema" />
+        </slot>
 
-      <slot name="actions" v-bind="{ formState, formConfig }">
-        <div class="formkit-actions">
-          <component :is="formConfig.components.submitButton" />
-          <component
-            :is="formConfig.components.resetButton"
-            v-if="showResetButton"
-          />
-        </div>
-      </slot>
-    </template>
-  </HeadlessForm>
+        <slot name="actions" v-bind="{ formState, formConfig }">
+          <div class="formkit-actions">
+            <component :is="formConfig.components.submitButton" />
+            <component
+              :is="formConfig.components.resetButton"
+              v-if="showResetButton"
+            />
+          </div>
+        </slot>
+      </template>
+    </HeadlessForm>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  provide,
-  ref,
-  useAttrs,
-  PropType,
-} from 'vue'
+import { computed, provide, ref, useAttrs, PropType } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
 import FormKitSchema from './FormKitSchema.vue'
 import { mergeConfigs } from '../../utils/configUtils'
@@ -79,7 +73,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['submit-success', 'submit-error', 'validation-error', 'reset'])
+const emit = defineEmits([
+  'submit-success',
+  'submit-error',
+  'validation-error',
+  'reset',
+])
 
 const $attrs = useAttrs()
 
@@ -88,7 +87,6 @@ const formRef = ref(null)
 defineExpose({
   formRef,
 })
-
 
 const formConfig = computed(() => {
   // Get the global config once

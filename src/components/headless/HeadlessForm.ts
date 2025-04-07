@@ -48,7 +48,7 @@ export default defineComponent({
       },
       onSubmitError: (error) => {
         ctx.emit('submit-error', error)
-      }
+      },
     })
 
     // Provide form to child components

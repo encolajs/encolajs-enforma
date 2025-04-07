@@ -61,13 +61,15 @@ export default defineComponent({
         validateOn: props.validateOn,
       } as FieldOptions)
 
-      unwatchers.push(watch(
-        () => field.value,
-        () => {
-          renderTrigger.value++
-        },
-        { deep: true }
-      ))
+      unwatchers.push(
+        watch(
+          () => field.value,
+          () => {
+            renderTrigger.value++
+          },
+          { deep: true }
+        )
+      )
 
       return () => {
         // Include renderTrigger in the render function to ensure it re-evaluates
@@ -84,13 +86,15 @@ export default defineComponent({
             validateOn: props.validateOn,
           } as FieldOptions).value
 
-          unwatchers.push(watch(
-            () => acc[key].value,
-            () => {
-              renderTrigger.value++
-            },
-            { deep: true }
-          ))
+          unwatchers.push(
+            watch(
+              () => acc[key].value,
+              () => {
+                renderTrigger.value++
+              },
+              { deep: true }
+            )
+          )
 
           return acc
         }, {} as Record<string, any>)

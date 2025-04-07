@@ -1,9 +1,5 @@
 <template>
-  <button
-    v-bind="$attrs"
-    type="submit"
-    :disabled="isSubmitting"
-  >
+  <button v-bind="$attrs" type="submit" :disabled="isSubmitting">
     <slot name="default">
       {{ isSubmitting ? t('Submitting...') : t('Submit') }}
     </slot>

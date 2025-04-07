@@ -20,11 +20,15 @@ describe('useForm', () => {
       },
     }
 
-    form = useForm(order, {
-      'items.*.price': 'required|integer|gt:10',
-    }, {
-      submitHandler
-    })
+    form = useForm(
+      order,
+      {
+        'items.*.price': 'required|integer|gt:10',
+      },
+      {
+        submitHandler,
+      }
+    )
   })
   describe('Form Methods', () => {
     test('should reset form to initial values', async () => {

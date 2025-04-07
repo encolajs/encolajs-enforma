@@ -294,7 +294,7 @@ export function useForm<T extends object>(
           if (options.submitHandler) {
             try {
               await options.submitHandler(valuesRef.value)
-              
+
               // Call submit success callback if provided
               if (options.onSubmitSuccess) {
                 options.onSubmitSuccess(valuesRef.value)
