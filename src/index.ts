@@ -9,7 +9,7 @@ export type {
   FormStateOptions,
   FormController,
   FieldOptions,
-  FieldReturn,
+  FieldController,
   ValidationRules,
   FieldState,
   EventTrigger,

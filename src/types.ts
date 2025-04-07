@@ -52,7 +52,7 @@ export interface FieldOptions {
 /**
  * Field state return interface
  */
-export interface FieldReturn {
+export interface FieldController {
   // Field value and state
   value: any
   error: string | null

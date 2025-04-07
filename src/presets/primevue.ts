@@ -1,7 +1,7 @@
 import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
 import { InputText, Select } from 'primevue'
-import { FieldReturn, FormStateReturn } from '../types'
+import { FieldController, FormStateReturn } from '../types'
 
 const fieldMap = {
   input: InputText,
@@ -10,7 +10,7 @@ const fieldMap = {
 
 function fieldPropsTransformer(
   fieldProps: any,
-  field: FieldReturn,
+  field: FieldController,
   formState: FormStateReturn,
   config: any
 ) {

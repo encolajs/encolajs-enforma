@@ -1,5 +1,5 @@
 import { computed, onMounted, ComputedRef, ref } from 'vue'
-import { FieldReturn, FormController } from '../types'
+import { FieldController, FormController } from '../types'
 import { debounce } from '../utils/debounce'
 
 /**
@@ -17,7 +17,7 @@ export function useField(
     validateOnMount?: boolean
     validateOn?: 'input' | 'change' | 'blur' | 'submit' | null
   } = {}
-): ComputedRef<FieldReturn> {
+): ComputedRef<FieldController> {
   if (!name) {
     throw new Error('Field name is required')
   }
@@ -150,6 +150,6 @@ export function useField(
       // For arrays and custom field types
       name,
       id: fieldState?._id,
-    } as FieldReturn
+    } as FieldController
   })
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '../../src/composables/useField'
-import { FieldReturn } from '../../src'
+import { FieldController } from '../../src'
 import { ComputedRef } from 'vue'
 
 // Mock the form proxy (normally returned from useForm)
@@ -71,7 +71,7 @@ vi.mock('vue', () => {
 })
 
 describe('useField', () => {
-  let field: ComputedRef<FieldReturn | null>
+  let field: ComputedRef<FieldController | null>
 
   beforeEach(() => {
     // Reset mocks
