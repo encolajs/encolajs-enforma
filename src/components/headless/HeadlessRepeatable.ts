@@ -2,7 +2,7 @@ import { defineComponent, inject, ref, watch, onBeforeUnmount } from 'vue'
 import { useRepeatable } from '../../composables/useRepeatable'
 import { formStateKey } from '../../constants/symbols'
 
-import { FormProxy } from '../../types'
+import { FormController } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessRepeatable',
@@ -35,7 +35,7 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const formState = inject<FormProxy>(formStateKey)
+    const formState = inject<FormController>(formStateKey)
 
     if (!formState) {
       console.error('HeadlessRepeatable must be used within an EncolaForm')

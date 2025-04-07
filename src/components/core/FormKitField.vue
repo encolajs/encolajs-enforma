@@ -33,7 +33,7 @@ import { computed, ComputedRef, inject, mergeProps, onBeforeUnmount } from 'vue'
 import { formConfigKey, formStateKey } from '../../constants/symbols'
 import { FormKitConfig } from '../../types/config'
 import { useDynamicProps } from '../../composables/useDynamicProps'
-import { FormProxy } from '../../index'
+import { FormController } from '../../index'
 import { useTranslation } from '../../composables/useTranslation'
 import { useField } from '../../composables/useField'
 
@@ -55,7 +55,7 @@ const originalProps = defineProps({
 })
 
 // Get form state from context
-const formState = inject<FormProxy>(formStateKey) as FormProxy
+const formState = inject<FormController>(formStateKey) as FormController
 const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
 
 if (!formState) {

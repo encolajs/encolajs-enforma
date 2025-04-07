@@ -10,7 +10,7 @@ import {
 } from '../constants/symbols'
 import { FormKitConfig } from '../types/config'
 import { DEFAULT_CONFIG } from '../constants/defaults'
-import { FormProxy } from '../types'
+import { FormController } from '../types'
 import {
   evaluateCondition,
   evaluateObject,
@@ -49,7 +49,7 @@ export function useDynamicProps(
   localContext: Record<string, any> = {}
 ): UseDynamicPropsReturn {
   // Inject dependencies
-  const formState = inject<FormProxy | undefined>(formStateKey, undefined)
+  const formState = inject<FormController | undefined>(formStateKey, undefined)
   const formContext = inject<Record<string, any>>(formContextKey, {})
   const config = inject<FormKitConfig>(formConfigKey, DEFAULT_CONFIG)
 

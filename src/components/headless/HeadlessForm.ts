@@ -1,7 +1,7 @@
 import { defineComponent, provide, h, PropType } from 'vue'
 import { useForm } from '../../composables/useForm'
 import { formStateKey } from '../../constants/symbols'
-import { FormProxy } from '../../types'
+import { FormController } from '../../types'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -37,7 +37,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     // Create form using useForm with callbacks for events
-    const form: FormProxy = useForm(props.data, props.rules, {
+    const form: FormController = useForm(props.data, props.rules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
       onValidationError: (form) => {

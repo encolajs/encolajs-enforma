@@ -1,6 +1,6 @@
 import { computed, ComputedRef, onMounted, ref } from 'vue'
 
-import { FormProxy } from '../types'
+import { FormController } from '../types'
 
 export interface RepeatableOptions {
   min?: number
@@ -24,7 +24,7 @@ export interface RepeatableState {
 
 export function useRepeatable(
   name: string,
-  form: FormProxy,
+  form: FormController,
   options: RepeatableOptions = {}
 ): ComputedRef<RepeatableState> {
   const {

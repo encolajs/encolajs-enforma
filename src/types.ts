@@ -32,7 +32,7 @@ export interface FormStateOptions {
   /** Form submission handler */
   submitHandler?: (data: any) => Promise<void> | void
   /** Validation error callback */
-  onValidationError?: (form: FormProxy) => void
+  onValidationError?: (form: FormController) => void
   /** Submit success callback */
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
@@ -73,7 +73,7 @@ export interface FieldReturn {
   name: string
 }
 
-export interface FormProxy {
+export interface FormController {
   reset(): void
 
   values(): object

@@ -7,11 +7,11 @@
 <script setup lang="ts">
 import { inject, useAttrs } from 'vue'
 import { formStateKey } from '../../constants/symbols'
-import { FormProxy } from '../../'
+import { FormController } from '../../'
 import { useTranslation } from '../../composables/useTranslation'
 
 const $attrs = useAttrs()
-const formState = inject(formStateKey) as FormProxy
+const formState = inject(formStateKey) as FormController
 const { reset, isSubmitting } = formState
 const { t } = useTranslation()
 </script>

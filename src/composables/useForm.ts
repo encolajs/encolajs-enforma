@@ -1,5 +1,5 @@
 import { PlainObjectDataSource } from '@encolajs/validator'
-import { FormProxy, FormStateOptions, ValidationRules } from '../types'
+import { FormController, FormStateOptions, ValidationRules } from '../types'
 import { useValidation } from './useValidation'
 import { ref } from 'vue'
 
@@ -163,7 +163,7 @@ export function useForm<T extends object>(
   values: object,
   rules: ValidationRules = {},
   options: FormStateOptions = {}
-): T & FormProxy {
+): T & FormController {
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
     values.clone && typeof values?.clone === 'function'
@@ -286,7 +286,7 @@ export function useForm<T extends object>(
           if (!isValid) {
             // Call validation error callback if provided
             if (options.onValidationError) {
-              options.onValidationError(this as FormProxy)
+              options.onValidationError(this as FormController)
             }
             return false
           }
@@ -436,11 +436,11 @@ export function useForm<T extends object>(
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
       },
-    } as FormProxy,
+    } as FormController,
     {
-      get(target: FormProxy, prop: string | symbol): any {
-        if (typeof target[prop as keyof FormProxy] === 'function') {
-          return target[prop as keyof FormProxy]
+      get(target: FormController, prop: string | symbol): any {
+        if (typeof target[prop as keyof FormController] === 'function') {
+          return target[prop as keyof FormController]
         }
 
         if (typeof prop === 'string') {
@@ -474,7 +474,7 @@ export function useForm<T extends object>(
         return undefined
       },
 
-      set(_: FormProxy, prop: string | symbol, value: any): boolean {
+      set(_: FormController, prop: string | symbol, value: any): boolean {
         if (typeof prop === 'string') {
           if (prop.includes('.$')) {
             const [path, metaProp] = prop.split('.$')
@@ -508,5 +508,5 @@ export function useForm<T extends object>(
         return true
       },
     }
-  ) as T & FormProxy
+  ) as T & FormController
 }

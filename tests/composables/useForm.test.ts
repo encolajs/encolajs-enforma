@@ -2,11 +2,11 @@ import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { useForm } from '../../src/composables/useForm.js'
 import { flushPromises } from '@vue/test-utils'
 import { ValidatorFactory } from '@encolajs/validator'
-import { FormProxy } from '../../src'
+import { FormController } from '../../src'
 
 describe('useForm', () => {
   let order
-  let form: FormProxy
+  let form: FormController
   let submitHandler = vi.fn()
 
   beforeEach(() => {

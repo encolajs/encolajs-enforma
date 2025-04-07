@@ -7,7 +7,7 @@ export { useForm } from './composables/useForm'
 // Type exports
 export type {
   FormStateOptions,
-  FormProxy,
+  FormController,
   FieldOptions,
   FieldReturn,
   ValidationRules,

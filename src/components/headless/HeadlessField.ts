@@ -8,7 +8,7 @@ import {
   computed,
 } from 'vue'
 import { useField } from '../../composables/useField'
-import { FieldOptions, FormProxy } from '../../types'
+import { FieldOptions, FormController } from '../../types'
 import { formStateKey } from '../../constants/symbols'
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
   },
 
   setup(props, { slots }: SetupContext) {
-    const form = inject<FormProxy>(formStateKey)
+    const form = inject<FormController>(formStateKey)
 
     if (!form) {
       console.error(

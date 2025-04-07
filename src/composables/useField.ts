@@ -1,5 +1,5 @@
 import { computed, onMounted, ComputedRef, ref } from 'vue'
-import { FieldReturn, FormProxy } from '../types'
+import { FieldReturn, FormController } from '../types'
 import { debounce } from '../utils/debounce'
 
 /**
@@ -12,7 +12,7 @@ import { debounce } from '../utils/debounce'
  */
 export function useField(
   name: string,
-  form: FormProxy,
+  form: FormController,
   options: {
     validateOnMount?: boolean
     validateOn?: 'input' | 'change' | 'blur' | 'submit' | null

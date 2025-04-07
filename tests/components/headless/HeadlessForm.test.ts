@@ -4,7 +4,7 @@ import { h, inject } from 'vue'
 import HeadlessForm from '../../../src/components/headless/HeadlessForm'
 import { formStateKey } from '../../../src/constants/symbols'
 
-import { FormProxy } from '../../../src'
+import { FormController } from '../../../src'
 
 // We'll use a real validator in these tests
 vi.mock('@encolajs/validator', async () => {
@@ -17,11 +17,11 @@ vi.mock('@encolajs/validator', async () => {
 })
 
 describe('HeadlessForm', () => {
-  let encolaForm: FormProxy
+  let encolaForm: FormController
   const FormStateExposer = {
     setup() {
       const formState = inject(formStateKey)
-      encolaForm = formState as FormProxy
+      encolaForm = formState as FormController
       return {
         [formStateKey]: formState,
       }
@@ -248,7 +248,7 @@ describe('HeadlessForm', () => {
         },
       }
 
-      let formProxy: FormProxy
+      let formProxy: FormController
 
       const wrapper = mount(HeadlessForm, {
         props: {
@@ -257,7 +257,7 @@ describe('HeadlessForm', () => {
           validateOn: 'submit',
         },
         slots: {
-          default: (form: FormProxy) => {
+          default: (form: FormController) => {
             formProxy = form
 
             // Register fields by accessing them through getField
