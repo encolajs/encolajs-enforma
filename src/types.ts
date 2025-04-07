@@ -31,6 +31,12 @@ export interface FormStateOptions {
   validateOn?: 'input' | 'change' | 'blur' | 'submit'
   /** Form submission handler */
   submitHandler?: (data: any) => Promise<void> | void
+  /** Validation error callback */
+  onValidationError?: (form: FormProxy) => void
+  /** Submit success callback */
+  onSubmitSuccess?: (data: any) => void
+  /** Submit error callback */
+  onSubmitError?: (error: any) => void
 }
 
 /**
@@ -74,7 +80,7 @@ export interface FormProxy {
 
   errors(): Record<string, string[]>
 
-  submit(submitHandler: (data: any) => Promise<void>): Promise<boolean>
+  submit(): Promise<boolean>
 
   validate(): Promise<boolean>
 

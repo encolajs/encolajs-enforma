@@ -36,10 +36,19 @@ export default defineComponent({
   emits: ['submit-success', 'submit-error', 'validation-error', 'reset'],
 
   setup(props, ctx) {
-    // Create form using useForm
+    // Create form using useForm with callbacks for events
     const form: FormProxy = useForm(props.data, props.rules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
+      onValidationError: (form) => {
+        ctx.emit('validation-error', form)
+      },
+      onSubmitSuccess: (data) => {
+        ctx.emit('submit-success', data)
+      },
+      onSubmitError: (error) => {
+        ctx.emit('submit-error', error)
+      }
     })
 
     // Provide form to child components
@@ -49,19 +58,10 @@ export default defineComponent({
     const handleSubmit = async (e: Event) => {
       e.preventDefault()
       try {
-        // First validate the form
-        const isValid = await form.validate()
-
-        if (!isValid) {
-          ctx.emit('validation-error', form)
-          return
-        }
-
-        // If valid, then submit
-        await form.submit(props.submitHandler)
-        ctx.emit('submit-success', form.values())
+        await form.submit()
       } catch (error) {
-        ctx.emit('submit-error', error)
+        console.error('Error submitting form', error)
+        // Error already emitted via callback, but we catch it here to prevent it from propagating
       }
     }
 
@@ -74,7 +74,7 @@ export default defineComponent({
     // Expose form methods to parent component
     ctx.expose({
       reset: form.reset,
-      submit: () => form.submit(props.submitHandler),
+      submit: () => form.submit(),
       validate: form.validate,
       validateField: form.validateField,
       setFieldValue: form.setFieldValue,

@@ -223,6 +223,8 @@ export function useForm<T extends object>(
     } finally {
       formState.$isValidating = false
     }
+
+    return false
   }
 
   function getValueByPath(obj: any, path: string): any {
@@ -270,7 +272,7 @@ export function useForm<T extends object>(
 
   return new Proxy(
     {
-      submit: async (submitHandler: (data: any) => Promise<void>) => {
+      submit: async () => {
         formState.$isSubmitting = true
 
         try {
@@ -281,11 +283,32 @@ export function useForm<T extends object>(
           // Validate all fields
           const isValid = await validateForm()
 
-          if (isValid && submitHandler) {
-            await submitHandler(valuesRef.value)
+          if (!isValid) {
+            // Call validation error callback if provided
+            if (options.onValidationError) {
+              options.onValidationError(this as FormProxy)
+            }
+            return false
           }
 
-          return isValid
+          if (options.submitHandler) {
+            try {
+              await options.submitHandler(valuesRef.value)
+              
+              // Call submit success callback if provided
+              if (options.onSubmitSuccess) {
+                options.onSubmitSuccess(valuesRef.value)
+              }
+            } catch (error) {
+              // Call submit error callback if provided
+              if (options.onSubmitError) {
+                options.onSubmitError(error)
+              }
+              throw error
+            }
+          }
+
+          return true
         } finally {
           formState.$isSubmitting = false
         }

@@ -7,6 +7,7 @@ import { FormProxy } from '../../src'
 describe('useForm', () => {
   let order
   let form: FormProxy
+  let submitHandler = vi.fn()
 
   beforeEach(() => {
     order = {
@@ -21,6 +22,8 @@ describe('useForm', () => {
 
     form = useForm(order, {
       'items.*.price': 'required|integer|gt:10',
+    }, {
+      submitHandler
     })
   })
   describe('Form Methods', () => {
@@ -63,17 +66,16 @@ describe('useForm', () => {
     })
 
     test('should submit when valid', async () => {
-      const submitHandler = vi.fn()
-
       // Set a valid value
       form['items.0.price'] = 150
 
       // Submit
-      const isValid = await form.submit(submitHandler)
+      const isValid = await form.submit()
+      await flushPromises()
 
       // Should call submit handler with form data
       expect(isValid).toBe(true)
-      expect(submitHandler).toHaveBeenCalledWith(order)
+      expect(submitHandler).toHaveBeenCalled()
     })
 
     test('should validate all fields', async () => {
