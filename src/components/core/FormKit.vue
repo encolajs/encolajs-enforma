@@ -80,8 +80,6 @@ const emit = defineEmits([
   'reset',
 ])
 
-const $attrs = useAttrs()
-
 const formRef = ref(null)
 
 defineExpose({
