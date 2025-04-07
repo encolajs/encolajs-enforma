@@ -33,7 +33,7 @@ export default defineComponent({
     },
   },
 
-  emits: ['submit', 'submit-error', 'validation-error', 'reset'],
+  emits: ['submit-success', 'submit-error', 'validation-error', 'reset'],
 
   setup(props, ctx) {
     // Create form using useForm
@@ -58,17 +58,8 @@ export default defineComponent({
         }
 
         // If valid, then submit
-        const submitResult = await form.submit(async (data) => {
-          if (props.submitHandler) {
-            await props.submitHandler(data)
-          }
-          ctx.emit('submit', data)
-        })
-
-        // If submit returns false (unlikely but possible), also emit validation error
-        if (!submitResult) {
-          ctx.emit('validation-error', form)
-        }
+        await form.submit(props.submitHandler)
+        ctx.emit('submit-success', form.values())
       } catch (error) {
         ctx.emit('submit-error', error)
       }
