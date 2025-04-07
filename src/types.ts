@@ -22,7 +22,7 @@ export type EventTrigger = 'input' | 'change' | 'blur'
 /**
  * Form state options
  */
-export interface FormStateOptions {
+export interface FormOptions {
   /** Custom validator factory */
   validatorFactory?: ValidatorFactory
   /** Custom error messages */

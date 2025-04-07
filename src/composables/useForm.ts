@@ -1,5 +1,5 @@
 import { PlainObjectDataSource } from '@encolajs/validator'
-import { FormController, FormStateOptions, ValidationRules } from '../types'
+import { FormController, FormOptions, ValidationRules } from '../types'
 import { useValidation } from './useValidation'
 import { ref } from 'vue'
 
@@ -162,7 +162,7 @@ class FieldManager {
 export function useForm<T extends object>(
   values: object,
   rules: ValidationRules = {},
-  options: FormStateOptions = {}
+  options: FormOptions = {}
 ): T & FormController {
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
