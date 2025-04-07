@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject } from 'vue'
-import FormKitDirectField from './FormKitDirectField.vue'
 import { formSchemaKey } from '../../constants/symbols'
 import { FieldSchema } from '../../types/fields'
 import FormKitField from '@/components/core/FormKitField.vue'
@@ -27,7 +26,6 @@ export default defineComponent({
 
   components: {
     FormKitField,
-    FormKitDirectField,
   },
 
   props: {

@@ -3,7 +3,6 @@
     v-bind="$attrs"
     type="submit"
     :disabled="isSubmitting"
-    @click="submit"
   >
     <slot name="default">
       {{ isSubmitting ? t('Submitting...') : t('Submit') }}
@@ -14,11 +13,11 @@
 <script setup lang="ts">
 import { inject, useAttrs } from 'vue'
 import { formStateKey } from '../../constants/symbols'
-import { FormStateReturn } from '../../'
+import { FormProxy } from '../../'
 import { useTranslation } from '../../composables/useTranslation'
 
 const $attrs = useAttrs()
-const formState = inject(formStateKey) as FormStateReturn
-const { isSubmitting, submit } = formState
+const formState = inject(formStateKey) as FormProxy
+const { isSubmitting } = formState
 const { t } = useTranslation()
 </script>

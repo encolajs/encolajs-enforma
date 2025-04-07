@@ -1,33 +1,33 @@
 <template>
-  <HeadlessForm
+  <div>
+    <HeadlessForm
     ref="formRef"
     :data="data"
     :rules="rules"
     :custom-messages="messages"
     :submit-handler="submitHandler"
     :validate-on="config.validateOn"
-    @submit="emit('submit', $event)"
+    @submit-success="emit('submit-success', $event)"
     @submit-error="emit('submit-error', $event)"
     @validation-error="emit('validation-error', $event)"
   >
     <template #default="formState">
-      <form v-bind="$attrs" @submit.prevent="formState.submit" novalidate>
-        <slot name="default" v-bind="formState">
-          <FormKitSchema v-if="schema" :schema="schema" />
-        </slot>
+      <slot name="default" v-bind="formState">
+        <FormKitSchema v-if="schema" :schema="schema" />
+      </slot>
 
-        <slot name="actions" v-bind="{ formState, formConfig }">
-          <div class="formkit-actions">
-            <component :is="formConfig.components.submitButton" />
-            <component
-              :is="formConfig.components.resetButton"
-              v-if="showResetButton"
-            />
-          </div>
-        </slot>
-      </form>
+      <slot name="actions" v-bind="{ formState, formConfig }">
+        <div class="formkit-actions">
+          <component :is="formConfig.components.submitButton" />
+          <component
+            :is="formConfig.components.resetButton"
+            v-if="showResetButton"
+          />
+        </div>
+      </slot>
     </template>
   </HeadlessForm>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -36,8 +36,6 @@ import {
   provide,
   ref,
   useAttrs,
-  defineExpose,
-  defineEmits,
   PropType,
 } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
@@ -45,7 +43,6 @@ import FormKitSchema from './FormKitSchema.vue'
 import { mergeConfigs } from '../../utils/configUtils'
 import { getGlobalConfig } from '../../composables/useConfig'
 import { formContextKey, formConfigKey } from '../../constants/symbols'
-import { FormProxy } from '@/types'
 
 const props = defineProps({
   data: {
@@ -73,7 +70,7 @@ const props = defineProps({
     default: () => ({}),
   },
   submitHandler: {
-    type: Function as PropType<(form: FormProxy, data: any) => Promise<any>>,
+    type: Function as PropType<(data: any) => Promise<any>>,
     required: true,
   },
   showResetButton: {
@@ -82,7 +79,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['submit-success', 'submit-error', 'reset'])
+const emit = defineEmits(['submit-success', 'submit-error', 'validation-error', 'reset'])
 
 const $attrs = useAttrs()
 
@@ -92,15 +89,6 @@ defineExpose({
   formRef,
 })
 
-const onSubmit = async (data: any) => {
-  try {
-    await props.submitHandler(formRef.value, data)
-    emit('submit-success', data)
-  } catch (error) {
-    emit('submit-error', error)
-    throw error
-  }
-}
 
 const formConfig = computed(() => {
   // Get the global config once
