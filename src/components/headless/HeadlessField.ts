@@ -43,25 +43,31 @@ export default defineComponent({
     // Create a trigger ref to force re-rendering when the repeatable data changes
     const renderTrigger = ref(0)
 
+    const unwatchers: Function[] = []
+
+    onBeforeUnmount(() => {
+      if (props.name) {
+        form.removeField(props.name)
+      }
+      if (props.names) {
+        Object.values(props.names).map(form.removeField)
+      }
+      unwatchers.forEach((unwatch) => unwatch())
+    })
+
     // Handle single field case (backwards compatibility)
     if (props.name && !props.names) {
       const field = useField(props.name, form, {
         validateOn: props.validateOn,
       } as FieldOptions)
 
-      const unwatch = watch(
+      unwatchers.push(watch(
         () => field.value,
         () => {
           renderTrigger.value++
         },
         { deep: true }
-      )
-
-      onBeforeUnmount(() => {
-        // @ts-expect-error props.name is present
-        form.removeField(props.name)
-        unwatch()
-      })
+      ))
 
       return () => {
         // Include renderTrigger in the render function to ensure it re-evaluates
@@ -72,36 +78,23 @@ export default defineComponent({
 
     // Handle multiple fields case
     if (props.names) {
-      const unwatchers: Record<string, Function> = {}
       const fields = computed(() =>
         Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
           acc[key] = useField(fieldName, form, {
             validateOn: props.validateOn,
           } as FieldOptions).value
 
-          unwatchers[key] = watch(
+          unwatchers.push(watch(
             () => acc[key].value,
             () => {
               renderTrigger.value++
             },
             { deep: true }
-          )
+          ))
 
           return acc
         }, {} as Record<string, any>)
       )
-
-      // Cleanup on unmount
-      onBeforeUnmount(() => {
-        Object.entries(props.names as Record<string, string>).forEach(
-          ([fieldName, field]) => {
-            form.removeField(field)
-            if (unwatchers[fieldName]) {
-              unwatchers[fieldName]()
-            }
-          }
-        )
-      })
 
       // Return slot with fields object
       return () => slots.default?.(fields.value)
