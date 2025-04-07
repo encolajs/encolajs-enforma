@@ -235,34 +235,48 @@ describe('HeadlessForm', () => {
 
       // Check validation succeeded and submit was emitted
       expect(submitSpy).toHaveBeenCalled()
-      expect(wrapper.emitted('submit')).toBeTruthy()
+      expect(wrapper.emitted('submit-success')).toBeTruthy()
     })
 
     it('emits validation-error when validation fails', async () => {
-      // Since mocking the validate method is complex, let's test the logic directly
-
-      // 1. Create a component implementation that simulates HeadlessForm but with a fixed mock
-      const MockHeadlessForm = {
-        emits: ['validation-error'],
-        setup(props, { emit }) {
-          const handleSubmit = async (e) => {
-            e.preventDefault()
-            // Simulate validation failure
-            emit('validation-error', { message: 'Validation failed' })
-          }
-
-          return () =>
-            h('form', { onSubmit: handleSubmit }, h('div', {}, 'Form Content'))
+      // Create a form with invalid data that will fail validation
+      const invalidData = {
+        name: '', // Empty name will fail required validation
+        email: 'not-an-email', // Invalid email format
+        profile: {
+          age: 15, // Under 18 will fail age validation
         },
       }
 
-      // 2. Mount our simplified component
-      const wrapper = mount(MockHeadlessForm)
+      let formProxy: FormProxy;
+      
+      const wrapper = mount(HeadlessForm, {
+        props: {
+          data: invalidData,
+          rules,
+          validateOn: 'submit',
+        },
+        slots: {
+          default: (form: FormProxy) => {
+            formProxy = form;
+            
+            // Register fields by accessing them through getField
+            form.getField('name');
+            form.getField('email');
+            form.getField('profile.age');
+            
+            return h('button', { type: 'submit' }, 'Submit');
+          }
+        },
+      })
 
-      // 3. Trigger form submission
+      await wrapper.vm.$nextTick();
+      
+      // Submit the form
       await wrapper.find('form').trigger('submit')
+      await flushPromises()
 
-      // 4. Check validation-error was emitted
+      // Check that validation-error was emitted
       expect(wrapper.emitted('validation-error')).toBeTruthy()
     })
 

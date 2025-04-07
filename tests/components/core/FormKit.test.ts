@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
-import type { ComponentPublicInstance } from 'vue'
-import FormKit from '../../../src/components/core/FormKit.vue'
+import { flushPromises, mount } from '@vue/test-utils'
+import FormKit from '../../../src/components/core/FormKit'
 import HeadlessForm from '../../../src/components/headless/HeadlessForm'
-import FormKitSchema from '../../../src/components/core/FormKitSchema.vue'
+import FormKitSchema from '../../../src/components/core/FormKitSchema'
 import { setGlobalConfig } from '../../../src/composables/useConfig'
 import { h, inject } from 'vue'
 import { formContextKey } from '../../../src/constants/symbols'
@@ -101,27 +100,16 @@ describe('FormKit', () => {
   })
 
   it('emits submit-success event on successful form submission', async () => {
-    const testData = { name: 'test' }
+    const data = { name: 'test' }
     const wrapper = mount(FormKit, {
       props: {
-        data: testData,
-        submitHandler: () => true,
+        data: data,
+        submitHandler: () => Promise.resolve(true),
       },
       global: {
         components: {
           SubmitButton: SubmitButtonStub,
           ResetButton: ResetButtonStub,
-        },
-        stubs: {
-          HeadlessForm: {
-            template: '<div><slot :submit="submitHandler" /></div>',
-            methods: {
-              submitHandler() {
-                this.$emit('submit', this.data)
-              },
-            },
-            props: ['data', 'submitHandler'],
-          },
         },
       },
     })
@@ -130,10 +118,11 @@ describe('FormKit', () => {
     const form = wrapper.find('form')
     expect(form.exists()).toBe(true)
     await form.trigger('submit')
+    await flushPromises()
 
     const emitted = wrapper.emitted('submit-success')
     expect(emitted).toBeTruthy()
-    expect(emitted?.[0]).toEqual([testData])
+    expect(emitted?.[0]).toEqual([data])
   })
 
   it('emits submit-error event when submission throws', async () => {
@@ -163,6 +152,7 @@ describe('FormKit', () => {
     // Find the form and trigger submission
     const form = wrapper.find('form')
     await form.trigger('submit')
+    await flushPromises()
 
     // Check if submit-error was emitted with the right error
     const emitted = wrapper.emitted('submit-error')

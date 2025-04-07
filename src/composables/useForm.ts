@@ -211,13 +211,18 @@ export function useForm<T extends object>(
 
   async function validateForm(): Promise<boolean> {
     formState.$isValidating = true
-    const validationResults = await Promise.all(
-      Array.from(fieldManager.all().entries()).map(([path, state]) => {
-        return validateField(path, state)
-      })
-    )
-    formState.$isValidating = false
-    return validationResults.every((result) => result)
+    try {
+      const validationResults = await Promise.all(
+        Array.from(fieldManager.all().entries()).map(([path, state]) => {
+          return validateField(path, state)
+        })
+      )
+      return validationResults.every((result) => result)
+    } catch (e) {
+      console.error('Error validating form', e)
+    } finally {
+      formState.$isValidating = false
+    }
   }
 
   function getValueByPath(obj: any, path: string): any {
@@ -337,7 +342,7 @@ export function useForm<T extends object>(
       },
 
       async validate(): Promise<boolean> {
-        return validateForm()
+        return await validateForm()
       },
 
       async validateField(path: string): Promise<boolean> {
