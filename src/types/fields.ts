@@ -111,38 +111,6 @@ export interface FieldRenderContext {
 }
 
 /**
- * Field descriptor for dynamic rendering
- */
-export interface FieldDescriptor {
-  schema: FieldSchema
-  path: string
-  section?: string
-  condition?: string | boolean
-  visible: boolean
-  component: string | object
-  props: Record<string, any>
-  componentProps?: Record<string, Record<string, any>>
-  context: FieldRenderContext
-  [key: string]: any
-}
-
-/**
- * Type guard for repeatable field schema
- */
-export function isRepeatableField(
-  field: FieldSchema
-): field is RepeatableFieldSchema {
-  return field.type === 'repeatable' && 'subfields' in field
-}
-
-/**
- * Type guard for group field schema
- */
-export function isGroupField(field: FieldSchema): field is GroupFieldSchema {
-  return field.type === 'group' && 'subfields' in field
-}
-
-/**
  * Field option for select, radio, checkbox fields
  */
 export interface FieldOption {

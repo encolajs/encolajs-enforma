@@ -42,56 +42,6 @@ export function deepMerge(target: any, source: any): any {
 }
 
 /**
- * Resolves a configuration path from a configuration object
- */
-export function getConfigByPath(config: ConfigObject, path: string): any {
-  if (!path) return config
-
-  const parts = path.split('.')
-  let current = config
-
-  for (const part of parts) {
-    if (current === undefined || current === null) {
-      return undefined
-    }
-
-    current = current[part]
-  }
-
-  return current
-}
-
-/**
- * Applies a default configuration to a specific field type
- */
-export function resolveFieldTypeConfig(
-  config: ConfigObject,
-  fieldType: string
-): ConfigObject {
-  const baseConfig = config.fieldTypes?.default || {}
-  const typeConfig = config.fieldTypes?.[fieldType] || {}
-
-  return deepMerge(baseConfig, typeConfig)
-}
-
-/**
- * Applies configuration overrides for a specific component
- */
-export function applyComponentConfig(
-  baseConfig: ConfigObject,
-  componentName: string,
-  overrides?: DeepPartial<ConfigObject>
-): ConfigObject {
-  const componentConfig = baseConfig.components?.[componentName] || {}
-
-  if (!overrides) {
-    return componentConfig
-  }
-
-  return deepMerge(componentConfig, overrides)
-}
-
-/**
  * Checks if a value is an object
  */
 function isObject(item: any): boolean {

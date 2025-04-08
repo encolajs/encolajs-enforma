@@ -131,7 +131,7 @@ export interface FieldSchema {
 
   /**
    * Conditional expression to determine if the field should be shown
-   * Can be a string containing an expression referencing form state: "form.country === 'US'"
+   * Can be a string containing an expression referencing form state: "${form.country === 'US'}"
    */
   if?: string
 
