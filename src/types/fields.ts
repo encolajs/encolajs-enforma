@@ -31,15 +31,20 @@ export interface FieldSchema {
 /**
  * Repeatable field schema with subfields
  */
-export interface RepeatableFieldSchema extends FieldSchema {
+export interface RepeatableFieldSchema {
   type: 'repeatable'
-  min_items?: number
-  max_items?: number
-  add_label?: string
-  remove_label?: string
-  item_label?: string | ((index: number) => string)
+  name: string
+  min?: number
+  max?: number
   subfields: Record<string, FieldSchema>
-  default?: any[]
+  defaultValue?: any
+  validateOnAdd?: boolean
+  validateOnRemove?: boolean
+  if?: boolean
+  addButton?: any // FormKitRepeatableAddButton component
+  removeButton?: any // FormKitRepeatableRemoveButton component
+  moveUpButton?: any // FormKitRepeatableMoveUpButton component
+  moveDownButton?: any // FormKitRepeatableMoveDownButton component
 }
 
 /**
