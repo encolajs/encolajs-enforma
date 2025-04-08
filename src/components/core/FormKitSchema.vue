@@ -1,11 +1,9 @@
 <template>
   <div v-bind="$attrs">
     <template v-for="(section, sectionId) in rootSections" :key="sectionId">
-      <FormKitSection
-        :name="sectionId"
-        :section="section"
-      />
+      <FormKitSection :name="sectionId" />
     </template>
+    <FormKitSection name="default" />
   </div>
 </template>
 
@@ -29,7 +27,7 @@ interface SectionWithFields extends FormSectionSchema {
 // Get root sections (sections that don't belong to any other section)
 const rootSections = computed(() => {
   const sections: Record<string, SectionWithFields> = {}
-  
+
   // First pass: collect all sections
   Object.entries(props.schema).forEach(([key, item]) => {
     if ('section' in item && 'title' in item) {
@@ -39,7 +37,7 @@ const rootSections = computed(() => {
         sections[key] = {
           ...section,
           fields: [],
-          subsections: {}
+          subsections: {},
         }
       }
     }
@@ -51,10 +49,3 @@ const rootSections = computed(() => {
   )
 })
 </script>
-
-<style scoped>
-.required {
-  color: red;
-  margin-left: 4px;
-}
-</style>

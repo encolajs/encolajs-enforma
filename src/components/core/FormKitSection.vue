@@ -1,25 +1,20 @@
 <template>
   <div v-bind="$attrs" :class="sectionClass">
-    <!-- Render section title if it exists -->
     <component
-      v-if="section.title"
-      :is="section.title_component"
-      v-bind="section.title_props"
+      v-if="sectionSchema?.title"
+      :is="sectionSchema.title_component"
+      v-bind="sectionSchema.title_props"
     >
-      {{ section.title }}
+      {{ sectionSchema.title }}
     </component>
 
-    <!-- Render fields -->
-    <template v-for="field in visibleFields" :key="field.name">
+    {{ sortedFields }}
+    <template v-for="field in sortedFields" :key="field.name">
       <FormKitField v-bind="field" />
     </template>
 
-    <!-- Render nested sections -->
-    <template v-for="(subSection, subSectionId) in nestedSections" :key="subSectionId">
-      <FormKitSection
-        :name="subSectionId"
-        :section="subSection"
-      />
+    <template v-for="subSection in sortedSubsections" :key="subSection.name">
+      <FormKitSection :name="subSection.name" />
     </template>
   </div>
 </template>
@@ -36,12 +31,15 @@ interface SectionWithFields extends FormSectionSchema {
   subsections: Record<string, SectionWithFields>
 }
 
-function getSectionFields(
+function getFields(
   schema: FormKitSchema,
   sectionName: string
 ): Record<string, FieldSchema> {
   return Object.fromEntries(
     Object.entries(schema).filter(([_, field]) => {
+      if (field.title || field.is_section) {
+        return false
+      }
       // For default section, include fields without a section
       if (sectionName === 'default') {
         return !('section' in field) || field.section === sectionName
@@ -52,53 +50,77 @@ function getSectionFields(
   )
 }
 
-function getNestedSections(
+function getSubSections(
   schema: FormKitSchema,
   sectionName: string
-): Record<string, SectionWithFields> {
-  const sections: Record<string, SectionWithFields> = {}
-  
+): Record<string, any>[] {
   // Find all sections that belong to this section
-  Object.entries(schema).forEach(([key, item]) => {
-    if ('section' in item && 'title' in item) {
-      const section = item as FormSectionSchema
-      if (section.section === sectionName) {
-        sections[key] = {
-          ...section,
-          fields: [],
-          subsections: {}
-        }
-      }
+  return Object.entries(schema).filter(([key, field]) => {
+    if (!field.title && !field.isSection) {
+      return false
     }
-  })
 
-  return sections
+    // For default section, include fields without a section
+    if (sectionName === 'default') {
+      return !('section' in field) || field.section === sectionName
+    }
+    // For other sections, only include fields that belong to this section
+    return field.section === sectionName
+  })
+}
+
+// Helper function to sort items by position
+function sortByPosition<T extends { position?: number }>(items: T[]): T[] {
+  return [...items].sort((a, b) => {
+    // If both items have position, sort by position
+    if (a.position !== undefined && b.position !== undefined) {
+      return a.position - b.position
+    }
+    // If only one item has position, it comes first
+    if (a.position !== undefined) return -1
+    if (b.position !== undefined) return 1
+    // If neither has position, maintain original order
+    return 0
+  })
 }
 
 const props = defineProps<{
   name: string
-  section?: SectionWithFields
 }>()
 
 // Inject dependencies
 const schema = inject<FormKitSchema>(formSchemaKey)
 
-// Get fields for this section
-const visibleFields = computed(() => {
-  return Object.entries(getSectionFields(schema, props.name))
-    .map(([name, field]) => ({ ...field, name }))
+// Get the section schema for this section
+const sectionSchema = computed(() => {
+  const item = schema[props.name]
+  if (item && 'section' in item && 'title' in item) {
+    return item as FormSectionSchema
+  }
+  return null
 })
 
-// Get nested sections
-const nestedSections = computed(() => {
-  return getNestedSections(schema, props.name)
+// Get fields for this section and sort them by position
+const sortedFields = computed(() => {
+  const fields = Object.entries(getFields(schema, props.name)).map(
+    ([name, field]) => ({ ...field, name })
+  )
+  return sortByPosition(fields)
+})
+
+// Get nested sections and sort them by position
+const sortedSubsections = computed(() => {
+  const sections = getSubSections(schema, props.name).map(
+    ([name, section]) => ({ ...section, name })
+  )
+  return sortByPosition(sections)
 })
 
 // Compute section class
 const sectionClass = computed(() => {
   return {
     'formkit-section': true,
-    [`formkit-section-${props.name}`]: true
+    [`formkit-section-${props.name}`]: true,
   }
 })
 </script>

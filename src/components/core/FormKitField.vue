@@ -52,6 +52,9 @@ const originalProps = defineProps({
   wrapperProps: { type: Object, default: () => ({}) },
   inputProps: { type: Object, default: () => ({}) },
   validateOn: { type: String, default: null },
+  // these are added to be excluded from attributes
+  section: { type: String, default: null },
+  position: { type: Number, default: null },
 })
 
 // Get form state from context
@@ -77,7 +80,7 @@ onBeforeUnmount(() => {
 // Extract the field state from the computed ref
 const fieldState = computed(() => field.value)
 
-const { evaluateProps } = useDynamicProps()
+const { evaluateProps, evaluateCondition } = useDynamicProps()
 const { t } = useTranslation()
 
 // Get computed properties

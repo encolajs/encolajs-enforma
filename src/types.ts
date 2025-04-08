@@ -110,7 +110,6 @@ export interface FormController {
   [key: string]: any
 }
 
-
 /**
  * Represents the schema definition for a single form field
  */
@@ -118,127 +117,126 @@ export interface FieldSchema {
   /**
    * The component type that is used to render this field
    */
-  wrapper: string;
+  wrapper: string
 
   /**
    * The field type that maps to a registered component in the field registry
    */
-  type: string;
+  type: string
 
   /**
    * The section this field belongs to, used for organizing fields into groups
    */
-  section?: string;
+  section?: string
 
   /**
    * Conditional expression to determine if the field should be shown
    * Can be a string containing an expression referencing form state: "form.country === 'US'"
    */
-  if?: string;
+  if?: string
 
   /**
    * Label text for the field
    */
-  label?: string;
+  label?: string
 
   /**
    * Help text to display alongside the field
    */
-  help?: string;
+  help?: string
 
   /**
    * Whether the field is required
    * Note: This is for UI purposes - actual validation is defined in validation_rules
    */
-  required?: boolean;
+  required?: boolean
 
   /**
    * Props to apply to the entire field component (wrapper)
    */
-  props?: Record<string, any>;
+  props?: Record<string, any>
 
   /**
    * Props to apply to the label component
    */
-  label_props?: Record<string, any>;
+  label_props?: Record<string, any>
 
   /**
    * Props to apply to the input component
    */
-  input_props?: Record<string, any>;
+  input_props?: Record<string, any>
 
   /**
    * Props to apply to the help text component
    */
-  help_props?: Record<string, any>;
+  help_props?: Record<string, any>
 
   /**
    * Props to apply to the error message component
    */
-  error_props?: Record<string, any>;
+  error_props?: Record<string, any>
 
   /**
    * For repeatable fields (arrays), whether this field represents a repeatable group
    */
-  is_repeatable?: boolean;
+  is_repeatable?: boolean
 
   /**
    * For repeatable fields, the minimum number of items allowed
    */
-  min_items?: number;
+  min_items?: number
 
   /**
    * For repeatable fields, the maximum number of items allowed
    */
-  max_items?: number;
+  max_items?: number
 
   /**
    * For repeatable fields, the definition of fields within each repeatable item
    */
-  subfields?: Record<string, FieldSchema>;
+  subfields?: Record<string, FieldSchema>
 
   /**
    * Default value for the field
    */
-  default_value?: any;
+  default_value?: any
 
   /**
    * Component to use for this field, alternative to using 'type'
    * Allows direct component references
    */
-  component?: string | ComponentPublicInstance;
+  component?: string | ComponentPublicInstance
 
   /**
    * Custom transformers to apply to this field
    * Used in the transformer pipeline
    */
-  transformers?: string[];
+  transformers?: string[]
 
   /**
    * Additional custom configuration specific to this field
    */
-  config?: Record<string, any>;
+  config?: Record<string, any>
 
   /**
    * Allow any other properties to be included in the field schema
    */
-  [key: string]: any;
+  [key: string]: any
 }
 
 export interface FormSectionSchema {
   /**
    * The label for the section
    */
-  title: string;
+  title: string
 
-  title_component: string;
+  title_component: string
 
-  title_props: Record<string, any>;
+  title_props: Record<string, any>
 
-  section: string;
+  section: string
 
-  priority: number;
-  
+  priority: number
 }
 
 export interface FormKitSchema {
