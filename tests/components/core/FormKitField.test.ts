@@ -199,7 +199,7 @@ describe('FormKitField', () => {
         name: 'visibility-field',
         label: 'Visibility Field',
         type: 'FormInput',
-        visible: false,
+        if: false,
       },
       global: {
         components: {
@@ -217,7 +217,7 @@ describe('FormKitField', () => {
     expect(wrapper_div.exists()).toBe(true)
     expect(wrapper_div.attributes('style')).toContain('display: none')
 
-    await wrapper.setProps({ visible: true })
+    await wrapper.setProps({ if: true })
     // After changing to visible, the style should no longer contain display: none
     expect(wrapper.find('.form-field-wrapper').attributes('style')).toBeFalsy()
   })
