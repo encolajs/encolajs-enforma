@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="props.wrapper" v-show="visible">
+  <div v-bind="props.wrapper" v-show="if">
     <label v-if="!hideLabel" v-bind="props.label">
       {{ t(label) }}
       <span v-if="required" v-bind="props.required">{{
@@ -45,7 +45,7 @@ const originalProps = defineProps({
   hideLabel: { type: Boolean, default: false },
   required: { type: Boolean, default: false },
   help: { type: String, default: null },
-  visible: { type: Boolean, default: true },
+  if: { type: Boolean, default: true },
   labelProps: { type: Object, default: () => ({}) },
   errorProps: { type: Object, default: () => ({}) },
   helpProps: { type: Object, default: () => ({}) },
@@ -157,6 +157,8 @@ const props = computed(() => {
       config.pt.input || {}
     )
   )
+
+  result.if = evaluateCondition(originalProps.if)
 
   // Component type
   result.component = originalProps.type || 'input'

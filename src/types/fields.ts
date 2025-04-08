@@ -2,7 +2,7 @@
  * Type definitions related to form fields
  */
 
-import { FormStateReturn } from '../index'
+import { FormController } from '../index'
 
 /**
  * Base field definition in form schema
@@ -98,7 +98,7 @@ export interface BaseFieldProps {
 export interface FieldRenderContext {
   form: Record<string, any>
   errors: Record<string, string[]>
-  formState: FormStateReturn
+  formState: FormController
   context: Record<string, any>
   section?: string
   path?: string
