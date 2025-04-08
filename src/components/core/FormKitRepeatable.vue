@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, mergeProps, onBeforeUnmount } from 'vue'
+import { inject, onBeforeUnmount } from 'vue'
 import { formConfigKey, formStateKey } from '../../constants/symbols'
 import { FormKitConfig } from '../../types/config'
 import { useDynamicProps } from '../../composables/useDynamicProps'
