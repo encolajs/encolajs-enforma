@@ -1,6 +1,6 @@
+<!-- src/core/FormKitRepeatable.vue -->
 <template>
-  <div v-bind="$attrs" v-if="shouldShow">
-    {{ shouldShow }}
+  <div v-bind="$attrs" v-if="isVisible">
     <HeadlessRepeatable
       :name="name"
       :min="min"
@@ -20,10 +20,9 @@
           >
             <!-- Subfields -->
             <template
-              v-for="(subfield, subfieldName) in cleanSubfields"
+              v-for="(subfield, subfieldName) in fields"
               :key="subfieldName"
             >
-              {{ `${name}.${index}.${subfieldName}` }}
               <FormKitField
                 v-bind="subfield"
                 :name="`${name}.${index}.${subfieldName}`"
@@ -63,11 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onBeforeUnmount } from 'vue'
-import { formConfigKey, formStateKey } from '../constants/symbols'
-import { FormKitConfig } from '../types/config'
-import { useDynamicProps } from '../utils/useDynamicProps'
-import { FormController } from '@'
+import { useAttrs } from 'vue'
 import { RepeatableFieldSchema } from '../types/fields'
 import HeadlessRepeatable from '../headless/HeadlessRepeatable'
 import FormKitField from './FormKitField.vue'
@@ -75,38 +70,15 @@ import FormKitRepeatableAddButton from './FormKitRepeatableAddButton.vue'
 import FormKitRepeatableRemoveButton from './FormKitRepeatableRemoveButton.vue'
 import FormKitRepeatableMoveUpButton from './FormKitRepeatableMoveUpButton.vue'
 import FormKitRepeatableMoveDownButton from './FormKitRepeatableMoveDownButton.vue'
+import { useFormKitRepeatable } from './useFormKitRepeatable'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
-  validateOnAdd: true, // Defaults to `true` instead of `undefined`
-  validateOnRemove: false, // Explicitly set to `false`
-  if: true, // Defaults to `true`
+  validateOnAdd: true,
+  validateOnRemove: false,
+  if: true,
   min: 0,
 })
 
-// Get form state from context
-const formState = inject<FormController>(formStateKey) as FormController
-const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
-
-if (!formState) {
-  console.error(
-    `FormKitRepeatable '${props.name}' must be used within a FormKit form component`
-  )
-}
-
-const { evaluateCondition } = useDynamicProps()
-
-const shouldShow = props.if !== undefined ? evaluateCondition(props.if) : true
-
-const cleanSubfields: Record<string, any> = Object.entries(
-  props.subfields
-).reduce((acc, [subfieldName, subfield]) => {
-  const { name, ...rest } = subfield
-  acc[subfieldName] = rest
-  return acc
-}, {})
-
-// Clean up on unmount
-onBeforeUnmount(() => {
-  formState?.removeField(props.name)
-})
+const $attrs = useAttrs()
+const { isVisible, fields } = useFormKitRepeatable(props)
 </script>
