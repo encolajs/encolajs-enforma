@@ -1,6 +1,5 @@
 <template>
   <div v-bind="props.wrapper" v-show="props.if">
-    {{props}}
     <label v-if="!hideLabel" v-bind="props.label">
       {{ t(label) }}
       <span v-if="required" v-bind="props.required">{{

@@ -44,7 +44,7 @@ describe('FormKitField', () => {
   // Create custom component stubs for testing
   const FormInputStub = {
     name: 'FormInput',
-    template: '<input v-bind="$attrs" />',
+    template: '<input v-bind="$attrs" />{{$attrs}}',
     inheritAttrs: true,
   }
 
@@ -151,6 +151,7 @@ describe('FormKitField', () => {
         label: 'Dynamic Field',
         type: 'FormInput',
         inputProps: {
+          'data-test': '${form.someField === "test" ? "ok" : "notok"}',
           disabled: '${form.someField === "test"}',
         },
       },
@@ -168,7 +169,17 @@ describe('FormKitField', () => {
     // Allow the dynamic props to be evaluated
     await flushPromises()
 
-    expect(wrapper.find('input').attributes('disabled')).toBe('')
+    // Initially, the field should be disabled since someField === "test"
+    expect(wrapper.find('input').attributes('data-test')).toBe('ok')
+    expect(wrapper.find('input').element.disabled).toBe(true)
+
+    // Change the form value to make the condition false
+    dynamicFormState.someField = 'different'
+    await flushPromises()
+
+    // Now the field should be enabled since someField !== "test"
+    expect(wrapper.find('input').attributes('data-test')).toBe('notok')
+    expect(wrapper.find('input').element.disabled).toBe(false)
   })
 
   it('shows help text when provided', async () => {

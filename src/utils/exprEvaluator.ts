@@ -18,8 +18,6 @@ export interface ExpressionContext {
  * Options for expression evaluation
  */
 export interface EvaluationOptions {
-  timeout?: number
-  allowComplex?: boolean
   delimiters?: {
     start: string
     end: string
@@ -30,8 +28,6 @@ export interface EvaluationOptions {
  * Default options for expression evaluation
  */
 const DEFAULT_OPTIONS: EvaluationOptions = {
-  timeout: 50,
-  allowComplex: false,
   delimiters: {
     start: '${',
     end: '}',
@@ -61,31 +57,11 @@ export function evaluateExpression(
       }
     `
 
-    // Create a timeout error if configured
-    let timeoutId: any
-    const timeoutPromise = new Promise((_resolve, reject) => {
-      if (config.timeout) {
-        timeoutId = setTimeout(() => {
-          reject(new Error(`Expression evaluation timed out: ${expression}`))
-        }, config.timeout)
-      }
-    })
-
     // Create the evaluation function
     const evaluator = new Function('context', funcBody) as (ctx: any) => any
 
-    // Race the evaluation against the timeout
-    const result = Promise.race([
-      Promise.resolve(evaluator(context)),
-      timeoutPromise,
-    ])
-
-    // Clear the timeout
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-    }
-
-    return result
+    // Evaluate the expression synchronously
+    return evaluator(context)
   } catch (error) {
     console.error(`Error evaluating expression: ${expression}`, error)
     return undefined
@@ -124,7 +100,7 @@ export function containsExpression(
   value: string,
   config: FormKitConfig
 ): boolean {
-  const { start, end } = config.expressions.delimiters
+  const { start, end } = config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
   return value.includes(start) && value.includes(end)
 }
 
@@ -136,40 +112,22 @@ export function evaluateTemplateString(
   context: ExpressionContext,
   config: FormKitConfig
 ): string {
-  const { start, end } = config.expressions.delimiters
-  let result = template
-  let startIndex = template.indexOf(start)
+  const { start, end } = config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
 
-  while (startIndex !== -1) {
-    const endIndex = template.indexOf(end, startIndex + start.length)
-    if (endIndex === -1) break
-
-    const expressionStr = template.substring(
-      startIndex + start.length,
-      endIndex
-    )
-
+  if (template.startsWith(start) && template.endsWith(end)) {
+    const expressionStr = template.substring(start.length, template.length - end.length)
     try {
-      const evaluated = evaluateExpression(
+      return evaluateExpression(
         expressionStr,
         context,
         config.expressions
       )
-
-      const replacement = evaluated === undefined ? '' : String(evaluated)
-      result =
-        result.substring(0, startIndex) +
-        replacement +
-        result.substring(endIndex + end.length)
-
-      startIndex = result.indexOf(start, startIndex + replacement.length)
     } catch (error) {
       console.error(`Error evaluating expression: ${expressionStr}`, error)
-      startIndex = template.indexOf(start, endIndex + end.length)
     }
   }
 
-  return result
+  return template
 }
 
 /**

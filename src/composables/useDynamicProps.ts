@@ -85,6 +85,7 @@ export function useDynamicProps(
     condition: string | boolean | undefined
   ): ComputedRef<any> => {
     return computed(() => {
+      // assume the condition is true if not defined
       if (condition === undefined) {
         return true
       }
