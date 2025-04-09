@@ -202,7 +202,7 @@ export function useForm<T extends object>(
       state.$errors = []
       return true
     } catch (e: any) {
-      console.error('Validation error: ' + (e.message || 'Unknown error'))
+      console.error(`Error validating field ${path}`, e)
       return false
     } finally {
       state.$isValidating = false
@@ -304,7 +304,8 @@ export function useForm<T extends object>(
               if (options.onSubmitError) {
                 options.onSubmitError(error)
               }
-              throw error
+              console.error('Error submitting form', error)
+              return false
             }
           }
 
