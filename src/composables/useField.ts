@@ -88,20 +88,6 @@ export function useField(
 
   const debouncedValidate = debounce(validate, 200)
 
-  /**
-   * Reset the field to its initial state
-   */
-  function reset(): void {
-    // Use form's reset mechanism to reset this specific field
-    // Since the form doesn't have a field-specific reset,
-    // we'll just set its value back to the original and clear states
-    form.setFieldValue(name, form[name], false, {
-      $isDirty: false,
-      $isTouched: false,
-      $errors: [],
-    })
-  }
-
   const events = {
     input: (e: any) => {
       handleChange(e?.value || (e.target as HTMLInputElement)?.value, 'input')
@@ -137,7 +123,6 @@ export function useField(
 
       // Methods
       validate,
-      reset,
 
       // HTML binding helpers
       attrs: {

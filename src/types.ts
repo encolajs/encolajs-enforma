@@ -63,7 +63,6 @@ export interface FieldController {
 
   // Methods
   validate: () => Promise<boolean>
-  reset: () => void
 
   // HTML binding helpers
   attrs: Record<string, any>
