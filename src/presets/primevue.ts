@@ -1,9 +1,9 @@
 import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
 import { InputText, Select } from 'primevue'
-import { FieldController, FormStateReturn } from '../types'
+import { FieldController, FormController } from '../types'
 
-const fieldMap = {
+const fieldMap: Record<string, any> = {
   input: InputText,
   select: Select,
 }
@@ -11,7 +11,7 @@ const fieldMap = {
 function fieldPropsTransformer(
   fieldProps: any,
   field: FieldController,
-  formState: FormStateReturn,
+  formState: FormController,
   config: any
 ) {
   fieldProps.input.labelId = field.value.id

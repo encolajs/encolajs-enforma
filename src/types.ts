@@ -244,3 +244,5 @@ export interface FormSectionSchema {
 export interface FormKitSchema {
   [key: string]: FieldSchema | FormSectionSchema
 }
+
+export type { FieldState } from './headless/useForm'
