@@ -282,8 +282,10 @@ describe('useForm', () => {
   describe('Error Handling', () => {
     test('should handle validation errors in validateForm', async () => {
       // Mock console.error to prevent test output pollution
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
+
       // Create a form with a validator that throws an error
       const errorForm = useForm(
         order,
@@ -292,10 +294,13 @@ describe('useForm', () => {
         },
         {
           validatorFactory: {
-            make: () => ({
-              validatePath: vi.fn().mockRejectedValue(new Error('Validation error')),
-              getErrorsForPath: vi.fn().mockReturnValue(['Error message']),
-            } as any),
+            make: () =>
+              ({
+                validatePath: vi
+                  .fn()
+                  .mockRejectedValue(new Error('Validation error')),
+                getErrorsForPath: vi.fn().mockReturnValue(['Error message']),
+              } as any),
           } as any,
         }
       )
@@ -303,19 +308,24 @@ describe('useForm', () => {
       errorForm.getField('items.0.price')
       // Trigger validation
       const isValid = await errorForm.validate()
-      
+
       // Check that validation failed and error was logged
       expect(isValid).toBe(false)
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error validating field items.0.price', expect.any(Error))
-      
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error validating field items.0.price',
+        expect.any(Error)
+      )
+
       // Restore console.error
       consoleErrorSpy.mockRestore()
     })
 
     test('should handle validation errors in validateField', async () => {
       // Mock console.error to prevent test output pollution
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
+
       // Create a form with a validator that throws an error
       const errorForm = useForm(
         order,
@@ -324,21 +334,27 @@ describe('useForm', () => {
         },
         {
           validatorFactory: {
-            make: () => ({
-              validatePath: vi.fn().mockRejectedValue(new Error('Validation error')),
-              getErrorsForPath: vi.fn().mockReturnValue(['Error message']),
-            } as any),
+            make: () =>
+              ({
+                validatePath: vi
+                  .fn()
+                  .mockRejectedValue(new Error('Validation error')),
+                getErrorsForPath: vi.fn().mockReturnValue(['Error message']),
+              } as any),
           } as any,
         }
       )
-      
+
       // Trigger field validation
       const isValid = await errorForm.validateField('items.0.price')
-      
+
       // Check that validation failed and error was logged
       expect(isValid).toBe(false)
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error validating field items.0.price', expect.any(Error))
-      
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error validating field items.0.price',
+        expect.any(Error)
+      )
+
       // Restore console.error
       consoleErrorSpy.mockRestore()
     })
@@ -347,7 +363,7 @@ describe('useForm', () => {
       // Create a form with a submit handler that throws an error
       const errorHandler = vi.fn().mockRejectedValue(new Error('Submit error'))
       const onErrorHandler = vi.fn()
-      
+
       const errorForm = useForm(
         order,
         {},
@@ -356,10 +372,10 @@ describe('useForm', () => {
           onSubmitError: onErrorHandler,
         }
       )
-      
+
       // Trigger submit
       const submitted = await errorForm.submit()
-      
+
       // Check that submit failed and error handler was called
       expect(submitted).toBe(false)
       expect(errorHandler).toHaveBeenCalled()
@@ -369,7 +385,7 @@ describe('useForm', () => {
     test('should handle validation errors during submit', async () => {
       // Create a form with validation errors
       const onValidationError = vi.fn()
-      
+
       const errorForm = useForm(
         order,
         {
@@ -379,13 +395,13 @@ describe('useForm', () => {
           onValidationError,
         }
       )
-      
+
       // Set invalid values
       errorForm['items.0.price'] = 5
-      
+
       // Trigger submit
       const isValid = await errorForm.submit()
-      
+
       // Check that submit failed and validation error handler was called
       expect(isValid).toBe(false)
       expect(onValidationError).toHaveBeenCalled()
@@ -393,43 +409,39 @@ describe('useForm', () => {
 
     test('should handle path resolution errors in reset', async () => {
       // Create a form with a complex object
-      const complexForm = useForm(
-        { 
-          nested: { 
-            array: [{ value: 1 }] 
-          } 
-        }
-      )
-      
+      const complexForm = useForm({
+        nested: {
+          array: [{ value: 1 }],
+        },
+      })
+
       // Add a field that will cause a path resolution error
       await complexForm.setFieldValue('nested.array.0.value', 2)
-      
+
       // Modify the object structure to cause a path resolution error
       complexForm['nested'] = null
-      
+
       // Reset should not throw an error
       expect(() => complexForm.reset()).not.toThrow()
     })
 
     test('should handle setValueByPath errors', async () => {
       // Create a form with a complex object
-      const complexForm = useForm(
-        { 
-          nested: { 
-            array: [{ value: 1 }] 
-          } 
-        }
-      )
-      
+      const complexForm = useForm({
+        nested: {
+          array: [{ value: 1 }],
+        },
+      })
+
       // Set a value that should work
       await complexForm.setFieldValue('nested.array.0.value', 2)
       expect(complexForm['nested.array.0.value']).toBe(2)
-      
+
       // Set a value that should cause an error in setValueByPath
       // This is a bit tricky to trigger, but we can try to set a value on a non-existent path
       // after modifying the object structure
       complexForm['nested'] = null
-      
+
       // This should not throw an error
       expect(() => {
         complexForm['nested.array.0.value'] = 3
@@ -443,37 +455,37 @@ describe('useForm', () => {
         age: 30,
         address: {
           street: '123 Main St',
-          city: 'Anytown'
+          city: 'Anytown',
         },
-        tags: ['developer', 'vue']
+        tags: ['developer', 'vue'],
       }
-      
+
       const form = useForm(initialData)
-      
+
       // Add new keys that weren't in the initial data
       form['email'] = 'john@example.com'
       form['phone'] = '555-123-4567'
       form['address.zipCode'] = '12345'
       form['skills'] = ['JavaScript', 'TypeScript']
       form['preferences.theme'] = 'dark'
-      
+
       // Verify the new keys were added
       expect(form['email']).toBe('john@example.com')
       expect(form['phone']).toBe('555-123-4567')
       expect(form['address.zipCode']).toBe('12345')
       expect(form['skills']).toEqual(['JavaScript', 'TypeScript'])
       expect(form['preferences.theme']).toBe('dark')
-      
+
       // Reset the form
       form.reset()
-      
+
       // Verify that new keys were reset to appropriate default values
       expect(form['email']).toBeNull() // Primitive type -> null
       expect(form['phone']).toBeNull() // Primitive type -> null
       expect(form['address.zipCode']).toBeUndefined() // Nested property in existing object -> undefined
       expect(form['skills']).toEqual([]) // Array -> empty array
       expect(form['preferences']).toEqual({}) // New object -> empty object
-      
+
       // Verify original values were preserved
       expect(form['name']).toBe('John')
       expect(form['age']).toBe(30)

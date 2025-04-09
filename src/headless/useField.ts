@@ -2,7 +2,12 @@ import { computed, onMounted, ComputedRef, ref } from 'vue'
 import { FieldController, FormController } from '../types'
 import { debounce } from '../utils/debounce'
 
-export type fieldValidateOnOption = 'input' | 'change' | 'blur' | 'submit' | null
+export type fieldValidateOnOption =
+  | 'input'
+  | 'change'
+  | 'blur'
+  | 'submit'
+  | null
 
 /**
  * Composable for managing a single form field

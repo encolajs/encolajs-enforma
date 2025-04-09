@@ -1,10 +1,10 @@
 // tests/components/core/FormKitField.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import FormKitField from '../../../src/core/FormKitField.vue'
+import FormKitField from '@/core/FormKitField.vue'
 import { formConfigKey, formStateKey, formSchemaKey } from '@/constants/symbols'
 import type { FormKitConfig } from '@/types/config'
-import { useForm } from '../../../src/headless/useForm'
+import { useForm } from '@/headless/useForm'
 
 // Unmock the useField composable to use the real implementation
 vi.unmock('@/composables/useField')
@@ -386,17 +386,17 @@ describe('FormKitField', () => {
         help: 'This is from schema',
         input_props: {
           type: 'email',
-          placeholder: 'Enter email'
+          placeholder: 'Enter email',
         },
         label_props: {
-          class: 'schema-label'
-        }
-      }
+          class: 'schema-label',
+        },
+      },
     }
 
     const wrapper = mount(FormKitField, {
       props: {
-        name: 'schema-field'
+        name: 'schema-field',
       },
       global: {
         components: {
@@ -405,7 +405,7 @@ describe('FormKitField', () => {
         provide: {
           [formConfigKey]: createFormConfig(),
           [formStateKey]: formState,
-          [formSchemaKey]: schema
+          [formSchemaKey]: schema,
         },
       },
     })
@@ -428,12 +428,12 @@ describe('FormKitField', () => {
         help: 'Schema help text',
         inputProps: {
           type: 'email',
-          placeholder: 'Schema placeholder'
+          placeholder: 'Schema placeholder',
         },
         labelProps: {
-          class: 'schema-label'
-        }
-      }
+          class: 'schema-label',
+        },
+      },
     }
 
     const wrapper = mount(FormKitField, {
@@ -443,11 +443,11 @@ describe('FormKitField', () => {
         help: 'Override help text',
         inputProps: {
           type: 'text',
-          placeholder: 'Override placeholder'
+          placeholder: 'Override placeholder',
         },
         labelProps: {
-          class: 'override-label'
-        }
+          class: 'override-label',
+        },
       },
       global: {
         components: {
@@ -456,7 +456,7 @@ describe('FormKitField', () => {
         provide: {
           [formConfigKey]: createFormConfig(),
           [formStateKey]: formState,
-          [formSchemaKey]: schema
+          [formSchemaKey]: schema,
         },
       },
     })
@@ -465,9 +465,11 @@ describe('FormKitField', () => {
     expect(wrapper.find('label').text()).toContain('Override Label')
     expect(wrapper.find('label').classes()).toContain('override-label')
     expect(wrapper.find('input').attributes('type')).toBe('text')
-    expect(wrapper.find('input').attributes('placeholder')).toBe('Override placeholder')
+    expect(wrapper.find('input').attributes('placeholder')).toBe(
+      'Override placeholder'
+    )
     expect(wrapper.find('.form-help').text()).toBe('Override help text')
-    
+
     // Verify schema props that weren't overridden are still applied
     expect(wrapper.find('.required-indicator').exists()).toBe(true)
   })
@@ -481,12 +483,12 @@ describe('FormKitField', () => {
         help: 'Schema help text',
         if: false, // Override default true
         hideLabel: true, // Override default false
-      }
+      },
     }
 
     const wrapper = mount(FormKitField, {
       props: {
-        name: 'default-override-field'
+        name: 'default-override-field',
       },
       global: {
         components: {
@@ -495,14 +497,16 @@ describe('FormKitField', () => {
         provide: {
           [formConfigKey]: createFormConfig(),
           [formStateKey]: formState,
-          [formSchemaKey]: schema
+          [formSchemaKey]: schema,
         },
       },
     })
 
     // Verify schema values override defaults
-    expect(wrapper.find('label').exists()).toBe(true) // hideLabel is true
-    expect(wrapper.find('.form-field-wrapper').attributes('style')).toContain('display: none') // if is false
-    expect(wrapper.find('.required-indicator').exists()).toBe(true) // required is true
+    expect(wrapper.find('label').exists()).toBe(false) // hideLabel is true
+    expect(wrapper.find('.form-field-wrapper').attributes('style')).toContain(
+      'display: none'
+    ) // if is false
+    expect(wrapper.find('.required-indicator').exists()).toBe(false) // required is true but label is hidden
   })
 })

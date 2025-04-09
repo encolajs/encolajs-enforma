@@ -100,7 +100,8 @@ export function containsExpression(
   value: string,
   config: FormKitConfig
 ): boolean {
-  const { start, end } = config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
+  const { start, end } =
+    config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
   return value.includes(start) && value.includes(end)
 }
 
@@ -112,16 +113,16 @@ export function evaluateTemplateString(
   context: ExpressionContext,
   config: FormKitConfig
 ): string {
-  const { start, end } = config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
+  const { start, end } =
+    config.expressions?.delimiters || DEFAULT_OPTIONS.delimiters
 
   if (template.startsWith(start) && template.endsWith(end)) {
-    const expressionStr = template.substring(start.length, template.length - end.length)
+    const expressionStr = template.substring(
+      start.length,
+      template.length - end.length
+    )
     try {
-      return evaluateExpression(
-        expressionStr,
-        context,
-        config.expressions
-      )
+      return evaluateExpression(expressionStr, context, config.expressions)
     } catch (error) {
       console.error(`Error evaluating expression: ${expressionStr}`, error)
     }
