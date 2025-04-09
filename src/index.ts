@@ -1,8 +1,8 @@
 // Core composables
-export { useValidation } from './composables/useValidation'
-export { useField } from './composables/useField'
-export { useRepeatable } from './composables/useRepeatable'
-export { useForm } from './composables/useForm'
+export { useValidation } from './utils/useValidation'
+export { useField } from './headless/useField'
+export { useRepeatable } from './headless/useRepeatable'
+export { useForm } from './headless/useForm'
 
 // Type exports
 export type {
@@ -16,9 +16,9 @@ export type {
 } from './types'
 
 // Components
-export { default as HeadlessForm } from './components/headless/HeadlessForm'
-export { default as HeadlessField } from './components/headless/HeadlessField'
-export { default as HeadlessRepeatable } from './components/headless/HeadlessRepeatable'
+export { default as HeadlessForm } from './headless/HeadlessForm'
+export { default as HeadlessField } from './headless/HeadlessField'
+export { default as HeadlessRepeatable } from './headless/HeadlessRepeatable'
 
 // Re-export essential validator types
 export {

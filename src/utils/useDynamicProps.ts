@@ -15,7 +15,7 @@ import {
   evaluateCondition,
   evaluateObject,
   ExpressionContext,
-} from '../utils/exprEvaluator'
+} from './exprEvaluator'
 
 // Type for props that may contain expressions
 export type DynamicProps = Record<string, any>

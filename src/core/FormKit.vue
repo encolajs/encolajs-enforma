@@ -34,9 +34,9 @@
 import { computed, provide, ref, useAttrs, PropType } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
 import FormKitSchema from './FormKitSchema.vue'
-import { mergeConfigs } from '../../utils/configUtils'
-import { getGlobalConfig } from '../../composables/useConfig'
-import { formContextKey, formConfigKey } from '../../constants/symbols'
+import { mergeConfigs } from '../utils/configUtils'
+import { getGlobalConfig } from '../utils/useConfig'
+import { formContextKey, formConfigKey } from '../constants/symbols'
 
 const props = defineProps({
   data: {

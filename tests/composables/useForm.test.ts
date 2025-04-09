@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
-import { useForm } from '../../src/composables/useForm.js'
+import { useForm } from '../../src/headless/useForm.js'
 import { flushPromises } from '@vue/test-utils'
 import { ValidatorFactory } from '@encolajs/validator'
 import { FormController } from '../../src'

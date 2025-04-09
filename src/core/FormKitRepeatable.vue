@@ -64,11 +64,11 @@
 
 <script setup lang="ts">
 import { inject, onBeforeUnmount } from 'vue'
-import { formConfigKey, formStateKey } from '../../constants/symbols'
-import { FormKitConfig } from '../../types/config'
-import { useDynamicProps } from '../../composables/useDynamicProps'
-import { FormController } from '../../index'
-import { RepeatableFieldSchema } from '../../types/fields'
+import { formConfigKey, formStateKey } from '../constants/symbols'
+import { FormKitConfig } from '../types/config'
+import { useDynamicProps } from '../utils/useDynamicProps'
+import { FormController } from '@'
+import { RepeatableFieldSchema } from '../types/fields'
 import HeadlessRepeatable from '../headless/HeadlessRepeatable'
 import FormKitField from './FormKitField.vue'
 import FormKitRepeatableAddButton from './FormKitRepeatableAddButton.vue'

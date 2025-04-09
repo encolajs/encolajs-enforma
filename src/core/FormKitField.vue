@@ -30,13 +30,13 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, inject, mergeProps, onBeforeUnmount } from 'vue'
-import { formConfigKey, formStateKey, formSchemaKey } from '../../constants/symbols'
-import { FormKitConfig } from '../../types/config'
-import { useDynamicProps } from '../../composables/useDynamicProps'
-import { FormController } from '../../index'
-import { useTranslation } from '../../composables/useTranslation'
-import { fieldValidateOnOption, useField } from '../../composables/useField'
-import { FieldSchema } from '../../types'
+import { formConfigKey, formStateKey, formSchemaKey } from '../constants/symbols'
+import { FormKitConfig } from '../types/config'
+import { useDynamicProps } from '../utils/useDynamicProps'
+import { FormController } from '@'
+import { useTranslation } from '../utils/useTranslation'
+import { fieldValidateOnOption, useField } from '../headless/useField'
+import { FieldSchema } from '../types'
 
 const originalProps = defineProps({
   name: { type: String, required: true },

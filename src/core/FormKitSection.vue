@@ -21,8 +21,8 @@
 
 <script setup lang="ts">
 import { computed, inject } from 'vue'
-import { formSchemaKey } from '../../constants/symbols'
-import { FieldSchema, FormSectionSchema } from '../../types'
+import { formSchemaKey } from '../constants/symbols'
+import { FieldSchema, FormSectionSchema } from '../types'
 import FormKitField from './FormKitField.vue'
 import { FormKitSchema } from '@/types'
 

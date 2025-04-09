@@ -1,10 +1,10 @@
 import { App, Plugin } from 'vue'
 import { FormKitConfig, DeepPartial } from './types/config'
-import { setGlobalConfig } from './composables/useConfig'
+import { setGlobalConfig } from './utils/useConfig'
 import { DEFAULT_CONFIG } from './constants/defaults'
 import { deepMerge, mergeConfigs } from './utils/configUtils'
-import { useValidation } from './composables/useValidation'
-import { fallbackTranslate } from './composables/useTranslation'
+import { useValidation } from './utils/useValidation'
+import { fallbackTranslate } from './utils/useTranslation'
 
 function configValidation(options: DeepPartial<FormKitConfig>) {
   const validation = useValidation()

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useForm } from '../src/composables/useForm'
-import { useRepeatable } from '../src/composables/useRepeatable'
+import { useForm } from '../src/headless/useForm'
+import { useRepeatable } from '../src/headless/useRepeatable'
 import { nextTick } from 'vue'
 import { performance } from 'perf_hooks'
 

@@ -47,8 +47,8 @@
 </template>
 
 <script setup>
-import FormKit from '../../../src/components/core/FormKit.vue'
-import FormKitField from '../../../src/components/core/FormKitField.vue'
+import FormKit from '@/core/FormKit.vue'
+import FormKitField from '@/core/FormKitField.vue'
 import { InputText, Select } from 'primevue'
 import { ref } from 'vue'
 

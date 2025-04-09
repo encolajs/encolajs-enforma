@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { h } from 'vue'
-import HeadlessRepeatable from '../../../src/components/headless/HeadlessRepeatable'
+import HeadlessRepeatable from '../../../src/headless/HeadlessRepeatable'
 import { FormController, useForm, useValidation } from '../../../src'
 import { PlainObjectDataSource } from '@encolajs/validator'
 import { formStateKey } from '../../../src/constants/symbols'
-import { RepeatableState } from '../../../src/composables/useRepeatable'
+import { RepeatableState } from '../../../src/headless/useRepeatable'
 
 describe('HeadlessRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})

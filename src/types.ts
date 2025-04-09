@@ -4,7 +4,7 @@ import {
   ValidationRule,
   ValidatorFactory,
 } from '@encolajs/validator'
-import { FieldState, StateChanges } from './composables/useForm'
+import { FieldState, StateChanges } from './headless/useForm'
 
 /**
  * Type definition for validation rules

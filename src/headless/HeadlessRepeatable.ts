@@ -1,8 +1,8 @@
 import { defineComponent, inject, ref, watch, onBeforeUnmount } from 'vue'
-import { useRepeatable } from '../../composables/useRepeatable'
-import { formStateKey } from '../../constants/symbols'
+import { useRepeatable } from './useRepeatable'
+import { formStateKey } from '../constants/symbols'
 
-import { FormController } from '../../types'
+import { FormController } from '../types'
 
 export default defineComponent({
   name: 'HeadlessRepeatable',

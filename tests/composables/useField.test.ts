@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { useField } from '../../src/composables/useField'
+import { useField } from '../../src/headless/useField'
 import { FieldController } from '../../src'
 import { ComputedRef } from 'vue'
 

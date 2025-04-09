@@ -4,7 +4,7 @@
 
 import { inject, provide, computed, ComputedRef } from 'vue'
 import { FormKitConfig, DeepPartial, ConfigProvider } from '../types/config'
-import { mergeConfigs } from '../utils/configUtils'
+import { mergeConfigs } from './configUtils'
 import { DEFAULT_CONFIG } from '../constants/defaults'
 import { formConfigKey } from '../constants/symbols'
 

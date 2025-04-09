@@ -4,7 +4,7 @@ import {
   ValidationRule,
   messageFormatter,
   CustomMessagesConfig,
-} from '@encolajs/validator'
+} from '../../../encolajs-validator'
 import { ValidationRules } from '../types'
 
 /**

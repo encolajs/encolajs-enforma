@@ -1,6 +1,6 @@
-import { PlainObjectDataSource } from '@encolajs/validator'
+import { PlainObjectDataSource } from '../../../encolajs-validator'
 import { FormController, FormOptions, ValidationRules } from '../types'
-import { useValidation } from './useValidation'
+import { useValidation } from '../utils/useValidation'
 import { ref } from 'vue'
 
 export interface FieldState {

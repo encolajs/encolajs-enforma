@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useAttrs } from 'vue'
-import type { FormKitSchema, FieldSchema, FormSectionSchema } from '../../types'
+import type { FormKitSchema, FieldSchema, FormSectionSchema } from '../types'
 import FormKitSection from './FormKitSection.vue'
 
 const props = defineProps<{

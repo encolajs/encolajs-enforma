@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
-import { useDynamicProps } from '../../src/composables/useDynamicProps'
+import { useDynamicProps } from '../../src/utils/useDynamicProps'
 import { ref } from 'vue'
 import { formConfigKey, formContextKey, formStateKey } from '../../src/constants/symbols'
 import { FormController } from '../../src/types'
