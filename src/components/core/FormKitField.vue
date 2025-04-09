@@ -36,7 +36,7 @@ import { FormKitConfig } from '../../types/config'
 import { useDynamicProps } from '../../composables/useDynamicProps'
 import { FormController } from '../../index'
 import { useTranslation } from '../../composables/useTranslation'
-import { useField } from '../../composables/useField'
+import { fieldValidateOnOption, useField } from '../../composables/useField'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -70,7 +70,7 @@ if (!formState) {
 
 // Use the useField composable directly instead of via HeadlessField
 const field = useField(originalProps.name, formState, {
-  validateOn: originalProps.validateOn,
+  validateOn: originalProps.validateOn as fieldValidateOnOption,
 })
 
 // Clean up on unmount

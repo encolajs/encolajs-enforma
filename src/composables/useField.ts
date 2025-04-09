@@ -2,20 +2,17 @@ import { computed, onMounted, ComputedRef, ref } from 'vue'
 import { FieldController, FormController } from '../types'
 import { debounce } from '../utils/debounce'
 
+export type fieldValidateOnOption = 'input' | 'change' | 'blur' | 'submit' | null
+
 /**
  * Composable for managing a single form field
- *
- * @param name - Field name/path
- * @param form - Form proxy from useForm
- * @param options - Configuration options
- * @returns Field state and methods
  */
 export function useField(
   name: string,
   form: FormController,
   options: {
     validateOnMount?: boolean
-    validateOn?: 'input' | 'change' | 'blur' | 'submit' | null
+    validateOn?: fieldValidateOnOption
   } = {}
 ): ComputedRef<FieldController> {
   if (!name) {
