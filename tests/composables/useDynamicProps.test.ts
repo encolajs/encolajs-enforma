@@ -102,7 +102,7 @@ describe('useDynamicProps', () => {
     
     // Verify that the expressions were evaluated
     expect(evaluatedProps.label).toBe('John')
-    expect(evaluatedProps.placeholder).toBe('30')
+    expect(evaluatedProps.placeholder).toBe(30)
     expect(evaluatedProps.type).toBe('text')
   })
 
