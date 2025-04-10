@@ -63,7 +63,59 @@ export interface ExpressionsConfig {
  * Configuration for CSS classes
  */
 export interface ClassesConfig {
+  field: {
+    wrapper: string
+    label: string
+    required: string
+    error: string
+    help: string
+    [key: string]: string
+  }
+  section: {
+    base: string
+    title: string
+    [key: string]: string
+  }
+  repeatable: {
+    wrapper: string
+    table: string 
+    table_th: string
+    table_td: string
+    add_button: string
+    remove_button: string
+    move_up_button: string
+    move_down_button: string
+    actions: string   
+    [key: string]: string
+  }
+  buttons: {
+    submit: string
+    reset: string
+    [key: string]: string
+  }
+  form: {
+    actions: string
+    [key: string]: string
+  }
   [key:string]: Record<string, string>
+}
+
+/**
+ * Configuration for components
+ */
+export interface ComponentsConfig {
+  field: any
+  fieldWrapper: any
+  section: any
+  repeatable: any
+  repeatableTable: any
+  repeatableAddButton: any
+  repeatableRemoveButton: any
+  repeatableMoveUpButton: any
+  repeatableMoveDownButton: any
+  submitButton: any
+  resetButton: any
+  schema: any
 }
 
 /**
@@ -77,7 +129,7 @@ export interface FormKitConfig {
   errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
   classes: ClassesConfig
-
+  components: ComponentsConfig
   [key: string]: any
 }
 

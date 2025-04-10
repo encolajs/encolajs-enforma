@@ -2,17 +2,17 @@
 <template>
   <div v-bind="$attrs">
     <template v-for="(section, sectionId) in sections" :key="sectionId">
-      <FormKitSection :name="sectionId" />
+      <component :is="formConfig.components.section" :name="sectionId" />
     </template>
-    <FormKitSection name="default" />
+    <component :is="formConfig.components.section" name="default" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
 import type { FormKitSchema } from '../types'
-import FormKitSection from './FormKitSection.vue'
 import { useFormKitSchema } from './useFormKitSchema'
+import { useFormConfig } from '../utils/useFormConfig'
 
 const props = defineProps<{
   schema: FormKitSchema
@@ -20,4 +20,5 @@ const props = defineProps<{
 
 const $attrs = useAttrs()
 const { sections } = useFormKitSchema(props.schema)
+const { formConfig } = useFormConfig()
 </script>

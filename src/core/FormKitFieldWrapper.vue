@@ -1,11 +1,11 @@
 <template>
-  <FormKitField v-bind="fieldProps" :if="evaluatedIf" />
+  <component :is="formConfig.components.field" v-bind="fieldProps" :if="evaluatedIf" />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import FormKitField from './FormKitField.vue'
 import { useDynamicProps } from '../utils/useDynamicProps'
+import { useFormConfig } from '../utils/useFormConfig'
 import { FieldSchema } from '../types'
 
 interface FieldWithName extends FieldSchema {
@@ -17,6 +17,7 @@ const props = defineProps<{
 }>()
 
 const { evaluateCondition } = useDynamicProps()
+const { formConfig } = useFormConfig()
 
 // Evaluate the if condition if it's a string
 const evaluatedIf = computed(() => {

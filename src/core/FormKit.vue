@@ -13,7 +13,7 @@
     >
       <template #default="formState">
         <slot name="default" v-bind="formState">
-          <FormKitSchema v-if="schema" :schema="schema" />
+          <component :is="formConfig.components.schema" v-if="schema" :schema="schema" />
         </slot>
 
         <slot name="actions" v-bind="{ formState, formConfig }">
@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import { computed, provide, ref, useAttrs, PropType } from 'vue'
 import HeadlessForm from '../headless/HeadlessForm'
-import FormKitSchema from './FormKitSchema.vue'
 import { mergeConfigs } from '../utils/configUtils'
 import { getGlobalConfig } from '../utils/useConfig'
 import { formContextKey, formConfigKey } from '../constants/symbols'

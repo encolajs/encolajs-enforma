@@ -4,6 +4,18 @@ import { type messageFormatter } from '@encolajs/validator'
  */
 
 import { FormKitConfig } from '@/utils/useConfig'
+import FormKitField from '../core/FormKitField.vue'
+import FormKitFieldWrapper from '../core/FormKitFieldWrapper.vue'
+import FormKitSection from '../core/FormKitSection.vue'
+import FormKitRepeatable from '../core/FormKitRepeatable.vue'
+import FormKitRepeatableTable from '../core/FormKitRepeatableTable.vue'
+import FormKitRepeatableAddButton from '../core/FormKitRepeatableAddButton.vue'
+import FormKitRepeatableRemoveButton from '../core/FormKitRepeatableRemoveButton.vue'
+import FormKitRepeatableMoveUpButton from '../core/FormKitRepeatableMoveUpButton.vue'
+import FormKitRepeatableMoveDownButton from '../core/FormKitRepeatableMoveDownButton.vue'
+import FormKitSubmitButton from '../core/FormKitSubmitButton.vue'
+import FormKitResetButton from '../core/FormKitResetButton.vue'
+import FormKitSchema from '../core/FormKitSchema.vue'
 
 /**
  * Default configuration for the form kit
@@ -67,8 +79,18 @@ export const DEFAULT_CONFIG: FormKitConfig = {
 
   // components
   components: {
-    submitButton: 'button',
-    resetButton: 'button',
+    field: FormKitField,
+    fieldWrapper: FormKitFieldWrapper,
+    section: FormKitSection,
+    repeatable: FormKitRepeatable,
+    repeatableTable: FormKitRepeatableTable,
+    repeatableAddButton: FormKitRepeatableAddButton,
+    repeatableRemoveButton: FormKitRepeatableRemoveButton,
+    repeatableMoveUpButton: FormKitRepeatableMoveUpButton,
+    repeatableMoveDownButton: FormKitRepeatableMoveDownButton,
+    submitButton: FormKitSubmitButton,
+    resetButton: FormKitResetButton,
+    schema: FormKitSchema
   },
 
   // CSS classes configuration

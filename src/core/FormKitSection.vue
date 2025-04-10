@@ -10,11 +10,11 @@
     </component>
 
     <template v-for="field in sortedFields" :key="field.name">
-      <FormKitFieldWrapper :field="field" />
+      <component :is="formConfig.components.fieldWrapper" :field="field" />
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
-      <FormKitSection :name="subSection.name" />
+      <component :is="formConfig.components.section" :name="subSection.name" />
     </template>
   </div>
 </template>
@@ -23,7 +23,6 @@
 import { computed, inject } from 'vue'
 import { formSchemaKey } from '../constants/symbols'
 import { FieldSchema, FormSectionSchema, FormKitSchema } from '../types'
-import FormKitFieldWrapper from './FormKitFieldWrapper.vue'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { useFormConfig } from '@/utils/useFormConfig'
 
@@ -115,7 +114,7 @@ const props = defineProps<{
 const schema = inject<FormKitSchema>(formSchemaKey)
 
 // Get the configuration
-const { getConfig } = useFormConfig()
+const { getConfig, formConfig } = useFormConfig()
 
 // Get the dynamic props utilities
 const { evaluateCondition } = useDynamicProps()
