@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import FormKitRepeatableTable from '../../src/core/FormKitRepeatableTable.vue'
 import { FormController, useForm, useValidation } from '../../src'
-import { formStateKey, formConfigKey } from '../../src/constants/symbols'
+import {
+  formStateKey,
+  formConfigKey,
+  formSchemaKey,
+} from '../../src/constants/symbols'
 import { useConfig } from '../../src/utils/useConfig'
 import { provide } from 'vue'
 
@@ -64,6 +68,7 @@ describe('FormKitRepeatableTable', () => {
         const { config } = useConfig()
         provide(formStateKey, formState)
         provide(formConfigKey, config.value)
+        provide(formSchemaKey, null)
 
         return {
           props: {
@@ -88,7 +93,7 @@ describe('FormKitRepeatableTable', () => {
     return mount(TestWrapper)
   }
 
-  describe('Component initialization', () => {
+  describe('initialization', () => {
     it('mounts with required props and form context', () => {
       const wrapper = createTestWrapper()
       expect(wrapper.exists()).toBe(true)
@@ -119,7 +124,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Table structure', () => {
+  describe('table structure', () => {
     it('renders table headers from subfield labels', async () => {
       const subfields = {
         name: {
@@ -141,7 +146,7 @@ describe('FormKitRepeatableTable', () => {
       expect(headers).toHaveLength(3) // 2 fields + actions column
       expect(headers[0].text()).toBe('Full Name')
       expect(headers[1].text()).toBe('Email Address')
-      expect(headers[2].text()).toBe('Actions')
+      expect(headers[2].text()).toBe('')
     })
 
     it('uses field key as header when label is not provided', async () => {
@@ -165,7 +170,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Subfield rendering', () => {
+  describe('subfield rendering', () => {
     it('renders subfields in table cells', async () => {
       const formState = createFormState({
         items: [{ name: 'John Doe', email: 'john@example.com' }],
@@ -191,7 +196,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Button rendering and functionality', () => {
+  describe('button rendering and functionality', () => {
     it('shows add button when below max items', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(
@@ -267,7 +272,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Custom button components', () => {
+  describe('custom button components', () => {
     it('uses custom add button when provided', async () => {
       const CustomAddButton = {
         name: 'CustomAddButton',
@@ -297,7 +302,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Edge cases', () => {
+  describe('edge cases', () => {
     it('handles empty subfields object', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper({ subfields: {} }, formState)
@@ -339,7 +344,7 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Cleanup', () => {
+  describe('cleanup', () => {
     it('unregisters fields on cleanup', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(

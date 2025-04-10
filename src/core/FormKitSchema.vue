@@ -1,10 +1,11 @@
 <!-- src/core/FormKitSchema.vue -->
 <template>
   <div v-bind="$attrs">
+    {{ sectionComponent }}
     <template v-for="(section, sectionId) in sections" :key="sectionId">
-      <component :is="formConfig.components.section" :name="sectionId" />
+      <component :is="sectionComponent" :name="sectionId" />
     </template>
-    <component :is="formConfig.components.section" name="default" />
+    <component :is="sectionComponent" name="default" />
   </div>
 </template>
 
@@ -20,5 +21,6 @@ const props = defineProps<{
 
 const $attrs = useAttrs()
 const { sections } = useFormKitSchema(props.schema)
-const { formConfig } = useFormConfig()
+const { getConfig } = useFormConfig()
+const sectionComponent = getConfig('components.section')
 </script>

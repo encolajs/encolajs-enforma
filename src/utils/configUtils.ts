@@ -54,8 +54,8 @@ function isObject(item: any): boolean {
 export function _get<T = any>(
   obj: any,
   path: string,
-  defaultValue: T
-): T {
+  defaultValue?: T
+): T | undefined {
   if (!obj || !path) {
     return defaultValue
   }

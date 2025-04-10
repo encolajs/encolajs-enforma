@@ -1,9 +1,6 @@
 // src/core/useFormKitField.ts
 import { computed, inject, mergeProps, onBeforeUnmount } from 'vue'
-import {
-  formStateKey,
-  formSchemaKey,
-} from '../constants/symbols'
+import { formStateKey, formSchemaKey } from '../constants/symbols'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useTranslation } from '../utils/useTranslation'
@@ -45,7 +42,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
   }
 
   // Get field schema if available
-  const fieldSchema = computed((): FieldSchema| null => {
+  const fieldSchema = computed((): FieldSchema | null => {
     if (!schema) return null
     return schema[originalProps.name]
   })

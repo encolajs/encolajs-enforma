@@ -74,6 +74,6 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
     fields,
     formState,
     formConfig,
-    getConfig
+    getConfig,
   }
 }

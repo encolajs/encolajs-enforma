@@ -20,7 +20,7 @@
               >
                 {{ subfield.label || subfieldName }}
               </th>
-              <th  :class="getConfig('classes.repeatable.table_th')"></th>
+              <th :class="getConfig('classes.repeatable.table_th')"></th>
             </tr>
           </thead>
           <tbody>
@@ -38,18 +38,29 @@
                 />
               </td>
               <td :class="getConfig('classes.repeatable.table_actions_td')">
-                <div :class="getConfig('classes.repeatable.table_actions_buttons')">
+                <div
+                  :class="getConfig('classes.repeatable.table_actions_buttons')"
+                >
                   <component
-                    :is="removeButton || formConfig.components.repeatableRemoveButton"
+                    :is="
+                      removeButton ||
+                      formConfig.components.repeatableRemoveButton
+                    "
                     @click="remove(index)"
                   />
                   <component
-                    :is="moveUpButton || formConfig.components.repeatableMoveUpButton"
+                    :is="
+                      moveUpButton ||
+                      formConfig.components.repeatableMoveUpButton
+                    "
                     :disabled="index === 0"
                     @click="moveUp(index)"
                   />
                   <component
-                    :is="moveDownButton || formConfig.components.repeatableMoveDownButton"
+                    :is="
+                      moveDownButton ||
+                      formConfig.components.repeatableMoveDownButton
+                    "
                     :disabled="index >= count - 1"
                     @click="moveDown(index)"
                   />
@@ -75,7 +86,10 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue'
 import HeadlessRepeatable from '../headless/HeadlessRepeatable'
-import { RepeatableFieldSchema, useFormKitRepeatable } from './useFormKitRepeatable'
+import {
+  RepeatableFieldSchema,
+  useFormKitRepeatable,
+} from './useFormKitRepeatable'
 import { useFormConfig } from '../utils/useFormConfig'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {

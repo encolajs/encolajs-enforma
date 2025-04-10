@@ -18,10 +18,10 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T[P] extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T[P] extends object
-        ? DeepPartial<T[P]>
-        : T[P]
+    ? ReadonlyArray<DeepPartial<U>>
+    : T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P]
 }
 
 /**
@@ -69,23 +69,24 @@ export interface ClassesConfig {
     required: string
     error: string
     help: string
+    input: string
     [key: string]: string
   }
   section: {
-    base: string
+    wrapper: string
     title: string
     [key: string]: string
   }
   repeatable: {
     wrapper: string
-    table: string 
+    table: string
     table_th: string
     table_td: string
     add_button: string
     remove_button: string
     move_up_button: string
     move_down_button: string
-    actions: string   
+    actions: string
     [key: string]: string
   }
   buttons: {
@@ -97,7 +98,7 @@ export interface ClassesConfig {
     actions: string
     [key: string]: string
   }
-  [key:string]: Record<string, string>
+  [key: string]: Record<string, string>
 }
 
 /**

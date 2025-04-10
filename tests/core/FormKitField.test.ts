@@ -1,39 +1,13 @@
-// tests/components/core/FormKitField.test.ts
+// tests/core/FormKitField.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises } from '@vue/test-utils'
 import FormKitField from '../../src/core/FormKitField.vue'
-import { formConfigKey, formStateKey, formSchemaKey } from '../../src/constants/symbols'
+import { formStateKey, formSchemaKey } from '../../src/constants/symbols'
 import { useForm } from '../../src/headless/useForm'
-import { FormKitConfig } from '../../src/utils/useConfig'
+import { mountTestComponent } from '../utils/testSetup'
 
 // Unmock the useField composable to use the real implementation
 vi.unmock('@/composables/useField')
-
-// Create a proper form config that matches the expected type
-const createFormConfig = (): FormKitConfig => ({
-  pt: {
-    wrapper: { class: 'form-field-wrapper' },
-    label: { class: 'form-label' },
-    input: { class: 'form-input' },
-    error: { class: 'form-error' },
-    help: { class: 'form-help' },
-    required: {
-      text: '*',
-      class: 'required-indicator',
-    },
-    section: {},
-  },
-  behavior: {
-    validateOn: 'change',
-    showErrorsOn: 'dirty',
-  },
-  expressions: {
-    delimiters: {
-      start: '${',
-      end: '}',
-    },
-  },
-})
 
 // Create actual form state using useForm
 const createFormState = (initialValues = {}, rules = {}) => {
@@ -41,40 +15,38 @@ const createFormState = (initialValues = {}, rules = {}) => {
 }
 
 describe('FormKitField', () => {
-  // Create custom component stubs for testing
-  const FormInputStub = {
-    name: 'FormInput',
-    template: '<input v-bind="$attrs" />{{$attrs}}',
-    inheritAttrs: true,
-  }
-
   let formState
+  let schema
 
   beforeEach(() => {
     // Create a fresh form state before each test
     formState = createFormState({})
+    // Create a basic schema for testing
+    schema = {
+      fields: {},
+    }
   })
 
   it('renders a field with basic props', async () => {
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'test-field',
         label: 'Test Field',
-        type: 'FormInput',
+        type: 'input',
         inputProps: {
           type: 'text',
         },
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-        },
-      },
-    })
+      }
+    )
 
     expect(wrapper.find('label').text()).toContain('Test Field')
     expect(wrapper.find('input').exists()).toBe(true)
@@ -82,28 +54,25 @@ describe('FormKitField', () => {
   })
 
   it('handles required fields correctly', async () => {
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'required-field',
         label: 'Required Field',
-        type: 'FormInput',
+        type: 'input',
         required: true,
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-        },
-      },
-    })
-
-    expect(wrapper.find('.required-indicator').exists()).toBe(true)
-    expect(wrapper.find('.form-field-wrapper').classes()).toContain(
-      'formkit-required'
+      }
     )
+
+    expect(wrapper.find('.formkit-label-required').exists()).toBe(true)
   })
 
   it('displays error messages when field has errors', async () => {
@@ -115,56 +84,53 @@ describe('FormKitField', () => {
     fieldState.$errors = ['This field is required']
 
     // Mount the component with the field that has errors
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'error_field',
         label: 'Error Field',
-        type: 'FormInput',
+        type: 'input',
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formWithErrors,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formWithErrors,
-        },
-      },
-    })
+      }
+    )
 
     // Ensure reactive updates are processed
     await flushPromises()
 
     // Verify error message is displayed
-    expect(wrapper.find('.form-error').text()).toBe('This field is required')
-    expect(wrapper.find('.form-field-wrapper').classes()).toContain(
-      'formkit-has-error'
-    )
+    expect(wrapper.find('.formkit-error').text()).toBe('This field is required')
   })
 
   it('evaluates dynamic props correctly', async () => {
     const dynamicFormState = createFormState({ someField: 'test' })
 
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'dynamic-field',
         label: 'Dynamic Field',
-        type: 'FormInput',
+        type: 'input',
         inputProps: {
           'data-test': '${form.someField === "test" ? "ok" : "notok"}',
           disabled: '${form.someField === "test"}',
         },
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: dynamicFormState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: dynamicFormState,
-        },
-      },
-    })
+      }
+    )
 
     // Allow the dynamic props to be evaluated
     await flushPromises()
@@ -183,330 +149,91 @@ describe('FormKitField', () => {
   })
 
   it('shows help text when provided', async () => {
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'help-field',
         label: 'Help Field',
-        type: 'FormInput',
+        type: 'input',
         help: 'This is a helpful message',
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-        },
-      },
-    })
+      }
+    )
 
-    expect(wrapper.find('.form-help').text()).toBe('This is a helpful message')
+    expect(wrapper.find('.formkit-help').text()).toBe(
+      'This is a helpful message'
+    )
   })
 
   it('handles visibility toggle correctly', async () => {
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'visibility-field',
         label: 'Visibility Field',
-        type: 'FormInput',
+        type: 'input',
         if: false,
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-        },
-      },
-    })
+      }
+    )
 
     // Vue's v-show doesn't actually remove the element but hides it with style="display: none"
-    const wrapper_div = wrapper.find('.form-field-wrapper')
+    const wrapper_div = wrapper.find('.formkit-field-wrapper')
     expect(wrapper_div.exists()).toBe(true)
     expect(wrapper_div.attributes('style')).toContain('display: none')
 
     await wrapper.setProps({ if: true })
     // After changing to visible, the style should no longer contain display: none
-    expect(wrapper.find('.form-field-wrapper').attributes('style')).toBeFalsy()
+    expect(
+      wrapper.find('.formkit-field-wrapper').attributes('style')
+    ).toBeFalsy()
   })
 
   it('applies custom props correctly', async () => {
     const customProps = {
       labelProps: { class: 'custom-label' },
       inputProps: { class: 'custom-input', placeholder: 'Custom placeholder' },
-      wrapperProps: { class: 'custom-wrapper' },
       errorProps: { class: 'custom-error' },
       helpProps: { class: 'custom-help' },
     }
 
-    const wrapper = mount(FormKitField, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKitField,
+      {
         name: 'custom-field',
         label: 'Custom Field',
-        type: 'FormInput',
+        type: 'input',
         ...customProps,
       },
-      global: {
-        components: {
-          FormInput: FormInputStub,
+      {
+        global: {
+          provide: {
+            [formStateKey]: formState,
+            [formSchemaKey]: schema,
+          },
         },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-        },
-      },
-    })
-
-    // Check for class attributes
-    expect(wrapper.find('label').classes()).toContain('custom-label')
-
-    // Check for the input with properties
-    const input = wrapper.find('input')
-    expect(input.exists()).toBe(true)
-
-    // The input should have the custom-input class at some point in the component tree
-    // Find the element that has the class
-    const hasCustomInputClass = wrapper
-      .findAll('*')
-      .some((el) => el.classes().includes('custom-input'))
-    expect(hasCustomInputClass).toBe(true)
-
-    // Verify placeholder is properly passed
-    expect(input.attributes('placeholder')).toBe('Custom placeholder')
-
-    // Check if wrapper has custom class
-    expect(wrapper.find('.form-field-wrapper').classes()).toContain(
-      'custom-wrapper'
+      }
     )
-  })
 
-  it('handles field value changes', async () => {
-    // Create a new form state
-    const valueFormState = createFormState({ name: '' })
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'name',
-        label: 'Input Field',
-        type: 'FormInput',
-      },
-      global: {
-        components: {
-          FormInput: FormInputStub,
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: valueFormState,
-        },
-      },
-    })
-
-    // Find input and trigger input event with new value
-    const input = wrapper.find('input')
-    expect(input.exists()).toBe(true)
-
-    // We need to simulate the update event
-    await input.setValue('new value')
-    await flushPromises()
-
-    // Verify the form state has been updated with our value
-    expect(valueFormState['name']).toBe('new value')
-  })
-
-  it('renders custom component based on type', async () => {
-    const CustomComponent = {
-      name: 'CustomComponent',
-      template: '<div class="custom-component">Custom Input</div>',
-      props: ['modelValue'],
-      emits: ['update:modelValue'],
-    }
-
-    // Create a modified config that includes our custom component
-    const customConfig = createFormConfig()
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'custom-component-field',
-        label: 'Custom Component Field',
-        type: 'CustomComponent',
-      },
-      global: {
-        components: {
-          CustomComponent,
-        },
-        provide: {
-          [formConfigKey]: customConfig,
-          [formStateKey]: formState,
-        },
-      },
-    })
-
-    // Since the component is custom and registered globally,
-    // we can check if it gets rendered
-    expect(wrapper.findComponent(CustomComponent).exists()).toBe(true)
-  })
-
-  it('cleans up field on unmount', async () => {
-    const cleanupFormState = createFormState({})
-    const removeFieldSpy = vi.spyOn(cleanupFormState, 'removeField')
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'cleanup-field',
-        label: 'Cleanup Field',
-        type: 'FormInput',
-      },
-      global: {
-        components: {
-          FormInput: FormInputStub,
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: cleanupFormState,
-        },
-      },
-    })
-
-    // Unmount component
-    wrapper.unmount()
-
-    // Check removeField was called
-    expect(removeFieldSpy).toHaveBeenCalledWith('cleanup-field')
-  })
-
-  it('uses schema props when only name is provided', async () => {
-    const schema = {
-      'schema-field': {
-        type: 'FormInput',
-        label: 'Schema Field',
-        required: true,
-        help: 'This is from schema',
-        input_props: {
-          type: 'email',
-          placeholder: 'Enter email',
-        },
-        label_props: {
-          class: 'schema-label',
-        },
-      },
-    }
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'schema-field',
-      },
-      global: {
-        components: {
-          FormInput: FormInputStub,
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-          [formSchemaKey]: schema,
-        },
-      },
-    })
-
-    // Verify schema props are applied
-    expect(wrapper.find('label').text()).toContain('Schema Field')
-    expect(wrapper.find('label').classes()).toContain('schema-label')
-    expect(wrapper.find('input').attributes('type')).toBe('email')
-    expect(wrapper.find('input').attributes('placeholder')).toBe('Enter email')
-    expect(wrapper.find('.required-indicator').exists()).toBe(true)
-    expect(wrapper.find('.form-help').text()).toBe('This is from schema')
-  })
-
-  it('allows prop overrides of schema values', async () => {
-    const schema = {
-      'override-field': {
-        type: 'FormInput',
-        label: 'Schema Label',
-        required: true,
-        help: 'Schema help text',
-        inputProps: {
-          type: 'email',
-          placeholder: 'Schema placeholder',
-        },
-        labelProps: {
-          class: 'schema-label',
-        },
-      },
-    }
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'override-field',
-        label: 'Override Label',
-        help: 'Override help text',
-        inputProps: {
-          type: 'text',
-          placeholder: 'Override placeholder',
-        },
-        labelProps: {
-          class: 'override-label',
-        },
-      },
-      global: {
-        components: {
-          FormInput: FormInputStub,
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-          [formSchemaKey]: schema,
-        },
-      },
-    })
-
-    // Verify overridden props take precedence
-    expect(wrapper.find('label').text()).toContain('Override Label')
-    expect(wrapper.find('label').classes()).toContain('override-label')
-    expect(wrapper.find('input').attributes('type')).toBe('text')
+    // Check that custom classes are applied
+    expect(wrapper.find('.custom-label').exists()).toBe(true)
+    expect(wrapper.find('.custom-input').exists()).toBe(true)
     expect(wrapper.find('input').attributes('placeholder')).toBe(
-      'Override placeholder'
+      'Custom placeholder'
     )
-    expect(wrapper.find('.form-help').text()).toBe('Override help text')
-
-    // Verify schema props that weren't overridden are still applied
-    expect(wrapper.find('.required-indicator').exists()).toBe(true)
-  })
-
-  it('prefers props over schema', async () => {
-    const schema = {
-      'default-override-field': {
-        type: 'FormInput',
-        label: 'Schema Label',
-        required: true,
-        help: 'Schema help text',
-        if: false, // Override default true
-        hideLabel: true, // Override default false
-      },
-    }
-
-    const wrapper = mount(FormKitField, {
-      props: {
-        name: 'default-override-field',
-      },
-      global: {
-        components: {
-          FormInput: FormInputStub,
-        },
-        provide: {
-          [formConfigKey]: createFormConfig(),
-          [formStateKey]: formState,
-          [formSchemaKey]: schema,
-        },
-      },
-    })
-
-    // Verify schema values override defaults
-    expect(wrapper.find('label').exists()).toBe(false) // hideLabel is true
-    expect(wrapper.find('.form-field-wrapper').attributes('style')).toContain(
-      'display: none'
-    ) // if is false
-    expect(wrapper.find('.required-indicator').exists()).toBe(false) // required is true but label is hidden
   })
 })

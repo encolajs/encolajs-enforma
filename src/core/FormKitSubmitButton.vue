@@ -1,7 +1,7 @@
 <template>
-  <button 
-    v-bind="$attrs" 
-    type="submit" 
+  <button
+    v-bind="$attrs"
+    type="submit"
     :disabled="isSubmitting"
     :class="getConfig('classes.buttons.submit')"
   >

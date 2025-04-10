@@ -30,7 +30,7 @@ describe('useForm', () => {
       }
     )
   })
-  describe('Form Methods', () => {
+  describe('form methods', () => {
     test('should reset form to initial values', async () => {
       // Make some changes
       form['items.0.price'] = 150
@@ -117,7 +117,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Form State', () => {
+  describe('form state', () => {
     test('should track validation state', async () => {
       form['items.0.price'] = 5
       const submitPromise = form.submit(async () => {
@@ -161,7 +161,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Basic Field Operations', () => {
+  describe('basic field operations', () => {
     test('should get values from business object', () => {
       expect(form['items.0.price']).toBe(100)
       expect(form['items.1.quantity']).toBe(2)
@@ -204,7 +204,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Missing Properties', () => {
+  describe('missing properties', () => {
     test('should handle missing object properties', async () => {
       await form.setFieldValue('address.line2', 'Apt 4B')
       expect(form['address.line2']).toBe('Apt 4B')
@@ -218,7 +218,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Array Operations', () => {
+  describe('array operations', () => {
     test('should add items', () => {
       form.add('items', 1, { price: 300, quantity: 3 })
       expect(order.items).toHaveLength(3)
@@ -256,7 +256,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Field State', () => {
+  describe('field state', () => {
     test('should track validation state', async () => {
       form.setFieldValue('items.0.price', 5)
       expect(form['items.0.price.$isValidating']).toBe(true)
@@ -279,7 +279,7 @@ describe('useForm', () => {
     })
   })
 
-  describe('Error Handling', () => {
+  describe('error handling', () => {
     test('should handle validation errors in validateForm', async () => {
       // Mock console.error to prevent test output pollution
       const consoleErrorSpy = vi

@@ -1,5 +1,6 @@
 <template>
   <div v-bind="$attrs" :class="sectionClass">
+    asdfasfas
     <component
       v-if="sectionSchema?.title"
       :is="sectionSchema.title_component"
@@ -10,26 +11,20 @@
     </component>
 
     <template v-for="field in sortedFields" :key="field.name">
-      <component :is="formConfig.components.fieldWrapper" :field="field" />
+      <component :is="fieldComponent" v-bind="field" />
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
-      <component :is="formConfig.components.section" :name="subSection.name" />
+      <component :is="sectionComponent" :name="subSection.name" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, inject, resolveComponent } from 'vue'
 import { formSchemaKey } from '../constants/symbols'
 import { FieldSchema, FormSectionSchema, FormKitSchema } from '../types'
-import { useDynamicProps } from '../utils/useDynamicProps'
 import { useFormConfig } from '@/utils/useFormConfig'
-
-interface SectionWithFields extends FormSectionSchema {
-  fields: FieldSchema[]
-  subsections: Record<string, SectionWithFields>
-}
 
 interface FieldWithPosition extends FieldSchema {
   position?: number
@@ -42,11 +37,13 @@ interface SectionWithPosition extends FormSectionSchema {
 }
 
 function isFieldSchema(value: any): value is FieldSchema {
-  return value && typeof value === 'object' && 'wrapper' in value && 'type' in value
+  return value && typeof value === 'object' && 'type' in value
 }
 
 function isSectionSchema(value: any): value is FormSectionSchema {
-  return value && typeof value === 'object' && 'title' in value && 'section' in value
+  return (
+    value && typeof value === 'object' && 'title' in value && 'section' in value
+  )
 }
 
 function getFields(
@@ -54,12 +51,12 @@ function getFields(
   sectionName: string
 ): Record<string, FieldSchema> {
   if (!schema) return {}
-  
+
   const entries = Object.entries(schema)
     .filter(([_, field]) => {
       if (!isFieldSchema(field)) return false
       if (isSectionSchema(field)) return false
-      
+
       // For default section, include fields without a section
       if (sectionName === 'default') {
         return !('section' in field) || field.section === sectionName
@@ -77,7 +74,7 @@ function getSubSections(
   sectionName: string
 ): Array<[string, FormSectionSchema]> {
   if (!schema) return []
-  
+
   // Find all sections that belong to this section
   return Object.entries(schema).filter(([_, field]) => {
     if (!isSectionSchema(field)) return false
@@ -106,6 +103,9 @@ function sortByPosition<T extends { position?: number }>(items: T[]): T[] {
   })
 }
 
+// this is needed because the component may render in a tree-like structure
+defineOptions({ name: 'FormKitSection' })
+
 const props = defineProps<{
   name: string
 }>()
@@ -114,10 +114,11 @@ const props = defineProps<{
 const schema = inject<FormKitSchema>(formSchemaKey)
 
 // Get the configuration
-const { getConfig, formConfig } = useFormConfig()
+const { getConfig } = useFormConfig()
 
-// Get the dynamic props utilities
-const { evaluateCondition } = useDynamicProps()
+const fieldComponent = getConfig('components.field')
+// this is needed because the component may render in a tree-like structure
+const sectionComponent = resolveComponent('FormKitSection')
 
 // Get the section schema for this section
 const sectionSchema = computed(() => {
@@ -135,7 +136,7 @@ const sortedFields = computed(() => {
     ([name, field]) => {
       const fieldWithPosition: FieldWithPosition = {
         ...field,
-        name
+        name,
       }
       return fieldWithPosition
     }
@@ -146,16 +147,11 @@ const sortedFields = computed(() => {
 // Get nested sections and sort them by position
 const sortedSubsections = computed(() => {
   const sections = getSubSections(schema, props.name).map(
-    ([name, section]) => ({ ...section, name }) as SectionWithPosition
+    ([name, section]) => ({ ...section, name } as SectionWithPosition)
   )
   return sortByPosition(sections)
 })
 
 // Compute section class
-const sectionClass = computed(() => {
-  return {
-    [getConfig('classes.section' , 'formkit-section')]: true,
-    [getConfig('classes.section_' + props.name, 'formkit-section-' + props.name)]: true,
-  }
-})
+const sectionClass = getConfig('classes.section.wrapper')
 </script>

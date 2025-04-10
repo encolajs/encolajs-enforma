@@ -3,10 +3,7 @@
  */
 
 import { computed, ComputedRef, inject } from 'vue'
-import {
-  formContextKey,
-  formStateKey,
-} from '../constants/symbols'
+import { formContextKey, formStateKey } from '../constants/symbols'
 import { FormController } from '../types'
 import {
   evaluateCondition,
@@ -93,7 +90,11 @@ export function useDynamicProps(
       }
 
       const context = getContext()
-      return evaluateCondition(condition, context, getConfig('expressions', { delimiters: { start: '${', end: '}' } }))
+      return evaluateCondition(
+        condition,
+        context,
+        getConfig('expressions', { delimiters: { start: '${', end: '}' } })
+      )
     })
   }
 

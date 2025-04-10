@@ -2,7 +2,6 @@
  * Utility functions for evaluating expressions within the form kit
  */
 
-
 import { FormKitConfig } from '@/utils/useConfig'
 
 /**

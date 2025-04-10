@@ -30,7 +30,7 @@ describe('HeadlessField', () => {
     vi.clearAllMocks()
   })
 
-  describe('Basic functionality', () => {
+  describe('basic functionality', () => {
     it('mounts with required props and form context', () => {
       const form = createMockForm()
       const wrapper = mount(HeadlessField, {
@@ -128,7 +128,7 @@ describe('HeadlessField', () => {
     })
   })
 
-  describe('Field validation lifecycle', () => {
+  describe('field validation lifecycle', () => {
     it('validates on blur when validateOn is blur', async () => {
       const form = createMockForm()
       const wrapper = mount(HeadlessField, {
@@ -220,7 +220,7 @@ describe('HeadlessField', () => {
     })
   })
 
-  describe('Form integration', () => {
+  describe('form integration', () => {
     it('updates form state when field value changes', async () => {
       const form = createMockForm()
       const wrapper = mount(HeadlessField, {
@@ -284,7 +284,7 @@ describe('HeadlessField', () => {
     })
   })
 
-  describe('Edge cases and error handling', () => {
+  describe('edge cases and error handling', () => {
     it('supports deep nested fields', async () => {
       const form = createMockForm()
       const wrapper = mount(HeadlessField, {

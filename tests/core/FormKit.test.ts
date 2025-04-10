@@ -6,6 +6,12 @@ import FormKitSchema from '../../src/core/FormKitSchema.vue'
 import { setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
 import { formContextKey } from '../../src/constants/symbols'
+import { mountTestComponent } from '../utils/testSetup'
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  components: { FormKitSchema },
+})
 
 interface FormKitSchemaProps {
   schema: Record<string, any>
@@ -21,6 +27,11 @@ const SubmitButtonStub = {
 const ResetButtonStub = {
   name: 'ResetButton',
   template: '<button type="reset">Reset</button>',
+  props: ['disabled'],
+}
+const FormKitSchemaStub = {
+  name: 'FormKitSchema',
+  template: '<div class="formkit-schema"></div>',
   props: ['disabled'],
 }
 
@@ -47,21 +58,24 @@ describe('FormKit', () => {
   })
 
   it('renders form with default slot content', async () => {
-    const wrapper = mount(FormKit, {
-      props: {
+    const wrapper = mountTestComponent(
+      FormKit,
+      {
         data: {},
         submitHandler: () => {},
       },
-      slots: {
-        default: '<div class="test-content">Test Content</div>',
-      },
-      global: {
-        components: {
-          SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub,
+      {
+        global: {
+          components: {
+            SubmitButton: SubmitButtonStub,
+            ResetButton: ResetButtonStub,
+          },
         },
       },
-    })
+      {
+        default: '<div class="test-content">Test Content</div>',
+      }
+    )
 
     await wrapper.vm.$nextTick()
     const form = wrapper.find('form')
@@ -71,25 +85,16 @@ describe('FormKit', () => {
 
   it('renders form with schema when provided', async () => {
     const schema = {
-      $formkit: 'text',
-      name: 'test-input',
+      name: {
+        label: 'Name',
+        type: 'input',
+      },
     }
 
-    const wrapper = mount(FormKit, {
-      props: {
-        data: {},
-        submitHandler: () => {},
-        schema,
-      },
-      global: {
-        components: {
-          SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub,
-        },
-        stubs: {
-          FormKitSchema: true,
-        },
-      },
+    const wrapper = mountTestComponent(FormKit, {
+      data: {},
+      submitHandler: () => {},
+      schema,
     })
 
     await wrapper.vm.$nextTick()

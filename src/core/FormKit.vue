@@ -13,16 +13,13 @@
     >
       <template #default="formState">
         <slot name="default" v-bind="formState">
-          <component :is="formConfig.components.schema" v-if="schema" :schema="schema" />
+          <component :is="schemaComponent" v-if="schema" :schema="schema" />
         </slot>
 
         <slot name="actions" v-bind="{ formState, formConfig }">
           <div :class="getConfig('classes.form.actions')">
-            <component :is="formConfig.components.submitButton" />
-            <component
-              :is="formConfig.components.resetButton"
-              v-if="showResetButton"
-            />
+            <component :is="submitButton" />
+            <component :is="resetButton" v-if="showResetButton" />
           </div>
         </slot>
       </template>
@@ -38,6 +35,7 @@ import { getGlobalConfig } from '../utils/useConfig'
 import { formContextKey, formConfigKey } from '../constants/symbols'
 import { FieldSchema } from '@/types'
 import { ValidationRules } from '../types'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 export interface FormSchema {
   [key: string]: FieldSchema
@@ -53,7 +51,7 @@ const props = defineProps({
     default: null,
   },
   rules: {
-    type:  Object as PropType<ValidationRules>,
+    type: Object as PropType<ValidationRules>,
     default: () => ({}),
   },
   context: {
@@ -99,4 +97,9 @@ const formConfig = computed(() => {
 })
 provide(formConfigKey, formConfig.value)
 provide(formContextKey, props.context)
+
+const { getConfig } = useFormConfig(props.config)
+const submitButton = getConfig('components.submitButton')
+const resetButton = getConfig('components.resetButton')
+const schemaComponent = getConfig('components.schema')
 </script>

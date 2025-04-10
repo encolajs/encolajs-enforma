@@ -1,8 +1,8 @@
 <template>
-  <button 
-    v-bind="$attrs" 
-    type="reset" 
-    :disabled="isSubmitting" 
+  <button
+    v-bind="$attrs"
+    type="reset"
+    :disabled="isSubmitting"
     @click="reset"
     :class="getConfig('classes.buttons.reset')"
   >

@@ -26,7 +26,7 @@ describe('HeadlessRepeatable', () => {
     vi.clearAllMocks()
   })
 
-  describe('Component initialization', () => {
+  describe('initialization', () => {
     it('mounts with required props and form context', () => {
       const formState = createFormState()
       const wrapper = mount(HeadlessRepeatable, {
@@ -90,7 +90,7 @@ describe('HeadlessRepeatable', () => {
     })
   })
 
-  describe('Array manipulation', () => {
+  describe('array manipulation', () => {
     it('adds items respecting max limit', async () => {
       const formState = createFormState({ items: ['item1'] })
       let slotData: any
@@ -214,7 +214,7 @@ describe('HeadlessRepeatable', () => {
     })
   })
 
-  describe('Validation', () => {
+  describe('validation', () => {
     it('validates the array when validateOnAdd is true', async () => {
       const formState = createFormState({ items: ['item1'] })
       let slotData
@@ -284,7 +284,7 @@ describe('HeadlessRepeatable', () => {
     })
   })
 
-  describe('Field tracking', () => {
+  describe('field tracking', () => {
     it('tracks fields for array items', async () => {
       const formState = createFormState({ items: ['item1', 'item2'] })
       let slotData
@@ -314,7 +314,7 @@ describe('HeadlessRepeatable', () => {
     })
   })
 
-  describe('Edge cases', () => {
+  describe('edge cases', () => {
     it('handles non-array initial values', async () => {
       const formState = createFormState({ items: 'not-an-array' })
       let slotData
@@ -407,7 +407,7 @@ describe('HeadlessRepeatable', () => {
     })
   })
 
-  describe('Cleanup', () => {
+  describe('cleanup', () => {
     it('unregisters fields on cleanup', async () => {
       const formState = createFormState({ items: ['item1', 'item2'] })
 

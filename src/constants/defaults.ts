@@ -88,7 +88,7 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     repeatableMoveDownButton: FormKitRepeatableMoveDownButton,
     submitButton: FormKitSubmitButton,
     resetButton: FormKitResetButton,
-    schema: FormKitSchema
+    schema: FormKitSchema,
   },
 
   // CSS classes configuration
@@ -99,9 +99,10 @@ export const DEFAULT_CONFIG: FormKitConfig = {
       required: 'formkit-label-required',
       error: 'formkit-error',
       help: 'formkit-help',
+      input: 'formkit-input',
     },
     section: {
-      base: 'formkit-section',
+      wrapper: 'formkit-section',
       title: 'formkit-section-title',
     },
     repeatable: {
@@ -114,14 +115,14 @@ export const DEFAULT_CONFIG: FormKitConfig = {
       move_up_button: 'formkit-repeatable-move-up-button',
       move_down_button: 'formkit-repeatable-move-down-button',
       actions: 'formkit-repeatable-actions',
-      table_actions: 'formkit-repeatable-table-actions'
+      table_actions: 'formkit-repeatable-table-actions',
     },
     buttons: {
       submit: 'formkit-submit-button',
       reset: 'formkit-reset-button',
     },
     form: {
-      actions: 'formkit-actions'
-    }
+      actions: 'formkit-actions',
+    },
   },
 }

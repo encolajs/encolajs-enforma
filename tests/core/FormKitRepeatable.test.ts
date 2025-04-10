@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import FormKitRepeatable from '../../src/core/FormKitRepeatable.vue'
 import { FormController, useForm, useValidation } from '../../src'
-import { formStateKey, formConfigKey } from '../../src/constants/symbols'
+import {
+  formStateKey,
+  formConfigKey,
+  formSchemaKey,
+} from '../../src/constants/symbols'
 import { FormKitConfig, useConfig } from '../../src/utils/useConfig'
 import { provide } from 'vue'
 
@@ -64,6 +68,7 @@ describe('FormKitRepeatable', () => {
         const { config } = useConfig()
         provide(formStateKey, formState)
         provide(formConfigKey, config.value)
+        provide(formSchemaKey, null)
 
         return {
           props: {
@@ -88,7 +93,7 @@ describe('FormKitRepeatable', () => {
     return mount(TestWrapper)
   }
 
-  describe('Component initialization', () => {
+  describe('initialization', () => {
     it('mounts with required props and form context', () => {
       const wrapper = createTestWrapper()
       expect(wrapper.exists()).toBe(true)
@@ -119,7 +124,7 @@ describe('FormKitRepeatable', () => {
     })
   })
 
-  describe('Subfield rendering', () => {
+  describe('subfield rendering', () => {
     it('renders subfields for each item', async () => {
       const formState = createFormState({
         items: [{ name: 'Item 1' }, { name: 'Item 2' }],
@@ -165,7 +170,7 @@ describe('FormKitRepeatable', () => {
     })
   })
 
-  describe('Button rendering and functionality', () => {
+  describe('button rendering and functionality', () => {
     it('shows add button when below max items', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(
@@ -241,7 +246,7 @@ describe('FormKitRepeatable', () => {
     })
   })
 
-  describe('Custom button components', () => {
+  describe('custom button components', () => {
     it('uses custom add button when provided', async () => {
       const CustomAddButton = {
         name: 'CustomAddButton',
@@ -271,7 +276,7 @@ describe('FormKitRepeatable', () => {
     })
   })
 
-  describe('Edge cases', () => {
+  describe('edge cases', () => {
     it('handles empty subfields object', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper({ subfields: {} }, formState)
@@ -313,7 +318,7 @@ describe('FormKitRepeatable', () => {
     })
   })
 
-  describe('Cleanup', () => {
+  describe('cleanup', () => {
     it('unregisters fields on cleanup', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(
