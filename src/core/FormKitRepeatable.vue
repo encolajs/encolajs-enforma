@@ -63,14 +63,13 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import { RepeatableFieldSchema } from '../types/fields'
 import HeadlessRepeatable from '../headless/HeadlessRepeatable'
 import FormKitField from './FormKitField.vue'
 import FormKitRepeatableAddButton from './FormKitRepeatableAddButton.vue'
 import FormKitRepeatableRemoveButton from './FormKitRepeatableRemoveButton.vue'
 import FormKitRepeatableMoveUpButton from './FormKitRepeatableMoveUpButton.vue'
 import FormKitRepeatableMoveDownButton from './FormKitRepeatableMoveDownButton.vue'
-import { useFormKitRepeatable } from './useFormKitRepeatable'
+import { RepeatableFieldSchema, useFormKitRepeatable } from './useFormKitRepeatable'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,

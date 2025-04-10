@@ -37,6 +37,12 @@ import FormKitSchema from './FormKitSchema.vue'
 import { mergeConfigs } from '../utils/configUtils'
 import { getGlobalConfig } from '../utils/useConfig'
 import { formContextKey, formConfigKey } from '../constants/symbols'
+import { FieldSchema } from '@/types'
+import { ValidationRules } from '../types'
+
+export interface FormSchema {
+  [key: string]: FieldSchema
+}
 
 const props = defineProps({
   data: {
@@ -44,11 +50,11 @@ const props = defineProps({
     required: true,
   },
   schema: {
-    type: Object,
+    type: Object as PropType<FormSchema>,
     default: null,
   },
   rules: {
-    type: Object,
+    type:  Object as PropType<ValidationRules>,
     default: () => ({}),
   },
   context: {

@@ -46,7 +46,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
   }
 
   // Get field schema if available
-  const fieldSchema = computed(() => {
+  const fieldSchema = computed((): FieldSchema| null => {
     if (!schema) return null
     return schema[originalProps.name]
   })

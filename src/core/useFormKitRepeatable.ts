@@ -1,10 +1,29 @@
 // src/core/useFormKitRepeatable.ts
-import { inject, onBeforeUnmount, computed } from 'vue'
+import { computed, inject, onBeforeUnmount } from 'vue'
 import { formConfigKey, formStateKey } from '../constants/symbols'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { FormController } from '@/types'
-import { RepeatableFieldSchema } from '../types/fields'
 import { FormKitConfig } from '@/utils/useConfig'
+import { FieldSchema } from '@/types'
+
+/**
+ * Repeatable field schema with subfields
+ */
+export interface RepeatableFieldSchema {
+  type: 'repeatable'
+  name: string
+  min?: number
+  max?: number
+  subfields: Record<string, FieldSchema>
+  defaultValue?: any
+  validateOnAdd?: boolean
+  validateOnRemove?: boolean
+  if?: boolean
+  addButton?: any // FormKitRepeatableAddButton component
+  removeButton?: any // FormKitRepeatableRemoveButton component
+  moveUpButton?: any // FormKitRepeatableMoveUpButton component
+  moveDownButton?: any // FormKitRepeatableMoveDownButton component
+}
 
 export interface RepeatableFieldConfig extends RepeatableFieldSchema {
   validateOnAdd?: boolean

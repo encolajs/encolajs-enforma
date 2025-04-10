@@ -22,9 +22,7 @@ export { default as HeadlessRepeatable } from './headless/HeadlessRepeatable'
 
 // Re-export essential validator types
 export {
-  PlainObjectDataSource,
   ValidationRule,
   ValidatorFactory,
   Validator,
 } from '@encolajs/validator'
-export type { DataSourceInterface } from '@encolajs/validator'
