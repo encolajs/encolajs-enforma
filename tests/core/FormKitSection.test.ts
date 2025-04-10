@@ -1,17 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import FormKitSection from '../../../src/core/FormKitSection.vue'
+import FormKitSection from '../../src/core/FormKitSection.vue'
 import {
   formSchemaKey,
   formStateKey,
   formConfigKey,
-} from '../../../src/constants/symbols'
+} from '../../src/constants/symbols'
 import type {
   FormKitSchema,
   FieldSchema,
   FormSectionSchema,
-} from '../../../src/types'
-import { useForm } from '../../../src/headless/useForm'
+} from '../../src/types'
+import { useForm } from '../../src/headless/useForm'
 
 // Create a mock schema for testing
 const createMockSchema = (

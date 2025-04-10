@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import FormKitRepeatableTable from '../../../src/core/FormKitRepeatableTable.vue'
-import { FormController, useForm, useValidation } from '../../../src'
-import { formStateKey, formConfigKey } from '../../../src/constants/symbols'
-import { useConfig } from '../../../src/utils/useConfig'
+import FormKitRepeatable from '../../src/core/FormKitRepeatable.vue'
+import { FormController, useForm, useValidation } from '../../src'
+import { formStateKey, formConfigKey } from '../../src/constants/symbols'
+import { FormKitConfig, useConfig } from '../../src/utils/useConfig'
 import { provide } from 'vue'
 
 // Stub components for testing
@@ -33,7 +33,7 @@ const FormKitRepeatableMoveDownButtonStub = {
   template: '<button type="button" class="move-down-button">Move Down</button>',
 }
 
-describe('FormKitRepeatableTable', () => {
+describe('FormKitRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
   // Create real form state with validation
@@ -55,9 +55,9 @@ describe('FormKitRepeatableTable', () => {
   // Helper function to create test wrapper with all required injections
   const createTestWrapper = (props = {}, formState = createFormState()) => {
     const TestWrapper = {
-      template: '<FormKitRepeatableTable v-bind="props" />',
+      template: '<FormKitRepeatable v-bind="props" />',
       components: {
-        FormKitRepeatableTable,
+        FormKitRepeatable,
       },
       setup() {
         // Provide injections in setup
@@ -68,7 +68,7 @@ describe('FormKitRepeatableTable', () => {
         return {
           props: {
             name: 'items',
-            type: 'repeatable_table',
+            type: 'repeatable',
             subfields: {},
             ...props,
           },
@@ -95,10 +95,10 @@ describe('FormKitRepeatableTable', () => {
     })
 
     it('errors when mounted without form context', () => {
-      mount(FormKitRepeatableTable, {
+      mount(FormKitRepeatable, {
         props: {
           name: 'items',
-          type: 'repeatable_table',
+          type: 'repeatable',
           subfields: {},
         },
         global: {
@@ -119,56 +119,30 @@ describe('FormKitRepeatableTable', () => {
     })
   })
 
-  describe('Table structure', () => {
-    it('renders table headers from subfield labels', async () => {
-      const subfields = {
-        name: {
-          type: 'text',
-          name: 'name',
-          label: 'Full Name',
-        },
-        email: {
-          type: 'email',
-          name: 'email',
-          label: 'Email Address',
-        },
-      }
-
-      const wrapper = createTestWrapper({ subfields })
-      await flushPromises()
-
-      const headers = wrapper.findAll('th')
-      expect(headers).toHaveLength(3) // 2 fields + actions column
-      expect(headers[0].text()).toBe('Full Name')
-      expect(headers[1].text()).toBe('Email Address')
-      expect(headers[2].text()).toBe('Actions')
-    })
-
-    it('uses field key as header when label is not provided', async () => {
-      const subfields = {
-        name: {
-          type: 'text',
-          name: 'name',
-        },
-        email: {
-          type: 'email',
-          name: 'email',
-        },
-      }
-
-      const wrapper = createTestWrapper({ subfields })
-      await flushPromises()
-
-      const headers = wrapper.findAll('th')
-      expect(headers[0].text()).toBe('name')
-      expect(headers[1].text()).toBe('email')
-    })
-  })
-
   describe('Subfield rendering', () => {
-    it('renders subfields in table cells', async () => {
+    it('renders subfields for each item', async () => {
       const formState = createFormState({
-        items: [{ name: 'John Doe', email: 'john@example.com' }],
+        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
+      })
+      const subfields = {
+        name: {
+          type: 'input',
+          name: 'name',
+        },
+      }
+
+      const wrapper = createTestWrapper({ subfields }, formState)
+      await flushPromises()
+
+      const fields = wrapper.findAllComponents(FormKitFieldStub)
+      expect(fields).toHaveLength(2)
+      expect(fields[0].props().name).toBe('items.0.name')
+      expect(fields[1].props().name).toBe('items.1.name')
+    })
+
+    it('renders multiple subfields per item', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1', email: 'item1@test.com' }],
       })
       const subfields = {
         name: {
@@ -220,11 +194,11 @@ describe('FormKitRepeatableTable', () => {
       )
       await flushPromises()
 
-      const addButton = wrapper.find('.add-button')
+      const addButton = wrapper.find('.formkit-repeatable-add-button')
       expect(addButton.exists()).toBe(false)
     })
 
-    it('shows remove button on each item when above min items', async () => {
+    it('shows button on each item min items', async () => {
       const formState = createFormState({
         items: [{ name: 'Item 1' }, { name: 'Item 2' }],
       })

@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import FormKit from '../../../src/core/FormKit.vue'
-import HeadlessForm from '../../../src/headless/HeadlessForm'
-import FormKitSchema from '../../../src/core/FormKitSchema.vue'
-import { setGlobalConfig } from '../../../src/utils/useConfig'
+import FormKit from '../../src/core/FormKit.vue'
+import HeadlessForm from '../../src/headless/HeadlessForm'
+import FormKitSchema from '../../src/core/FormKitSchema.vue'
+import { setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
-import { formContextKey } from '../../../src/constants/symbols'
+import { formContextKey } from '../../src/constants/symbols'
 
 interface FormKitSchemaProps {
   schema: Record<string, any>

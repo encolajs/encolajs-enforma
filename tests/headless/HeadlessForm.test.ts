@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { h, inject } from 'vue'
-import HeadlessForm from '../../../src/headless/HeadlessForm'
-import { formStateKey } from '../../../src/constants/symbols'
+import HeadlessForm from '../../src/headless/HeadlessForm'
+import { formStateKey } from '../../src/constants/symbols'
 
-import { FormController } from '../../../src'
+import { FormController } from '../../src'
 
 // We'll use a real validator in these tests
 vi.mock('@encolajs/validator', async () => {
