@@ -1,7 +1,6 @@
 // src/core/useFormKitField.ts
 import { computed, inject, mergeProps, onBeforeUnmount } from 'vue'
 import {
-  formConfigKey,
   formStateKey,
   formSchemaKey,
 } from '../constants/symbols'
@@ -10,7 +9,7 @@ import { FormController } from '@/types'
 import { useTranslation } from '../utils/useTranslation'
 import { fieldValidateOnOption, useField } from '../headless/useField'
 import { FieldSchema } from '../types'
-import { FormKitConfig } from '@/utils/useConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 // Define the props interface
 export interface FormKitFieldProps {
@@ -35,7 +34,7 @@ export interface FormKitFieldProps {
 export function useFormKitField(originalProps: FormKitFieldProps) {
   // Get injected dependencies
   const formState = inject<FormController>(formStateKey) as FormController
-  const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
+  const { formConfig, getConfig } = useFormConfig()
   const schema = inject<Record<string, FieldSchema>>(formSchemaKey)
 
   // Validate form context
@@ -139,7 +138,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
   const fieldState = computed(() => field.value)
   const fieldId = computed(() => fieldState.value.id)
   const errorMessage = computed(() => fieldState.value.error)
-  const requiredIndicator = config.pt.required?.text || '*'
+  const requiredIndicator = getConfig('pt.required.text', '*')
 
   // Compute all field properties with proper merging
   const props = computed(() => {
@@ -159,7 +158,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           class: classes,
         },
         fieldOptions.value.wrapperProps || {},
-        config.pt.wrapper || {}
+        getConfig('pt.wrapper', {})
       )
     )
 
@@ -170,12 +169,12 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           for: fieldId.value,
         },
         fieldOptions.value.labelProps || {},
-        config.pt.label || {}
+        getConfig('pt.label', {})
       )
     )
 
     // Required indicator
-    result.required = config.pt.required || {}
+    result.required = getConfig('pt.required', {})
 
     // Help text
     result.help = evaluateProps(
@@ -184,7 +183,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           id: `help-${fieldId.value}`,
         },
         fieldOptions.value.helpProps || {},
-        config.pt.help || {}
+        getConfig('pt.help', {})
       )
     )
 
@@ -195,7 +194,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           id: `error-${fieldId.value}`,
         },
         fieldOptions.value.errorProps || {},
-        config.pt.error || {}
+        getConfig('pt.error', {})
       )
     )
 
@@ -211,7 +210,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
         },
         fieldState.value.attrs || {},
         fieldOptions.value.inputProps || {},
-        config.pt.input || {}
+        getConfig('pt.input', {})
       )
     )
 
@@ -221,9 +220,9 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
     result.component = fieldOptions.value.type || 'input'
 
     // Apply custom transformers if defined in config
-    return (config.field_props_transformers || []).reduce(
+    return (getConfig('field_props_transformers', []) as Function[]).reduce(
       (result: any, transformer: Function) => {
-        return transformer(result, field, formState, config)
+        return transformer(result, field, formState, formConfig)
       },
       result
     )

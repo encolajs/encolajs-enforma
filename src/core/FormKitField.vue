@@ -1,9 +1,9 @@
 <!-- src/core/FormKitField.vue -->
 <template>
-  <div v-bind="props.wrapper" v-show="props.if">
-    <label v-if="!fieldOptions.hideLabel" v-bind="props.label">
+  <div :class="getConfig('classes.field.wrapper')" v-show="props.if">
+    <label v-if="!fieldOptions.hideLabel" :class="getConfig('classes.field.label')">
       {{ t(fieldOptions.label) }}
-      <span v-if="fieldOptions.required" v-bind="props.required">{{
+      <span v-if="fieldOptions.required" :class="getConfig('classes.field.required')">{{
         requiredIndicator
       }}</span>
     </label>
@@ -18,12 +18,12 @@
     </slot>
 
     <!-- Help text -->
-    <div v-if="fieldOptions.help" v-bind="props.help">
+    <div v-if="fieldOptions.help" :class="getConfig('classes.field.help')">
       {{ t(fieldOptions.help) }}
     </div>
 
     <!-- Error message -->
-    <div v-if="errorMessage" v-bind="props.error">
+    <div v-if="errorMessage" :class="getConfig('classes.field.error')">
       {{ errorMessage }}
     </div>
   </div>
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import { useFormKitField } from './useFormKitField'
+import { useFormConfig } from '../utils/useFormConfig'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -54,4 +55,7 @@ const originalProps = defineProps({
 // Use the extracted composable
 const { fieldOptions, fieldState, errorMessage, requiredIndicator, props, t } =
   useFormKitField(originalProps)
+
+// Get the form configuration
+const { getConfig } = useFormConfig()
 </script>

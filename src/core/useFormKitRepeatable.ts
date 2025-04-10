@@ -1,9 +1,9 @@
 // src/core/useFormKitRepeatable.ts
 import { computed, inject, onBeforeUnmount } from 'vue'
-import { formConfigKey, formStateKey } from '../constants/symbols'
+import { formStateKey } from '../constants/symbols'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { FormController } from '@/types'
-import { FormKitConfig } from '@/utils/useConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'
 
 /**
@@ -35,7 +35,7 @@ export interface RepeatableFieldConfig extends RepeatableFieldSchema {
 export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
   // Get form state from context
   const formState = inject<FormController>(formStateKey) as FormController
-  const config = inject<FormKitConfig>(formConfigKey) as FormKitConfig
+  const { formConfig, getConfig } = useFormConfig()
 
   if (!formState) {
     console.error(
@@ -73,6 +73,7 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
     isVisible,
     fields,
     formState,
-    config,
+    formConfig,
+    getConfig
   }
 }

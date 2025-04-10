@@ -10,16 +10,17 @@
       <template
         #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
       >
-        <table class="formkit-repeatable-table-table">
+        <table :class="getConfig('classes.repeatable.table')">
           <thead>
             <tr>
               <th
                 v-for="(subfield, subfieldName) in fields"
                 :key="subfieldName"
+                :class="getConfig('classes.repeatable.table_th')"
               >
                 {{ subfield.label || subfieldName }}
               </th>
-              <th class="formkit-repeatable-table-actions">Actions</th>
+              <th  :class="getConfig('classes.repeatable.table_th')"></th>
             </tr>
           </thead>
           <tbody>
@@ -27,6 +28,7 @@
               <td
                 v-for="(subfield, subfieldName) in fields"
                 :key="subfieldName"
+                :class="getConfig('classes.repeatable.table_td')"
               >
                 <FormKitField
                   v-bind="subfield"
@@ -34,8 +36,8 @@
                   :name="`${name}.${index}.${subfieldName}`"
                 />
               </td>
-              <td class="formkit-repeatable-table-actions">
-                <div class="formkit-repeatable-table-action-buttons">
+              <td :class="getConfig('classes.repeatable.table_actions_td')">
+                <div :class="getConfig('classes.repeatable.table_actions_buttons')">
                   <component
                     :is="removeButton || FormKitRepeatableRemoveButton"
                     @click="remove(index)"
@@ -57,8 +59,9 @@
         </table>
 
         <!-- Add button -->
-        <div v-if="canAdd" class="formkit-repeatable-table-add">
+        <div :class="getConfig('classes.repeatable.actions')">
           <component
+            v-if="canAdd"
             :is="addButton || FormKitRepeatableAddButton"
             @click="add(defaultValue)"
           />
@@ -77,6 +80,7 @@ import FormKitRepeatableRemoveButton from './FormKitRepeatableRemoveButton.vue'
 import FormKitRepeatableMoveUpButton from './FormKitRepeatableMoveUpButton.vue'
 import FormKitRepeatableMoveDownButton from './FormKitRepeatableMoveDownButton.vue'
 import { RepeatableFieldSchema, useFormKitRepeatable } from './useFormKitRepeatable'
+import { useFormConfig } from '../utils/useFormConfig'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,
@@ -87,4 +91,5 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 
 const $attrs = useAttrs()
 const { isVisible, fields } = useFormKitRepeatable(props)
+const { getConfig } = useFormConfig()
 </script>

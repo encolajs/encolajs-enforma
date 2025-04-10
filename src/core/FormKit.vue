@@ -17,7 +17,7 @@
         </slot>
 
         <slot name="actions" v-bind="{ formState, formConfig }">
-          <div class="formkit-actions">
+          <div :class="getConfig('classes.form.actions')">
             <component :is="formConfig.components.submitButton" />
             <component
               :is="formConfig.components.resetButton"

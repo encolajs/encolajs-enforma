@@ -47,3 +47,28 @@ export function deepMerge(target: any, source: any): any {
 function isObject(item: any): boolean {
   return item !== null && typeof item === 'object' && !Array.isArray(item)
 }
+
+/**
+ * Safely retrieves a value by path
+ */
+export function _get<T = any>(
+  obj: any,
+  path: string,
+  defaultValue: T
+): T {
+  if (!obj || !path) {
+    return defaultValue
+  }
+
+  const keys = path.split('.')
+  let current = obj
+
+  for (const key of keys) {
+    if (current === undefined || current === null) {
+      return defaultValue
+    }
+    current = current[key]
+  }
+
+  return current !== undefined && current !== null ? current : defaultValue
+}

@@ -60,6 +60,13 @@ export interface ExpressionsConfig {
 }
 
 /**
+ * Configuration for CSS classes
+ */
+export interface ClassesConfig {
+  [key:string]: Record<string, string>
+}
+
+/**
  * Complete form kit configuration
  */
 export interface FormKitConfig {
@@ -69,6 +76,7 @@ export interface FormKitConfig {
   messages?: Record<string, string>
   errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
+  classes: ClassesConfig
 
   [key: string]: any
 }

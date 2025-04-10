@@ -4,18 +4,16 @@
 
 import { computed, ComputedRef, inject } from 'vue'
 import {
-  formConfigKey,
   formContextKey,
   formStateKey,
 } from '../constants/symbols'
-import { DEFAULT_CONFIG } from '../constants/defaults'
 import { FormController } from '../types'
 import {
   evaluateCondition,
   evaluateObject,
   ExpressionContext,
 } from './exprEvaluator'
-import { FormKitConfig } from '@/utils/useConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 // Type for props that may contain expressions
 export type DynamicProps = Record<string, any>
@@ -51,7 +49,7 @@ export function useDynamicProps(
   // Inject dependencies
   const formState = inject<FormController | undefined>(formStateKey, undefined)
   const formContext = inject<Record<string, any>>(formContextKey, {})
-  const config = inject<FormKitConfig>(formConfigKey, DEFAULT_CONFIG)
+  const { formConfig, getConfig } = useFormConfig()
 
   /**
    * Create the context for expression evaluation
@@ -75,7 +73,7 @@ export function useDynamicProps(
    */
   const evaluateProps = (props: DynamicProps): DynamicProps => {
     const context = getContext()
-    return evaluateObject(props, context, config)
+    return evaluateObject(props, context, formConfig)
   }
 
   /**
@@ -95,7 +93,7 @@ export function useDynamicProps(
       }
 
       const context = getContext()
-      return evaluateCondition(condition, context, config.expressions)
+      return evaluateCondition(condition, context, getConfig('expressions', { delimiters: { start: '${', end: '}' } }))
     })
   }
 

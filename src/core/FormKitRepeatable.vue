@@ -12,11 +12,11 @@
         #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
       >
         <!-- Items container -->
-        <div class="formkit-repeatable-items">
+        <div :class="getConfig('classes.repeatable.items_list')">
           <div
             v-for="(item, index) in value"
             :key="index"
-            class="formkit-repeatable-item"
+            :class="getConfig('classes.repeatable.item')"
           >
             <!-- Subfields -->
             <template
@@ -30,7 +30,7 @@
             </template>
 
             <!-- Actions -->
-            <div class="formkit-repeatable-actions">
+            <div :class="getConfig('classes.repeatable.actions_buttons')">
               <component
                 :is="removeButton || FormKitRepeatableRemoveButton"
                 @click="remove(index)"
@@ -50,8 +50,9 @@
         </div>
 
         <!-- Add button -->
-        <div v-if="canAdd" class="formkit-repeatable-add">
+        <div :class="getConfig('classes.repeatable.actions')">
           <component
+            v-if="canAdd"
             :is="addButton || FormKitRepeatableAddButton"
             @click="add(defaultValue)"
           />

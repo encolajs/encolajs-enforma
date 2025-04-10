@@ -70,4 +70,38 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     submitButton: 'button',
     resetButton: 'button',
   },
+
+  // CSS classes configuration
+  classes: {
+    field: {
+      wrapper: 'formkit-field-wrapper',
+      label: 'formkit-label',
+      required: 'formkit-label-required',
+      error: 'formkit-error',
+      help: 'formkit-help',
+    },
+    section: {
+      base: 'formkit-section',
+      title: 'formkit-section-title',
+    },
+    repeatable: {
+      wrapper: 'formkit-repeatable-wrapper',
+      table: 'formkit-repeatable-table',
+      table_th: '',
+      table_td: '',
+      add_button: 'formkit-repeatable-add-button',
+      remove_button: 'formkit-repeatable-remove-button',
+      move_up_button: 'formkit-repeatable-move-up-button',
+      move_down_button: 'formkit-repeatable-move-down-button',
+      actions: 'formkit-repeatable-actions',
+      table_actions: 'formkit-repeatable-table-actions'
+    },
+    buttons: {
+      submit: 'formkit-submit-button',
+      reset: 'formkit-reset-button',
+    },
+    form: {
+      actions: 'formkit-actions'
+    }
+  },
 }
