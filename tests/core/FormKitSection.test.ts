@@ -23,7 +23,6 @@ const createMockSchema = (
 // Create a mock form config
 const createMockConfig = () => ({
   pt: {
-    wrapper: { class: 'formkit-field-wrapper' },
     label: { class: 'formkit-label' },
     input: { class: 'formkit-input' },
     error: { class: 'formkit-error' },

@@ -34,7 +34,6 @@ describe('FormKit', () => {
       },
       validateOn: 'submit',
       pt: {
-        wrapper: { class: 'formkit-field-wrapper' },
         label: { class: 'formkit-label' },
         input: { class: 'formkit-input' },
         error: { class: 'formkit-error' },

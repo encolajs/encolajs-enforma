@@ -105,7 +105,6 @@ export interface ClassesConfig {
  */
 export interface ComponentsConfig {
   field: any
-  fieldWrapper: any
   section: any
   repeatable: any
   repeatableTable: any
