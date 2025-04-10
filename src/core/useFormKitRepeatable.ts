@@ -1,7 +1,7 @@
 // src/core/useFormKitRepeatable.ts
 import { computed, inject, onBeforeUnmount } from 'vue'
-import { formStateKey } from '../constants/symbols'
-import { useDynamicProps } from '../utils/useDynamicProps'
+import { formStateKey } from '@/constants/symbols'
+import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'

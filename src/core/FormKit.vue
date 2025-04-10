@@ -28,13 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, useAttrs, PropType } from 'vue'
-import HeadlessForm from '../headless/HeadlessForm'
-import { mergeConfigs } from '../utils/configUtils'
-import { getGlobalConfig } from '../utils/useConfig'
-import { formContextKey, formConfigKey } from '../constants/symbols'
+import { computed, provide, ref, PropType } from 'vue'
+import HeadlessForm from '@/headless/HeadlessForm'
+import { mergeConfigs } from '@/utils/configUtils'
+import { getGlobalConfig } from '@/utils/useConfig'
+import { formContextKey, formConfigKey } from '@/constants/symbols'
 import { FieldSchema } from '@/types'
-import { ValidationRules } from '../types'
+import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 export interface FormSchema {

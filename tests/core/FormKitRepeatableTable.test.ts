@@ -1,13 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import FormKitRepeatableTable from '../../src/core/FormKitRepeatableTable.vue'
-import { FormController, useForm, useValidation } from '../../src'
+import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
+import { useForm } from '@/headless/useForm'
+import { useValidation } from '@/utils/useValidation'
 import {
   formStateKey,
   formConfigKey,
   formSchemaKey,
-} from '../../src/constants/symbols'
-import { useConfig } from '../../src/utils/useConfig'
+} from '@/constants/symbols'
+import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 
 // Stub components for testing

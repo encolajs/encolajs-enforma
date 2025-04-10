@@ -1,6 +1,6 @@
 // src/core/useFormKitSchema.ts
 import { computed } from 'vue'
-import type { FormKitSchema, FieldSchema, FormSectionSchema } from '../types'
+import type { FormKitSchema, FieldSchema, FormSectionSchema } from '@/types'
 
 export interface SectionWithFields extends FormSectionSchema {
   fields: FieldSchema[]

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useRepeatable } from '../../src/headless/useRepeatable'
-import { useForm } from '../../src/headless/useForm'
+import { useRepeatable } from '@/headless/useRepeatable'
+import { useForm } from '@/headless/useForm'
 import { nextTick } from 'vue'
 import { flushPromises } from '@vue/test-utils'
 

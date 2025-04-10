@@ -9,5 +9,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    },
   }
 })

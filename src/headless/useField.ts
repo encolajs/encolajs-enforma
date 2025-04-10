@@ -1,6 +1,6 @@
 import { computed, onMounted, ComputedRef, ref } from 'vue'
-import { FieldController, FormController } from '../types'
-import { debounce } from '../utils/debounce'
+import { FieldController, FormController } from '@/types'
+import { debounce } from '@/utils/debounce'
 
 export type fieldValidateOnOption =
   | 'input'

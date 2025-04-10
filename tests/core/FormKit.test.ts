@@ -1,21 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import FormKit from '../../src/core/FormKit.vue'
-import HeadlessForm from '../../src/headless/HeadlessForm'
-import FormKitSchema from '../../src/core/FormKitSchema.vue'
-import { setGlobalConfig } from '../../src/utils/useConfig'
+import FormKit from '@/core/FormKit.vue'
+import HeadlessForm from '@/headless/HeadlessForm'
+import { setGlobalConfig } from '@/utils/useConfig'
 import { h, inject } from 'vue'
-import { formContextKey } from '../../src/constants/symbols'
+import { formContextKey } from '@/constants/symbols'
 import { mountTestComponent } from '../utils/testSetup'
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  components: { FormKitSchema },
-})
-
-interface FormKitSchemaProps {
-  schema: Record<string, any>
-}
 
 // Stub components for testing
 const SubmitButtonStub = {
@@ -27,11 +17,6 @@ const SubmitButtonStub = {
 const ResetButtonStub = {
   name: 'ResetButton',
   template: '<button type="reset">Reset</button>',
-  props: ['disabled'],
-}
-const FormKitSchemaStub = {
-  name: 'FormKitSchema',
-  template: '<div class="formkit-schema"></div>',
   props: ['disabled'],
 }
 
@@ -246,7 +231,7 @@ describe('FormKit', () => {
     // Define the test child component with proper injection
     const TestChild = {
       name: 'TestChild',
-      template: '<div class="test-child">{{ injectedContext.foo }}</div>',
+      template: '<div class="test-child">{{ injectedContext?.foo }}</div>',
       setup() {
         // Use the proper symbol from the constants
         const injectedContext = inject(formContextKey, {})

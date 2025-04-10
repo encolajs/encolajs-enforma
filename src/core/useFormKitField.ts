@@ -1,11 +1,11 @@
 // src/core/useFormKitField.ts
 import { computed, inject, mergeProps, onBeforeUnmount } from 'vue'
-import { formStateKey, formSchemaKey } from '../constants/symbols'
-import { useDynamicProps } from '../utils/useDynamicProps'
+import { formStateKey, formSchemaKey } from '@/constants/symbols'
+import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FormController } from '@/types'
-import { useTranslation } from '../utils/useTranslation'
-import { fieldValidateOnOption, useField } from '../headless/useField'
-import { FieldSchema } from '../types'
+import { useTranslation } from '@/utils/useTranslation'
+import { fieldValidateOnOption, useField } from '@/headless/useField'
+import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 // Define the props interface

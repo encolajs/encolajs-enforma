@@ -4,17 +4,17 @@ import { type messageFormatter } from '@encolajs/validator'
  */
 
 import { FormKitConfig } from '@/utils/useConfig'
-import FormKitField from '../core/FormKitField.vue'
-import FormKitSection from '../core/FormKitSection.vue'
-import FormKitRepeatable from '../core/FormKitRepeatable.vue'
-import FormKitRepeatableTable from '../core/FormKitRepeatableTable.vue'
-import FormKitRepeatableAddButton from '../core/FormKitRepeatableAddButton.vue'
-import FormKitRepeatableRemoveButton from '../core/FormKitRepeatableRemoveButton.vue'
-import FormKitRepeatableMoveUpButton from '../core/FormKitRepeatableMoveUpButton.vue'
-import FormKitRepeatableMoveDownButton from '../core/FormKitRepeatableMoveDownButton.vue'
-import FormKitSubmitButton from '../core/FormKitSubmitButton.vue'
-import FormKitResetButton from '../core/FormKitResetButton.vue'
-import FormKitSchema from '../core/FormKitSchema.vue'
+import FormKitField from '@/core/FormKitField.vue'
+import FormKitSection from '@/core/FormKitSection.vue'
+import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
+import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
+import FormKitRepeatableAddButton from '@/core/FormKitRepeatableAddButton.vue'
+import FormKitRepeatableRemoveButton from '@/core/FormKitRepeatableRemoveButton.vue'
+import FormKitRepeatableMoveUpButton from '@/core/FormKitRepeatableMoveUpButton.vue'
+import FormKitRepeatableMoveDownButton from '@/core/FormKitRepeatableMoveDownButton.vue'
+import FormKitSubmitButton from '@/core/FormKitSubmitButton.vue'
+import FormKitResetButton from '@/core/FormKitResetButton.vue'
+import FormKitSchema from '@/core/FormKitSchema.vue'
 
 /**
  * Default configuration for the form kit

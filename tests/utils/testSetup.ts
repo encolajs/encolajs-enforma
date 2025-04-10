@@ -1,8 +1,8 @@
 import { h } from 'vue'
 import { mount } from '@vue/test-utils'
-import { DEFAULT_CONFIG } from '../../src/constants/defaults'
-import { formConfigKey } from '../../src/constants/symbols'
-import { FormKitConfig } from '../../src/utils/useConfig'
+import { DEFAULT_CONFIG } from '@/constants/defaults'
+import { formConfigKey } from '@/constants/symbols'
+import { FormKitConfig } from '@/utils/useConfig'
 
 /**
  * Creates a mounted component with the necessary configuration for testing

@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { useFormKitField } from './useFormKitField'
-import { useFormConfig } from '../utils/useFormConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 const originalProps = defineProps({
   name: { type: String, required: true },

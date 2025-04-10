@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         },
         "allowJs": true,
         "target": "es2018",
@@ -16,14 +16,23 @@
         "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
+        "jsx": "preserve",
         "forceConsistentCasingInFileNames": true,
-        "lib": ["es2018", "dom"]
+        "lib": ["es2018", "DOM", "DOM.Iterable"],
+        "types": ["vite/client", "vitest/globals"]
     },
     "include": [
         "src/**/*.ts",
-        "src/**/*.tsx",
         "src/**/*.vue",
-        "src/**/*.d.ts"
+        "test/**/*.ts",
+        "test/**/*.vue",
+        "src/**/*.d.ts",
+        "test/**/*.d.ts",
+        "vite.config.ts"
     ],
-    "exclude": ["node_modules", "dist", "**/*.test.ts"]
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts"
+    ]
 }

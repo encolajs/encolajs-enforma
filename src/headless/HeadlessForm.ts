@@ -1,7 +1,7 @@
 import { defineComponent, provide, h, PropType } from 'vue'
 import { useForm } from './useForm'
-import { formStateKey } from '../constants/symbols'
-import { FormController } from '../types'
+import { formStateKey } from '@/constants/symbols'
+import { FormController } from '@/types'
 
 export default defineComponent({
   name: 'HeadlessForm',

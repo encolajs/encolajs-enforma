@@ -3,8 +3,8 @@
  */
 import { computed, ComputedRef, inject, provide } from 'vue'
 import { mergeConfigs } from './configUtils'
-import { DEFAULT_CONFIG } from '../constants/defaults'
-import { formConfigKey } from '../constants/symbols'
+import { DEFAULT_CONFIG } from '@/constants/defaults'
+import { formConfigKey } from '@/constants/symbols'
 import { messageFormatter } from '@encolajs/validator'
 
 /**

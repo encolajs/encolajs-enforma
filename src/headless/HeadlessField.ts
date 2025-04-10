@@ -8,8 +8,8 @@ import {
   computed,
 } from 'vue'
 import { useField } from './useField'
-import { FieldOptions, FormController } from '../types'
-import { formStateKey } from '../constants/symbols'
+import { FieldOptions, FormController } from '@/types'
+import { formStateKey } from '@/constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessField',

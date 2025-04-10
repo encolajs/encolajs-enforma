@@ -85,12 +85,12 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import HeadlessRepeatable from '../headless/HeadlessRepeatable'
+import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
   useFormKitRepeatable,
 } from './useFormKitRepeatable'
-import { useFormConfig } from '../utils/useFormConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,

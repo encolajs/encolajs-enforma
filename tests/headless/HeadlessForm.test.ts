@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { h, inject } from 'vue'
-import HeadlessForm from '../../src/headless/HeadlessForm'
-import { formStateKey } from '../../src/constants/symbols'
+import HeadlessForm from '@/headless/HeadlessForm'
+import { formStateKey } from '@/constants/symbols'
 
 import { FormController } from '../../src'
 

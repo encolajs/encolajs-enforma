@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useValidation } from '../../src'
+import { useValidation } from '@/utils/useValidation'
 
 // Create mock functions
 const mockRegister = vi.fn().mockReturnThis()

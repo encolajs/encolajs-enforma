@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 // @ts-expect-error IDE not working properly
-import FormKitSection from '../../src/core/FormKitSection.vue'
+import FormKitSection from '@/core/FormKitSection.vue'
 import {
   formSchemaKey,
   formStateKey,
   formConfigKey,
-} from '../../src/constants/symbols'
+} from '@/constants/symbols'
 import type {
   FormKitSchema,
   FieldSchema,
   FormSectionSchema,
-} from '../../src/types'
-import { useForm } from '../../src/headless/useForm'
+} from '@/types'
+import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Create a mock schema for testing

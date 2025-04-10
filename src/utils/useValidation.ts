@@ -4,8 +4,8 @@ import {
   ValidationRule,
   messageFormatter,
   CustomMessagesConfig,
-} from '../../../encolajs-validator'
-import { ValidationRules } from '../types'
+} from '@encolajs/validator'
+import { ValidationRules } from '@/types'
 
 /**
  * Interface for the return value of useValidation

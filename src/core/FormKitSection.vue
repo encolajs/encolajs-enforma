@@ -22,8 +22,8 @@
 
 <script setup lang="ts">
 import { computed, inject, resolveComponent } from 'vue'
-import { formSchemaKey } from '../constants/symbols'
-import { FieldSchema, FormSectionSchema, FormKitSchema } from '../types'
+import { formSchemaKey } from '@/constants/symbols'
+import { FieldSchema, FormSectionSchema, FormKitSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 interface FieldWithPosition extends FieldSchema {

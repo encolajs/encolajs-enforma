@@ -11,9 +11,9 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import type { FormKitSchema } from '../types'
+import type { FormKitSchema } from '@/types'
 import { useFormKitSchema } from './useFormKitSchema'
-import { useFormConfig } from '../utils/useFormConfig'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = defineProps<{
   schema: FormKitSchema

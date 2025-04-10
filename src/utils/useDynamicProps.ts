@@ -3,8 +3,8 @@
  */
 
 import { computed, ComputedRef, inject } from 'vue'
-import { formContextKey, formStateKey } from '../constants/symbols'
-import { FormController } from '../types'
+import { formContextKey, formStateKey } from '@/constants/symbols'
+import { FormController } from '@/types'
 import {
   evaluateCondition,
   evaluateObject,

@@ -10,7 +10,7 @@ We've created a test utility to help with testing components in isolation. The u
 
 ```typescript
 import { mountTestComponent } from '../utils/testSetup'
-import YourComponent from '../../src/core/YourComponent.vue'
+import YourComponent from '@/core/YourComponent.vue'
 
 describe('YourComponent', () => {
   it('renders correctly', () => {
@@ -32,7 +32,7 @@ You can also provide custom configuration to override the default configuration:
 
 ```typescript
 import { mountTestComponent } from '../utils/testSetup'
-import YourComponent from '../../src/core/YourComponent.vue'
+import YourComponent from '@/core/YourComponent.vue'
 
 describe('YourComponent', () => {
   it('renders with custom configuration', () => {
@@ -64,7 +64,7 @@ When testing components that use slots, you can provide slot content using the `
 
 ```typescript
 import { mountTestComponent } from '../utils/testSetup'
-import YourComponent from '../../src/core/YourComponent.vue'
+import YourComponent from '@/core/YourComponent.vue'
 
 describe('YourComponent', () => {
   it('renders with slot content', () => {
@@ -95,7 +95,7 @@ When testing components that emit events, you can listen for events using the `e
 
 ```typescript
 import { mountTestComponent } from '../utils/testSetup'
-import YourComponent from '../../src/core/YourComponent.vue'
+import YourComponent from '@/core/YourComponent.vue'
 
 describe('YourComponent', () => {
   it('emits events correctly', async () => {

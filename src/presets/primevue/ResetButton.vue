@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { Button } from 'primevue'
 import { inject } from 'vue'
-import { formStateKey } from '../../constants/symbols'
+import { formStateKey } from '@/constants/symbols'
 
 const formState = inject(formStateKey)
 </script>

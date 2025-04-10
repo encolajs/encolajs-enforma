@@ -1,6 +1,6 @@
 import { computed, ComputedRef, onMounted, ref } from 'vue'
 
-import { FormController } from '../types'
+import { FormController } from '@/types'
 
 export interface RepeatableOptions {
   min?: number

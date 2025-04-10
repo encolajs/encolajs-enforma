@@ -1,9 +1,9 @@
 // tests/core/FormKitField.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import FormKitField from '../../src/core/FormKitField.vue'
-import { formStateKey, formSchemaKey } from '../../src/constants/symbols'
-import { useForm } from '../../src/headless/useForm'
+import FormKitField from '@/core/FormKitField.vue'
+import { formStateKey, formSchemaKey } from '@/constants/symbols'
+import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Unmock the useField composable to use the real implementation

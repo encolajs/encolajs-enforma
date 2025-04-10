@@ -3,9 +3,9 @@
  */
 
 import { inject, computed } from 'vue'
-import { formConfigKey } from '../constants/symbols'
+import { formConfigKey } from '@/constants/symbols'
 import { FormKitConfig, useConfig } from './useConfig'
-import { DEFAULT_CONFIG } from '../constants/defaults'
+import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { _get, deepMerge } from './configUtils'
 
 /**
