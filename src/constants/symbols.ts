@@ -2,8 +2,8 @@
  * Symbol definitions for the form kit for use with provide/inject
  */
 
-import type { FormKitConfig } from '../types/config'
 import type { FormController } from '../types'
+import { FormKitConfig } from '@/utils/useConfig'
 
 /**
  * Symbol for providing/injecting the form kit configuration

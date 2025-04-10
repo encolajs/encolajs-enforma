@@ -8,7 +8,6 @@ import {
   formContextKey,
   formStateKey,
 } from '../constants/symbols'
-import { FormKitConfig } from '../types/config'
 import { DEFAULT_CONFIG } from '../constants/defaults'
 import { FormController } from '../types'
 import {
@@ -16,6 +15,7 @@ import {
   evaluateObject,
   ExpressionContext,
 } from './exprEvaluator'
+import { FormKitConfig } from '@/utils/useConfig'
 
 // Type for props that may contain expressions
 export type DynamicProps = Record<string, any>

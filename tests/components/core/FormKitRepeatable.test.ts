@@ -3,9 +3,8 @@ import { mount, flushPromises } from '@vue/test-utils'
 import FormKitRepeatable from '../../../src/core/FormKitRepeatable.vue'
 import { FormController, useForm, useValidation } from '../../../src'
 import { formStateKey, formConfigKey } from '../../../src/constants/symbols'
-import { useConfig } from '../../../src/utils/useConfig'
+import { FormKitConfig, useConfig } from '../../../src/utils/useConfig'
 import { provide } from 'vue'
-import { FormKitConfig } from '../../../src/types/config'
 
 // Stub components for testing
 const FormKitFieldStub = {

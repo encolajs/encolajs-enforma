@@ -2,7 +2,7 @@
  * Configuration utility functions for merging and managing configuration objects
  */
 
-import { DeepPartial, ConfigObject } from '../types/config'
+import { ConfigObject, DeepPartial } from '@/utils/useConfig'
 
 /**
  * Deep merges multiple configuration objects, with later objects taking precedence

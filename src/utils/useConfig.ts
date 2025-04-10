@@ -1,13 +1,84 @@
 /**
  * Composable for managing form kit configuration
  */
-
-import { inject, provide, computed, ComputedRef } from 'vue'
-import { FormKitConfig, DeepPartial, ConfigProvider } from '../types/config'
+import { computed, ComputedRef, inject, provide } from 'vue'
 import { mergeConfigs } from './configUtils'
 import { DEFAULT_CONFIG } from '../constants/defaults'
 import { formConfigKey } from '../constants/symbols'
+import { messageFormatter } from '@encolajs/validator'
 
+/**
+ * Represents a generic configuration object
+ */
+export type ConfigObject = Record<string, any>
+/**
+ * Makes all properties in T optional and recursive
+ */
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T[P] extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T[P] extends object
+        ? DeepPartial<T[P]>
+        : T[P]
+}
+
+/**
+ * Configuration for field components
+ */
+export interface FieldPropsConfig {
+  wrapper: ConfigObject
+  label: ConfigObject
+  required: ConfigObject
+  input: ConfigObject
+  error: ConfigObject
+  help: ConfigObject
+  section: ConfigObject
+
+  [key: string]: any
+}
+
+/**
+ * Configuration for form behavior
+ */
+export interface BehaviorConfig {
+  validateOn: 'input' | 'change' | 'blur' | 'submit'
+  showErrorsOn: 'touched' | 'dirty' | 'focus' | 'always'
+
+  [key: string]: any
+}
+
+/**
+ * Configuration for expression handling
+ */
+export interface ExpressionsConfig {
+  delimiters: {
+    start: string
+    end: string
+  }
+}
+
+/**
+ * Complete form kit configuration
+ */
+export interface FormKitConfig {
+  pt: FieldPropsConfig
+  behavior: BehaviorConfig
+  rules?: Record<string, Function>
+  messages?: Record<string, string>
+  errorMessageFormatter?: messageFormatter
+  expressions: ExpressionsConfig
+
+  [key: string]: any
+}
+
+/**
+ * Configuration providers can be objects or functions
+ */
+export type ConfigProvider =
+  | DeepPartial<FormKitConfig>
+  | (() => DeepPartial<FormKitConfig>)
 // Store global configuration
 let globalConfig: DeepPartial<FormKitConfig> = DEFAULT_CONFIG
 

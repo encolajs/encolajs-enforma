@@ -2,7 +2,8 @@ import { type messageFormatter } from '@encolajs/validator'
 /**
  * Default configuration values for the form kit
  */
-import { FormKitConfig } from '../types/config'
+
+import { FormKitConfig } from '@/utils/useConfig'
 
 /**
  * Default configuration for the form kit

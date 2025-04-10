@@ -5,12 +5,12 @@ import {
   formStateKey,
   formSchemaKey,
 } from '../constants/symbols'
-import { FormKitConfig } from '../types/config'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useTranslation } from '../utils/useTranslation'
 import { fieldValidateOnOption, useField } from '../headless/useField'
 import { FieldSchema } from '../types'
+import { FormKitConfig } from '@/utils/useConfig'
 
 // Define the props interface
 export interface FormKitFieldProps {

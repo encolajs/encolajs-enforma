@@ -1,10 +1,10 @@
 // src/core/useFormKitRepeatable.ts
 import { inject, onBeforeUnmount, computed } from 'vue'
 import { formConfigKey, formStateKey } from '../constants/symbols'
-import { FormKitConfig } from '../types/config'
 import { useDynamicProps } from '../utils/useDynamicProps'
 import { FormController } from '@/types'
 import { RepeatableFieldSchema } from '../types/fields'
+import { FormKitConfig } from '@/utils/useConfig'
 
 export interface RepeatableFieldConfig extends RepeatableFieldSchema {
   validateOnAdd?: boolean

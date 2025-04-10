@@ -1,6 +1,5 @@
 import { App, Plugin } from 'vue'
-import { FormKitConfig, DeepPartial } from './types/config'
-import { setGlobalConfig } from './utils/useConfig'
+import { DeepPartial, FormKitConfig, setGlobalConfig } from './utils/useConfig'
 import { DEFAULT_CONFIG } from './constants/defaults'
 import { deepMerge, mergeConfigs } from './utils/configUtils'
 import { useValidation } from './utils/useValidation'

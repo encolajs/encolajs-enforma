@@ -2,7 +2,8 @@
  * Utility functions for evaluating expressions within the form kit
  */
 
-import { FormKitConfig } from '../types/config'
+
+import { FormKitConfig } from '@/utils/useConfig'
 
 /**
  * Context for expression evaluation
