@@ -6,6 +6,7 @@ import { mergeConfigs, _get } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { formConfigKey } from '@/constants/symbols'
 import { messageFormatter } from '@encolajs/validator'
+import { resolveValue } from './helpers'
 
 /**
  * Represents a generic configuration object
@@ -168,9 +169,8 @@ export interface UseConfigReturn {
  * Composable for working with form kit configuration
  */
 export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
-  // Resolve local config
-  const resolvedLocalConfig =
-    typeof localConfig === 'function' ? localConfig() : localConfig || {}
+  // Resolve local config using our helper function
+  const resolvedLocalConfig = resolveValue(localConfig) || {}
 
   // Compute the final configuration by merging defaults, global, and local
   const config = mergeConfigs<FormKitConfig>(

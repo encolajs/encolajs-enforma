@@ -1,6 +1,7 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import { ref } from 'vue'
+import { generateId } from '@/utils/helpers'
 
 export interface FieldState {
   $errors: string[]
@@ -15,12 +16,6 @@ export interface StateChanges {
   $isTouched?: boolean
   $isValidating?: boolean
   $errors?: string[]
-}
-
-function generateId(path: string): string {
-  return `field_${path.replace(/\./g, '_')}_${Math.random()
-    .toString(36)
-    .substring(2)}`
 }
 
 class FieldManager {
@@ -49,7 +44,7 @@ class FieldManager {
         $isDirty: false,
         $isTouched: false,
         $isValidating: false,
-        _id: generateId(path),
+        _id: generateId('field', path),
       })
     }
     return this._fields.get(path)!

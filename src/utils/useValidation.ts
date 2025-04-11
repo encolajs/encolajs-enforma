@@ -6,6 +6,7 @@ import {
   CustomMessagesConfig,
 } from '@encolajs/validator'
 import { ValidationRules } from '@/types'
+import { safeExecute } from './helpers'
 
 /**
  * Interface for the return value of useValidation
@@ -60,12 +61,18 @@ export function useValidation(): ValidationComposable {
 
   /**
    * Create a validator with rules and messages
+   * Uses safeExecute to handle any potential errors in the validation setup
    */
   function makeValidator(
     rules: ValidationRules,
     customMessages: CustomMessagesConfig = {}
   ): Validator {
-    return factory.make(rules, customMessages)
+    return safeExecute(
+      () => factory.make(rules, customMessages),
+      'validation setup',
+      factory.make({}, {}), // Provide a fallback empty validator if there's an error
+      true
+    )
   }
 
   return {

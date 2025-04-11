@@ -3,6 +3,7 @@
  */
 
 import { ConfigObject, DeepPartial } from '@/utils/useConfig'
+import { isPlainObject, pathUtils } from './helpers'
 
 /**
  * Deep merges multiple configuration objects, with later objects taking precedence
@@ -24,12 +25,12 @@ export function deepMerge(target: any, source: any): any {
   }
 
   // Return source directly if target is not an object
-  if (!isObject(target)) {
+  if (!isPlainObject(target)) {
     return source
   }
 
   // Return target if source is not an object
-  if (!isObject(source)) {
+  if (!isPlainObject(source)) {
     return target
   }
 
@@ -45,10 +46,10 @@ export function deepMerge(target: any, source: any): any {
     if (Array.isArray(sourceValue)) {
       // For arrays, replace the entire array rather than merging
       output[key] = sourceValue.slice() // Faster than spread for arrays
-    } else if (isObject(sourceValue)) {
+    } else if (isPlainObject(sourceValue)) {
       const targetValue = target[key]
       // Only recursively merge if targetValue is an object
-      if (isObject(targetValue)) {
+      if (isPlainObject(targetValue)) {
         output[key] = deepMerge(targetValue, sourceValue)
       } else {
         // If targetValue is not an object, assign sourceValue directly
@@ -64,33 +65,13 @@ export function deepMerge(target: any, source: any): any {
 }
 
 /**
- * Checks if a value is an object
- */
-function isObject(item: any): boolean {
-  return item !== null && typeof item === 'object' && !Array.isArray(item)
-}
-
-/**
  * Safely retrieves a value by path
+ * @deprecated Use pathUtils.get instead
  */
 export function _get<T = any>(
   obj: any,
   path: string,
   defaultValue?: T
 ): T | undefined {
-  if (obj == null || !path) {
-    return defaultValue
-  }
-
-  const keys = path.split('.')
-  let current = obj
-
-  for (const key of keys) {
-    if (current == null) {
-      return defaultValue
-    }
-    current = current[key]
-  }
-
-  return current ?? defaultValue
+  return pathUtils.get(obj, path, defaultValue)
 }
