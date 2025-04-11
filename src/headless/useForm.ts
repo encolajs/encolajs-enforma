@@ -1,4 +1,3 @@
-import { PlainObjectDataSource } from '@encolajs/validator'
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import { ref } from 'vue'
@@ -177,7 +176,6 @@ export function useForm<T extends object>(
     $isDirty: false,
     $isTouched: false,
   }
-  const validatorDataSource = new PlainObjectDataSource(values)
   const valuesRef = ref(values)
 
   const validationFactory = options.validatorFactory || useValidation().factory
@@ -194,7 +192,7 @@ export function useForm<T extends object>(
     try {
       state.$isValidating = true
       state.$isTouched = true
-      const isValid = await validator.validatePath(path, validatorDataSource)
+      const isValid = await validator.validatePath(path, values)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
         return false
