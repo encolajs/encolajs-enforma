@@ -112,6 +112,8 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnRemove: false,
   if: true,
   min: 0,
+  // Disable animations by default for tables
+  animations: false,
 })
 
 const $attrs = useAttrs()
