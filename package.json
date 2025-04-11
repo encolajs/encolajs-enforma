@@ -55,7 +55,6 @@
     "homepage": "https://github.com/encolajs/encolajs-validator#readme",
     "devDependencies": {
         "@eslint/js": "^9.21.0",
-        "@primeuix/themes": "^1.0.0",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-terser": "^0.4.4",
@@ -73,8 +72,6 @@
         "globals": "^16.0.0",
         "jsdom": "^26.0.0",
         "prettier": "^2.8.4",
-        "primeicons": "^7.0.0",
-        "primevue": "^4.3.2",
         "rollup": "^3.17.2",
         "rollup-plugin-dts": "^5.2.0",
         "rollup-plugin-vue": "^6.0.0",
@@ -91,7 +88,13 @@
         "access": "public",
         "provenance": true
     },
+    "peerDependencies": {
+        "@primeuix/themes": "^1.0.0",
+        "primeicons": "^7.0.0",
+        "primevue": "^4.3.2"
+    },
     "dependencies": {
-        "vue": "^3.5.13"
+        "vue": "^3.5.13",
+        "@encolajs/validator": "^1.0.0"
     }
 }
