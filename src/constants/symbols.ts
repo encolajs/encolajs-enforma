@@ -24,13 +24,3 @@ export const formContextKey = Symbol('formContext')
  * Symbol for providing/injecting the form context
  */
 export const formSchemaKey = Symbol('formSchema')
-
-/**
- * Type definitions for injectable values
- */
-export interface InjectableValues {
-  [formConfigKey]: FormKitConfig
-  [formStateKey]: FormController
-  [formContextKey]: Record<string, any>
-  [formSchemaKey]: Record<string, any>
-}
