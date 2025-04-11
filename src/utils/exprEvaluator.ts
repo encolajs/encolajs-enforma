@@ -5,6 +5,33 @@
 import { FormKitConfig } from '@/utils/useConfig'
 
 /**
+ * Simple memoization helper for caching function results
+ */
+function memoize<T extends (...args: any[]) => any>(fn: T, maxSize = 100): T {
+  const cache = new Map<string, any>()
+  
+  return ((...args: any[]) => {
+    // Create a cache key from the arguments
+    const key = JSON.stringify(args)
+    
+    if (cache.has(key)) {
+      return cache.get(key)
+    }
+    
+    const result = fn(...args)
+    
+    // Add result to cache, maintain max size
+    cache.set(key, result)
+    if (cache.size > maxSize) {
+      const firstKey = cache.keys().next().value
+      cache.delete(firstKey)
+    }
+    
+    return result
+  }) as T
+}
+
+/**
  * Context for expression evaluation
  */
 export interface ExpressionContext {
@@ -35,6 +62,26 @@ const DEFAULT_OPTIONS: EvaluationOptions = {
 }
 
 /**
+ * Creates and returns an evaluator function for the given expression
+ * This is the part we want to memoize as function creation is expensive
+ */
+function createEvaluator(expression: string): (ctx: any) => any {
+  const funcBody = `
+    with (context) {
+      try {
+        return ${expression};
+      } catch (error) {
+        return undefined;
+      }
+    }
+  `
+  return new Function('context', funcBody) as (ctx: any) => any
+}
+
+// Memoized version of createEvaluator to avoid recreating functions
+const memoizedCreateEvaluator = memoize(createEvaluator)
+
+/**
  * Safely evaluates an expression string against a context
  */
 export function evaluateExpression(
@@ -46,19 +93,8 @@ export function evaluateExpression(
   const config = { ...DEFAULT_OPTIONS, ...options }
 
   try {
-    // Create a safe function with the expression
-    const funcBody = `
-      with (context) {
-        try {
-          return ${expression};
-        } catch (error) {
-          return undefined;
-        }
-      }
-    `
-
-    // Create the evaluation function
-    const evaluator = new Function('context', funcBody) as (ctx: any) => any
+    // Get or create the evaluation function (memoized)
+    const evaluator = memoizedCreateEvaluator(expression)
 
     // Evaluate the expression synchronously
     return evaluator(context)
