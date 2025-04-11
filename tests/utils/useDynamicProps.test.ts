@@ -89,8 +89,8 @@ describe('useDynamicProps', () => {
 
     // Verify that console.error was called
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error evaluating expression: {$forms.invalid.property}',
-      expect.any(Error)
+      "[FormKit Expression Error] Failed to create evaluator function: Unexpected token '.'",
+      expect.any(Object)
     )
 
     // Restore the spy
