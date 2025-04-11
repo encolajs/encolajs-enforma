@@ -81,7 +81,6 @@ export interface FieldPassThroughConfig {
  */
 export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
-  showErrorsOn: 'touched' | 'dirty' | 'focus' | 'always'
 
   [key: string]: any
 }
@@ -124,6 +123,9 @@ export interface FormKitConfig {
   errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
   components: ComponentsConfig
+  transformers?: {
+    [key: string]: Function[]
+  }
   [key: string]: any
 }
 

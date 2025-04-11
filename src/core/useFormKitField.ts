@@ -7,6 +7,7 @@ import { useTranslation } from '@/utils/useTranslation'
 import { fieldValidateOnOption, useField } from '@/headless/useField'
 import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
+import applyTransformers from '@/utils/applyTransformers'
 
 // Define the props interface
 export interface FormKitFieldProps {
@@ -217,11 +218,12 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
     result.component = fieldOptions.value.type || 'input'
 
     // Apply custom transformers if defined in config
-    return (getConfig('field_props_transformers', []) as Function[]).reduce(
-      (result: any, transformer: Function) => {
-        return transformer(result, field, formState, formConfig)
-      },
-      result
+    return applyTransformers(
+      getConfig('transformers.field_props', []) as Function[],
+      result,
+      field,
+      formState,
+      formConfig
     )
   })
 

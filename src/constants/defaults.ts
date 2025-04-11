@@ -23,8 +23,9 @@ export const DEFAULT_CONFIG: FormKitConfig = {
   /**
    * These props are going to be applied automatically
    * to the components rendered by the form kit
+   * unless overwritten at plugin initialization
+   * or by presets
    */
-
   pt: {
     wrapper: {
       class: 'formkit-field-wrapper',
@@ -86,26 +87,32 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     },
   },
 
-  // Default behavior configuration
+  /**
+   * Default behavior configuration
+   */
   behavior: {
     validateOn: 'blur',
-    showErrorsOn: 'touched',
   },
 
   /**
-   * Additional validation rules
+   * Validation rules to be added to the validation factory
+   * These are key-validation factory pairs
    */
   rules: {},
 
   /**
    * Default messages for validation errors
-   * Leave empty to use the default messages
+   * You must add validation messages for the rules specified above
+   * You can overwrite default validation messages
    */
   messages: {
     // required: 'This field is required',
   },
 
-  // Expression configuration
+  /**
+   * Configuration for the expressions that are being
+   * used in the form schema (eg: disabled: "${form.name === 'Cage'}")
+   */
   expressions: {
     delimiters: {
       start: '${',
@@ -113,7 +120,10 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     },
   },
 
-  // components
+  /**
+   * Components to be used when using auto-rendering like
+   * <Formkit :schema="schema"/> or <FormkitSection section="sidebar"/>
+   */
   components: {
     field: FormKitField,
     section: FormKitSection,
