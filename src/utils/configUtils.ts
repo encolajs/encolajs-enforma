@@ -23,19 +23,41 @@ export function deepMerge(target: any, source: any): any {
     return target
   }
 
+  // Return source directly if target is not an object
+  if (!isObject(target)) {
+    return source
+  }
+
+  // Return target if source is not an object
+  if (!isObject(source)) {
+    return target
+  }
+
+  // Create output only once we know both are objects
   const output = { ...target }
 
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach((key) => {
-      if (Array.isArray(source[key])) {
-        // For arrays, replace the entire array rather than merging
-        output[key] = [...source[key]]
-      } else if (isObject(source[key])) {
-        output[key] = Object.assign(output[key] || {}, { ...source[key] })
+  // Loop through source keys and directly access both objects
+  const sourceKeys = Object.keys(source)
+  for (let i = 0; i < sourceKeys.length; i++) {
+    const key = sourceKeys[i]
+    const sourceValue = source[key]
+
+    if (Array.isArray(sourceValue)) {
+      // For arrays, replace the entire array rather than merging
+      output[key] = sourceValue.slice() // Faster than spread for arrays
+    } else if (isObject(sourceValue)) {
+      const targetValue = target[key]
+      // Only recursively merge if targetValue is an object
+      if (isObject(targetValue)) {
+        output[key] = deepMerge(targetValue, sourceValue)
       } else {
-        Object.assign(output, { [key]: source[key] })
+        // If targetValue is not an object, assign sourceValue directly
+        output[key] = { ...sourceValue }
       }
-    })
+    } else {
+      // For primitive values, assign directly
+      output[key] = sourceValue
+    }
   }
 
   return output
