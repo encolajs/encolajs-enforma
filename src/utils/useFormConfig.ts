@@ -23,7 +23,7 @@ export function useFormConfig(localConfig?: object) {
   /**
    * Get a configuration value by path with a default value if the path doesn't exist
    *
-   * @param path The path to the configuration value (e.g., 'classes.field.wrapper')
+   * @param path The path to the configuration value (e.g., 'pt.field')
    * @param defaultValue The default value to return if the path doesn't exist
    * @returns The configuration value at the specified path, or the default value
    */

@@ -17,7 +17,7 @@
         </slot>
 
         <slot name="actions" v-bind="{ formState, formConfig }">
-          <div :class="getConfig('classes.form.actions')">
+          <div v-bind="getConfig('pt.actions')">
             <component :is="submitButton" />
             <component :is="resetButton" v-if="showResetButton" />
           </div>

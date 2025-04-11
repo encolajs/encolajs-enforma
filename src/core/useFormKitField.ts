@@ -155,7 +155,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           class: classes,
         },
         fieldOptions.value.wrapperProps || {},
-        getConfig('pt.wrapper', {})
+        getConfig('pt.wrapper', {}) as Record<string, unknown>
       )
     )
 
@@ -166,7 +166,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           for: fieldId.value,
         },
         fieldOptions.value.labelProps || {},
-        getConfig('pt.label', {})
+        getConfig('pt.label', {}) as Record<string, unknown>
       )
     )
 
@@ -180,7 +180,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           id: `help-${fieldId.value}`,
         },
         fieldOptions.value.helpProps || {},
-        getConfig('pt.help', {})
+        getConfig('pt.help', {}) as Record<string, unknown>
       )
     )
 
@@ -191,7 +191,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
           id: `error-${fieldId.value}`,
         },
         fieldOptions.value.errorProps || {},
-        getConfig('pt.error', {})
+        getConfig('pt.error', {}) as Record<string, unknown>
       )
     )
 
@@ -207,7 +207,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
         },
         fieldState.value.attrs || {},
         fieldOptions.value.inputProps || {},
-        getConfig('pt.input', {})
+        getConfig('pt.input', {}) as Record<string, unknown>
       )
     )
 

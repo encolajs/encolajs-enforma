@@ -36,7 +36,9 @@ export const DEFAULT_CONFIG: FormKitConfig = {
       class: 'formkit-label-required',
       text: '*',
     },
-    input: {},
+    input: {
+      class: 'formkit-input',
+    },
     // Props for error messages
     error: {
       class: 'formkit-error',
@@ -44,6 +46,41 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     help: {
       class: 'formkit-help',
     },
+    repeatable: {
+      wrapper: {
+        class: 'formkit-repeatable',
+      },
+      items: {
+        class: 'formkit-repeatable-items',
+      },
+      add: {
+        class: 'formkit-repeatable-add-button',
+      },
+      remove: {
+        class: 'formkit-repeatable-remove-button',
+      },
+      moveUp: {
+        class: 'formkit-repeatable-move-up-button',
+      },
+      moveDown: {
+        class: 'formkit-repeatable-move-down-button',
+      },
+      actions: {
+        class: 'formkit-repeatable-actions',
+      },
+      itemActions: {
+        class: 'formkit-repeatable-table-actions',
+      },
+    },
+    repeatable_table: {
+      table: {
+        class: 'formkit-repeatable-table',
+      },
+      actionsTd: {
+        class: 'formkit-repeatable-table-actions',
+      },
+    },
+    //
     section: {
       class: 'formkit-section',
     },
@@ -89,40 +126,5 @@ export const DEFAULT_CONFIG: FormKitConfig = {
     submitButton: FormKitSubmitButton,
     resetButton: FormKitResetButton,
     schema: FormKitSchema,
-  },
-
-  // CSS classes configuration
-  classes: {
-    field: {
-      wrapper: 'formkit-field-wrapper',
-      label: 'formkit-label',
-      required: 'formkit-label-required',
-      error: 'formkit-error',
-      help: 'formkit-help',
-      input: 'formkit-input',
-    },
-    section: {
-      wrapper: 'formkit-section',
-      title: 'formkit-section-title',
-    },
-    repeatable: {
-      wrapper: 'formkit-repeatable-wrapper',
-      table: 'formkit-repeatable-table',
-      table_th: '',
-      table_td: '',
-      add_button: 'formkit-repeatable-add-button',
-      remove_button: 'formkit-repeatable-remove-button',
-      move_up_button: 'formkit-repeatable-move-up-button',
-      move_down_button: 'formkit-repeatable-move-down-button',
-      actions: 'formkit-repeatable-actions',
-      table_actions: 'formkit-repeatable-table-actions',
-    },
-    buttons: {
-      submit: 'formkit-submit-button',
-      reset: 'formkit-reset-button',
-    },
-    form: {
-      actions: 'formkit-actions',
-    },
   },
 }

@@ -7,10 +7,7 @@ import {
   formStateKey,
 } from '@/constants/symbols'
 import { FormController } from '@/types'
-import {
-  evaluateCondition,
-  evaluateObject,
-} from '@/utils/exprEvaluator'
+import { evaluateCondition, evaluateObject } from '@/utils/exprEvaluator'
 
 // Mock the Vue inject function
 vi.mock('vue', async () => {

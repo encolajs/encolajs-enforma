@@ -1,13 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
+// @ts-ignore
 import { useForm } from '@/headless/useForm'
+// @ts-ignore
 import { useValidation } from '@/utils/useValidation'
 import {
   formStateKey,
   formConfigKey,
   formSchemaKey,
+  // @ts-ignore
 } from '@/constants/symbols'
+// @ts-ignore
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 

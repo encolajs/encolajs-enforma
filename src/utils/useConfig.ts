@@ -11,6 +11,7 @@ import { messageFormatter } from '@encolajs/validator'
  * Represents a generic configuration object
  */
 export type ConfigObject = Record<string, any>
+
 /**
  * Makes all properties in T optional and recursive
  */
@@ -24,18 +25,54 @@ export type DeepPartial<T> = {
     : T[P]
 }
 
+interface ComponentProps {
+  class?: string
+  [key: string]: any
+}
+
 /**
  * Configuration for field components
  */
-export interface FieldPropsConfig {
-  wrapper: ConfigObject
-  label: ConfigObject
-  required: ConfigObject
-  input: ConfigObject
-  error: ConfigObject
-  help: ConfigObject
-  section: ConfigObject
+export interface FieldPassThroughConfig {
+  // for the FormKitField
+  wrapper: ComponentProps
+  label: ComponentProps
+  required: ComponentProps
+  input: ComponentProps
+  error: ComponentProps
+  help: ComponentProps
 
+  // for FormKitRepeatable
+  repeatable?: {
+    wrapper: ComponentProps
+    items: ComponentProps
+    add: ComponentProps
+    remove: ComponentProps
+    moveUp: ComponentProps
+    moveDown: ComponentProps
+    actions: ComponentProps
+    itemActions: ComponentProps
+  }
+
+  // for FormKitRepeatableTable
+  repeatable_table?: {
+    wrapper?: ComponentProps // inherits from repeatable
+    table: ComponentProps
+    th?: ComponentProps
+    td?: ComponentProps
+    actionsTd?: ComponentProps
+    actions?: ComponentProps // inherits from repeatable
+    itemActions?: ComponentProps // inherits from repeatable
+    add?: ComponentProps // inherits from repeatable
+    remove?: ComponentProps // inherits from repeatable
+    moveUp?: ComponentProps // inherits from repeatable
+    moveDown?: ComponentProps // inherits from repeatable
+  }
+
+  // this is for other components
+  section: ComponentProps
+
+  // miscelaneous
   [key: string]: any
 }
 
@@ -60,48 +97,6 @@ export interface ExpressionsConfig {
 }
 
 /**
- * Configuration for CSS classes
- */
-export interface ClassesConfig {
-  field: {
-    wrapper: string
-    label: string
-    required: string
-    error: string
-    help: string
-    input: string
-    [key: string]: string
-  }
-  section: {
-    wrapper: string
-    title: string
-    [key: string]: string
-  }
-  repeatable: {
-    wrapper: string
-    table: string
-    table_th: string
-    table_td: string
-    add_button: string
-    remove_button: string
-    move_up_button: string
-    move_down_button: string
-    actions: string
-    [key: string]: string
-  }
-  buttons: {
-    submit: string
-    reset: string
-    [key: string]: string
-  }
-  form: {
-    actions: string
-    [key: string]: string
-  }
-  [key: string]: Record<string, string>
-}
-
-/**
  * Configuration for components
  */
 export interface ComponentsConfig {
@@ -122,13 +117,12 @@ export interface ComponentsConfig {
  * Complete form kit configuration
  */
 export interface FormKitConfig {
-  pt: FieldPropsConfig
+  pt: FieldPassThroughConfig
   behavior: BehaviorConfig
   rules?: Record<string, Function>
   messages?: Record<string, string>
   errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
-  classes: ClassesConfig
   components: ComponentsConfig
   [key: string]: any
 }

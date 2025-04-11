@@ -1,5 +1,8 @@
 <template>
-  <div v-bind="$attrs" v-if="isVisible">
+  <div
+    v-bind="mergeProps($attrs, getConfig('pt.repeatable_table.wrapper'))"
+    v-if="isVisible"
+  >
     <HeadlessRepeatable
       :name="name"
       :min="min"
@@ -10,25 +13,25 @@
       <template
         #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
       >
-        <table :class="getConfig('classes.repeatable.table')">
+        <table v-bind="getConfig('pt.repeatable_table.table')">
           <thead>
             <tr>
               <th
                 v-for="(subfield, subfieldName) in fields"
                 :key="subfieldName"
-                :class="getConfig('classes.repeatable.table_th')"
+                v-bind="getConfig('pt.repeatable_table.th')"
               >
                 {{ subfield.label || subfieldName }}
               </th>
-              <th :class="getConfig('classes.repeatable.table_th')"></th>
+              <th v-bind="getConfig('pt.repeatable_table.th')"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in value" :key="index">
+            <tr v-for="(_, index) in value" :key="index">
               <td
                 v-for="(subfield, subfieldName) in fields"
                 :key="subfieldName"
-                :class="getConfig('classes.repeatable.table_td')"
+                v-bind="getConfig('pt.repeatable_table.td')"
               >
                 <component
                   :is="formConfig.components.field"
@@ -37,9 +40,14 @@
                   :name="`${name}.${index}.${subfieldName}`"
                 />
               </td>
-              <td :class="getConfig('classes.repeatable.table_actions_td')">
+              <td v-bind="getConfig('pt.repeatable_table.actionsTd')">
                 <div
-                  :class="getConfig('classes.repeatable.table_actions_buttons')"
+                  v-bind="
+                    getConfig(
+                      'pt.repeatable_table.itemActions',
+                      getConfig('pt.repeatable.itemActions')
+                    )
+                  "
                 >
                   <component
                     :is="
@@ -71,7 +79,14 @@
         </table>
 
         <!-- Add button -->
-        <div :class="getConfig('classes.repeatable.actions')">
+        <div
+          v-bind="
+            getConfig(
+              'pt.repeatable_table.actions',
+              getConfig('pt.repeatable.actions')
+            )
+          "
+        >
           <component
             v-if="canAdd"
             :is="addButton || formConfig.components.repeatableAddButton"
@@ -84,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { useAttrs, mergeProps } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,

@@ -3,11 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
 import { useForm } from '@/headless/useForm'
 import { useValidation } from '@/utils/useValidation'
-import {
-  formStateKey,
-  formConfigKey,
-  formSchemaKey,
-} from '@/constants/symbols'
+import { formStateKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 

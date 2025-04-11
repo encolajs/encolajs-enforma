@@ -5,7 +5,7 @@ import { deepMerge, mergeConfigs } from './utils/configUtils'
 import { useValidation } from './utils/useValidation'
 import { fallbackTranslate } from './utils/useTranslation'
 
-function configValidation(options: DeepPartial<FormKitConfig>) {
+function configureValidation(options: DeepPartial<FormKitConfig>) {
   const validation = useValidation()
   const rules = options.rules || {}
   const messages = options.messages || {}
@@ -31,7 +31,7 @@ export default function createFormKit(options: FormKitConfig): Plugin {
       mergedConfig.translator =
         app.config.globalProperties.$t || fallbackTranslate
       setGlobalConfig(mergedConfig)
-      configValidation(options)
+      configureValidation(options)
 
       // inject the translator
       if (!app.config.globalProperties.$t) {

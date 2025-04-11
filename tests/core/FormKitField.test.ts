@@ -2,7 +2,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import FormKitField from '@/core/FormKitField.vue'
+// @ts-ignore
 import { formStateKey, formSchemaKey } from '@/constants/symbols'
+// @ts-ignore
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
 

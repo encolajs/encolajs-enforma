@@ -1,6 +1,9 @@
 <!-- src/core/FormKitRepeatable.vue -->
 <template>
-  <div v-bind="$attrs" v-if="isVisible">
+  <div
+    v-bind="mergeProps($attrs, getConfig('pt.repeatable.wrapper'))"
+    v-if="isVisible"
+  >
     <HeadlessRepeatable
       :name="name"
       :min="min"
@@ -12,11 +15,11 @@
         #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
       >
         <!-- Items container -->
-        <div :class="getConfig('classes.repeatable.items_list')">
+        <div v-bind="getConfig('pt.repeatable.items')">
           <div
-            v-for="(item, index) in value"
+            v-for="(_, index) in value"
             :key="index"
-            :class="getConfig('classes.repeatable.item')"
+            v-bind="getConfig('pt.repeatable.item')"
           >
             <!-- Subfields -->
             <template
@@ -31,7 +34,7 @@
             </template>
 
             <!-- Actions -->
-            <div :class="getConfig('classes.repeatable.actions_buttons')">
+            <div v-bind="getConfig('pt.repeatable.itemActions')">
               <component
                 :is="
                   removeButton || formConfig.components.repeatableRemoveButton
@@ -58,7 +61,7 @@
         </div>
 
         <!-- Add button -->
-        <div :class="getConfig('classes.repeatable.actions')">
+        <div v-bind="getConfig('pt.repeatable.actions')">
           <component
             v-if="canAdd"
             :is="addButton || formConfig.components.repeatableAddButton"
@@ -71,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { useAttrs, mergeProps } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,

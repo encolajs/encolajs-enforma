@@ -1,10 +1,8 @@
 <template>
-  <div v-bind="$attrs" :class="sectionClass">
-    asdfasfas
+  <div v-bind="mergeProps($attrs, getConfig('pt.section'))">
     <component
       v-if="sectionSchema?.title"
       :is="sectionSchema.title_component"
-      :class="getConfig('classes.section.title')"
       v-bind="sectionSchema.title_props"
     >
       {{ sectionSchema.title }}
@@ -21,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, resolveComponent } from 'vue'
+import { computed, inject, resolveComponent, mergeProps } from 'vue'
 import { formSchemaKey } from '@/constants/symbols'
 import { FieldSchema, FormSectionSchema, FormKitSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -151,7 +149,4 @@ const sortedSubsections = computed(() => {
   )
   return sortByPosition(sections)
 })
-
-// Compute section class
-const sectionClass = getConfig('classes.section.wrapper')
 </script>

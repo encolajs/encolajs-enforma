@@ -1,21 +1,20 @@
 <template>
   <button
-    v-bind="$attrs"
+    v-bind="mergeProps($attrs, getConfig('pt.repeatable.reset'))"
     type="reset"
     :disabled="isSubmitting"
-    @click="reset"
-    :class="getConfig('classes.buttons.reset')"
+    @click.prevent="reset"
   >
     <slot name="default"> {{ t('Reset') }} </slot>
   </button>
 </template>
 
 <script setup lang="ts">
-import { inject, useAttrs } from 'vue'
+import { useFormConfig } from '@/utils/useFormConfig'
+import { inject, mergeProps, useAttrs } from 'vue'
+import { useTranslation } from '@/utils/useTranslation'
 import { formStateKey } from '@/constants/symbols'
 import { FormController } from '@/types'
-import { useTranslation } from '@/utils/useTranslation'
-import { useFormConfig } from '@/utils/useFormConfig'
 
 const $attrs = useAttrs()
 const formState = inject(formStateKey) as FormController
