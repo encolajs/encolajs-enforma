@@ -19,7 +19,7 @@ export function mergeConfigs<T extends ConfigObject>(
  * Deep merges two objects, handling arrays and nested objects
  */
 export function deepMerge(target: any, source: any): any {
-  if (source === undefined || source === null) {
+  if (source == null) {
     return target
   }
 
@@ -78,7 +78,7 @@ export function _get<T = any>(
   path: string,
   defaultValue?: T
 ): T | undefined {
-  if (!obj || !path) {
+  if (obj == null || !path) {
     return defaultValue
   }
 
@@ -86,11 +86,11 @@ export function _get<T = any>(
   let current = obj
 
   for (const key of keys) {
-    if (current === undefined || current === null) {
+    if (current == null) {
       return defaultValue
     }
     current = current[key]
   }
 
-  return current !== undefined && current !== null ? current : defaultValue
+  return current ?? defaultValue
 }
