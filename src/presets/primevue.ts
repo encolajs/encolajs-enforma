@@ -2,6 +2,7 @@ import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
 import { InputText, Select } from 'primevue'
 import { FieldController, FormController } from '@/types'
+import { DeepPartial, FormKitConfig } from '@/utils/useConfig'
 
 const fieldMap: Record<string, any> = {
   input: InputText,
@@ -25,5 +26,9 @@ export default {
     submitButton: SubmitButton,
     resetButton: ResetButton,
   },
-  field_props_transformers: [fieldPropsTransformer],
-}
+  transformers: {
+    field_props: [
+      fieldPropsTransformer
+    ]
+  },
+} as DeepPartial<FormKitConfig>

@@ -1,18 +1,24 @@
 <template>
   <Button
-    v-bind="$attrs"
+    v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
     severity="secondary"
     type="submit"
-    :disabled="formState.isSubmitting.value"
+    :disabled="isSubmitting"
   >
-    {{ 'Reset' }}
+    {{ t('Reset') }}
   </Button>
 </template>
 
 <script setup lang="ts">
-import { Button } from 'primevue'
-import { inject } from 'vue'
+import { useFormConfig } from '@/utils/useFormConfig'
+import { inject, mergeProps, useAttrs } from 'vue'
+import { useTranslation } from '@/utils/useTranslation'
 import { formStateKey } from '@/constants/symbols'
+import { FormController } from '@/types'
 
-const formState = inject(formStateKey)
+const $attrs = useAttrs()
+const formState = inject(formStateKey) as FormController
+const { isSubmitting } = formState
+const { t } = useTranslation()
+const { getConfig } = useFormConfig()
 </script>
