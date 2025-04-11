@@ -35,7 +35,7 @@ export interface RepeatableFieldConfig extends RepeatableFieldSchema {
 export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
   // Get form state from context
   const formState = inject<FormController>(formStateKey) as FormController
-  const { formConfig, getConfig } = useFormConfig()
+  const { getConfig } = useFormConfig()
 
   if (!formState) {
     console.error(
@@ -73,7 +73,6 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
     isVisible,
     fields,
     formState,
-    formConfig,
     getConfig,
   }
 }

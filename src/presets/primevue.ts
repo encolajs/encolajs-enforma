@@ -27,8 +27,6 @@ export default {
     resetButton: ResetButton,
   },
   transformers: {
-    field_props: [
-      fieldPropsTransformer
-    ]
+    field_props: [fieldPropsTransformer],
   },
 } as DeepPartial<FormKitConfig>

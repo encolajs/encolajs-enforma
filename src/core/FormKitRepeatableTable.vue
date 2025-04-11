@@ -34,7 +34,7 @@
                 v-bind="getConfig('pt.repeatable_table.td')"
               >
                 <component
-                  :is="formConfig.components.field"
+                  :is="getConfig('components.field')"
                   v-bind="subfield"
                   :hide-label="true"
                   :name="`${name}.${index}.${subfieldName}`"
@@ -52,14 +52,14 @@
                   <component
                     :is="
                       removeButton ||
-                      formConfig.components.repeatableRemoveButton
+                      getConfig('components.repeatableRemoveButton')
                     "
                     @click="remove(index)"
                   />
                   <component
                     :is="
                       moveUpButton ||
-                      formConfig.components.repeatableMoveUpButton
+                      getConfig('components.repeatableMoveUpButton')
                     "
                     :disabled="index === 0"
                     @click="moveUp(index)"
@@ -67,7 +67,7 @@
                   <component
                     :is="
                       moveDownButton ||
-                      formConfig.components.repeatableMoveDownButton
+                      getConfig('components.repeatableMoveDownButton')
                     "
                     :disabled="index >= count - 1"
                     @click="moveDown(index)"
@@ -89,7 +89,7 @@
         >
           <component
             v-if="canAdd"
-            :is="addButton || formConfig.components.repeatableAddButton"
+            :is="addButton || getConfig('components.repeatableAddButton')"
             @click="add(defaultValue)"
           />
         </div>
@@ -116,5 +116,5 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 
 const $attrs = useAttrs()
 const { isVisible, fields } = useFormKitRepeatable(props)
-const { getConfig, formConfig } = useFormConfig()
+const { getConfig } = useFormConfig()
 </script>

@@ -64,7 +64,7 @@ describe('FormKitRepeatableTable', () => {
         // Provide injections in setup
         const { config } = useConfig()
         provide(formStateKey, formState)
-        provide(formConfigKey, config.value)
+        provide(formConfigKey, config)
         provide(formSchemaKey, null)
 
         return {

@@ -95,7 +95,7 @@ const formConfig = computed(() => {
   // Create a new object to avoid reactivity issues
   return mergeConfigs(globalConfig, props.config || {})
 })
-provide(formConfigKey, formConfig.value)
+provide(formConfigKey, formConfig)
 provide(formContextKey, props.context)
 
 const { getConfig } = useFormConfig(props.config)

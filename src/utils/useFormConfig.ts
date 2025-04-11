@@ -17,7 +17,7 @@ import { _get, deepMerge } from './configUtils'
  */
 export function useFormConfig(localConfig?: object) {
   // Inject the form configuration from the parent FormKit component
-  const config = useConfig(localConfig).config.value
+  const config = useConfig(localConfig).config
   const formConfig = inject<FormKitConfig>(formConfigKey, config)
 
   /**

@@ -31,7 +31,8 @@ interface ComponentProps {
 }
 
 /**
- * Configuration for field components
+ * Pass-Through configuration for field components
+ * These props are attached automatically to each component
  */
 export interface FieldPassThroughConfig {
   // for the FormKitField
@@ -72,7 +73,7 @@ export interface FieldPassThroughConfig {
   // this is for other components
   section: ComponentProps
 
-  // miscelaneous
+  // options for custom components
   [key: string]: any
 }
 
@@ -96,7 +97,8 @@ export interface ExpressionsConfig {
 }
 
 /**
- * Configuration for components
+ * Components used for auto-rendering, like
+ * <FormKit :schema=schema> or <FormKitSection section="sidebar">
  */
 export interface ComponentsConfig {
   field: any
@@ -135,6 +137,7 @@ export interface FormKitConfig {
 export type ConfigProvider =
   | DeepPartial<FormKitConfig>
   | (() => DeepPartial<FormKitConfig>)
+
 // Store global configuration
 let globalConfig: DeepPartial<FormKitConfig> = DEFAULT_CONFIG
 
@@ -156,7 +159,7 @@ export function getGlobalConfig(): DeepPartial<FormKitConfig> {
  * Interface for the return value of useConfig
  */
 export interface UseConfigReturn {
-  config: ComputedRef<FormKitConfig>
+  config: FormKitConfig
   extendConfig: (config: DeepPartial<FormKitConfig>) => FormKitConfig
   provideConfig: (config: DeepPartial<FormKitConfig>) => void
 }
@@ -169,21 +172,11 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
   const resolvedLocalConfig =
     typeof localConfig === 'function' ? localConfig() : localConfig || {}
 
-  // Try to inject existing config from a parent component
-  const injectedConfig = inject<FormKitConfig | undefined>(
-    formConfigKey,
-    undefined
-  )
-
   // Compute the final configuration by merging defaults, global, injected, and local
-  const config = computed<FormKitConfig>(() => {
-    return mergeConfigs<FormKitConfig>(
-      DEFAULT_CONFIG,
-      globalConfig,
-      injectedConfig || {},
-      resolvedLocalConfig
-    )
-  })
+  const config = mergeConfigs<FormKitConfig>(
+    globalConfig, // global config (plugin level)
+    resolvedLocalConfig // local config (form level)
+  )
 
   /**
    * Extends the current configuration with additional configuration
