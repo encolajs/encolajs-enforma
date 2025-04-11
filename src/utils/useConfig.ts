@@ -1,8 +1,8 @@
 /**
  * Composable for managing form kit configuration
  */
-import { computed, ComputedRef, inject, provide } from 'vue'
-import { mergeConfigs } from './configUtils'
+import { inject, provide } from 'vue'
+import { mergeConfigs, _get } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { formConfigKey } from '@/constants/symbols'
 import { messageFormatter } from '@encolajs/validator'
@@ -172,7 +172,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
   const resolvedLocalConfig =
     typeof localConfig === 'function' ? localConfig() : localConfig || {}
 
-  // Compute the final configuration by merging defaults, global, injected, and local
+  // Compute the final configuration by merging defaults, global, and local
   const config = mergeConfigs<FormKitConfig>(
     globalConfig, // global config (plugin level)
     resolvedLocalConfig // local config (form level)
@@ -184,7 +184,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
   function extendConfig(
     additionalConfig: DeepPartial<FormKitConfig>
   ): FormKitConfig {
-    return mergeConfigs<FormKitConfig>(config.value, additionalConfig)
+    return mergeConfigs<FormKitConfig>(config, additionalConfig)
   }
 
   /**

@@ -2,11 +2,10 @@
  * Utility for accessing form configuration in components
  */
 
-import { inject, computed } from 'vue'
+import { inject } from 'vue'
 import { formConfigKey } from '@/constants/symbols'
 import { FormKitConfig, useConfig } from './useConfig'
-import { DEFAULT_CONFIG } from '@/constants/defaults'
-import { _get, deepMerge } from './configUtils'
+import { _get } from './configUtils'
 
 /**
  * Composable for accessing form configuration in components
@@ -16,8 +15,11 @@ import { _get, deepMerge } from './configUtils'
  * @returns An object with the form configuration and a helper function to get config values by path
  */
 export function useFormConfig(localConfig?: object) {
+  // Get the base configuration from useConfig
+  const { config } = useConfig(localConfig)
+
   // Inject the form configuration from the parent FormKit component
-  const config = useConfig(localConfig).config
+  // If not available, fallback to the base config
   const formConfig = inject<FormKitConfig>(formConfigKey, config)
 
   /**
