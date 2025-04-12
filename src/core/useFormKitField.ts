@@ -216,6 +216,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
 
     // Component type
     result.component = fieldOptions.value.type || 'input'
+    result.hideLabel = fieldOptions.value.hideLabel
 
     // Apply custom transformers if defined in config
     return applyTransformers(

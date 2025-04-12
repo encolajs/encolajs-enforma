@@ -26,7 +26,7 @@ export interface RepeatableFieldSchema {
   name: string
   min?: number
   max?: number
-  subfields: Record<string, FieldSchema>
+  subfields?: Record<string, FieldSchema>
   defaultValue?: any
   validateOnAdd?: boolean
   validateOnRemove?: boolean
@@ -67,7 +67,7 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
 
   // Process subfields by removing the name property
   const fields = computed(() =>
-    Object.entries(fieldConfig.subfields).reduce(
+    Object.entries(fieldConfig.subfields || []).reduce(
       (acc, [subfieldName, subfield]) => {
         const { name, ...rest } = subfield
         acc[subfieldName] = rest

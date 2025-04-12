@@ -1,7 +1,7 @@
 <!-- src/core/FormKitField.vue -->
 <template>
   <div v-bind="props.wrapper" v-show="props.if">
-    <label v-if="!props.hideLabel" v-bind="props.label">
+    <label v-if="!props.hideLabel && fieldOptions.label" v-bind="props.label">
       {{ t(fieldOptions.label) }}
       <span v-if="props.required" v-bind="props.required">
         {{ requiredIndicator }}
@@ -12,6 +12,7 @@
     <slot name="default" v-bind="{ ...fieldState, attrs: props.input }">
       <component
         :is="props.component"
+        v-model="fieldState.value"
         v-bind="props.input"
         v-on="fieldState.events"
       />

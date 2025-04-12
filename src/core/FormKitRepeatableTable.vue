@@ -34,10 +34,10 @@
                 v-bind="getConfig('pt.repeatable_table.td')"
               >
                 <component
-                  :is="getConfig('components.field')"
-                  v-bind="subfield"
-                  :hide-label="true"
+                  :is="getConfig('components.field', FormKitField)"
                   :name="`${name}.${index}.${subfieldName}`"
+                  hide-label="true"
+                  v-bind="subfield"
                 />
               </td>
               <td v-bind="getConfig('pt.repeatable_table.actionsTd')">
@@ -106,6 +106,7 @@ import {
   useFormKitRepeatable,
 } from './useFormKitRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
+import FormKitField from '@/core/FormKitField.vue'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,
