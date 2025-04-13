@@ -33,6 +33,9 @@ export default function usePrimeVuePreset(): void {
     pt: {
       actions: {
         class: 'flex gap-2'
+      },
+      error: {
+        class: 'text-red-500'
       }
     },
     components: {
