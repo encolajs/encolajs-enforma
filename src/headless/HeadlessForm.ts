@@ -72,15 +72,7 @@ export default defineComponent({
     }
 
     // Expose form methods to parent component
-    ctx.expose({
-      reset: form.reset,
-      submit: () => form.submit(),
-      validate: form.validate,
-      validateField: form.validateField,
-      setFieldValue: form.setFieldValue,
-      getField: form.getField,
-      values: form.values,
-    })
+    ctx.expose(form)
 
     return () =>
       h(
