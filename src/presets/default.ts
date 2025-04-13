@@ -39,6 +39,12 @@ export default function useDefaultPreset(options: DefaultPresetOptions = {}): vo
       wrapper: {
         class: 'formkit-field-wrapper',
       },
+      wrapper__invalid: {
+        class: 'formkit-field-invalid',
+      },
+      wrapper__required: {
+        class: 'formkit-field-required',
+      },
       label: {
         class: 'formkit-label',
       },

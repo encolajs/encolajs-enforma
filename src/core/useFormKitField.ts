@@ -142,21 +142,16 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
   const props = computed(() => {
     const result: Record<string, any> = {}
 
-    // Generate CSS classes
-    const classes = [
-      errorMessage.value ? 'formkit-has-error' : '',
-      fieldOptions.value.required ? 'formkit-required' : '',
-    ].filter(Boolean)
-
     // Wrapper props
     result.wrapper = evaluateProps(
       mergeProps(
         {
           id: `wrapper-${fieldId.value}`,
-          class: classes,
         },
         fieldOptions.value.wrapperProps || {},
-        getConfig('pt.wrapper', {}) as Record<string, unknown>
+        getConfig('pt.wrapper', {}) as Record<string, unknown>,
+        errorMessage.value ? (getConfig('pt.wrapper__invalid', {})  as Record<string, unknown>) : {},
+        fieldOptions.value.required ? (getConfig('pt.wrapper__required', {})  as Record<string, unknown>) : {}
       )
     )
 

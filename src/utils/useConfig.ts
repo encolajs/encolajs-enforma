@@ -38,6 +38,8 @@ interface ComponentProps {
 export interface FieldPassThroughConfig {
   // for the FormKitField
   wrapper: ComponentProps
+  wrapper__invalid: ComponentProps
+  wrapper__required: ComponentProps
   label: ComponentProps
   required: ComponentProps
   input: ComponentProps
