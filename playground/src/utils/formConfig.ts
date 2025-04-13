@@ -10,7 +10,7 @@ const data = {
   experience: [],
 }
 for (let i = 0; i < 5; i++) {
-  let level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
+  const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
   data.skills.push({ name: `Skill ${i}`, level })
 }
 
