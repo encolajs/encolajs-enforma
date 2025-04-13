@@ -72,7 +72,7 @@ export default defineComponent({
     }
 
     // Expose form methods to parent component
-    ctx.expose(form)
+    ctx.expose({ ...form })
 
     return () =>
       h(

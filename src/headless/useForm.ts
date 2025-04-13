@@ -46,6 +46,7 @@ class FieldManager {
         $isValidating: false,
         _id: generateId('field', path),
       })
+      // No need to signal state change here as we'll do it when getting the field
     }
     return this._fields.get(path)!
   }
@@ -158,6 +159,7 @@ export function useForm<T extends object>(
   rules: ValidationRules = {},
   options: FormOptions = {}
 ): T & FormController {
+  const formStateVersion = ref(0)
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
     values.clone && typeof values?.clone === 'function'
@@ -170,7 +172,9 @@ export function useForm<T extends object>(
     $isSubmitting: false,
     $isDirty: false,
     $isTouched: false,
+    $stateVersion: formStateVersion,
   }
+  // Create a form-specific state version counter
   const valuesRef = ref(values)
 
   const validationFactory = options.validatorFactory || useValidation().factory
@@ -191,15 +195,25 @@ export function useForm<T extends object>(
       const isValid = await validator.validatePath(path, values)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
+        // Signal a state change when errors are added
+        formStateVersion.value++
         return false
       }
-      state.$errors = []
+      // Signal a state change when errors are cleared
+      if (state.$errors.length > 0) {
+        state.$errors = []
+        formStateVersion.value++
+      } else {
+        state.$errors = []
+      }
       return true
     } catch (e: any) {
       console.error(`Error validating field ${path}`, e)
       return false
     } finally {
       state.$isValidating = false
+      // Signal a state change when validation completes
+      formStateVersion.value++
     }
   }
 
@@ -279,6 +293,9 @@ export function useForm<T extends object>(
             state.$isTouched = true
             state.$isDirty = true
           })
+          
+          // Signal state change after marking all fields
+          formStateVersion.value++
 
           if (!isValid) {
             // Call validation error callback if provided
@@ -360,6 +377,9 @@ export function useForm<T extends object>(
         formState.$isTouched = false
         formState.$isValidating = false
         formState.$isSubmitting = false
+        
+        // Signal form reset complete
+        formStateVersion.value++
       },
 
       async validate(): Promise<boolean> {
@@ -408,12 +428,14 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
         fieldManager.shift(arrayPath, index, 1)
+        formStateVersion.value++
       },
 
       remove(arrayPath: string, index: number): void {
         const array = getArrayByPath(valuesRef.value, arrayPath)
         array.splice(index, 1)
         fieldManager.shift(arrayPath, index, -1)
+        formStateVersion.value++
       },
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
@@ -421,6 +443,7 @@ export function useForm<T extends object>(
         const [item] = array.splice(fromIndex, 1)
         array.splice(toIndex, 0, item)
         fieldManager.move(arrayPath, fromIndex, toIndex)
+        formStateVersion.value++
       },
 
       sort(arrayPath: string, callback: (a: any, b: any) => number): void {
@@ -433,6 +456,7 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
+        formStateVersion.value++
       },
     } as FormController,
     {
@@ -477,13 +501,19 @@ export function useForm<T extends object>(
           if (prop.includes('.$')) {
             const [path, metaProp] = prop.split('.$')
             const state = fieldManager.get(path)
+            const metaKey = `$${metaProp}` as keyof FieldState
+            const prevValue = state[metaKey]
 
             switch (metaProp) {
               case 'isDirty':
               case 'isTouched':
               case 'isValidating':
               case 'errors': {
-                state[`$${metaProp}`] = value
+                (state[metaKey] as any) = value
+                // Only increment if value actually changed
+                if (prevValue !== value) {
+                  formStateVersion.value++
+                }
                 break
               }
             }
@@ -496,6 +526,9 @@ export function useForm<T extends object>(
             setValueByPath(valuesRef.value, prop, value)
             const state = fieldManager.get(prop)
             state.$isDirty = true
+            
+            // Increment state version for field value changes
+            formStateVersion.value++
 
             // Handle validation asynchronously
             Promise.resolve().then(() => {

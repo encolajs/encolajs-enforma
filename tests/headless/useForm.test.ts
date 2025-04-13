@@ -191,7 +191,7 @@ describe('useForm', () => {
     test('should use setFieldValue with validation', async () => {
       await form.setFieldValue('items.0.price', 5)
       expect(form['items.0.price']).toBe(5)
-      expect(form['items.0.price.$isDirty']).toBe(false)
+      expect(form['items.0.price.$isDirty']).toBe(true)
       expect(form['items.0.price.$errors']).toHaveLength(1)
     })
 

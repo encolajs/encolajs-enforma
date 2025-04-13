@@ -1,4 +1,4 @@
-import { computed, onMounted, ComputedRef, ref } from 'vue'
+import { computed, onMounted, ComputedRef, ref, watch } from 'vue'
 import { FieldController, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
 
@@ -33,6 +33,14 @@ export function useField(
 
   // Create a reference to track focus state
   const isFocused = ref(false)
+  
+  // Create a reactive reference to track form state changes
+  const localStateVersion = ref(0)
+  
+  // Watch for form-specific state changes and update local version
+  watch(() => form.$stateVersion.value, (newVersion) => {
+    localStateVersion.value = newVersion
+  })
 
   /**
    * Handle value changes
@@ -110,6 +118,9 @@ export function useField(
 
   // Create exported API object with all field state and methods
   return computed(() => {
+    // Include the local state version in the computation to ensure reactivity
+    const currentStateVersion = localStateVersion.value
+    
     const fieldState = getFieldState()
     const value = form[name]
     const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null
@@ -122,6 +133,8 @@ export function useField(
       isTouched: fieldState?.$isTouched || false,
       isValidating: fieldState?.$isValidating || false,
       isFocused: isFocused.value,
+      // Expose the state version for debugging
+      _stateVersion: currentStateVersion,
 
       // Methods
       validate,
