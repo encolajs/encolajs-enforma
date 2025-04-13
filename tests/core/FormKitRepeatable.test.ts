@@ -14,6 +14,7 @@ import {
 // @ts-ignore
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
+import useDefaultPreset from '../../src/presets/default'
 
 // Stub components for testing
 const FormKitFieldStub = {
@@ -58,6 +59,7 @@ describe('FormKitRepeatable', () => {
   }
 
   beforeEach(() => {
+    useDefaultPreset()
     vi.clearAllMocks()
   })
 

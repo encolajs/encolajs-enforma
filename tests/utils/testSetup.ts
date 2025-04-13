@@ -1,8 +1,9 @@
 import { h } from 'vue'
 import { mount } from '@vue/test-utils'
-import { DEFAULT_CONFIG } from '@/constants/defaults'
-import { formConfigKey } from '@/constants/symbols'
-import { FormKitConfig } from '@/utils/useConfig'
+import { DEFAULT_CONFIG } from '../../src/constants/defaults'
+import { formConfigKey } from '../../src/constants/symbols'
+import { FormKitConfig, setGlobalConfig, getGlobalConfig } from '../../src/utils/useConfig'
+import useDefaultPreset from '../../src/presets/default'
 
 /**
  * Creates a mounted component with the necessary configuration for testing
@@ -20,7 +21,17 @@ export function mountTestComponent(
   config: Partial<FormKitConfig> = {},
   slots: Record<string, string> = {}
 ) {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config }
+  // Reset global config to default
+  setGlobalConfig(DEFAULT_CONFIG)
+  
+  // Apply default preset
+  useDefaultPreset()
+  
+  // Get the current config after applying the preset
+  const currentConfig = getGlobalConfig()
+  
+  // Merge with any additional config provided
+  const mergedConfig = { ...currentConfig, ...config }
 
   return mount(component, {
     props,

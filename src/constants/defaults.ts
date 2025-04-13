@@ -17,96 +17,16 @@ import FormKitResetButton from '@/core/FormKitResetButton.vue'
 import FormKitSchema from '@/core/FormKitSchema.vue'
 
 /**
- * Default configuration for the form kit
+ * Minimal default configuration for the form kit
+ * This contains only the essential options needed for the form kit to work
+ * Additional configuration is provided by presets
  */
 export const DEFAULT_CONFIG: FormKitConfig = {
-  /**
-   * These props are going to be applied automatically
-   * to the components rendered by the form kit
-   * unless overwritten at plugin initialization
-   * or by presets
-   */
-  pt: {
-    wrapper: {
-      class: 'formkit-field-wrapper',
-    },
-    label: {
-      class: 'formkit-label',
-    },
-    required: {
-      class: 'formkit-label-required',
-      text: '*',
-    },
-    input: {
-      class: 'formkit-input',
-    },
-    // Props for error messages
-    error: {
-      class: 'formkit-error',
-    },
-    help: {
-      class: 'formkit-help',
-    },
-    repeatable: {
-      wrapper: {
-        class: 'formkit-repeatable',
-      },
-      items: {
-        class: 'formkit-repeatable-items',
-      },
-      add: {
-        class: 'formkit-repeatable-add-button',
-      },
-      remove: {
-        class: 'formkit-repeatable-remove-button',
-      },
-      moveUp: {
-        class: 'formkit-repeatable-move-up-button',
-      },
-      moveDown: {
-        class: 'formkit-repeatable-move-down-button',
-      },
-      actions: {
-        class: 'formkit-repeatable-actions',
-      },
-      itemActions: {
-        class: 'formkit-repeatable-table-actions',
-      },
-    },
-    repeatable_table: {
-      table: {
-        class: 'formkit-repeatable-table',
-      },
-      actionsTd: {
-        class: 'formkit-repeatable-table-actions',
-      },
-    },
-    //
-    section: {
-      class: 'formkit-section',
-    },
-  },
-
   /**
    * Default behavior configuration
    */
   behavior: {
     validateOn: 'blur',
-  },
-
-  /**
-   * Validation rules to be added to the validation factory
-   * These are key-validation factory pairs
-   */
-  rules: {},
-
-  /**
-   * Default messages for validation errors
-   * You must add validation messages for the rules specified above
-   * You can overwrite default validation messages
-   */
-  messages: {
-    // required: 'This field is required',
   },
 
   /**
@@ -121,20 +41,44 @@ export const DEFAULT_CONFIG: FormKitConfig = {
   },
 
   /**
-   * Components to be used when using auto-rendering like
-   * <Formkit :schema="schema"/> or <FormkitSection section="sidebar"/>
+   * Empty components configuration
+   * Components will be provided by presets
    */
   components: {
-    field: FormKitField,
-    section: FormKitSection,
-    repeatable: FormKitRepeatable,
-    repeatableTable: FormKitRepeatableTable,
-    repeatableAddButton: FormKitRepeatableAddButton,
-    repeatableRemoveButton: FormKitRepeatableRemoveButton,
-    repeatableMoveUpButton: FormKitRepeatableMoveUpButton,
-    repeatableMoveDownButton: FormKitRepeatableMoveDownButton,
-    submitButton: FormKitSubmitButton,
-    resetButton: FormKitResetButton,
-    schema: FormKitSchema,
+    field: null,
+    section: null,
+    repeatable: null,
+    repeatableTable: null,
+    repeatableAddButton: null,
+    repeatableRemoveButton: null,
+    repeatableMoveUpButton: null,
+    repeatableMoveDownButton: null,
+    submitButton: null,
+    resetButton: null,
+    schema: null,
   },
+
+  /**
+   * Empty pass-through configuration
+   * Pass-through props will be provided by presets
+   */
+  pt: {
+    wrapper: {},
+    label: {},
+    required: {},
+    input: {},
+    error: {},
+    help: {},
+    section: {},
+  },
+
+  /**
+   * Empty rules configuration
+   */
+  rules: {},
+
+  /**
+   * Empty messages configuration
+   */
+  messages: {},
 }

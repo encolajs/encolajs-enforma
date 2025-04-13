@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from './constants/defaults'
 import { deepMerge, mergeConfigs } from './utils/configUtils'
 import { useValidation } from './utils/useValidation'
 import { fallbackTranslate } from './utils/useTranslation'
+import useDefaultPreset from './presets/default'
 
 function configureValidation(options: DeepPartial<FormKitConfig>) {
   const validation = useValidation()
@@ -31,6 +32,11 @@ export default function createFormKit(options: FormKitConfig): Plugin {
       mergedConfig.translator =
         app.config.globalProperties.$t || fallbackTranslate
       setGlobalConfig(mergedConfig)
+      
+      // Apply default preset
+      useDefaultPreset()
+      
+      // Configure validation
       configureValidation(options)
 
       // inject the translator
