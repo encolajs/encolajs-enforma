@@ -1,28 +1,28 @@
 <template>
   <HeadlessForm
-      ref="formRef"
-      :data="data"
-      :rules="rules"
-      :custom-messages="messages"
-      :submit-handler="submitHandler"
-      :validate-on="config.validateOn"
-      @submit-success="emit('submit-success', $event)"
-      @submit-error="emit('submit-error', $event)"
-      @validation-error="emit('validation-error', $event)"
-    >
-      <template #default="formState">
-        <slot name="default" v-bind="formState">
-          <component :is="schemaComponent" v-if="schema" :schema="schema" />
-        </slot>
+    ref="formRef"
+    :data="data"
+    :rules="rules"
+    :custom-messages="messages"
+    :submit-handler="submitHandler"
+    :validate-on="config.validateOn"
+    @submit-success="emit('submit-success', $event)"
+    @submit-error="emit('submit-error', $event)"
+    @validation-error="emit('validation-error', $event)"
+  >
+    <template #default="formState">
+      <slot name="default" v-bind="formState">
+        <component :is="schemaComponent" v-if="schema" :schema="schema" />
+      </slot>
 
-        <slot name="actions" v-bind="{ formState, formConfig }">
-          <div v-bind="getConfig('pt.actions')">
-            <component :is="submitButton" />
-            <component :is="resetButton" v-if="showResetButton" />
-          </div>
-        </slot>
-      </template>
-    </HeadlessForm>
+      <slot name="actions" v-bind="{ formState, formConfig }">
+        <div v-bind="getConfig('pt.actions')">
+          <component :is="submitButton" />
+          <component :is="resetButton" v-if="showResetButton" />
+        </div>
+      </slot>
+    </template>
+  </HeadlessForm>
 </template>
 
 <script setup lang="ts">

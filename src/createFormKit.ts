@@ -32,10 +32,10 @@ export default function createFormKit(options: FormKitConfig): Plugin {
       mergedConfig.translator =
         app.config.globalProperties.$t || fallbackTranslate
       setGlobalConfig(mergedConfig)
-      
+
       // Apply default preset
       useDefaultPreset()
-      
+
       // Configure validation
       configureValidation(options)
 

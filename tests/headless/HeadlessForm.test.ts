@@ -414,31 +414,31 @@ describe('HeadlessForm', () => {
             formRules: { email: 'required|email' },
           }
         },
-      };
-      
-      const wrapper = mount(TestComponent);
-      
+      }
+
+      const wrapper = mount(TestComponent)
+
       // Submit the form to trigger validation
-      await wrapper.find('[data-test="submit-button"]').trigger('click');
-      await wrapper.find('form').trigger('submit');
-      await flushPromises();
-      
+      await wrapper.find('[data-test="submit-button"]').trigger('click')
+      await wrapper.find('form').trigger('submit')
+      await flushPromises()
+
       // Get form controller from HeadlessForm component
-      const formController = wrapper.findComponent(HeadlessForm).vm;
-      
+      const formController = wrapper.findComponent(HeadlessForm).vm
+
       // Check state directly on the controller after validation
-      const emailState = encolaForm.getField('email');
-      
+      const emailState = encolaForm.getField('email')
+
       // The form should mark fields as touched and set errors
-      expect(emailState.$isTouched).toBe(true);
-      expect(emailState.$isDirty).toBe(true);
-      expect(emailState.$errors.length).toBeGreaterThan(0);
-      expect(emailState.$errors[0]).toContain('email');
-      
+      expect(emailState.$isTouched).toBe(true)
+      expect(emailState.$isDirty).toBe(true)
+      expect(emailState.$errors.length).toBeGreaterThan(0)
+      expect(emailState.$errors[0]).toContain('email')
+
       // Check that the error message is displayed in the DOM
-      const errorMessage = wrapper.find('[data-test="error-message"]');
-      expect(errorMessage.exists()).toBe(true);
-      expect(errorMessage.text()).toContain('email');
-    });
+      const errorMessage = wrapper.find('[data-test="error-message"]')
+      expect(errorMessage.exists()).toBe(true)
+      expect(errorMessage.text()).toContain('email')
+    })
   })
 })

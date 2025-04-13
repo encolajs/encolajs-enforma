@@ -2,7 +2,11 @@ import { h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { DEFAULT_CONFIG } from '../../src/constants/defaults'
 import { formConfigKey } from '../../src/constants/symbols'
-import { FormKitConfig, setGlobalConfig, getGlobalConfig } from '../../src/utils/useConfig'
+import {
+  FormKitConfig,
+  setGlobalConfig,
+  getGlobalConfig,
+} from '../../src/utils/useConfig'
 import useDefaultPreset from '../../src/presets/default'
 
 /**
@@ -23,13 +27,13 @@ export function mountTestComponent(
 ) {
   // Reset global config to default
   setGlobalConfig(DEFAULT_CONFIG)
-  
+
   // Apply default preset
   useDefaultPreset()
-  
+
   // Get the current config after applying the preset
   const currentConfig = getGlobalConfig()
-  
+
   // Merge with any additional config provided
   const mergedConfig = { ...currentConfig, ...config }
 

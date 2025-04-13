@@ -150,8 +150,12 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
         },
         fieldOptions.value.wrapperProps || {},
         getConfig('pt.wrapper', {}) as Record<string, unknown>,
-        errorMessage.value ? (getConfig('pt.wrapper__invalid', {})  as Record<string, unknown>) : {},
-        fieldOptions.value.required ? (getConfig('pt.wrapper__required', {})  as Record<string, unknown>) : {}
+        errorMessage.value
+          ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
+          : {},
+        fieldOptions.value.required
+          ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
+          : {}
       )
     )
 

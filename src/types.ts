@@ -78,10 +78,10 @@ export interface FieldController {
 export interface FormController {
   // State version ref to track form changes
   $stateVersion: { value: number }
-  $isValidating: boolean,
-  $isSubmitting: boolean,
-  $isDirty: boolean,
-  $isTouched: boolean,
+  $isValidating: boolean
+  $isSubmitting: boolean
+  $isDirty: boolean
+  $isTouched: boolean
 
   reset(): void
 

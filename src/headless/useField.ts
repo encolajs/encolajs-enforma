@@ -33,14 +33,17 @@ export function useField(
 
   // Create a reference to track focus state
   const isFocused = ref(false)
-  
+
   // Create a reactive reference to track form state changes
   const localStateVersion = ref(0)
-  
+
   // Watch for form-specific state changes and update local version
-  watch(() => form.$stateVersion.value, (newVersion) => {
-    localStateVersion.value = newVersion
-  })
+  watch(
+    () => form.$stateVersion.value,
+    (newVersion) => {
+      localStateVersion.value = newVersion
+    }
+  )
 
   /**
    * Handle value changes
@@ -120,7 +123,7 @@ export function useField(
   return computed(() => {
     // Include the local state version in the computation to ensure reactivity
     const currentStateVersion = localStateVersion.value
-    
+
     const fieldState = getFieldState()
     const value = form[name]
     const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null

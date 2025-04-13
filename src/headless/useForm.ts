@@ -284,7 +284,6 @@ export function useForm<T extends object>(
         formState.$isSubmitting = true
 
         try {
-
           // Validate all fields
           const isValid = await validateForm()
 
@@ -293,7 +292,7 @@ export function useForm<T extends object>(
             state.$isTouched = true
             state.$isDirty = true
           })
-          
+
           // Signal state change after marking all fields
           formStateVersion.value++
 
@@ -377,7 +376,7 @@ export function useForm<T extends object>(
         formState.$isTouched = false
         formState.$isValidating = false
         formState.$isSubmitting = false
-        
+
         // Signal form reset complete
         formStateVersion.value++
       },
@@ -509,7 +508,7 @@ export function useForm<T extends object>(
               case 'isTouched':
               case 'isValidating':
               case 'errors': {
-                (state[metaKey] as any) = value
+                ;(state[metaKey] as any) = value
                 // Only increment if value actually changed
                 if (prevValue !== value) {
                   formStateVersion.value++
@@ -526,7 +525,7 @@ export function useForm<T extends object>(
             setValueByPath(valuesRef.value, prop, value)
             const state = fieldManager.get(prop)
             state.$isDirty = true
-            
+
             // Increment state version for field value changes
             formStateVersion.value++
 

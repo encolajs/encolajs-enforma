@@ -1,4 +1,9 @@
-import { DeepPartial, FormKitConfig, setGlobalConfig, getGlobalConfig } from '@/utils/useConfig'
+import {
+  DeepPartial,
+  FormKitConfig,
+  setGlobalConfig,
+  getGlobalConfig,
+} from '@/utils/useConfig'
 import FormKitField from '@/core/FormKitField.vue'
 import FormKitSection from '@/core/FormKitSection.vue'
 import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
@@ -30,9 +35,11 @@ export interface DefaultPresetOptions {
  *
  * @param options Optional configuration options to customize the preset
  */
-export default function useDefaultPreset(options: DefaultPresetOptions = {}): void {
+export default function useDefaultPreset(
+  options: DefaultPresetOptions = {}
+): void {
   const currentConfig = getGlobalConfig()
-  
+
   // Base default preset
   const defaultPreset: DeepPartial<FormKitConfig> = {
     pt: {
@@ -116,7 +123,7 @@ export default function useDefaultPreset(options: DefaultPresetOptions = {}): vo
       ...options.components,
     },
   }
-  
+
   // Merge the current config with the default preset
   const mergedConfig = {
     ...currentConfig,
@@ -129,7 +136,7 @@ export default function useDefaultPreset(options: DefaultPresetOptions = {}): vo
       ...defaultPreset.components,
     },
   }
-  
+
   // Set the global configuration
   setGlobalConfig(mergedConfig)
-} 
+}
