@@ -187,7 +187,9 @@ export function useForm<T extends object>(
     try {
       state.$isValidating = true
       state.$isTouched = true
+      state.$isDirty = true
       const isValid = await validator.validatePath(path, values)
+      console.log(state)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
         return false
@@ -269,12 +271,15 @@ export function useForm<T extends object>(
         formState.$isSubmitting = true
 
         try {
-          fieldManager.all().forEach((state, _) => {
-            state.$isTouched = true
-          })
 
           // Validate all fields
           const isValid = await validateForm()
+
+          // Mark all fields as touched before validation
+          fieldManager.all().forEach((state, path) => {
+            state.$isTouched = true
+            state.$isDirty = true
+          })
 
           if (!isValid) {
             // Call validation error callback if provided
