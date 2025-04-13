@@ -4,7 +4,7 @@
     ref="$form"
     :data="data"
     :rules="rules"
-    :custom-messages="customMessages"
+    :custom-messages="messages"
     :submit-handler="submitHandler"
   >
     <template #default="formState">
@@ -165,61 +165,11 @@ import FormKitField from '@/../src/core/FormKitField.vue'
 import {InputText, DatePicker, Select, Button, ToggleSwitch} from 'primevue'
 import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
 import { ref } from 'vue'
+import formConfig from '../utils/formConfig'
 
 const $form = ref(null)
 
-const data = {
-  name: '',
-  email: '',
-  address: {
-    country: '',
-    city: ''
-  },
-  willing_to_relocate: false,
-  salary: {
-    min: '',
-    max: ''
-  },
-  start_date: '',
-  linkedin_profile: '',
-  personal_site: '',
-  skills: [],
-  experience: []
-}
-for (let i = 0; i < 5; i++) {
-  let level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
-  data.skills.push({ name: `Skill ${i}`, level })
-}
-
-const rules = {
-  name: 'required',
-  email: 'required|email',
-  'address.country': 'required',
-  'address.city': 'required',
-  'salary.min': 'numeric',
-  'salary.max': 'numeric',
-  start_date: 'required',
-  linkedin_profile: 'url',
-  personal_site: 'url'
-}
-
-const customMessages = {
-  'name.required': 'Please enter your name',
-  'email.required': 'Please enter your email',
-  'email.email': 'Please enter a valid email',
-  'address.country.required': 'Please enter your country',
-  'address.city.required': 'Please enter your city',
-  'salary.min.numeric': 'Please enter a valid minimum salary',
-  'salary.max.numeric': 'Please enter a valid maximum salary',
-  'start_date.required': 'Please select your available date',
-  'linkedin_profile.url': 'Please enter a valid LinkedIn URL',
-  'personal_site.url': 'Please enter a valid personal site URL'
-}
-
-const submitHandler = async (formData) => {
-  console.log('Form submitted:', formData)
-  // Add your submission logic here
-}
+const {data, rules, messages, submitHandler} = formConfig
 
 const formatDate = (date) => {
   if (!date) return ''
