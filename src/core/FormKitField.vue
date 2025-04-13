@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import { useFormKitField } from './useFormKitField'
-import { useFormConfig } from '@/utils/useFormConfig'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -56,7 +55,4 @@ const originalProps = defineProps({
 // Use the extracted composable
 const { fieldOptions, fieldState, errorMessage, requiredIndicator, props, t } =
   useFormKitField(originalProps)
-
-// Get the form configuration
-const { getConfig } = useFormConfig()
 </script>
