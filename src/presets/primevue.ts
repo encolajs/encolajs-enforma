@@ -30,6 +30,11 @@ export default function usePrimeVuePreset(): void {
   const currentConfig = getGlobalConfig()
   
   const primeVuePreset: DeepPartial<FormKitConfig> = {
+    pt: {
+      actions: {
+        class: 'flex gap-2'
+      }
+    },
     components: {
       submitButton: SubmitButton,
       resetButton: ResetButton,
@@ -42,6 +47,10 @@ export default function usePrimeVuePreset(): void {
   // Merge the current config with the PrimeVue preset
   const mergedConfig = {
     ...currentConfig,
+    pt: {
+      ...currentConfig.pt,
+      ...primeVuePreset.pt,
+    },
     components: {
       ...currentConfig.components,
       ...primeVuePreset.components,
@@ -54,7 +63,6 @@ export default function usePrimeVuePreset(): void {
       ],
     },
   }
-  
   // Set the global configuration
   setGlobalConfig(mergedConfig)
 }

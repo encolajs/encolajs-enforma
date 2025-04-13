@@ -2,6 +2,7 @@
   <Button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
     type="submit"
+    :loading="isSubmitting"
     :disabled="isSubmitting"
   >
     {{ isSubmitting ? t('Submitting...') : t('Submit') }}
@@ -9,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from 'primevue'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { inject, mergeProps, useAttrs } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'

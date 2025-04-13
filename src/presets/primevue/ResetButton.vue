@@ -10,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from 'primevue'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { inject, mergeProps, useAttrs } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
