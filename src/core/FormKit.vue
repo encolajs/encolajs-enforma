@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <HeadlessForm
+  <HeadlessForm
       ref="formRef"
       :data="data"
       :rules="rules"
@@ -24,7 +23,6 @@
         </slot>
       </template>
     </HeadlessForm>
-  </div>
 </template>
 
 <script setup lang="ts">
