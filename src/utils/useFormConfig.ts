@@ -33,7 +33,7 @@ export function useFormConfig(localConfig?: object) {
     path: string,
     defaultValue?: T
   ): T | undefined => {
-    return _get<T>(formConfig, path, defaultValue)
+    return _get<T>(config, path, defaultValue)
   }
 
   return {
