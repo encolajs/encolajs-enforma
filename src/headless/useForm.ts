@@ -189,7 +189,6 @@ export function useForm<T extends object>(
       state.$isTouched = true
       state.$isDirty = true
       const isValid = await validator.validatePath(path, values)
-      console.log(state)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
         return false
