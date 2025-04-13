@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { h, inject } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
+import HeadlessField from '@/headless/HeadlessField'
 import { formStateKey } from '@/constants/symbols'
 
 import { FormController } from '../../src'
@@ -375,5 +376,69 @@ describe('HeadlessForm', () => {
       expect(data.name).toBe('John')
       expect(data.email).toBe('john@example.com')
     })
+  })
+
+  describe('form state after validation', () => {
+    it('should mark fields as touched and show error messages after form submission', async () => {
+      // Create a test component that includes HeadlessField for proper rendering
+      const TestComponent = {
+        template: `
+          <HeadlessForm 
+            :data="formData" 
+            :rules="formRules"
+          >
+            <template #default="form">
+              <FormStateExposer />
+              <HeadlessField name="email">
+                <template #default="{ value, attrs, error, events, id }">
+                  <div>
+                    <input
+                      data-test="email-input"
+                      v-bind="attrs"
+                      v-on="events"
+                    />
+                    <div v-if="error" data-test="error-message" class="error-message">
+                      {{ error }}
+                    </div>
+                  </div>
+                </template>
+              </HeadlessField>
+              <button type="submit" data-test="submit-button">Submit</button>
+            </template>
+          </HeadlessForm>
+        `,
+        components: { HeadlessForm, HeadlessField, FormStateExposer },
+        data() {
+          return {
+            formData: { email: 'invalid-email' },
+            formRules: { email: 'required|email' },
+          }
+        },
+      };
+      
+      const wrapper = mount(TestComponent);
+      
+      // Submit the form to trigger validation
+      await wrapper.find('[data-test="submit-button"]').trigger('click');
+      await wrapper.find('form').trigger('submit');
+      await flushPromises();
+      
+      // Get form controller from HeadlessForm component
+      const formController = wrapper.findComponent(HeadlessForm).vm;
+      
+      // Check state directly on the controller after validation
+      const emailState = encolaForm.getField('email');
+      
+      // The form should mark fields as touched and set errors
+      expect(emailState.$isTouched).toBe(true);
+      expect(emailState.$isDirty).toBe(true);
+      expect(emailState.$errors.length).toBeGreaterThan(0);
+      expect(emailState.$errors[0]).toContain('email');
+      
+      // Check that the error message is displayed in the DOM
+      const errorMessage = wrapper.find('[data-test="error-message"]');
+      expect(errorMessage.exists()).toBe(true);
+      expect(errorMessage.text()).toContain('email');
+    });
   })
 })
