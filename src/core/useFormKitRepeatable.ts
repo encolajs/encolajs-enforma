@@ -19,6 +19,16 @@ export interface RepeatableAnimationOptions {
 }
 
 /**
+ * Props passed to the component when using component-based subfields
+ */
+export interface RepeatableComponentProps {
+  name: string
+  index: number
+  value: any
+  listLength: number // Total number of items in the repeatable
+}
+
+/**
  * Repeatable field schema with subfields
  */
 export interface RepeatableFieldSchema {
@@ -27,6 +37,8 @@ export interface RepeatableFieldSchema {
   min?: number
   max?: number
   subfields?: Record<string, FieldSchema>
+  component?: any // Component to use for rendering subfields
+  componentProps?: Record<string, any> // Additional props to pass to the component
   defaultValue?: any
   validateOnAdd?: boolean
   validateOnRemove?: boolean
@@ -76,6 +88,7 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
       {} as Record<string, any>
     )
   )
+
 
   // Process animation options
   const animationOptions = computed<RepeatableAnimationOptions>(() => {
@@ -132,6 +145,8 @@ export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
   return {
     isVisible,
     fields,
+    component: fieldConfig.component,
+    componentProps: fieldConfig.componentProps,
     formState,
     getConfig,
     useAnimations,

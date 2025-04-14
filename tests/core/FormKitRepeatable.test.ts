@@ -43,6 +43,24 @@ const FormKitRepeatableMoveDownButtonStub = {
   template: '<button type="button" class="move-down-button">Move Down</button>',
 }
 
+// Custom components for component-based subfields testing
+const CustomComponent = {
+  name: 'CustomComponent',
+  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }}</div>',
+  props: ['name', 'index', 'value', 'listLength'],
+}
+
+const CustomComponentWithExtraProps = {
+  name: 'CustomComponentWithExtraProps',
+  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }} - {{ extraProp }}</div>',
+  props: ['name', 'index', 'value', 'listLength', 'extraProp'],
+}
+
+const SimpleCustomComponent = {
+  name: 'SimpleCustomComponent',
+  template: '<div class="custom-component">Custom</div>',
+}
+
 describe('FormKitRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -93,6 +111,9 @@ describe('FormKitRepeatable', () => {
           FormKitRepeatableRemoveButton: FormKitRepeatableRemoveButtonStub,
           FormKitRepeatableMoveUpButton: FormKitRepeatableMoveUpButtonStub,
           FormKitRepeatableMoveDownButton: FormKitRepeatableMoveDownButtonStub,
+          CustomComponent,
+          CustomComponentWithExtraProps,
+          SimpleCustomComponent,
         },
       },
     }
@@ -339,6 +360,90 @@ describe('FormKitRepeatable', () => {
       const unregisterSpy = vi.spyOn(formState, 'removeField')
       wrapper.unmount()
       expect(unregisterSpy).toHaveBeenCalledWith('items')
+    })
+  })
+
+  describe('component-based subfields', () => {
+    it('renders component for each item when component prop is provided', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
+      })
+      const wrapper = createTestWrapper(
+        {
+          component: CustomComponent,
+        },
+        formState
+      )
+
+      await flushPromises()
+
+      const components = wrapper.findAll('.custom-component')
+      expect(components).toHaveLength(2)
+      expect(components[0].text()).toContain('items.0 - 0')
+      expect(components[1].text()).toContain('items.1 - 1')
+    })
+
+    it('passes additional props to component when componentProps is provided', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1' }],
+      })
+      const wrapper = createTestWrapper(
+        {
+          component: CustomComponentWithExtraProps,
+          componentProps: {
+            extraProp: 'test',
+          },
+        },
+        formState
+      )
+
+      await flushPromises()
+
+      const component = wrapper.find('.custom-component')
+      expect(component.text()).toBe('items.0 - 0 - {\n' +
+        '  "name": "Item 1"\n' +
+        '} - 1 - test')
+    })
+
+    it('prioritizes component over subfields when both are provided', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1' }],
+      })
+      const wrapper = createTestWrapper(
+        {
+          component: SimpleCustomComponent,
+          subfields: {
+            name: {
+              type: 'text',
+              name: 'name',
+            },
+          },
+        },
+        formState
+      )
+
+      await flushPromises()
+
+      const customComponent = wrapper.find('.custom-component')
+      expect(customComponent.exists()).toBe(true)
+      expect(wrapper.findAllComponents(FormKitFieldStub)).toHaveLength(0)
+    })
+
+    it('handles empty items array with component', async () => {
+      const formState = createFormState({ items: [] })
+      const wrapper = createTestWrapper(
+        {
+          component: SimpleCustomComponent,
+        },
+        formState
+      )
+
+      await flushPromises()
+
+      const customComponent = wrapper.find('.custom-component')
+      expect(customComponent.exists()).toBe(false)
+      const addButton = wrapper.find('.formkit-repeatable-add-button')
+      expect(addButton.exists()).toBe(true)
     })
   })
 })
