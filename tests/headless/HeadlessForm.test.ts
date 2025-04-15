@@ -295,8 +295,9 @@ describe('HeadlessForm', () => {
       await wrapper.find('form').trigger('submit')
       await flushPromises()
 
-      // Check error handling
-      expect(wrapper.emitted('submit-error')?.[0]).toEqual([submitError])
+      // Check error handling - now we also get the form controller as second argument
+      expect(wrapper.emitted('submit-error')?.[0][0]).toEqual(submitError)
+      expect(wrapper.emitted('submit-error')?.[0][1]).toBeDefined()
     })
   })
 

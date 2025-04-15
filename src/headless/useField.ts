@@ -79,6 +79,11 @@ export function useField(
     isFocused.value = false
     form[`${name}.$isTouched`] = true
 
+    // Notify the form about field blur
+    if (form.setFieldBlurred) {
+      form.setFieldBlurred(name);
+    }
+
     if (options.validateOn === 'blur') {
       debouncedValidate()
     }
@@ -89,6 +94,11 @@ export function useField(
    */
   function handleFocus(): void {
     isFocused.value = true
+    
+    // Notify the form about field focus
+    if (form.setFieldFocused) {
+      form.setFieldFocused(name);
+    }
   }
 
   /**

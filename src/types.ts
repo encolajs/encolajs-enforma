@@ -37,6 +37,8 @@ export interface FormOptions {
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
   onSubmitError?: (error: any, form: FormController) => void
+  /** Use global event emitter instead of form-specific one */
+  useGlobalEvents?: boolean
 }
 
 /**
@@ -108,6 +110,19 @@ export interface FormController {
 
   hasField(path: string): boolean
   
+  // Event-related methods
+  on(event: string, handler: Function): FormController
+  
+  off(event: string, handler?: Function): FormController
+  
+  emit(event: string, data: any): FormController
+  
+  // Focus/Blur handling
+  setFieldFocused(path: string): void
+  
+  setFieldBlurred(path: string): void
+  
+  // Error handling
   setFieldErrors(path: string, errors: string[]): void
 
   setErrors(errors: Record<string, string[]>): void

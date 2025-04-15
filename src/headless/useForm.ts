@@ -2,6 +2,8 @@ import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import { ref } from 'vue'
 import { generateId } from '@/utils/helpers'
+import { Emitter } from 'mitt'
+import { FormEvents, createFormEmitter, globalFormEmitter } from '@/utils/events'
 
 export interface FieldState {
   $errors: string[]
@@ -159,6 +161,11 @@ export function useForm<T extends object>(
   rules: ValidationRules = {},
   options: FormOptions = {}
 ): T & FormController {
+  // Create form-specific event emitter
+  const formEmitter: Emitter<FormEvents> = options.useGlobalEvents 
+    ? globalFormEmitter 
+    : createFormEmitter();
+  
   const formStateVersion = ref(0)
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
@@ -278,8 +285,24 @@ export function useForm<T extends object>(
     })
   }
 
-  return new Proxy(
+  const formController = new Proxy(
     {
+      // Event emitter methods
+      on(event, handler) {
+        formEmitter.on(event, handler);
+        return this;
+      },
+      
+      off(event, handler) {
+        formEmitter.off(event, handler);
+        return this;
+      },
+      
+      emit(event, data) {
+        formEmitter.emit(event, data);
+        return this;
+      },
+      
       submit: async function() {
         // Store reference to the form controller
         const formController = this;
@@ -303,6 +326,10 @@ export function useForm<T extends object>(
             if (options.onValidationError) {
               options.onValidationError(formController);
             }
+            
+            // Emit validation error event
+            formEmitter.emit('validation_error', { formController });
+            
             return false;
           }
 
@@ -315,14 +342,25 @@ export function useForm<T extends object>(
               if (options.onSubmitSuccess) {
                 options.onSubmitSuccess(valuesRef.value);
               }
+              
+              // Emit submit success event
+              formEmitter.emit('submit_success', { formController });
+              
             } catch (error) {
               // Call submit error callback if provided
               if (options.onSubmitError) {
                 options.onSubmitError(error, formController);
               }
+              
+              // Emit submit error event
+              formEmitter.emit('submit_error', { error, formController });
+              
               console.error('Error submitting form', error);
               return false;
             }
+          } else {
+            // If no submit handler but form is valid, emit success
+            formEmitter.emit('submit_success', { formController });
           }
 
           return true;
@@ -382,6 +420,9 @@ export function useForm<T extends object>(
 
         // Signal form reset complete
         formStateVersion.value++
+        
+        // Emit form reset event
+        formEmitter.emit('form_reset', { formController: this });
       },
 
       async validate(): Promise<boolean> {
@@ -400,6 +441,15 @@ export function useForm<T extends object>(
         stateChanges: StateChanges = {}
       ): Promise<void> {
         await _handleSetValue(path, value, validate, stateChanges)
+        
+        // Emit field_changed event
+        const state = fieldManager.get(path)
+        formEmitter.emit('field_changed', {
+          path,
+          value,
+          fieldState: state,
+          formController: this
+        })
       },
 
       getField(path): FieldState {
@@ -412,6 +462,32 @@ export function useForm<T extends object>(
 
       hasField(path): boolean {
         return fieldManager.has(path)
+      },
+      
+      setFieldFocused(path: string): void {
+        const state = fieldManager.get(path)
+        state.$isTouched = true
+        formStateVersion.value++
+        
+        // Emit field focused event
+        formEmitter.emit('field_focused', {
+          path,
+          fieldState: state,
+          formController: this
+        })
+      },
+      
+      setFieldBlurred(path: string): void {
+        const state = fieldManager.get(path)
+        state.$isTouched = true
+        formStateVersion.value++
+        
+        // Emit field blurred event
+        formEmitter.emit('field_blurred', {
+          path,
+          fieldState: state,
+          formController: this
+        })
       },
 
       setFieldErrors(path: string, errors: string[]): void {
@@ -555,4 +631,11 @@ export function useForm<T extends object>(
       },
     }
   ) as T & FormController
+  
+  // Emit form initialization event - using setTimeout to ensure all initialization is complete
+  setTimeout(() => {
+    formEmitter.emit('form_initialized', { formController });
+  }, 0);
+  
+  return formController as T & FormController
 }

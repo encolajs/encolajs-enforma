@@ -9,6 +9,11 @@
     @submit-success="emit('submit-success', $event)"
     @submit-error="emit('submit-error', $event)"
     @validation-error="emit('validation-error', $event)"
+    @field-changed="emit('field-changed', $event)"
+    @field-focused="emit('field-focused', $event)"
+    @field-blurred="emit('field-blurred', $event)"
+    @form-initialized="emit('form-initialized', $event)"
+    @reset="emit('reset', $event)"
   >
     <template #default="formState">
       <slot name="default" v-bind="formState">
@@ -79,12 +84,39 @@ const emit = defineEmits([
   'submit-error',
   'validation-error',
   'reset',
+  'field-changed',
+  'field-focused',
+  'field-blurred',
+  'form-initialized'
 ])
 
 const formRef = ref(null)
 
+/**
+ * Methods for directly working with the form's event system
+ */
+const on = (event, handler) => {
+  if (formRef.value) {
+    formRef.value.on(event, handler)
+  }
+  return { off: () => off(event, handler) }
+}
+
+const off = (event, handler) => {
+  if (formRef.value) {
+    formRef.value.off(event, handler)
+  }
+}
+
+/**
+ * Expose the formRef and convenience methods
+ * This allows parent components to call methods like validate(), reset(), etc.
+ * It also provides direct access to the event system via on() and off()
+ */
 defineExpose({
   formRef,
+  on,
+  off
 })
 
 const formConfig = computed(() => {

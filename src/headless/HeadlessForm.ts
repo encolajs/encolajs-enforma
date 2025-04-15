@@ -27,22 +27,52 @@ export default defineComponent({
     },
   },
 
-  emits: ['submit-success', 'submit-error', 'validation-error', 'reset'],
+  emits: ['submit-success', 'submit-error', 'validation-error', 'reset', 'field-changed', 'field-focused', 'field-blurred', 'form-initialized'],
 
   setup(props, ctx) {
-    // Create form using useForm with callbacks for events
+    // Create form using useForm with callbacks for events and global events option
     const form: FormController = useForm(props.data, props.rules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
+      useGlobalEvents: true, // Use global event emitter for component integration
       onValidationError: (form) => {
         ctx.emit('validation-error', form)
       },
       onSubmitSuccess: (data) => {
         ctx.emit('submit-success', data)
       },
-      onSubmitError: (error) => {
-        ctx.emit('submit-error', error)
+      onSubmitError: (error, form) => {
+        ctx.emit('submit-error', error, form)
       },
+    })
+    
+    // Set up event handlers to forward events to component emits
+    form.on('submit_success', ({ formController }) => {
+      ctx.emit('submit-success', formController.values(), formController)
+    })
+    
+    form.on('submit_error', ({ error, formController }) => {
+      ctx.emit('submit-error', error, formController)
+    })
+    
+    form.on('validation_error', ({ formController }) => {
+      ctx.emit('validation-error', formController)
+    })
+    
+    form.on('field_changed', ({ path, value, fieldState, formController }) => {
+      ctx.emit('field-changed', path, value, fieldState, formController)
+    })
+    
+    form.on('field_focused', ({ path, fieldState, formController }) => {
+      ctx.emit('field-focused', path, fieldState, formController)
+    })
+    
+    form.on('field_blurred', ({ path, fieldState, formController }) => {
+      ctx.emit('field-blurred', path, fieldState, formController)
+    })
+    
+    form.on('form_initialized', ({ formController }) => {
+      ctx.emit('form-initialized', formController)
     })
 
     // Provide form to child components
@@ -62,8 +92,13 @@ export default defineComponent({
     // Handle form reset
     const handleReset = () => {
       form.reset()
-      ctx.emit('reset', true)
+      ctx.emit('reset', form)
     }
+    
+    // Also listen for form_reset event
+    form.on('form_reset', ({ formController }) => {
+      ctx.emit('reset', formController)
+    })
 
     // Expose form methods to parent component
     ctx.expose({ ...form })
