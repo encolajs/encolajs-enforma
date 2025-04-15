@@ -125,7 +125,14 @@ Have a great idea? [Suggest a feature](https://github.com/encolajs/validator/iss
 
 ## License
 
-MIT © [EncolaJS](https://github.com/encolajs)
+## License
+
+This project is licensed under a dual license model:
+
+- ✅ Free for personal and development use (non-commercial)
+- 💼 Requires a commercial license for production/commercial use [Learn more →](https://encolajs.com/)
+
+See [LICENSE](./LICENSE) and [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md) for details.
 
 ---
 
