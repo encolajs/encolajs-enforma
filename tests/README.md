@@ -1,6 +1,6 @@
 # Testing Components in Isolation
 
-This directory contains tests for the FormKit components. When testing components in isolation, we need to provide the necessary configuration that would normally be provided by the parent `FormKit` component.
+This directory contains tests for the Enforma components. When testing components in isolation, we need to provide the necessary configuration that would normally be provided by the parent `Enforma` component.
 
 ## Test Utility
 

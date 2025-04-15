@@ -36,7 +36,7 @@ interface ComponentProps {
  * These props are attached automatically to each component
  */
 export interface FieldPassThroughConfig {
-  // for the FormKitField
+  // for the EnformaField
   wrapper: ComponentProps
   wrapper__invalid: ComponentProps
   wrapper__required: ComponentProps
@@ -46,7 +46,7 @@ export interface FieldPassThroughConfig {
   error: ComponentProps
   help: ComponentProps
 
-  // for FormKitRepeatable
+  // for EnformaRepeatable
   repeatable?: {
     wrapper: ComponentProps
     items: ComponentProps
@@ -58,7 +58,7 @@ export interface FieldPassThroughConfig {
     itemActions: ComponentProps
   }
 
-  // for FormKitRepeatableTable
+  // for EnformaRepeatableTable
   repeatable_table?: {
     wrapper?: ComponentProps // inherits from repeatable
     table: ComponentProps
@@ -101,7 +101,7 @@ export interface ExpressionsConfig {
 
 /**
  * Components used for auto-rendering, like
- * <FormKit :schema=schema> or <FormKitSection section="sidebar">
+ * <Enforma :schema=schema> or <EnformaSection section="sidebar">
  */
 export interface ComponentsConfig {
   field: any
@@ -120,7 +120,7 @@ export interface ComponentsConfig {
 /**
  * Complete form kit configuration
  */
-export interface FormKitConfig {
+export interface EnformaConfig {
   pt: FieldPassThroughConfig
   behavior: BehaviorConfig
   rules?: Record<string, Function>
@@ -138,23 +138,23 @@ export interface FormKitConfig {
  * Configuration providers can be objects or functions
  */
 export type ConfigProvider =
-  | DeepPartial<FormKitConfig>
-  | (() => DeepPartial<FormKitConfig>)
+  | DeepPartial<EnformaConfig>
+  | (() => DeepPartial<EnformaConfig>)
 
 // Store global configuration
-let globalConfig: DeepPartial<FormKitConfig> = DEFAULT_CONFIG
+let globalConfig: DeepPartial<EnformaConfig> = DEFAULT_CONFIG
 
 /**
  * Set the global configuration for all forms
  */
-export function setGlobalConfig(config: DeepPartial<FormKitConfig>): void {
+export function setGlobalConfig(config: DeepPartial<EnformaConfig>): void {
   globalConfig = config
 }
 
 /**
  * Get the global configuration
  */
-export function getGlobalConfig(): DeepPartial<FormKitConfig> {
+export function getGlobalConfig(): DeepPartial<EnformaConfig> {
   return globalConfig
 }
 
@@ -162,9 +162,9 @@ export function getGlobalConfig(): DeepPartial<FormKitConfig> {
  * Interface for the return value of useConfig
  */
 export interface UseConfigReturn {
-  config: FormKitConfig
-  extendConfig: (config: DeepPartial<FormKitConfig>) => FormKitConfig
-  provideConfig: (config: DeepPartial<FormKitConfig>) => void
+  config: EnformaConfig
+  extendConfig: (config: DeepPartial<EnformaConfig>) => EnformaConfig
+  provideConfig: (config: DeepPartial<EnformaConfig>) => void
 }
 
 /**
@@ -175,7 +175,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
   const resolvedLocalConfig = resolveValue(localConfig) || {}
 
   // Compute the final configuration by merging defaults, global, and local
-  const config = mergeConfigs<FormKitConfig>(
+  const config = mergeConfigs<EnformaConfig>(
     globalConfig, // global config (plugin level)
     resolvedLocalConfig // local config (form level)
   )
@@ -184,19 +184,19 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
    * Extends the current configuration with additional configuration
    */
   function extendConfig(
-    additionalConfig: DeepPartial<FormKitConfig>
-  ): FormKitConfig {
-    return mergeConfigs<FormKitConfig>(config, additionalConfig)
+    additionalConfig: DeepPartial<EnformaConfig>
+  ): EnformaConfig {
+    return mergeConfigs<EnformaConfig>(config, additionalConfig)
   }
 
   /**
    * Provides the configuration to child components
    */
   function provideConfig(
-    additionalConfig: DeepPartial<FormKitConfig> = {}
+    additionalConfig: DeepPartial<EnformaConfig> = {}
   ): void {
     const providedConfig = extendConfig(additionalConfig)
-    provide<FormKitConfig>(formConfigKey, providedConfig)
+    provide<EnformaConfig>(formConfigKey, providedConfig)
   }
 
   return {

@@ -4,12 +4,12 @@
 
 import { inject } from 'vue'
 import { formConfigKey } from '@/constants/symbols'
-import { FormKitConfig, useConfig } from './useConfig'
+import { EnformaConfig, useConfig } from './useConfig'
 import { _get } from './configUtils'
 
 /**
  * Composable for accessing form configuration in components
- * This ensures that components use the form configuration provided by the FormKit component
+ * This ensures that components use the form configuration provided by the Enforma component
  * rather than the global configuration
  *
  * @returns An object with the form configuration and a helper function to get config values by path
@@ -18,9 +18,9 @@ export function useFormConfig(localConfig?: object) {
   // Get the base configuration from useConfig
   const { config } = useConfig(localConfig)
 
-  // Inject the form configuration from the parent FormKit component
+  // Inject the form configuration from the parent Enforma component
   // If not available, fallback to the base config
-  const formConfig = inject<FormKitConfig>(formConfigKey, config)
+  const formConfig = inject<EnformaConfig>(formConfigKey, config)
 
   /**
    * Get a configuration value by path with a default value if the path doesn't exist

@@ -24,6 +24,12 @@ const routes = [
         exact: true,
         component: () => import('../pages/FormKitSchema.vue')
       },
+      {
+        path: '/primevue/autocomplete',
+        name: 'primevue-autocomplete',
+        exact: true,
+        component: () => import('../pages/primevue/autocomplete.vue')
+      },
     ]
   }
 

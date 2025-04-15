@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, inject, resolveComponent, mergeProps } from 'vue'
 import { formSchemaKey } from '@/constants/symbols'
-import { FieldSchema, FormSectionSchema, FormKitSchema } from '@/types'
+import { FieldSchema, FormSectionSchema, EnformaSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 interface FieldWithPosition extends FieldSchema {
@@ -45,7 +45,7 @@ function isSectionSchema(value: any): value is FormSectionSchema {
 }
 
 function getFields(
-  schema: FormKitSchema | undefined,
+  schema: EnformaSchema | undefined,
   sectionName: string
 ): Record<string, FieldSchema> {
   if (!schema) return {}
@@ -68,7 +68,7 @@ function getFields(
 }
 
 function getSubSections(
-  schema: FormKitSchema | undefined,
+  schema: EnformaSchema | undefined,
   sectionName: string
 ): Array<[string, FormSectionSchema]> {
   if (!schema) return []
@@ -102,21 +102,21 @@ function sortByPosition<T extends { position?: number }>(items: T[]): T[] {
 }
 
 // this is needed because the component may render in a tree-like structure
-defineOptions({ name: 'FormKitSection' })
+defineOptions({ name: 'EnformaSection' })
 
 const props = defineProps<{
   name: string
 }>()
 
 // Inject dependencies
-const schema = inject<FormKitSchema>(formSchemaKey)
+const schema = inject<EnformaSchema>(formSchemaKey)
 
 // Get the configuration
 const { getConfig } = useFormConfig()
 
 const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
-const sectionComponent = resolveComponent('FormKitSection')
+const sectionComponent = resolveComponent('EnformaSection')
 
 // Get the section schema for this section
 const sectionSchema = computed(() => {

@@ -248,7 +248,7 @@ export interface FormSectionSchema {
   priority: number
 }
 
-export interface FormKitSchema {
+export interface EnformaSchema {
   [key: string]: FieldSchema | FormSectionSchema
 }
 

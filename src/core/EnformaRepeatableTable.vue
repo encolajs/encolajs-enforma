@@ -34,7 +34,7 @@
                 v-bind="getConfig('pt.repeatable_table.td')"
               >
                 <component
-                  :is="getConfig('components.field', FormKitField)"
+                  :is="getConfig('components.field', EnformaField)"
                   :name="`${name}.${index}.${subfieldName}`"
                   hide-label="true"
                   v-bind="subfield"
@@ -103,10 +103,10 @@ import { useAttrs, mergeProps } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
-  useFormKitRepeatable,
-} from './useFormKitRepeatable'
+  useEnformaRepeatable,
+} from './useEnformaRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
-import FormKitField from '@/core/FormKitField.vue'
+import EnformaField from '@/core/EnformaField.vue'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,
@@ -118,6 +118,6 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 })
 
 const $attrs = useAttrs()
-const { isVisible, fields } = useFormKitRepeatable(props)
+const { isVisible, fields } = useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
 </script>

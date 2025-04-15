@@ -1,24 +1,24 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 // @ts-expect-error IDE not working properly
-import FormKitSection from '@/core/FormKitSection.vue'
+import EnformaSection from '../../src/core/EnformaSection.vue'
 import { formSchemaKey, formStateKey, formConfigKey } from '@/constants/symbols'
-import type { FormKitSchema, FieldSchema, FormSectionSchema } from '@/types'
+import type { EnformaSchema, FieldSchema, FormSectionSchema } from '@/types'
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Create a mock schema for testing
 const createMockSchema = (
   fields: Record<string, FieldSchema | FormSectionSchema>
-): FormKitSchema => {
-  return fields as FormKitSchema
+): EnformaSchema => {
+  return fields as EnformaSchema
 }
 
-describe('FormKitSection', () => {
-  // Mock FormKitField component for testing
-  const FormKitFieldStub = {
-    name: 'FormKitField',
-    template: '<div class="formkit-field">{{ name }}</div>',
+describe('EnformaSection', () => {
+  // Mock EnformaField component for testing
+  const EnformaFieldStub = {
+    name: 'EnformaField',
+    template: '<div class="enforma-field">{{ name }}</div>',
     props: ['name', 'label', 'type', 'required', 'help', 'if'],
   }
 
@@ -41,7 +41,7 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
@@ -92,7 +92,7 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
@@ -107,7 +107,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const fields = wrapper.findAll('.formkit-input')
+    const fields = wrapper.findAll('.enforma-input')
     expect(fields[0].attributes()['name']).toBe('field2')
     expect(fields[1].attributes()['name']).toBe('field1')
     expect(fields[2].attributes()['name']).toBe('field3')
@@ -151,14 +151,14 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
       {
         global: {
           components: {
-            FormKitField: FormKitFieldStub,
+            EnformaField: EnformaFieldStub,
           },
           provide: {
             [formSchemaKey]: schema,
@@ -169,7 +169,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const fields = wrapper.findAll('.formkit-input')
+    const fields = wrapper.findAll('.enforma-input')
     expect(fields[0].attributes()['name']).toBe('field1')
     expect(fields[1].attributes()['name']).toBe('field3')
     expect(fields[2].attributes()['name']).toBe('field2')
@@ -212,7 +212,7 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
@@ -227,7 +227,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const sections = wrapper.findAll('.formkit-section h3')
+    const sections = wrapper.findAll('.enforma-section h3')
     expect(sections[0].text()).toBe('Subsection 2')
     expect(sections[1].text()).toBe('Subsection 1')
     expect(sections[2].text()).toBe('Subsection 3')
@@ -261,14 +261,14 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'default',
       },
       {
         global: {
           components: {
-            FormKitField: FormKitFieldStub,
+            EnformaField: EnformaFieldStub,
           },
           provide: {
             [formSchemaKey]: schema,
@@ -279,7 +279,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const fields = wrapper.findAll('.formkit-input')
+    const fields = wrapper.findAll('.enforma-input')
     expect(fields.length).toBe(3)
     expect(fields[0].attributes()['name']).toBe('field1')
     expect(fields[1].attributes()['name']).toBe('field2')
@@ -316,14 +316,14 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
       {
         global: {
           components: {
-            FormKitField: FormKitFieldStub,
+            EnformaField: EnformaFieldStub,
           },
           provide: {
             [formSchemaKey]: schema,
@@ -334,7 +334,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const fields = wrapper.findAll('.formkit-input')
+    const fields = wrapper.findAll('.enforma-input')
     expect(fields.length).toBe(2)
     expect(fields[0].attributes()['name']).toBe('field1')
     expect(fields[1].attributes()['name']).toBe('field3')
@@ -352,7 +352,7 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
@@ -367,7 +367,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const section = wrapper.find('.formkit-section')
+    const section = wrapper.find('.enforma-section')
     expect(section.exists()).toBe(true)
   })
 
@@ -383,14 +383,14 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
       {
         global: {
           components: {
-            FormKitField: FormKitFieldStub,
+            EnformaField: EnformaFieldStub,
           },
           provide: {
             [formSchemaKey]: schema,
@@ -401,7 +401,7 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const fields = wrapper.findAll('.formkit-input')
+    const fields = wrapper.findAll('.enforma-input')
     expect(fields.length).toBe(0)
     expect(wrapper.find('h2').text()).toBe('Empty Section')
   })
@@ -438,7 +438,7 @@ describe('FormKitSection', () => {
     })
 
     const wrapper = mountTestComponent(
-      FormKitSection,
+      EnformaSection,
       {
         name: 'section1',
       },
@@ -453,10 +453,10 @@ describe('FormKitSection', () => {
     )
 
     await flushPromises()
-    const sections = wrapper.findAll('.formkit-section')
+    const sections = wrapper.findAll('.enforma-section')
     expect(sections.length).toBe(3) // section1, subsection1, subsubsection1
     expect(sections[0].find('h3').text()).toBe('Subsection 1')
     expect(sections[1].find('h4').text()).toBe('Sub-subsection 1')
-    expect(wrapper.find('.formkit-input').attributes()['name']).toBe('field1')
+    expect(wrapper.find('.enforma-input').attributes()['name']).toBe('field1')
   })
 })

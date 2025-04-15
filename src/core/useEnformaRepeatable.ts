@@ -1,4 +1,4 @@
-// src/core/useFormKitRepeatable.ts
+// src/core/useEnformaRepeatable.ts
 import { computed, inject, onBeforeUnmount } from 'vue'
 import { formStateKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
@@ -44,10 +44,10 @@ export interface RepeatableFieldSchema {
   validateOnRemove?: boolean
   if?: boolean
   animations?: boolean | RepeatableAnimationOptions
-  addButton?: any // FormKitRepeatableAddButton component
-  removeButton?: any // FormKitRepeatableRemoveButton component
-  moveUpButton?: any // FormKitRepeatableMoveUpButton component
-  moveDownButton?: any // FormKitRepeatableMoveDownButton component
+  addButton?: any // EnformaRepeatableAddButton component
+  removeButton?: any // EnformaRepeatableRemoveButton component
+  moveUpButton?: any // EnformaRepeatableMoveUpButton component
+  moveDownButton?: any // EnformaRepeatableMoveDownButton component
 }
 
 export interface RepeatableFieldConfig extends RepeatableFieldSchema {
@@ -57,14 +57,14 @@ export interface RepeatableFieldConfig extends RepeatableFieldSchema {
   min?: number
 }
 
-export function useFormKitRepeatable(fieldConfig: RepeatableFieldConfig) {
+export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
   // Get form state from context
   const formState = inject<FormController>(formStateKey) as FormController
   const { getConfig } = useFormConfig()
 
   if (!formState) {
     console.error(
-      `FormKitRepeatable '${fieldConfig.name}' must be used within a FormKit form component`
+      `EnformaRepeatable '${fieldConfig.name}' must be used within a Enforma form component`
     )
   }
 

@@ -1,7 +1,7 @@
-// tests/core/FormKitField.test.ts
+// tests/core/EnformaField.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import FormKitField from '@/core/FormKitField.vue'
+import EnformaField from '../../src/core/EnformaField.vue'
 // @ts-ignore
 import { formStateKey, formSchemaKey } from '@/constants/symbols'
 // @ts-ignore
@@ -16,7 +16,7 @@ const createFormState = (initialValues = {}, rules = {}) => {
   return useForm(initialValues, rules)
 }
 
-describe('FormKitField', () => {
+describe('EnformaField', () => {
   let formState
   let schema
 
@@ -31,7 +31,7 @@ describe('FormKitField', () => {
 
   it('renders a field with basic props', async () => {
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'test-field',
         label: 'Test Field',
@@ -57,7 +57,7 @@ describe('FormKitField', () => {
 
   it('handles required fields correctly', async () => {
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'required-field',
         label: 'Required Field',
@@ -74,7 +74,7 @@ describe('FormKitField', () => {
       }
     )
 
-    expect(wrapper.find('.formkit-label-required').exists()).toBe(true)
+    expect(wrapper.find('.enforma-label-required').exists()).toBe(true)
   })
 
   it('displays error messages when field has errors', async () => {
@@ -87,7 +87,7 @@ describe('FormKitField', () => {
 
     // Mount the component with the field that has errors
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'error_field',
         label: 'Error Field',
@@ -107,14 +107,14 @@ describe('FormKitField', () => {
     await flushPromises()
 
     // Verify error message is displayed
-    expect(wrapper.find('.formkit-error').text()).toBe('This field is required')
+    expect(wrapper.find('.enforma-error').text()).toBe('This field is required')
   })
 
   it('evaluates dynamic props correctly', async () => {
     const dynamicFormState = createFormState({ someField: 'test' })
 
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'dynamic-field',
         label: 'Dynamic Field',
@@ -152,7 +152,7 @@ describe('FormKitField', () => {
 
   it('shows help text when provided', async () => {
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'help-field',
         label: 'Help Field',
@@ -169,14 +169,14 @@ describe('FormKitField', () => {
       }
     )
 
-    expect(wrapper.find('.formkit-help').text()).toBe(
+    expect(wrapper.find('.enforma-help').text()).toBe(
       'This is a helpful message'
     )
   })
 
   it('handles visibility toggle correctly', async () => {
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'visibility-field',
         label: 'Visibility Field',
@@ -194,14 +194,14 @@ describe('FormKitField', () => {
     )
 
     // Vue's v-show doesn't actually remove the element but hides it with style="display: none"
-    const wrapper_div = wrapper.find('.formkit-field-wrapper')
+    const wrapper_div = wrapper.find('.enforma-field-wrapper')
     expect(wrapper_div.exists()).toBe(true)
     expect(wrapper_div.attributes('style')).toContain('display: none')
 
     await wrapper.setProps({ if: true })
     // After changing to visible, the style should no longer contain display: none
     expect(
-      wrapper.find('.formkit-field-wrapper').attributes('style')
+      wrapper.find('.enforma-field-wrapper').attributes('style')
     ).toBeFalsy()
   })
 
@@ -214,7 +214,7 @@ describe('FormKitField', () => {
     }
 
     const wrapper = mountTestComponent(
-      FormKitField,
+      EnformaField,
       {
         name: 'custom-field',
         label: 'Custom Field',

@@ -1,4 +1,4 @@
-// src/core/useFormKitField.ts
+// src/core/useEnformaField.ts
 import { computed, inject, mergeProps, onBeforeUnmount } from 'vue'
 import { formStateKey, formSchemaKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
@@ -10,7 +10,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 
 // Define the props interface
-export interface FormKitFieldProps {
+export interface EnformaFieldProps {
   name: string
   label?: string | null
   type?: string | null
@@ -29,7 +29,7 @@ export interface FormKitFieldProps {
   position?: number | null
 }
 
-export function useFormKitField(originalProps: FormKitFieldProps) {
+export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
   const formState = inject<FormController>(formStateKey) as FormController
   const { formConfig, getConfig } = useFormConfig()
@@ -38,7 +38,7 @@ export function useFormKitField(originalProps: FormKitFieldProps) {
   // Validate form context
   if (!formState) {
     console.error(
-      `FormKitField '${originalProps.name}' must be used within a FormKit form component`
+      `EnformaField '${originalProps.name}' must be used within a Enforma form component`
     )
   }
 

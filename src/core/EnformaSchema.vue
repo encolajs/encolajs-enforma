@@ -1,4 +1,4 @@
-<!-- src/core/FormKitSchema.vue -->
+<!-- src/core/EnformaSchema.vue -->
 <template>
   <div v-bind="$attrs">
     {{ sectionComponent }}
@@ -11,16 +11,16 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import type { FormKitSchema } from '@/types'
-import { useFormKitSchema } from './useFormKitSchema'
+import type { EnformaSchema } from '@/types'
+import { useEnformaSchema } from './useEnformaSchema'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = defineProps<{
-  schema: FormKitSchema
+  schema: EnformaSchema
 }>()
 
 const $attrs = useAttrs()
-const { sections } = useFormKitSchema(props.schema)
+const { sections } = useEnformaSchema(props.schema)
 const { getConfig } = useFormConfig()
 const sectionComponent = getConfig('components.section')
 </script>

@@ -3,7 +3,7 @@
  */
 
 import type { FormController } from '@/types'
-import { FormKitConfig } from '@/utils/useConfig'
+import { EnformaConfig } from '@/utils/useConfig'
 
 /**
  * Symbol for providing/injecting the form kit configuration

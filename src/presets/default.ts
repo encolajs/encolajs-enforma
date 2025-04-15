@@ -1,29 +1,29 @@
 import {
   DeepPartial,
-  FormKitConfig,
+  EnformaConfig,
   setGlobalConfig,
   getGlobalConfig,
 } from '@/utils/useConfig'
-import FormKitField from '@/core/FormKitField.vue'
-import FormKitSection from '@/core/FormKitSection.vue'
-import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
-import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
-import FormKitRepeatableAddButton from '@/core/FormKitRepeatableAddButton.vue'
-import FormKitRepeatableRemoveButton from '@/core/FormKitRepeatableRemoveButton.vue'
-import FormKitRepeatableMoveUpButton from '@/core/FormKitRepeatableMoveUpButton.vue'
-import FormKitRepeatableMoveDownButton from '@/core/FormKitRepeatableMoveDownButton.vue'
-import FormKitSubmitButton from '@/core/FormKitSubmitButton.vue'
-import FormKitResetButton from '@/core/FormKitResetButton.vue'
-import FormKitSchema from '@/core/FormKitSchema.vue'
+import EnformaField from '@/core/EnformaField.vue'
+import EnformaSection from '@/core/EnformaSection.vue'
+import EnformaRepeatable from '@/core/EnformaRepeatable.vue'
+import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
+import EnformaRepeatableAddButton from '@/core/EnformaRepeatableAddButton.vue'
+import EnformaRepeatableRemoveButton from '@/core/EnformaRepeatableRemoveButton.vue'
+import EnformaRepeatableMoveUpButton from '@/core/EnformaRepeatableMoveUpButton.vue'
+import EnformaRepeatableMoveDownButton from '@/core/EnformaRepeatableMoveDownButton.vue'
+import EnformaSubmitButton from '@/core/EnformaSubmitButton.vue'
+import EnformaResetButton from '@/core/EnformaResetButton.vue'
+import EnformaSchema from '@/core/EnformaSchema.vue'
 
 /**
  * Default preset configuration options
  */
 export interface DefaultPresetOptions {
   /** Override default components */
-  components?: Partial<FormKitConfig['components']>
+  components?: Partial<EnformaConfig['components']>
   /** Override default pass-through props */
-  pt?: Partial<FormKitConfig['pt']>
+  pt?: Partial<EnformaConfig['pt']>
 }
 
 /**
@@ -41,85 +41,85 @@ export default function useDefaultPreset(
   const currentConfig = getGlobalConfig()
 
   // Base default preset
-  const defaultPreset: DeepPartial<FormKitConfig> = {
+  const defaultPreset: DeepPartial<EnformaConfig> = {
     pt: {
       wrapper: {
-        class: 'formkit-field-wrapper',
+        class: 'enforma-field-wrapper',
       },
       wrapper__invalid: {
-        class: 'formkit-field-invalid',
+        class: 'enforma-field-invalid',
       },
       wrapper__required: {
-        class: 'formkit-field-required',
+        class: 'enforma-field-required',
       },
       label: {
-        class: 'formkit-label',
+        class: 'enforma-label',
       },
       required: {
-        class: 'formkit-label-required',
+        class: 'enforma-label-required',
         text: '*',
       },
       input: {
-        class: 'formkit-input',
+        class: 'enforma-input',
       },
       // Props for error messages
       error: {
-        class: 'formkit-error',
+        class: 'enforma-error',
       },
       help: {
-        class: 'formkit-help',
+        class: 'enforma-help',
       },
       repeatable: {
         wrapper: {
-          class: 'formkit-repeatable',
+          class: 'enforma-repeatable',
         },
         items: {
-          class: 'formkit-repeatable-items',
+          class: 'enforma-repeatable-items',
         },
         add: {
-          class: 'formkit-repeatable-add-button',
+          class: 'enforma-repeatable-add-button',
         },
         remove: {
-          class: 'formkit-repeatable-remove-button',
+          class: 'enforma-repeatable-remove-button',
         },
         moveUp: {
-          class: 'formkit-repeatable-move-up-button',
+          class: 'enforma-repeatable-move-up-button',
         },
         moveDown: {
-          class: 'formkit-repeatable-move-down-button',
+          class: 'enforma-repeatable-move-down-button',
         },
         actions: {
-          class: 'formkit-repeatable-actions',
+          class: 'enforma-repeatable-actions',
         },
         itemActions: {
-          class: 'formkit-repeatable-table-actions',
+          class: 'enforma-repeatable-table-actions',
         },
       },
       repeatable_table: {
         table: {
-          class: 'formkit-repeatable-table',
+          class: 'enforma-repeatable-table',
         },
         actionsTd: {
-          class: 'formkit-repeatable-table-actions',
+          class: 'enforma-repeatable-table-actions',
         },
       },
       section: {
-        class: 'formkit-section',
+        class: 'enforma-section',
       },
       ...options.pt,
     },
     components: {
-      field: FormKitField,
-      section: FormKitSection,
-      repeatable: FormKitRepeatable,
-      repeatableTable: FormKitRepeatableTable,
-      repeatableAddButton: FormKitRepeatableAddButton,
-      repeatableRemoveButton: FormKitRepeatableRemoveButton,
-      repeatableMoveUpButton: FormKitRepeatableMoveUpButton,
-      repeatableMoveDownButton: FormKitRepeatableMoveDownButton,
-      submitButton: FormKitSubmitButton,
-      resetButton: FormKitResetButton,
-      schema: FormKitSchema,
+      field: EnformaField,
+      section: EnformaSection,
+      repeatable: EnformaRepeatable,
+      repeatableTable: EnformaRepeatableTable,
+      repeatableAddButton: EnformaRepeatableAddButton,
+      repeatableRemoveButton: EnformaRepeatableRemoveButton,
+      repeatableMoveUpButton: EnformaRepeatableMoveUpButton,
+      repeatableMoveDownButton: EnformaRepeatableMoveDownButton,
+      submitButton: EnformaSubmitButton,
+      resetButton: EnformaResetButton,
+      schema: EnformaSchema,
       ...options.components,
     },
   }

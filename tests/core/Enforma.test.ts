@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import FormKit from '@/core/FormKit.vue'
+import Enforma from '../../src/core/Enforma.vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import { setGlobalConfig } from '@/utils/useConfig'
 import { h, inject } from 'vue'
@@ -20,7 +20,7 @@ const ResetButtonStub = {
   props: ['disabled'],
 }
 
-describe('FormKit', () => {
+describe('Enforma', () => {
   beforeEach(() => {
     // Reset global config before each test
     setGlobalConfig({
@@ -30,10 +30,10 @@ describe('FormKit', () => {
       },
       validateOn: 'submit',
       pt: {
-        label: { class: 'formkit-label' },
-        input: { class: 'formkit-input' },
-        error: { class: 'formkit-error' },
-        help: { class: 'formkit-help' },
+        label: { class: 'enforma-label' },
+        input: { class: 'enforma-input' },
+        error: { class: 'enforma-error' },
+        help: { class: 'enforma-help' },
         required: {
           text: '*',
           class: 'required-indicator',
@@ -44,7 +44,7 @@ describe('FormKit', () => {
 
   it('renders form with default slot content', async () => {
     const wrapper = mountTestComponent(
-      FormKit,
+      Enforma,
       {
         data: {},
         submitHandler: () => {},
@@ -76,21 +76,21 @@ describe('FormKit', () => {
       },
     }
 
-    const wrapper = mountTestComponent(FormKit, {
+    const wrapper = mountTestComponent(Enforma, {
       data: {},
       submitHandler: () => {},
       schema,
     })
 
     await wrapper.vm.$nextTick()
-    const schemaComponent = wrapper.findComponent({ name: 'FormKitSchema' })
+    const schemaComponent = wrapper.findComponent({ name: 'EnformaSchema' })
     expect(schemaComponent.exists()).toBe(true)
     expect(schemaComponent.props().schema).toEqual(schema)
   })
 
   it('emits submit-success event on successful form submission', async () => {
     const data = { name: 'test' }
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: data,
         submitHandler: () => Promise.resolve(true),
@@ -122,7 +122,7 @@ describe('FormKit', () => {
       throw error
     })
 
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         // Use our failing submit handler
@@ -150,7 +150,7 @@ describe('FormKit', () => {
   })
 
   it('shows reset button by default', async () => {
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
@@ -170,7 +170,7 @@ describe('FormKit', () => {
   })
 
   it('hides reset button when showResetButton is false', async () => {
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
@@ -204,7 +204,7 @@ describe('FormKit', () => {
       template: '<button type="submit">Custom Submit</button>',
     }
 
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
@@ -239,7 +239,7 @@ describe('FormKit', () => {
       },
     }
 
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
@@ -271,7 +271,7 @@ describe('FormKit', () => {
       email: 'email',
     }
 
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
@@ -296,7 +296,7 @@ describe('FormKit', () => {
       'email:email': 'Invalid email format',
     }
 
-    const wrapper = mount(FormKit, {
+    const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},

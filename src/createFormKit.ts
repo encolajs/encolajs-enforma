@@ -1,12 +1,12 @@
 import { App, Plugin } from 'vue'
-import { DeepPartial, FormKitConfig, setGlobalConfig } from './utils/useConfig'
+import { DeepPartial, EnformaConfig, setGlobalConfig } from './utils/useConfig'
 import { DEFAULT_CONFIG } from './constants/defaults'
 import { deepMerge, mergeConfigs } from './utils/configUtils'
 import { useValidation } from './utils/useValidation'
 import { fallbackTranslate } from './utils/useTranslation'
 import useDefaultPreset from './presets/default'
 
-function configureValidation(options: DeepPartial<FormKitConfig>) {
+function configureValidation(options: DeepPartial<EnformaConfig>) {
   const validation = useValidation()
   const rules = options.rules || {}
   const messages = options.messages || {}
@@ -24,7 +24,7 @@ function configureValidation(options: DeepPartial<FormKitConfig>) {
 }
 
 // Export a factory function for easier instantiation
-export default function createFormKit(options: FormKitConfig): Plugin {
+export default function createEnforma(options: EnformaConfig): Plugin {
   return {
     install(app: App): void {
       // Set global configuration by merging defaults with provided config

@@ -11,5 +11,9 @@
     <router-link to="/formkit-schema" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-4">
       FormKit with Schema
     </router-link>
+    &nbsp;
+    <router-link to="/primevue/autocomplete" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-4">
+      PrimeVue Autocomplete
+    </router-link>
   </p>
 </template>

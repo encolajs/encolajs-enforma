@@ -3,25 +3,25 @@ import { type messageFormatter } from '@encolajs/validator'
  * Default configuration values for the form kit
  */
 
-import { FormKitConfig } from '@/utils/useConfig'
-import FormKitField from '@/core/FormKitField.vue'
-import FormKitSection from '@/core/FormKitSection.vue'
-import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
-import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
-import FormKitRepeatableAddButton from '@/core/FormKitRepeatableAddButton.vue'
-import FormKitRepeatableRemoveButton from '@/core/FormKitRepeatableRemoveButton.vue'
-import FormKitRepeatableMoveUpButton from '@/core/FormKitRepeatableMoveUpButton.vue'
-import FormKitRepeatableMoveDownButton from '@/core/FormKitRepeatableMoveDownButton.vue'
-import FormKitSubmitButton from '@/core/FormKitSubmitButton.vue'
-import FormKitResetButton from '@/core/FormKitResetButton.vue'
-import FormKitSchema from '@/core/FormKitSchema.vue'
+import { EnformaConfig } from '@/utils/useConfig'
+import EnformaField from '@/core/EnformaField.vue'
+import EnformaSection from '@/core/EnformaSection.vue'
+import EnformaRepeatable from '@/core/EnformaRepeatable.vue'
+import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
+import EnformaRepeatableAddButton from '@/core/EnformaRepeatableAddButton.vue'
+import EnformaRepeatableRemoveButton from '@/core/EnformaRepeatableRemoveButton.vue'
+import EnformaRepeatableMoveUpButton from '@/core/EnformaRepeatableMoveUpButton.vue'
+import EnformaRepeatableMoveDownButton from '@/core/EnformaRepeatableMoveDownButton.vue'
+import EnformaSubmitButton from '@/core/EnformaSubmitButton.vue'
+import EnformaResetButton from '@/core/EnformaResetButton.vue'
+import EnformaSchema from '@/core/EnformaSchema.vue'
 
 /**
  * Minimal default configuration for the form kit
  * This contains only the essential options needed for the form kit to work
  * Additional configuration is provided by presets
  */
-export const DEFAULT_CONFIG: FormKitConfig = {
+export const DEFAULT_CONFIG: EnformaConfig = {
   /**
    * Default behavior configuration
    */

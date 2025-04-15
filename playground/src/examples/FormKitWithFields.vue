@@ -160,10 +160,10 @@
 </template>
 
 <script setup>
-import FormKit from '@/../src/core/FormKit.vue'
-import FormKitField from '@/../src/core/FormKitField.vue'
+import FormKit from '@/core/Enforma.vue'
+import FormKitField from '@/core/EnformaField.vue'
 import {InputText, DatePicker, Select, Button, ToggleSwitch} from 'primevue'
-import FormKitRepeatableTable from '@/core/FormKitRepeatableTable.vue'
+import FormKitRepeatableTable from '@/core/EnformaRepeatableTable.vue'
 import { ref } from 'vue'
 import formConfig from '../utils/formConfig'
 

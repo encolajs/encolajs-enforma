@@ -1,10 +1,11 @@
 import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
+import Autocomplete from './primevue/Autocomplete.vue'
 import { InputText, Select } from 'primevue'
 import { FieldController, FormController } from '@/types'
 import {
   DeepPartial,
-  FormKitConfig,
+  EnformaConfig,
   setGlobalConfig,
   getGlobalConfig,
 } from '@/utils/useConfig'
@@ -12,6 +13,7 @@ import {
 const fieldMap: Record<string, any> = {
   input: InputText,
   select: Select,
+  autocomplete: Autocomplete,
 }
 
 function fieldPropsTransformer(
@@ -34,7 +36,7 @@ function fieldPropsTransformer(
 export default function usePrimeVuePreset(): void {
   const currentConfig = getGlobalConfig()
 
-  const primeVuePreset: DeepPartial<FormKitConfig> = {
+  const primeVuePreset: DeepPartial<EnformaConfig> = {
     pt: {
       actions: {
         class: 'flex gap-2',

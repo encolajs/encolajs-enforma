@@ -1,4 +1,4 @@
-<!-- src/core/FormKitField.vue -->
+<!-- src/core/EnformaField.vue -->
 <template>
   <div v-bind="props.wrapper" v-show="props.if">
     <label v-if="!props.hideLabel && fieldOptions.label" v-bind="props.label">
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { useFormKitField } from './useFormKitField'
+import { useEnformaField } from './useEnformaField'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -54,5 +54,5 @@ const originalProps = defineProps({
 
 // Use the extracted composable
 const { fieldOptions, fieldState, errorMessage, requiredIndicator, props, t } =
-  useFormKitField(originalProps)
+  useEnformaField(originalProps)
 </script>

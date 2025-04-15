@@ -2,7 +2,7 @@
  * Utility functions for evaluating expressions within the form kit
  */
 
-import { FormKitConfig } from '@/utils/useConfig'
+import { EnformaConfig } from '@/utils/useConfig'
 
 /**
  * Custom error class for expression evaluation errors
@@ -41,14 +41,14 @@ function logExpressionError(
 ): void {
   if (process.env.NODE_ENV !== 'production') {
     if (error instanceof ExpressionError) {
-      console.error(`[FormKit Expression Error] ${error.message}`, {
+      console.error(`[Enforma Expression Error] ${error.message}`, {
         expression: error.expression,
         originalError: error.originalError,
         context: error.context,
       })
     } else {
       console.error(
-        `[FormKit Expression Error] Error evaluating expression: ${expression}`,
+        `[Enforma Expression Error] Error evaluating expression: ${expression}`,
         {
           error,
           expression,
@@ -58,7 +58,7 @@ function logExpressionError(
     }
   } else {
     // In production, use simpler logging
-    console.error(`[FormKit] Expression evaluation error: ${error.message}`)
+    console.error(`[Enforma] Expression evaluation error: ${error.message}`)
   }
 }
 
@@ -273,7 +273,7 @@ export function evaluateCondition(
  */
 export function containsExpression(
   value: string,
-  config: FormKitConfig
+  config: EnformaConfig
 ): boolean {
   const { start, end } =
     config.expressions?.delimiters ?? DEFAULT_OPTIONS.delimiters
@@ -286,7 +286,7 @@ export function containsExpression(
 export function evaluateTemplateString(
   template: string,
   context: ExpressionContext,
-  config: FormKitConfig
+  config: EnformaConfig
 ): string {
   // Input validation
   if (!template || typeof template !== 'string') {
@@ -362,7 +362,7 @@ export function evaluateTemplateString(
 export function evaluateObject<T extends Record<string, any>>(
   obj: T,
   context: ExpressionContext,
-  config: FormKitConfig
+  config: EnformaConfig
 ): T {
   // Input validation
   if (obj == null || typeof obj !== 'object') {
@@ -440,7 +440,7 @@ export function evaluateObject<T extends Record<string, any>>(
     // Log any errors that occurred during evaluation
     if (errors.length > 0 && process.env.NODE_ENV !== 'production') {
       console.warn(
-        `[FormKit] ${errors.length} expression errors occurred during object evaluation:`,
+        `[Enforma] ${errors.length} expression errors occurred during object evaluation:`,
         errors.map((e) => e.message)
       )
     }

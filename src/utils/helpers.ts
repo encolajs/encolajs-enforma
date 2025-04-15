@@ -1,5 +1,5 @@
 /**
- * Shared helper functions used across the FormKit codebase
+ * Shared helper functions used across the Enforma codebase
  */
 
 /**
@@ -80,7 +80,7 @@ export function safeExecute<T>(
     return fn()
   } catch (error) {
     if (logError && process.env.NODE_ENV !== 'production') {
-      console.error(`[FormKit] Error in ${errorContext}:`, error)
+      console.error(`[Enforma] Error in ${errorContext}:`, error)
     }
     return fallbackValue
   }

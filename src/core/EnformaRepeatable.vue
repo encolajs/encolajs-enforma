@@ -1,4 +1,4 @@
-<!-- src/core/FormKitRepeatable.vue -->
+<!-- src/core/EnformaRepeatable.vue -->
 <template>
   <div
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.wrapper') || {})"
@@ -169,8 +169,8 @@ import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
   RepeatableAnimationOptions,
-  useFormKitRepeatable,
-} from './useFormKitRepeatable'
+  useEnformaRepeatable,
+} from './useEnformaRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
@@ -183,7 +183,7 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 
 const $attrs = useAttrs()
 const { isVisible, fields, component, componentProps, useAnimations, animationStyles } =
-  useFormKitRepeatable(props)
+  useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
 
 // Used to store unique keys for items to maintain animation state

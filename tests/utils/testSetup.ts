@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { DEFAULT_CONFIG } from '../../src/constants/defaults'
 import { formConfigKey } from '../../src/constants/symbols'
 import {
-  FormKitConfig,
+  EnformaConfig,
   setGlobalConfig,
   getGlobalConfig,
 } from '../../src/utils/useConfig'
@@ -22,7 +22,7 @@ import useDefaultPreset from '../../src/presets/default'
 export function mountTestComponent(
   component: any,
   props: Record<string, any> = {},
-  config: Partial<FormKitConfig> = {},
+  config: Partial<EnformaConfig> = {},
   slots: Record<string, string> = {}
 ) {
   // Reset global config to default

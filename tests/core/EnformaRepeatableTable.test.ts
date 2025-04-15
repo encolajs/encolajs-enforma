@@ -1,67 +1,41 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import FormKitRepeatable from '@/core/FormKitRepeatable.vue'
-// @ts-ignore
+import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
 import { useForm } from '@/headless/useForm'
-// @ts-ignore
 import { useValidation } from '@/utils/useValidation'
-import {
-  formStateKey,
-  formConfigKey,
-  formSchemaKey,
-  // @ts-ignore
-} from '@/constants/symbols'
-// @ts-ignore
+import { formStateKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
 
 // Stub components for testing
-const FormKitFieldStub = {
-  name: 'FormKitField',
-  template: '<div class="formkit-field">{{ name }}</div>',
+const EnformaFieldStub = {
+  name: 'EnformaField',
+  template: '<div class="enforma-field">{{ name }}</div>',
   props: ['name'],
 }
 
-const FormKitRepeatableAddButtonStub = {
-  name: 'FormKitRepeatableAddButton',
+const EnformaRepeatableAddButtonStub = {
+  name: 'EnformaRepeatableAddButton',
   template: '<button type="button" class="add-button">Add</button>',
 }
 
-const FormKitRepeatableRemoveButtonStub = {
-  name: 'FormKitRepeatableRemoveButton',
+const EnformaRepeatableRemoveButtonStub = {
+  name: 'EnformaRepeatableRemoveButton',
   template: '<button type="button" class="remove-button">Remove</button>',
 }
 
-const FormKitRepeatableMoveUpButtonStub = {
-  name: 'FormKitRepeatableMoveUpButton',
+const EnformaRepeatableMoveUpButtonStub = {
+  name: 'EnformaRepeatableMoveUpButton',
   template: '<button type="button" class="move-up-button">Move Up</button>',
 }
 
-const FormKitRepeatableMoveDownButtonStub = {
-  name: 'FormKitRepeatableMoveDownButton',
+const EnformaRepeatableMoveDownButtonStub = {
+  name: 'EnformaRepeatableMoveDownButton',
   template: '<button type="button" class="move-down-button">Move Down</button>',
 }
 
-// Custom components for component-based subfields testing
-const CustomComponent = {
-  name: 'CustomComponent',
-  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }}</div>',
-  props: ['name', 'index', 'value', 'listLength'],
-}
-
-const CustomComponentWithExtraProps = {
-  name: 'CustomComponentWithExtraProps',
-  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }} - {{ extraProp }}</div>',
-  props: ['name', 'index', 'value', 'listLength', 'extraProp'],
-}
-
-const SimpleCustomComponent = {
-  name: 'SimpleCustomComponent',
-  template: '<div class="custom-component">Custom</div>',
-}
-
-describe('FormKitRepeatable', () => {
+describe('EnformaRepeatableTable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
   // Create real form state with validation
@@ -84,9 +58,9 @@ describe('FormKitRepeatable', () => {
   // Helper function to create test wrapper with all required injections
   const createTestWrapper = (props = {}, formState = createFormState()) => {
     const TestWrapper = {
-      template: '<FormKitRepeatable v-bind="props" />',
+      template: '<EnformaRepeatableTable v-bind="props" />',
       components: {
-        FormKitRepeatable,
+        EnformaRepeatableTable,
       },
       setup() {
         // Provide injections in setup
@@ -98,7 +72,7 @@ describe('FormKitRepeatable', () => {
         return {
           props: {
             name: 'items',
-            type: 'repeatable',
+            type: 'repeatable_table',
             subfields: {},
             ...props,
           },
@@ -106,14 +80,11 @@ describe('FormKitRepeatable', () => {
       },
       global: {
         components: {
-          FormKitField: FormKitFieldStub,
-          FormKitRepeatableAddButton: FormKitRepeatableAddButtonStub,
-          FormKitRepeatableRemoveButton: FormKitRepeatableRemoveButtonStub,
-          FormKitRepeatableMoveUpButton: FormKitRepeatableMoveUpButtonStub,
-          FormKitRepeatableMoveDownButton: FormKitRepeatableMoveDownButtonStub,
-          CustomComponent,
-          CustomComponentWithExtraProps,
-          SimpleCustomComponent,
+          EnformaField: EnformaFieldStub,
+          EnformaRepeatableAddButton: EnformaRepeatableAddButtonStub,
+          EnformaRepeatableRemoveButton: EnformaRepeatableRemoveButtonStub,
+          EnformaRepeatableMoveUpButton: EnformaRepeatableMoveUpButtonStub,
+          EnformaRepeatableMoveDownButton: EnformaRepeatableMoveDownButtonStub,
         },
       },
     }
@@ -128,54 +99,80 @@ describe('FormKitRepeatable', () => {
     })
 
     it('errors when mounted without form context', () => {
-      mount(FormKitRepeatable, {
+      mount(EnformaRepeatableTable, {
         props: {
           name: 'items',
-          type: 'repeatable',
+          type: 'repeatable_table',
           subfields: {},
         },
         global: {
           components: {
-            FormKitField: FormKitFieldStub,
-            FormKitRepeatableAddButton: FormKitRepeatableAddButtonStub,
-            FormKitRepeatableRemoveButton: FormKitRepeatableRemoveButtonStub,
-            FormKitRepeatableMoveUpButton: FormKitRepeatableMoveUpButtonStub,
-            FormKitRepeatableMoveDownButton:
-              FormKitRepeatableMoveDownButtonStub,
+            EnformaField: EnformaFieldStub,
+            EnformaRepeatableAddButton: EnformaRepeatableAddButtonStub,
+            EnformaRepeatableRemoveButton: EnformaRepeatableRemoveButtonStub,
+            EnformaRepeatableMoveUpButton: EnformaRepeatableMoveUpButtonStub,
+            EnformaRepeatableMoveDownButton:
+              EnformaRepeatableMoveDownButtonStub,
           },
         },
       })
 
       expect(consoleError).toHaveBeenCalledWith(
-        expect.stringContaining('must be used within a FormKit form component')
+        expect.stringContaining('must be used within a Enforma form component')
       )
     })
   })
 
-  describe('subfield rendering', () => {
-    it('renders subfields for each item', async () => {
-      const formState = createFormState({
-        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
-      })
+  describe('table structure', () => {
+    it('renders table headers from subfield labels', async () => {
       const subfields = {
         name: {
-          type: 'input',
+          type: 'text',
           name: 'name',
+          label: 'Full Name',
+        },
+        email: {
+          type: 'email',
+          name: 'email',
+          label: 'Email Address',
         },
       }
 
-      const wrapper = createTestWrapper({ subfields }, formState)
+      const wrapper = createTestWrapper({ subfields })
       await flushPromises()
 
-      const fields = wrapper.findAllComponents(FormKitFieldStub)
-      expect(fields).toHaveLength(2)
-      expect(fields[0].props().name).toBe('items.0.name')
-      expect(fields[1].props().name).toBe('items.1.name')
+      const headers = wrapper.findAll('th')
+      expect(headers).toHaveLength(3) // 2 fields + actions column
+      expect(headers[0].text()).toBe('Full Name')
+      expect(headers[1].text()).toBe('Email Address')
+      expect(headers[2].text()).toBe('')
     })
 
-    it('renders multiple subfields per item', async () => {
+    it('uses field key as header when label is not provided', async () => {
+      const subfields = {
+        name: {
+          type: 'text',
+          name: 'name',
+        },
+        email: {
+          type: 'email',
+          name: 'email',
+        },
+      }
+
+      const wrapper = createTestWrapper({ subfields })
+      await flushPromises()
+
+      const headers = wrapper.findAll('th')
+      expect(headers[0].text()).toBe('name')
+      expect(headers[1].text()).toBe('email')
+    })
+  })
+
+  describe('subfield rendering', () => {
+    it('renders subfields in table cells', async () => {
       const formState = createFormState({
-        items: [{ name: 'Item 1', email: 'item1@test.com' }],
+        items: [{ name: 'John Doe', email: 'john@example.com' }],
       })
       const subfields = {
         name: {
@@ -191,7 +188,7 @@ describe('FormKitRepeatable', () => {
       const wrapper = createTestWrapper({ subfields }, formState)
       await flushPromises()
 
-      const fields = wrapper.findAllComponents(FormKitFieldStub)
+      const fields = wrapper.findAllComponents(EnformaFieldStub)
       expect(fields).toHaveLength(2)
       expect(fields[0].props().name).toBe('items.0.name')
       expect(fields[1].props().name).toBe('items.0.email')
@@ -210,7 +207,7 @@ describe('FormKitRepeatable', () => {
       )
       await flushPromises()
 
-      const addButton = wrapper.find('.formkit-repeatable-add-button')
+      const addButton = wrapper.find('.enforma-repeatable-add-button')
       expect(addButton.exists()).toBe(true)
     })
 
@@ -227,11 +224,11 @@ describe('FormKitRepeatable', () => {
       )
       await flushPromises()
 
-      const addButton = wrapper.find('.formkit-repeatable-add-button')
+      const addButton = wrapper.find('.add-button')
       expect(addButton.exists()).toBe(false)
     })
 
-    it('shows button on each item min items', async () => {
+    it('shows remove button on each item when above min items', async () => {
       const formState = createFormState({
         items: [{ name: 'Item 1' }, { name: 'Item 2' }],
       })
@@ -244,7 +241,7 @@ describe('FormKitRepeatable', () => {
       )
       await flushPromises()
 
-      const removeButtons = wrapper.findAll('.formkit-repeatable-remove-button')
+      const removeButtons = wrapper.findAll('.enforma-repeatable-remove-button')
       expect(removeButtons).toHaveLength(2)
     })
 
@@ -261,13 +258,13 @@ describe('FormKitRepeatable', () => {
       await flushPromises()
 
       const moveUpButtons = wrapper.findAll(
-        '.formkit-repeatable-move-up-button'
+        '.enforma-repeatable-move-up-button'
       )
       expect(moveUpButtons[0].attributes()['disabled']).toBe('')
       expect(moveUpButtons[1].attributes()['disabled']).toBeUndefined()
 
       const moveDownButtons = wrapper.findAll(
-        '.formkit-repeatable-move-down-button'
+        '.enforma-repeatable-move-down-button'
       )
       expect(moveDownButtons[1].attributes()['disabled']).toBeUndefined()
       expect(moveDownButtons[2].attributes()['disabled']).toBe('')
@@ -310,7 +307,7 @@ describe('FormKitRepeatable', () => {
       const wrapper = createTestWrapper({ subfields: {} }, formState)
       await flushPromises()
 
-      const fields = wrapper.findAllComponents(FormKitFieldStub)
+      const fields = wrapper.findAllComponents(EnformaFieldStub)
       expect(fields).toHaveLength(0)
     })
 
@@ -324,9 +321,9 @@ describe('FormKitRepeatable', () => {
       )
       await flushPromises()
 
-      const fields = wrapper.findAllComponents(FormKitFieldStub)
+      const fields = wrapper.findAllComponents(EnformaFieldStub)
       expect(fields).toHaveLength(0)
-      const addButton = wrapper.find('.formkit-repeatable-add-button')
+      const addButton = wrapper.find('.enforma-repeatable-add-button')
       expect(addButton.exists()).toBe(true)
     })
 
@@ -341,7 +338,7 @@ describe('FormKitRepeatable', () => {
       )
       await flushPromises()
 
-      const fields = wrapper.findAllComponents(FormKitFieldStub)
+      const fields = wrapper.findAllComponents(EnformaFieldStub)
       expect(fields).toHaveLength(0)
     })
   })
@@ -360,90 +357,6 @@ describe('FormKitRepeatable', () => {
       const unregisterSpy = vi.spyOn(formState, 'removeField')
       wrapper.unmount()
       expect(unregisterSpy).toHaveBeenCalledWith('items')
-    })
-  })
-
-  describe('component-based subfields', () => {
-    it('renders component for each item when component prop is provided', async () => {
-      const formState = createFormState({
-        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
-      })
-      const wrapper = createTestWrapper(
-        {
-          component: CustomComponent,
-        },
-        formState
-      )
-
-      await flushPromises()
-
-      const components = wrapper.findAll('.custom-component')
-      expect(components).toHaveLength(2)
-      expect(components[0].text()).toContain('items.0 - 0')
-      expect(components[1].text()).toContain('items.1 - 1')
-    })
-
-    it('passes additional props to component when componentProps is provided', async () => {
-      const formState = createFormState({
-        items: [{ name: 'Item 1' }],
-      })
-      const wrapper = createTestWrapper(
-        {
-          component: CustomComponentWithExtraProps,
-          componentProps: {
-            extraProp: 'test',
-          },
-        },
-        formState
-      )
-
-      await flushPromises()
-
-      const component = wrapper.find('.custom-component')
-      expect(component.text()).toBe('items.0 - 0 - {\n' +
-        '  "name": "Item 1"\n' +
-        '} - 1 - test')
-    })
-
-    it('prioritizes component over subfields when both are provided', async () => {
-      const formState = createFormState({
-        items: [{ name: 'Item 1' }],
-      })
-      const wrapper = createTestWrapper(
-        {
-          component: SimpleCustomComponent,
-          subfields: {
-            name: {
-              type: 'text',
-              name: 'name',
-            },
-          },
-        },
-        formState
-      )
-
-      await flushPromises()
-
-      const customComponent = wrapper.find('.custom-component')
-      expect(customComponent.exists()).toBe(true)
-      expect(wrapper.findAllComponents(FormKitFieldStub)).toHaveLength(0)
-    })
-
-    it('handles empty items array with component', async () => {
-      const formState = createFormState({ items: [] })
-      const wrapper = createTestWrapper(
-        {
-          component: SimpleCustomComponent,
-        },
-        formState
-      )
-
-      await flushPromises()
-
-      const customComponent = wrapper.find('.custom-component')
-      expect(customComponent.exists()).toBe(false)
-      const addButton = wrapper.find('.formkit-repeatable-add-button')
-      expect(addButton.exists()).toBe(true)
     })
   })
 })
