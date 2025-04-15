@@ -5,3 +5,4 @@ npm-debug.log
 tmp/coverage/*
 coverage
 temp
+docs/.vitepress/cache/

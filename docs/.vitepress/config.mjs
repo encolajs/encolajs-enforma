@@ -16,70 +16,98 @@ export default defineConfig({
     ],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/' },
-      { text: 'API', link: '/api/' }
+      { text: 'Getting Started', link: '/getting-started/' },
+      { text: 'Guides', link: '/guides/' },
+      { text: 'Components', link: '/components/' },
+      { text: 'Headless', link: '/headless/' },
+      { text: 'API', link: '/api/' },
+      { text: 'Examples', link: '/examples/' }
     ],
     sidebar: {
-      '/guide/': [
+      '/getting-started/': [
         {
           text: 'Getting Started',
           items: [
-            { text: 'Introduction', link: '/guide/' }
+            { text: 'Introduction', link: '/getting-started/' },
+            { text: 'Installation', link: '/getting-started/installation' },
+            { text: 'Quick Start', link: '/getting-started/quick-start' }
           ]
-        },
+        }
+      ],
+      '/components/': [
         {
-          text: 'Rendering forms',
-          collapsed: false,
+          text: 'Components',
           items: [
-            { text: 'Headless components', link: '/guide/rendering/headless-components' },
-            { text: 'Field components', link: '/guide/rendering/field-components' },
-            { text: 'Form Schema', link: '/guide/rendering/form-schema' },
-            { text: 'Mix and match', link: '/guide/rendering/mixed-and-match' }
+            { text: 'Overview', link: '/components/' },
+            { text: 'Form', link: '/components/form' },
+            { text: 'Field', link: '/components/field' },
+            { text: 'Repeatable', link: '/components/repeatable' },
+            { text: 'Repeatable Table', link: '/components/repeatable-table' },
+            { text: 'Section', link: '/components/section' },
+            { text: 'Schema', link: '/components/schema' },
+            { text: 'Buttons', link: '/components/buttons' }
           ]
-        },
+        }
+      ],
+      '/headless/': [
         {
-          text: 'Using headless components',
-          collapsed: false,
+          text: 'Headless Components',
           items: [
-            { text: 'Overview', link: '/guide/headless-components/' },
-            { text: 'Headless Form', link: '/guide/headless-components/form' },
-            { text: 'Headless Field', link: '/guide/headless-components/field' },
-            { text: 'Headless Repeatable', link: '/guide/headless-components/repeatable' },
+            { text: 'Overview', link: '/headless/' },
+            { text: 'Form', link: '/headless/form' },
+            { text: 'Field', link: '/headless/field' },
+            { text: 'Repeatable', link: '/headless/repeatable' },
+            { text: 'Building Custom Components', link: '/headless/custom' }
           ]
-        },
+        }
+      ],
+      '/presets/': [
         {
-          text: 'Using Enforma field components',
-          collapsed: false,
+          text: 'UI Presets',
           items: [
-            { text: 'Overview', link: '/guide/field-components/' },
-            { text: 'Headless Form', link: '/guide/field-components/form' },
-            { text: 'Headless Field', link: '/guide/field-components/field' },
-            { text: 'Headless Repeatable', link: '/guide/field-components/repeatable' },
-            { text: 'Headless Repeatable Table', link: '/guide/field-components/repeatable-table' },
+            { text: 'Overview', link: '/presets/' },
+            { text: 'PrimeVue', link: '/presets/primevue' },
+            { text: 'Vuetify', link: '/presets/vuetify' },
+            { text: 'Creating Custom Presets', link: '/presets/custom' }
           ]
-        },
+        }
+      ],
+      '/guides/': [
         {
-          text: 'Using Enforma schema',
-          collapsed: false,
+          text: 'Conceptual Guides',
           items: [
-            { text: 'Overview', link: '/guide/schema/' },
+            { text: 'Overview', link: '/guides/' },
+            { text: 'Form Schema', link: '/guides/schema' },
+            { text: 'Form State', link: '/guides/state' },
+            { text: 'Validation', link: '/guides/validation' },
+            { text: 'Form Events', link: '/guides/events' },
+            { text: 'Performance', link: '/guides/performance' }
           ]
-        },
-        {
-          text: 'Presets',
-          collapsed: false,
-          items: [
-            { text: 'Overview', link: '/guide/presets/' },
-            { text: 'PrimeVue', link: '/guide/presets/primevue' },
-            { text: 'Vuetify', link: '/guide/presets/vuetify' },
-          ]
-        },
+        }
       ],
       '/api/': [
         {
           text: 'API Reference',
           items: [
             { text: 'Overview', link: '/api/' },
+            { text: 'Components API', link: '/api/components' },
+            { text: 'Headless API', link: '/api/headless' },
+            { text: 'Presets API', link: '/api/presets' },
+            { text: 'Utilities API', link: '/api/utilities' },
+            { text: 'Type Definitions', link: '/api/types' }
+          ]
+        }
+      ],
+      '/examples/': [
+        {
+          text: 'Examples',
+          items: [
+            { text: 'Overview', link: '/examples/' },
+            { text: 'Basic Forms', link: '/examples/basic' },
+            { text: 'Complex Forms', link: '/examples/complex' },
+            { text: 'Dynamic Forms', link: '/examples/dynamic' },
+            { text: 'Form Validation', link: '/examples/validation' },
+            { text: 'Custom Components', link: '/examples/custom' }
           ]
         }
       ]
@@ -90,4 +118,4 @@ export default defineConfig({
         'Copyright © 2025-present EncolaJS & Contributors',
     },
   }
-}) 
+})

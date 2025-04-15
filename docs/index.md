@@ -2,36 +2,45 @@
 layout: home
 sidebar: false
 
-title: EncolaJS Validator
-titleTemplate: Simple validation for browser and server
+title: EncolaJS Enforma
+titleTemplate: Schema-driven form builder for Vue applications
 
 hero:
-  name: EncolaJS Validator
-  text: Simple & powerful validator for browser and Node
-  tagline: A powerful, flexible validation library for complex validation scenarios. Excellent DX.
+  name: EncolaJS Enforma
+  text: Build powerful forms with ease
+  tagline: A flexible, schema-driven form library for Vue.js. Create everything from simple forms to complex, dynamic forms with validation.
   image:
-    src: /encolajs-validator-abstract.png
-    alt: EncolaJS Validator code
+    src: /encolajs-enforma-abstract.png
+    alt: EncolaJS Enforma
 
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/
+      link: /getting-started/
 
     - theme: alt
       text: View on GitHub
-      link: https://github.com/encolajs/encolajs-validator
+      link: https://github.com/encolajs/encolajs-enforma
 
 features:
-  - icon: 🧜
-    title: Rich Validation Rule Set
-    details: Extensive collection of built-in validation rules for numbers, strings, arrays and date.
-  - icon: 🧜
-    title: Path-based Validation
-    details: Support for nested objects and arrays. If you are familiar with Laravel, you'll feel at home
-  - icon: 🎡
-    title: Extensible
-    details: Easy to add custom validation rules and change the error messages
+  - icon: 📝
+    title: Schema-Driven Forms
+    details: Define your forms using a simple, declarative JSON schema. No more boilerplate code.
+  - icon: 🧩
+    title: Headless Architecture
+    details: Complete control over your UI with headless components and composables. Bring your own CSS.
+  - icon: ✅
+    title: Powerful Validation
+    details: Comprehensive validation system with built-in rules and custom validation support.
+  - icon: 🔄
+    title: Reactive State
+    details: Form state is fully reactive and accessible throughout your component tree.
+  - icon: 📊
+    title: Complex Data Handling
+    details: Built-in support for nested forms, repeatable fields, and complex data structures.
+  - icon: 🎨
+    title: UI Framework Integration
+    details: Ready-to-use integrations with popular UI frameworks like PrimeVue and Vuetify.
 ---
 
 <style>
