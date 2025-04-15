@@ -318,6 +318,123 @@ describe('useForm', () => {
       // Restore console.error
       consoleErrorSpy.mockRestore()
     })
+    
+    test('should pass form controller to submit handler', async () => {
+      const submitHandler = vi.fn()
+      const form = useForm(
+        order,
+        {},
+        {
+          submitHandler,
+        }
+      )
+
+      await form.submit()
+
+      expect(submitHandler).toHaveBeenCalledWith(
+        order, // Values
+        expect.any(Object) // Form controller - checking exact form is problematic due to proxy
+      )
+      // Verify the form controller has the expected methods
+      const formController = submitHandler.mock.calls[0][1]
+      expect(typeof formController.setFieldErrors).toBe('function')
+      expect(typeof formController.setErrors).toBe('function')
+    })
+    
+    test('should pass form controller to onSubmitError handler', async () => {
+      const error = new Error('API error')
+      const submitHandler = vi.fn().mockRejectedValue(error)
+      const onSubmitError = vi.fn()
+      
+      const form = useForm(
+        order,
+        {},
+        {
+          submitHandler,
+          onSubmitError
+        }
+      )
+
+      await form.submit()
+
+      expect(onSubmitError).toHaveBeenCalledWith(
+        error, // Error object
+        expect.any(Object) // Form controller
+      )
+      
+      // Verify the form controller has the expected methods
+      const formController = onSubmitError.mock.calls[0][1]
+      expect(typeof formController.setFieldErrors).toBe('function')
+      expect(typeof formController.setErrors).toBe('function')
+    })
+    
+    test('should set field errors directly using setFieldErrors', async () => {
+      const form = useForm(order)
+      
+      form.setFieldErrors('items.0.price', ['Custom error message'])
+      
+      expect(form['items.0.price.$errors']).toEqual(['Custom error message'])
+      expect(form['items.0.price.$isTouched']).toBe(true)
+    })
+    
+    test('should set multiple field errors using setErrors', async () => {
+      const form = useForm(order)
+      
+      form.setErrors({
+        'items.0.price': ['Price error'],
+        'items.1.quantity': ['Quantity error']
+      })
+      
+      expect(form['items.0.price.$errors']).toEqual(['Price error'])
+      expect(form['items.1.quantity.$errors']).toEqual(['Quantity error'])
+      expect(form['items.0.price.$isTouched']).toBe(true)
+      expect(form['items.1.quantity.$isTouched']).toBe(true)
+    })
+    
+    test('should handle API validation errors in submit handler', async () => {
+      // Simulate an API returning validation errors
+      const mockSetErrors = vi.fn();
+      const submitHandler = vi.fn().mockImplementation((values, form) => {
+        // Verify the form controller has setErrors method
+        expect(typeof form.setErrors).toBe('function');
+        
+        // Call setErrors manually since we'll use mockSetErrors to verify
+        form.setErrors({
+          'items.0.price': ['Price must be at least $50'],
+          'address.line1': ['Address is required']
+        });
+        
+        // Record that setErrors was called
+        mockSetErrors(form);
+        
+        // Simulate throwing an error that would come from a failed API call
+        throw new Error('Validation failed');
+      });
+      
+      const form = useForm(
+        order,
+        {},
+        {
+          submitHandler
+        }
+      );
+
+      // Get field state reference before submit
+      const priceFieldBefore = form.getField('items.0.price');
+      const addressFieldBefore = form.getField('address.line1');
+      
+      const result = await form.submit();
+      
+      // Verify setErrors was called
+      expect(mockSetErrors).toHaveBeenCalled();
+      
+      // Verify the validation result
+      expect(result).toBe(false);
+      
+      // Verify field errors were set
+      expect(priceFieldBefore.$errors).toContain('Price must be at least $50');
+      expect(addressFieldBefore.$errors).toContain('Address is required');
+    })
 
     test('should handle validation errors in validateField', async () => {
       // Mock console.error to prevent test output pollution
@@ -378,7 +495,10 @@ describe('useForm', () => {
       // Check that submit failed and error handler was called
       expect(submitted).toBe(false)
       expect(errorHandler).toHaveBeenCalled()
-      expect(onErrorHandler).toHaveBeenCalledWith(expect.any(Error))
+      expect(onErrorHandler).toHaveBeenCalledWith(
+        expect.any(Error), 
+        expect.any(Object)
+      )
     })
 
     test('should handle validation errors during submit', async () => {

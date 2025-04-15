@@ -25,12 +25,6 @@ export default defineComponent({
         return Promise.resolve(true)
       },
     },
-    validateOn: {
-      type: String as PropType<'input' | 'change' | 'blur' | 'submit'>,
-      default: 'change',
-      validator: (value: string) =>
-        ['input', 'change', 'blur', 'submit'].includes(value),
-    },
   },
 
   emits: ['submit-success', 'submit-error', 'validation-error', 'reset'],

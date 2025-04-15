@@ -30,13 +30,13 @@ export interface FormOptions {
   /** When to run validation */
   validateOn?: 'input' | 'change' | 'blur' | 'submit'
   /** Form submission handler */
-  submitHandler?: (data: any) => Promise<void> | void
+  submitHandler?: (data: any, form: FormController) => Promise<void> | void
   /** Validation error callback */
   onValidationError?: (form: FormController) => void
   /** Submit success callback */
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
-  onSubmitError?: (error: any) => void
+  onSubmitError?: (error: any, form: FormController) => void
 }
 
 /**
@@ -107,7 +107,11 @@ export interface FormController {
   removeField(path: string): void
 
   hasField(path: string): boolean
+  
+  setFieldErrors(path: string, errors: string[]): void
 
+  setErrors(errors: Record<string, string[]>): void
+  
   add(arrayPath: string, index: number, item: any): void
 
   remove(arrayPath: string, index: number): void

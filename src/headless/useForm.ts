@@ -280,51 +280,54 @@ export function useForm<T extends object>(
 
   return new Proxy(
     {
-      submit: async () => {
-        formState.$isSubmitting = true
+      submit: async function() {
+        // Store reference to the form controller
+        const formController = this;
+        formState.$isSubmitting = true;
 
         try {
           // Validate all fields
-          const isValid = await validateForm()
+          const isValid = await validateForm();
 
           // Mark all fields as touched before validation
           fieldManager.all().forEach((state, path) => {
-            state.$isTouched = true
-            state.$isDirty = true
-          })
+            state.$isTouched = true;
+            state.$isDirty = true;
+          });
 
           // Signal state change after marking all fields
-          formStateVersion.value++
+          formStateVersion.value++;
 
           if (!isValid) {
             // Call validation error callback if provided
             if (options.onValidationError) {
-              options.onValidationError(this as FormController)
+              options.onValidationError(formController);
             }
-            return false
+            return false;
           }
 
           if (options.submitHandler) {
             try {
-              await options.submitHandler(valuesRef.value)
+              // Pass both the form values and the form controller
+              await options.submitHandler(valuesRef.value, formController);
 
               // Call submit success callback if provided
               if (options.onSubmitSuccess) {
-                options.onSubmitSuccess(valuesRef.value)
+                options.onSubmitSuccess(valuesRef.value);
               }
             } catch (error) {
               // Call submit error callback if provided
               if (options.onSubmitError) {
-                options.onSubmitError(error)
+                options.onSubmitError(error, formController);
               }
-              console.error('Error submitting form', error)
-              return false
+              console.error('Error submitting form', error);
+              return false;
             }
           }
 
-          return true
+          return true;
         } finally {
-          formState.$isSubmitting = false
+          formState.$isSubmitting = false;
         }
       },
 
@@ -409,6 +412,19 @@ export function useForm<T extends object>(
 
       hasField(path): boolean {
         return fieldManager.has(path)
+      },
+
+      setFieldErrors(path: string, errors: string[]): void {
+        const state = fieldManager.get(path)
+        state.$errors = errors
+        state.$isTouched = true
+        formStateVersion.value++
+      },
+
+      setErrors(errors: Record<string, string[]>): void {
+        Object.entries(errors).forEach(([path, errorMessages]) => {
+          this.setFieldErrors(path, errorMessages)
+        })
       },
 
       values(): object {
