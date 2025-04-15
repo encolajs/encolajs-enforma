@@ -225,7 +225,6 @@ describe('HeadlessForm', () => {
         props: {
           data: { ...initialData },
           rules,
-          validateOn: 'submit',
           submitHandler: submitSpy,
         },
       })
@@ -255,7 +254,6 @@ describe('HeadlessForm', () => {
         props: {
           data: invalidData,
           rules,
-          validateOn: 'submit',
         },
         slots: {
           default: (form: FormController) => {

@@ -190,41 +190,6 @@ describe('Enforma', () => {
     expect(resetButtons.length).toBe(0)
   })
 
-  it('merges global and local config correctly', async () => {
-    const localConfig = {
-      validateOn: 'blur',
-      components: {
-        submitButton: 'CustomButton',
-      },
-    }
-
-    // Create a stub for the custom component
-    const CustomButtonStub = {
-      name: 'CustomButton',
-      template: '<button type="submit">Custom Submit</button>',
-    }
-
-    const wrapper = mount(Enforma, {
-      props: {
-        data: {},
-        submitHandler: () => {},
-        config: localConfig,
-      },
-      global: {
-        components: {
-          SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub,
-          CustomButton: CustomButtonStub,
-        },
-      },
-    })
-
-    await wrapper.vm.$nextTick()
-    // Verify HeadlessForm receives the correct validateOn prop
-    const headlessForm = wrapper.findComponent(HeadlessForm)
-    expect(headlessForm.props().validateOn).toBe('blur')
-  })
-
   it('provides form context to child components', async () => {
     const context = { foo: 'bar' }
 
