@@ -288,17 +288,17 @@ export function useForm<T extends object>(
   const formController = new Proxy(
     {
       // Event emitter methods
-      on(event, handler) {
-        formEmitter.on(event, handler);
+      on(event: keyof FormEvents, handler: Function) {
+        formEmitter.on(event, handler as any);
         return this;
       },
       
-      off(event, handler) {
-        formEmitter.off(event, handler);
+      off(event: keyof FormEvents, handler?: Function) {
+        formEmitter.off(event, handler as any);
         return this;
       },
       
-      emit(event, data) {
+      emit(event: keyof FormEvents, data: any) {
         formEmitter.emit(event, data);
         return this;
       },

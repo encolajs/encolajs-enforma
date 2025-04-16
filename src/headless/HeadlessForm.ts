@@ -2,6 +2,7 @@ import { defineComponent, provide, h, PropType } from 'vue'
 import { useForm } from './useForm'
 import { formStateKey } from '@/constants/symbols'
 import { FormController } from '@/types'
+import { FieldState } from './useForm'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -47,31 +48,31 @@ export default defineComponent({
     })
     
     // Set up event handlers to forward events to component emits
-    form.on('submit_success', ({ formController }) => {
+    form.on('submit_success', ({ formController }: { formController: FormController }) => {
       ctx.emit('submit-success', formController.values(), formController)
     })
     
-    form.on('submit_error', ({ error, formController }) => {
+    form.on('submit_error', ({ error, formController }: { error: any, formController: FormController }) => {
       ctx.emit('submit-error', error, formController)
     })
     
-    form.on('validation_error', ({ formController }) => {
+    form.on('validation_error', ({ formController }: { formController: FormController }) => {
       ctx.emit('validation-error', formController)
     })
     
-    form.on('field_changed', ({ path, value, fieldState, formController }) => {
+    form.on('field_changed', ({ path, value, fieldState, formController }: { path: string, value: any, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-changed', path, value, fieldState, formController)
     })
     
-    form.on('field_focused', ({ path, fieldState, formController }) => {
+    form.on('field_focused', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-focused', path, fieldState, formController)
     })
     
-    form.on('field_blurred', ({ path, fieldState, formController }) => {
+    form.on('field_blurred', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-blurred', path, fieldState, formController)
     })
     
-    form.on('form_initialized', ({ formController }) => {
+    form.on('form_initialized', ({ formController }: { formController: FormController }) => {
       ctx.emit('form-initialized', formController)
     })
 
@@ -96,7 +97,7 @@ export default defineComponent({
     }
     
     // Also listen for form_reset event
-    form.on('form_reset', ({ formController }) => {
+    form.on('form_reset', ({ formController }: { formController: FormController }) => {
       ctx.emit('reset', formController)
     })
 

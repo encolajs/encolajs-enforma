@@ -111,11 +111,11 @@ export interface FormController {
   hasField(path: string): boolean
   
   // Event-related methods
-  on(event: string, handler: Function): FormController
+  on(event: keyof import('./utils/events').FormEvents, handler: Function): FormController
   
-  off(event: string, handler?: Function): FormController
+  off(event: keyof import('./utils/events').FormEvents, handler?: Function): FormController
   
-  emit(event: string, data: any): FormController
+  emit(event: keyof import('./utils/events').FormEvents, data: any): FormController
   
   // Focus/Blur handling
   setFieldFocused(path: string): void

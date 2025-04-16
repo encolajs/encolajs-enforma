@@ -64,6 +64,8 @@ export const DEFAULT_CONFIG: EnformaConfig = {
    */
   pt: {
     wrapper: {},
+    wrapper__invalid: {},
+    wrapper__required: {},
     label: {},
     required: {},
     input: {},
