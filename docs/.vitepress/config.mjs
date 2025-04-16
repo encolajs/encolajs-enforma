@@ -18,13 +18,12 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Getting Started', link: '/getting-started/' },
       { text: 'Guides', link: '/guides/' },
-      { text: 'Components', link: '/components/' },
-      { text: 'Headless', link: '/headless/' },
+      { text: 'Presets', link: '/presets/' },
       { text: 'API', link: '/api/' },
       { text: 'Examples', link: '/examples/' }
     ],
     sidebar: {
-      '/getting-started/': [
+      '/': [
         {
           text: 'Getting Started',
           items: [
@@ -32,32 +31,28 @@ export default defineConfig({
             { text: 'Installation', link: '/getting-started/installation' },
             { text: 'Quick Start', link: '/getting-started/quick-start' }
           ]
-        }
-      ],
-      '/components/': [
-        {
-          text: 'Components',
-          items: [
-            { text: 'Overview', link: '/components/' },
-            { text: 'Form', link: '/components/form' },
-            { text: 'Field', link: '/components/field' },
-            { text: 'Repeatable', link: '/components/repeatable' },
-            { text: 'Repeatable Table', link: '/components/repeatable-table' },
-            { text: 'Section', link: '/components/section' },
-            { text: 'Schema', link: '/components/schema' },
-            { text: 'Buttons', link: '/components/buttons' }
-          ]
-        }
-      ],
-      '/headless/': [
+        },
         {
           text: 'Headless Components',
           items: [
             { text: 'Overview', link: '/headless/' },
-            { text: 'Form', link: '/headless/form' },
-            { text: 'Field', link: '/headless/field' },
-            { text: 'Repeatable', link: '/headless/repeatable' },
-            { text: 'Building Custom Components', link: '/headless/custom' }
+            { text: 'HeadlessForm', link: '/headless/form' },
+            { text: 'HeadlessField', link: '/headless/field' },
+            { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
+            { text: 'Custom Wrapper Components', link: '/headless/wrapper-components' }
+          ]
+        },
+        {
+          text: 'Enforma Components',
+          items: [
+            { text: 'Overview', link: '/components/' },
+            { text: 'EnformaForm', link: '/components/form' },
+            { text: 'EnformaField', link: '/components/field' },
+            { text: 'EnformaRepeatable', link: '/components/repeatable' },
+            { text: 'EnformaRepeatableTable', link: '/components/repeatable-table' },
+            { text: 'EnformaSection', link: '/components/section' },
+            { text: 'EnformaSchema', link: '/components/schema' },
+            { text: 'Buttons', link: '/components/buttons' }
           ]
         }
       ],
@@ -103,11 +98,22 @@ export default defineConfig({
           text: 'Examples',
           items: [
             { text: 'Overview', link: '/examples/' },
-            { text: 'Basic Forms', link: '/examples/basic' },
-            { text: 'Complex Forms', link: '/examples/complex' },
-            { text: 'Dynamic Forms', link: '/examples/dynamic' },
-            { text: 'Form Validation', link: '/examples/validation' },
-            { text: 'Custom Components', link: '/examples/custom' }
+            {
+              text: 'Forms',
+              items: [
+                { text: 'Headless components', link: '/examples/headless-components' },
+                { text: 'Enforma with fields', link: '/examples/fields' },
+                { text: 'Enforma with fields and schema', link: '/examples/fields-and-schema' },
+                { text: 'Enforma with schema only', link: '/examples/schema-only' },
+                { text: 'Mixed forms', link: '/examples/mixed-forms' },
+              ]
+            },
+            {
+              text: 'Features',
+              items: [
+                { text: 'Dynamic props', link: '/examples/dynamic-props' },
+              ]
+            }
           ]
         }
       ]

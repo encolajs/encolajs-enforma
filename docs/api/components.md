@@ -11,13 +11,11 @@ This page should provide:
 
 This page provides a comprehensive reference of all components in EncolaJS Enforma, including their props, events, slots, and exposed methods.
 
-## Form Components
-
-### Enforma
+## Enforma
 
 The main form component that manages form state, validation, and submission.
 
-#### Props
+### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
@@ -30,7 +28,7 @@ The main form component that manages form state, validation, and submission.
 | `config` | `Object` | No | Form configuration object |
 | `showResetButton` | `Boolean` | No | Whether to show the reset button (default: `true`) |
 
-#### Events
+### Events
 
 | Event | Parameters | Description |
 |-------|------------|-------------|
@@ -43,14 +41,14 @@ The main form component that manages form state, validation, and submission.
 | `field-blurred` | `(path, fieldState, formController)` | Emitted when a field loses focus |
 | `form-initialized` | `(formController)` | Emitted when form is initialized |
 
-#### Slots
+### Slots
 
 | Slot | Props | Description |
 |------|-------|-------------|
 | `default` | Form state object | Main content area for form fields |
 | `actions` | `{ formState, formConfig }` | Button area, contains submit and reset buttons |
 
-#### Exposed Methods
+### Exposed Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -58,50 +56,11 @@ The main form component that manages form state, validation, and submission.
 | `on` | `event: string, handler: Function` | `{ off: Function }` | Subscribe to a form event |
 | `off` | `event: string, handler?: Function` | - | Unsubscribe from a form event |
 
-### HeadlessForm
-
-A form component that provides no UI, just the form state and logic.
-
-#### Props
-
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `data` | `Object` | Yes | The form data object |
-| `rules` | `Object` | No | Validation rules object |
-| `customMessages` | `Object` | No | Custom validation messages |
-| `submitHandler` | `Function` | No | Form submission handler |
-| `validateOn` | `String` | No | When to validate fields |
-
-#### Events
-
-| Event | Parameters | Description |
-|-------|------------|-------------|
-| `submit-success` | `(data, formController)` | Emitted when form submits successfully |
-| `submit-error` | `(error, formController)` | Emitted when submission fails |
-| `validation-error` | `(formController)` | Emitted when validation fails |
-| `reset` | `(formController)` | Emitted when form is reset |
-| `field-changed` | `(path, value, fieldState, formController)` | Emitted when any field value changes |
-| `field-focused` | `(path, fieldState, formController)` | Emitted when a field receives focus |
-| `field-blurred` | `(path, fieldState, formController)` | Emitted when a field loses focus |
-| `form-initialized` | `(formController)` | Emitted when form is initialized |
-
-#### Slots
-
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | Form state object | Slot for form content and fields |
-
-#### Exposed Methods
-
-All form controller methods are exposed directly.
-
-## Field Components
-
-### EnformaField
+## EnformaField
 
 Component for rendering individual form fields.
 
-#### Props
+### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
@@ -122,38 +81,17 @@ Component for rendering individual form fields.
 | `section` | `String` | No | Section this field belongs to |
 | `position` | `Number` | No | Position order within section |
 
-#### Slots
+### Slots
 
 | Slot | Props | Description |
 |------|-------|-------------|
 | `default` | `{ ...fieldState, attrs: props.input }` | Custom field content |
 
-### HeadlessField
-
-Headless component for form fields with no UI.
-
-#### Props
-
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | `String` | No | Field name/path (required if names not provided) |
-| `names` | `Object` | No | Multiple field names mapping (required if name not provided) |
-| `validateOnMount` | `Boolean` | No | Whether to validate on mount |
-| `validateOn` | `String` | No | When to validate this field |
-
-#### Slots
-
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | `{ field }` or multiple fields | Slot for field content |
-
-## Array Components
-
-### EnformaRepeatable
+## EnformaRepeatable
 
 Component for repeatable/array fields.
 
-#### Props
+### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
@@ -171,7 +109,7 @@ Component for repeatable/array fields.
 | `moveUpButton` | `Component` | No | Custom move up button component |
 | `moveDownButton` | `Component` | No | Custom move down button component |
 
-#### Slots
+### Slots
 
 | Slot | Props | Description |
 |------|-------|-------------|
@@ -179,11 +117,11 @@ Component for repeatable/array fields.
 | `add-button` | `{ add, canAdd, ... }` | Custom add button |
 | `item-actions` | `{ remove, canRemove, ... }` | Custom item actions |
 
-### EnformaRepeatableTable
+## EnformaRepeatableTable
 
 Table-based repeatable component for array data.
 
-#### Props
+### Props
 
 Same as EnformaRepeatable, plus:
 
@@ -193,7 +131,7 @@ Same as EnformaRepeatable, plus:
 | `hideHeaders` | `Boolean` | No | Whether to hide table headers |
 | `tableProps` | `Object` | No | Props for table element |
 
-#### Slots
+### Slots
 
 | Slot | Props | Description |
 |------|-------|-------------|
@@ -202,13 +140,11 @@ Same as EnformaRepeatable, plus:
 | `cell` | `{ item, field, ... }` | Custom cell rendering |
 | `actions` | `{ item, index, ... }` | Custom row actions |
 
-## Button Components
-
-### EnformaSubmitButton
+## EnformaSubmitButton
 
 Submit button for the form.
 
-#### Props
+### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
@@ -216,11 +152,12 @@ Submit button for the form.
 | `loadingLabel` | `String` | No | Button text when submitting |
 | `attrs` | `Object` | No | Additional button attributes |
 
-### EnformaResetButton
+## EnformaResetButton
 
 Reset button for the form.
-
-#### Props
+[FETCH_HEAD](../../.git/FETCH_HEAD)
+[config](../../.git/config)
+### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
