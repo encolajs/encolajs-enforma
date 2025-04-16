@@ -1,15 +1,20 @@
 import { defineConfig } from 'vitepress'
+import path from 'path'
+import vue from '@vitejs/plugin-vue'
+import { whyframe } from '@whyframe/core'
+import { whyframeVue } from '@whyframe/vue'
 
 export default defineConfig({
-  title: "EncolaJS Enforma",
-  description: "Documentation for EncolaJS Enforma",
-  base: "/enforma/",
+  title: 'EncolaJS Enforma',
+  description: 'Documentation for EncolaJS Enforma',
+  base: '/enforma/',
   themeConfig: {
     search: {
-      provider: 'local'
+      provider: 'local',
     },
     editLink: {
-      pattern: 'https://github.com/encolajs/encolajs-enforma/tree/main/docs/:path'
+      pattern:
+        'https://github.com/encolajs/encolajs-enforma/tree/main/docs/:path',
     },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/encolajs/encolajs-enforma' },
@@ -20,7 +25,7 @@ export default defineConfig({
       { text: 'Guides', link: '/guides/' },
       { text: 'Presets', link: '/presets/' },
       { text: 'API', link: '/api/' },
-      { text: 'Examples', link: '/examples/' }
+      { text: 'Examples', link: '/examples/' },
     ],
     sidebar: {
       '/': [
@@ -29,8 +34,8 @@ export default defineConfig({
           items: [
             { text: 'Introduction', link: '/getting-started/' },
             { text: 'Installation', link: '/getting-started/installation' },
-            { text: 'Quick Start', link: '/getting-started/quick-start' }
-          ]
+            { text: 'Quick Start', link: '/getting-started/quick-start' },
+          ],
         },
         {
           text: 'Headless Components',
@@ -39,8 +44,11 @@ export default defineConfig({
             { text: 'HeadlessForm', link: '/headless/form' },
             { text: 'HeadlessField', link: '/headless/field' },
             { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
-            { text: 'Custom Wrapper Components', link: '/headless/wrapper-components' }
-          ]
+            {
+              text: 'Custom Wrapper Components',
+              link: '/headless/wrapper-components',
+            },
+          ],
         },
         {
           text: 'Enforma Components',
@@ -49,12 +57,15 @@ export default defineConfig({
             { text: 'EnformaForm', link: '/components/form' },
             { text: 'EnformaField', link: '/components/field' },
             { text: 'EnformaRepeatable', link: '/components/repeatable' },
-            { text: 'EnformaRepeatableTable', link: '/components/repeatable-table' },
+            {
+              text: 'EnformaRepeatableTable',
+              link: '/components/repeatable-table',
+            },
             { text: 'EnformaSection', link: '/components/section' },
             { text: 'EnformaSchema', link: '/components/schema' },
-            { text: 'Buttons', link: '/components/buttons' }
-          ]
-        }
+            { text: 'Buttons', link: '/components/buttons' },
+          ],
+        },
       ],
       '/presets/': [
         {
@@ -63,9 +74,9 @@ export default defineConfig({
             { text: 'Overview', link: '/presets/' },
             { text: 'PrimeVue', link: '/presets/primevue' },
             { text: 'Vuetify', link: '/presets/vuetify' },
-            { text: 'Creating Custom Presets', link: '/presets/custom' }
-          ]
-        }
+            { text: 'Creating Custom Presets', link: '/presets/custom' },
+          ],
+        },
       ],
       '/guides/': [
         {
@@ -76,9 +87,9 @@ export default defineConfig({
             { text: 'Form State', link: '/guides/state' },
             { text: 'Validation', link: '/guides/validation' },
             { text: 'Form Events', link: '/guides/events' },
-            { text: 'Performance', link: '/guides/performance' }
-          ]
-        }
+            { text: 'Performance', link: '/guides/performance' },
+          ],
+        },
       ],
       '/api/': [
         {
@@ -89,9 +100,9 @@ export default defineConfig({
             { text: 'Headless API', link: '/api/headless' },
             { text: 'Presets API', link: '/api/presets' },
             { text: 'Utilities API', link: '/api/utilities' },
-            { text: 'Type Definitions', link: '/api/types' }
-          ]
-        }
+            { text: 'Type Definitions', link: '/api/types' },
+          ],
+        },
       ],
       '/examples/': [
         {
@@ -101,27 +112,55 @@ export default defineConfig({
             {
               text: 'Forms',
               items: [
-                { text: 'Headless components', link: '/examples/headless-components' },
+                {
+                  text: 'Headless components',
+                  link: '/examples/headless-components',
+                },
                 { text: 'Enforma with fields', link: '/examples/fields' },
-                { text: 'Enforma with fields and schema', link: '/examples/fields-and-schema' },
-                { text: 'Enforma with schema only', link: '/examples/schema-only' },
+                {
+                  text: 'Enforma with fields and schema',
+                  link: '/examples/fields-and-schema',
+                },
+                {
+                  text: 'Enforma with schema only',
+                  link: '/examples/schema-only',
+                },
                 { text: 'Mixed forms', link: '/examples/mixed-forms' },
-              ]
+              ],
             },
             {
               text: 'Features',
               items: [
                 { text: 'Dynamic props', link: '/examples/dynamic-props' },
-              ]
-            }
-          ]
-        }
-      ]
+              ],
+            },
+          ],
+        },
+      ],
     },
     footer: {
       message: 'MIT Licensed',
-      copyright:
-        'Copyright © 2025-present EncolaJS & Contributors',
+      copyright: 'Copyright © 2025-present EncolaJS & Contributors',
     },
-  }
+  },
+  vite: {
+    plugins: [
+      // Initialize core plugin
+      whyframe({
+        defaultSrc: '/enforma/frames/default', // provide our own html
+      }),
+
+      // Initialize Vue integration plugin
+      whyframeVue({
+        include: /\.(?:vue|md)$/, // also scan in markdown files
+      }),
+    ],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '../../src'),
+      },
+      extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    },
+  },
+  vue: {},
 })
