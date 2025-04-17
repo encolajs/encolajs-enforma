@@ -285,6 +285,34 @@ export function useForm<T extends object>(
     })
   }
 
+  // Helper function to reindex field states after array element removal
+  function reindexArrayFieldStates(arrayPath: string, removedIndex: number) {
+    const prefix = `${arrayPath}.`
+    const fieldsToReindex = new Map<string, FieldState>()
+
+    // Collect all fields that need reindexing
+    fieldManager.all().forEach((state, path) => {
+      if (path.startsWith(prefix)) {
+        const parts = path.split('.')
+        const currentIndex = parseInt(parts[parts.length - 2])
+        if (currentIndex > removedIndex) {
+          // This field needs to be reindexed
+          const newPath = path.replace(
+            `${prefix}${currentIndex}.`,
+            `${prefix}${currentIndex - 1}.`
+          )
+          fieldsToReindex.set(newPath, state)
+          fieldManager.delete(path)
+        }
+      }
+    })
+
+    // Add reindexed fields back using the underlying Map functionality
+    fieldsToReindex.forEach((state, newPath) => {
+      fieldManager.all().set(newPath, state)
+    })
+  }
+
   const formController = new Proxy(
     {
       // Event emitter methods
@@ -524,8 +552,23 @@ export function useForm<T extends object>(
 
       remove(arrayPath: string, index: number): void {
         const array = getArrayByPath(valuesRef.value, arrayPath)
+        if (!Array.isArray(array)) return
+
+        // Remove the element
         array.splice(index, 1)
-        fieldManager.shift(arrayPath, index, -1)
+
+        // Remove field states for the removed element
+        const prefix = `${arrayPath}.${index}.`
+        fieldManager.all().forEach((_, path) => {
+          if (path.startsWith(prefix)) {
+            fieldManager.delete(path)
+          }
+        })
+
+        // Reindex remaining field states
+        reindexArrayFieldStates(arrayPath, index)
+
+        // Signal state change
         formStateVersion.value++
       },
 

@@ -11,15 +11,16 @@ describe('HeadlessRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
   // Create real form state with validation
-  const createFormState = (initialData = {}) => {
+  const createFormState = (initialData = {}, rules = {}) => {
     const validation = useValidation()
-    return useForm(
+    const formState = useForm(
       initialData,
-      {},
+      rules,
       {
         validatorFactory: validation.factory,
       }
     )
+    return formState
   }
 
   beforeEach(() => {
@@ -430,6 +431,170 @@ describe('HeadlessRepeatable', () => {
 
       wrapper.unmount()
       expect(unregisterSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('error message positioning', () => {
+    it('correctly preserve error messages after removing last element', async () => {
+      const formState = createFormState(
+        { 
+          items: [
+            { name: 'Item 1', description: 'Description 1' },
+            { name: 'Item 2', description: 'Description 2' },
+            { name: 'Item 3', description: '' }
+          ] 
+        },
+        {
+          'items.*.name': 'required',
+          'items.*.description': 'required'
+        }
+      )
+      let slotData
+
+      mount(HeadlessRepeatable, {
+        props: {
+          name: 'items',
+        },
+        global: {
+          provide: {
+            [formStateKey]: formState,
+          },
+        },
+        slots: {
+          default: (data) => {
+            slotData = data
+            return h('div')
+          },
+        },
+      })
+
+      // Validate individual fields because fields are not registered
+      // And formState.validate() only works on registered fields
+      await formState.validateField('items.0.description')
+      await formState.validateField('items.1.description')
+      await formState.validateField('items.2.description')
+      await flushPromises()
+
+      // Verify initial validation state
+      expect(formState['items.0.description.$errors'].length).toBe(0)
+      expect(formState['items.1.description.$errors'].length).toBe(0)
+      expect(formState['items.2.description.$errors'].length).toBe(1)
+
+      // Remove the last element (which is invalid)
+      await slotData.remove(2)
+      await flushPromises()
+
+      // Verify validation state after removal
+      expect(formState['items.0.description.$errors'].length).toBe(0)
+      expect(formState['items.1.description.$errors'].length).toBe(0)
+    })
+
+    it('correctly preserve error messages after removing middle element', async () => {
+      const formState = createFormState(
+        { 
+          items: [
+            { name: 'Item 1', description: 'Description 1' },
+            { name: 'Item 2', description: '' },
+            { name: 'Item 3', description: 'Description 3' }
+          ] 
+        },
+        {
+          'items.*.name': 'required',
+          'items.*.description': 'required'
+        }
+      )
+      let slotData
+
+      mount(HeadlessRepeatable, {
+        props: {
+          name: 'items',
+        },
+        global: {
+          provide: {
+            [formStateKey]: formState,
+          },
+        },
+        slots: {
+          default: (data) => {
+            slotData = data
+            return h('div')
+          },
+        },
+      })
+
+      // Validate individual fields because fields are not registered
+      // And formState.validate() only works on registered fields
+      await formState.validateField('items.0.description')
+      await formState.validateField('items.1.description')
+      await formState.validateField('items.2.description')
+      await flushPromises()
+
+      // Verify initial validation state
+      expect(formState['items.0.description.$errors'].length).toBe(0)
+      expect(formState['items.1.description.$errors'].length).toBe(1)
+      expect(formState['items.2.description.$errors'].length).toBe(0)
+
+      // Remove the middle element (which is invalid)
+      await slotData.remove(1)
+      await flushPromises()
+
+      // Verify validation state after removal
+      expect(formState['items.0.description.$errors'].length).toBe(0)
+      expect(formState['items.1.description.$errors'].length).toBe(0)
+    })
+
+    it('correctly preserve error messages after removing first element', async () => {
+      const formState = createFormState(
+        { 
+          items: [
+            { name: 'Item 1', description: '' },
+            { name: 'Item 2', description: 'Description 2' },
+            { name: 'Item 3', description: 'Description 3' }
+          ] 
+        },
+        {
+          'items.*.name': 'required',
+          'items.*.description': 'required'
+        }
+      )
+      let slotData
+
+      mount(HeadlessRepeatable, {
+        props: {
+          name: 'items',
+        },
+        global: {
+          provide: {
+            [formStateKey]: formState,
+          },
+        },
+        slots: {
+          default: (data) => {
+            slotData = data
+            return h('div')
+          },
+        },
+      })
+
+      // Validate individual fields because fields are not registered
+      // And formState.validate() only works on registered fields
+      await formState.validateField('items.0.description')
+      await formState.validateField('items.1.description')
+      await formState.validateField('items.2.description')
+      await flushPromises()
+
+      // Verify initial validation state
+      expect(formState['items.0.description.$errors'].length).toBe(1)
+      expect(formState['items.1.description.$errors'].length).toBe(0)
+      expect(formState['items.2.description.$errors'].length).toBe(0)
+
+      // Remove the first element (which is invalid)
+      await slotData.remove(0)
+      await flushPromises()
+
+      // Verify validation state after removal
+      expect(formState['items.0.description.$errors'].length).toBe(0)
+      expect(formState['items.1.description.$errors'].length).toBe(0)
     })
   })
 })
