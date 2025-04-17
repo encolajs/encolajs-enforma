@@ -9,8 +9,8 @@
 import 'primeicons/primeicons.css'
 import { ref, onMounted } from 'vue'
 import { createApp, h } from 'vue'
-import { createFormKit } from '@/index.js'
-import usePrimeVuePreset from '@/presets/primevue.js'
+import { createFormKit } from '../../../src'
+import usePrimeVuePreset from '../../../src/presets/primevue.ts'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 

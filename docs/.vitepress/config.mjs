@@ -1,8 +1,6 @@
 import { defineConfig } from 'vitepress'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
-import { whyframe } from '@whyframe/core'
-import { whyframeVue } from '@whyframe/vue'
 
 export default defineConfig({
   title: 'EncolaJS Enforma',
@@ -144,17 +142,6 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [
-      // Initialize core plugin
-      whyframe({
-        defaultSrc: '/enforma/frames/default', // provide our own html
-      }),
-
-      // Initialize Vue integration plugin
-      whyframeVue({
-        include: /\.(?:vue|md)$/, // also scan in markdown files
-      }),
-    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '../../src'),

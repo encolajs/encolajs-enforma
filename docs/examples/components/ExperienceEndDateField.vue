@@ -46,7 +46,7 @@ just like it was done in the Salary min/max section
 </template>
 
 <script setup>
-import { HeadlessField } from '@/index'
+import { HeadlessField } from '../../../src/index'
 import { DatePicker, ToggleSwitch } from 'primevue'
 
 const props = defineProps({
