@@ -1,3 +1,13 @@
+<!--
+This component is a wrapper for a <HeadlessField> component
+that renders 2 input fields
+
+This should be done when you want to render multiple inputs
+in the same "block" that interact with each other, otherwise
+you could get away with just using <HeadlessField>s
+just like it was done in the Salary min/max section
+-->
+
 <template>
   <HeadlessField :names="{end: endName, current: currentName}">
     <template #default="{end, current}">

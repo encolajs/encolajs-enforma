@@ -9,8 +9,9 @@
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
-    "@whyframe/core": "^0.1.13",
-    "@whyframe/vue": "^0.1.8",
+    "@primeuix/themes": "^1.0.3",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.3",
     "vitepress": "^1.6.3"
   }
 }

@@ -1,21 +1,18 @@
 <script setup>
+import LiveDemo from '../.vitepress/components/LiveDemo.vue'
 import HeadlessFormExample from './components/HeadlessFormExample.vue'
+import HeadlessFormExampleRaw from './components/HeadlessFormExample.vue?raw'
 </script>
 
-# Headless form components
-<!-- 
-This page should provide:
-1. One complete working example of a basic form using Headless components
-2. Show HeadlessField with one `name` provided
-3. Show HeadlessField with 2 `names` provided
-4. Show HeadlessRepeater 
-5. Show validation errors
-6. Submit handling (alert a message on valid form)
+# Use headless form components
 
-Page should provide not just code but a working example. 
-Component file will be in ./components/HeadlessFormExample.vue
--->
+<ClientOnly>
+    <hr>
+    <LiveDemo :component="HeadlessFormExample"></LiveDemo>
+</ClientOnly>
 
-<iframe data-why>
-Hello world!
-</iframe>
+::: code-group
+<<< @/examples/components/HeadlessFormExample.vue [Headless Form]
+<<< @/examples/components/AppFormField.vue
+<<< @/examples/components/ExperienceEndDateField.vue
+:::

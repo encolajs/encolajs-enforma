@@ -1,3 +1,10 @@
+<!--
+Component created to reduce the verbosity
+of using <HeadlessField> in the form that uses <HeadlessForm>
+
+If you plan to use the <HeadlessField> components
+this is the first thing to do in your app
+-->
 <template>
   <div v-bind="$attrs">
     <HeadlessField :name="name">

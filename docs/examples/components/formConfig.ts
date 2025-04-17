@@ -9,9 +9,19 @@ const data = {
   skills: [],
   experience: [],
 }
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 3; i++) {
   const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
-  data.skills.push({ name: `Skill ${i}`, level })
+  data.skills.push({ name: `Skill ${i + 1}`, level })
+}
+for (let i = 0; i < 2; i++) {
+  const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
+  data.experience.push({
+    company: `Company ${i + 1}`,
+    position: `Job title ${i + 1}`,
+    start: `202${5 - i}-01-01`,
+    end: i === 0 ? null : `202${5 - 1}-12-31`,
+    current: i === 0
+  })
 }
 
 const rules = {
@@ -29,7 +39,7 @@ const rules = {
   'experience.*.company': 'required',
   'experience.*.position': 'required',
   'experience.*.start': 'required|date',
-  'experience.*.end': 'required_unless:@experience.*.current,false|date',
+  'experience.*.end': 'required_when:@experience.*.current,false|date',
 
 }
 

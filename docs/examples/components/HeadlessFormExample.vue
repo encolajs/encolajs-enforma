@@ -1,6 +1,6 @@
 <template>
   <HeadlessForm
-    class="grid grid-cols-4 gap-4"
+    class="grid grid-cols-2 gap-4"
     ref="$form"
     :data="data"
     :rules="rules"
@@ -8,7 +8,7 @@
     :submit-handler="submitHandler"
   >
     <template #default="formState">
-      <div class="col-start-1 col-end-3 mb-4">
+      <div class="col-start-1 col-end-3">
         <AppFormField name="name" label="Name">
           <template #default="{ attrs, events, id }">
             <div class="flex">
@@ -23,7 +23,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-1 col-end-3 mb-4">
+      <div class="col-start-1 col-end-3">
         <AppFormField name="email" label="Email">
           <template #default="{ attrs, events, id }">
             <InputText
@@ -36,7 +36,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-1 cols-end-2 mb-4">
+      <div class="col-start-1 cols-end-2">
         <AppFormField name="address.country" label="Country">
           <template #default="{ attrs, events, id }">
             <InputText
@@ -49,7 +49,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-2 cols-end-3 mb-4">
+      <div class="col-start-2 cols-end-3">
         <AppFormField name="address.city" label="City">
           <template #default="{ attrs, events, id }">
             <InputText
@@ -62,7 +62,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-1 col-end-3 mb-4">
+      <div class="col-start-1 col-end-3">
         <AppFormField name="willing_to_relocate">
           <template #default="{ value, attrs, events, id }">
             <div class="flex align-center">
@@ -81,7 +81,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-1 cols-end-2 mb-4">
+      <div class="col-start-1 cols-end-2">
         <label class="block">Salary</label>
         <div class="flex align-items center gap-2">
           <AppFormField name="salary.min">
@@ -113,7 +113,7 @@
         </div>
       </div>
 
-      <div class="col-start-2 col-end-3 mb-4">
+      <div class="col-start-2 col-end-3">
         <AppFormField name="start_date" label="Available date">
           <template #default="{ value, attrs, events, id }">
             <DatePicker
@@ -129,7 +129,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-1 col-end-2 mb-4">
+      <div class="col-start-1 col-end-2">
         <AppFormField name="linkedin_profile" label="LinkedIn profile">
           <template #default="{ attrs, events, id }">
             <div class="flex">
@@ -144,7 +144,7 @@
         </AppFormField>
       </div>
 
-      <div class="col-start-2 col-end-3 mb-4">
+      <div class="col-start-2 col-end-3">
         <AppFormField name="personal_site" label="Personal site">
           <template #default="{ attrs, events, id }">
             <div class="flex">
@@ -160,7 +160,7 @@
       </div>
 
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Skills</h3>
-      <div class="col-start-1 col-end-5 mb-4">
+      <div class="col-start-1 col-end-5">
         <HeadlessRepeatable name="skills" :min="0" :max="1000">
           <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, move, count }">
             <table class="mb-4 table-auto border-spacing-2">
@@ -235,20 +235,13 @@
                 @click="add({ name: '', level: '' }, 2)"
                 class="mr-2"
               />
-              <Button
-                severity="warn"
-                type="button"
-                label="Move last to top"
-                @click="move(value.length - 1, 0)"
-                class="mr-2"
-              />
             </div>
           </template>
         </HeadlessRepeatable>
       </div>
 
       <h3 class="col-start-1 col-end-5 text-xl font-bold">Experience</h3>
-      <div class="col-start-1 col-end-3 mb-4">
+      <div class="col-start-1 col-end-3">
         <HeadlessRepeatable name="experience" :min="0" :max="100">
           <template #default="{ value, add, remove, canAdd, canRemove, moveUp, moveDown, count }">
             <div
@@ -336,7 +329,7 @@
         </HeadlessRepeatable>
       </div>
 
-      <div class="col-start-1 col-end-4 mb-4">
+      <div class="col-start-1 col-end-4">
         <Button
           severity="primary"
           :loading="formState.$isSubmitting"
