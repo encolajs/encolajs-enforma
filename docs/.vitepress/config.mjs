@@ -142,6 +142,14 @@ export default defineConfig({
     },
   },
   vite: {
+    build: {
+      rollupOptions: {
+        external: [
+          // Match the file(s) you want to ignore
+          /\/src\//,
+        ]
+      }
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '../../src'),

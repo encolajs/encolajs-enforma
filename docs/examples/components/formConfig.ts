@@ -29,7 +29,7 @@ const rules = {
   email: 'required|email',
   'salary.min': 'number',
   'salary.max': 'number',
-  'start_date': 'required|date|date_after:' + (new Date().toISOString().split('T')[0]),
+  'start_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
   'address.city': 'required',
   'address.country': 'required',
   'linkedin_profile': 'required|url',
@@ -38,8 +38,8 @@ const rules = {
   'skills.*.level': 'required',
   'experience.*.company': 'required',
   'experience.*.position': 'required',
-  'experience.*.start': 'required|date',
-  'experience.*.end': 'required_when:@experience.*.current,false|date',
+  'experience.*.start': 'required|date:yy-mm-dd',
+  'experience.*.end': 'required_when:@experience.*.current,false|date:yy-mm-dd',
 
 }
 

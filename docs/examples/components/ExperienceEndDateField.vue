@@ -21,7 +21,7 @@ just like it was done in the Salary min/max section
           :disabled="current.value"
           v-bind="end.attrs"
           v-on="end.events"
-          @date-select="(date) => end.events.change({value: formatDate(date)})"
+          @update:modelValue="(date) => end.events.change({value: date})"
         />
         <div class="flex align-center mt-2">
           <ToggleSwitch
@@ -62,10 +62,6 @@ const props = defineProps({
 
 const endName = `experience.${props.index}.end`
 const currentName = `experience.${props.index}.current`
-
-const formatDate = (date) => {
-  return date.toISOString().split('T')[0]
-}
 
 const onChangeCurrent = (value) => {
   props.form.setFieldValue(`experience.${props.index}.current`, value)

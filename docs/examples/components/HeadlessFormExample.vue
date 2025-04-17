@@ -123,7 +123,7 @@
               fluid
               v-bind="attrs"
               v-on="events"
-              @date-select="(date) => events.change({value: formatDate(date)})"
+              @update:model-value="(date) => events.change({value: date})"
             />
           </template>
         </AppFormField>
@@ -275,12 +275,13 @@
                 <template #default="{ value, attrs, events, id }">
                   <DatePicker
                     :id="id"
-                    :model-value="value"
+                    :model-value="new Date(value)"
                     date-format="yy-mm-dd"
                     fluid
                     v-bind="attrs"
-                    v-on="events"
-                    @date-select="(date) => events.change({value: formatDate(date)})"
+                    @blur="events.blur"
+                    @focus="events.focus"
+                    @update:modelValue="(date) => events.change({value: date})"
                   />
                 </template>
               </AppFormField>
@@ -329,7 +330,7 @@
         </HeadlessRepeatable>
       </div>
 
-      <div class="col-start-1 col-end-4">
+      <div class="col-start-1 col-end-4 flex gap-2">
         <Button
           severity="primary"
           :loading="formCtrl.$isSubmitting"
@@ -356,10 +357,6 @@ import ExperienceEndDateField from './ExperienceEndDateField.vue'
 import formConfig from './formConfig'
 
 const {data, rules, messages, submitHandler} = formConfig
-
-const formatDate = (date) => {
-  return date.toISOString().split('T')[0]
-}
 
 const $form = ref(null)
 </script>
