@@ -45,7 +45,7 @@ export default defineComponent({
     // Create a trigger ref to force re-rendering when the repeatable data changes
     const renderTrigger = ref(0)
 
-    const repeatable = useRepeatable(props.name, formState, {
+    const repeatableCtrl = useRepeatable(props.name, formState, {
       min: props.min,
       max: props.max,
       validateOnAdd: props.validateOnAdd,
@@ -53,7 +53,7 @@ export default defineComponent({
     })
 
     watch(
-      () => repeatable.value,
+      () => repeatableCtrl.value,
       () => {
         renderTrigger.value++
       },
@@ -68,7 +68,7 @@ export default defineComponent({
     return () => {
       // Include renderTrigger in the render function to ensure it re-evaluates
       const currentTrigger = renderTrigger.value
-      return ctx.slots.default?.(repeatable.value)
+      return ctx.slots.default?.(repeatableCtrl.value)
     }
   },
 })

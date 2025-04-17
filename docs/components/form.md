@@ -105,7 +105,7 @@ The Form component emits the following events:
 | Slot | Props | Description |
 |------|-------|-------------|
 | `default` | Form state object | Main content area for form fields |
-| `actions` | `{ formState, formConfig }` | Button area, contains submit and reset buttons |
+| `actions` | `{ formCtrl, formConfig }` | Button area, contains submit and reset buttons |
 
 ## Form Controller Reference
 

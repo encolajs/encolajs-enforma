@@ -5,10 +5,10 @@ import {
   onBeforeUnmount,
   watch,
   ref,
-  computed,
+  computed, ComputedRef,
 } from 'vue'
 import { useField } from './useField'
-import { FieldOptions, FormController } from '@/types'
+import { FieldController, FieldOptions, FormController } from '@/types'
 import { formStateKey } from '@/constants/symbols'
 
 export default defineComponent({
@@ -57,13 +57,13 @@ export default defineComponent({
 
     // Handle single field case (backwards compatibility)
     if (props.name && !props.names) {
-      const field = useField(props.name, form, {
+      const fieldCtrl: ComputedRef<FieldController> = useField(props.name, form, {
         validateOn: props.validateOn,
       } as FieldOptions)
 
       unwatchers.push(
         watch(
-          () => field.value,
+          () => fieldCtrl.value,
           () => {
             renderTrigger.value++
           },
@@ -74,13 +74,13 @@ export default defineComponent({
       return () => {
         // Include renderTrigger in the render function to ensure it re-evaluates
         const currentTrigger = renderTrigger.value
-        return slots.default?.(field.value)
+        return slots.default?.(fieldCtrl.value)
       }
     }
 
     // Handle multiple fields case
     if (props.names) {
-      const fields = computed(() =>
+      const fieldCtrls: ComputedRef<Record<string, FieldController>> = computed(() =>
         Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
           acc[key] = useField(fieldName, form, {
             validateOn: props.validateOn,
@@ -101,7 +101,7 @@ export default defineComponent({
       )
 
       // Return slot with fields object
-      return () => slots.default?.(fields.value)
+      return () => slots.default?.(fieldCtrls.value)
     }
 
     console.error('HeadlessField requires either name or names prop')

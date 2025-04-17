@@ -7,7 +7,7 @@
     :custom-messages="messages"
     :submit-handler="submitHandler"
   >
-    <template #default="formState">
+    <template #default="formCtrl">
       <div class="col-start-1 col-end-3">
         <AppFormField name="name" label="Name">
           <template #default="{ attrs, events, id }">
@@ -75,7 +75,7 @@
                 v-bind="attrs"
                 v-on="events"
               />
-              <span @click="formState.setFieldValue('willing_to_relocate', !value)">Willing to relocate</span>
+              <span @click="formCtrl.setFieldValue('willing_to_relocate', !value)">Willing to relocate</span>
             </div>
           </template>
         </AppFormField>
@@ -107,9 +107,9 @@
             </template>
           </AppFormField>
         </div>
-        <div v-if="formState['salary.min.$errors'] || formState['salary.max.errors']"
+        <div v-if="formCtrl['salary.min.$errors'] || formCtrl['salary.max.errors']"
              class="text-red-500">
-          {{ formState['salary.min.$errors'][0] || formState['salary.max.$errors'][0] }}
+          {{ formCtrl['salary.min.$errors'][0] || formCtrl['salary.max.$errors'][0] }}
         </div>
       </div>
 
@@ -332,9 +332,15 @@
       <div class="col-start-1 col-end-4">
         <Button
           severity="primary"
-          :loading="formState.$isSubmitting"
-          :label="formState.$isSubmitting ? 'Submitting...' : 'Submit'"
+          :loading="formCtrl.$isSubmitting"
+          :label="formCtrl.$isSubmitting ? 'Submitting...' : 'Submit'"
           type="submit"
+        />
+        <Button
+          severity="secondary"
+          :loading="formCtrl.$isSubmitting"
+          :label="'Reset'"
+          type="reset"
         />
       </div>
     </template>

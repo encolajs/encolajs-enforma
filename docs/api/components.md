@@ -46,7 +46,7 @@ The main form component that manages form state, validation, and submission.
 | Slot | Props | Description |
 |------|-------|-------------|
 | `default` | Form state object | Main content area for form fields |
-| `actions` | `{ formState, formConfig }` | Button area, contains submit and reset buttons |
+| `actions` | `{ formCtrl, formConfig }` | Button area, contains submit and reset buttons |
 
 ### Exposed Methods
 

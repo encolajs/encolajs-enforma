@@ -5,7 +5,7 @@ import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import { useForm } from '@/headless/useForm'
 import { useValidation } from '@/utils/useValidation'
 import { formStateKey } from '@/constants/symbols'
-import { RepeatableState } from '@/headless/useRepeatable'
+import { RepeatableController } from '@/headless/useRepeatable'
 
 describe('HeadlessRepeatable', () => {
   const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -58,7 +58,7 @@ describe('HeadlessRepeatable', () => {
 
     it('passes repeatable state to default slot', () => {
       const formState = createFormState()
-      let slotProps: RepeatableState
+      let slotProps: RepeatableController
 
       mount(HeadlessRepeatable, {
         props: {

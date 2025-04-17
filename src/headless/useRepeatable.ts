@@ -10,7 +10,7 @@ export interface RepeatableOptions {
   validateOnRemove?: boolean
 }
 
-export interface RepeatableState {
+export interface RepeatableController {
   value: any[]
   count: number
   canAdd: boolean
@@ -26,7 +26,7 @@ export function useRepeatable(
   name: string,
   form: FormController,
   options: RepeatableOptions = {}
-): ComputedRef<RepeatableState> {
+): ComputedRef<RepeatableController> {
   const {
     min = 0,
     max = Infinity,

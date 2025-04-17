@@ -32,7 +32,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     // Create form using useForm with callbacks for events and global events option
-    const form: FormController = useForm(props.data, props.rules, {
+    const formCtrl: FormController = useForm(props.data, props.rules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
       useGlobalEvents: true, // Use global event emitter for component integration
@@ -48,42 +48,42 @@ export default defineComponent({
     })
     
     // Set up event handlers to forward events to component emits
-    form.on('submit_success', ({ formController }: { formController: FormController }) => {
+    formCtrl.on('submit_success', ({ formController }: { formController: FormController }) => {
       ctx.emit('submit-success', formController.values(), formController)
     })
     
-    form.on('submit_error', ({ error, formController }: { error: any, formController: FormController }) => {
+    formCtrl.on('submit_error', ({ error, formController }: { error: any, formController: FormController }) => {
       ctx.emit('submit-error', error, formController)
     })
     
-    form.on('validation_error', ({ formController }: { formController: FormController }) => {
+    formCtrl.on('validation_error', ({ formController }: { formController: FormController }) => {
       ctx.emit('validation-error', formController)
     })
     
-    form.on('field_changed', ({ path, value, fieldState, formController }: { path: string, value: any, fieldState: FieldState, formController: FormController }) => {
+    formCtrl.on('field_changed', ({ path, value, fieldState, formController }: { path: string, value: any, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-changed', path, value, fieldState, formController)
     })
     
-    form.on('field_focused', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
+    formCtrl.on('field_focused', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-focused', path, fieldState, formController)
     })
     
-    form.on('field_blurred', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
+    formCtrl.on('field_blurred', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
       ctx.emit('field-blurred', path, fieldState, formController)
     })
     
-    form.on('form_initialized', ({ formController }: { formController: FormController }) => {
+    formCtrl.on('form_initialized', ({ formController }: { formController: FormController }) => {
       ctx.emit('form-initialized', formController)
     })
 
     // Provide form to child components
-    provide(formStateKey, form)
+    provide(formStateKey, formCtrl)
 
     // Handle form submission
     const handleSubmit = async (e: Event) => {
       e.preventDefault()
       try {
-        await form.submit()
+        await formCtrl.submit()
       } catch (error) {
         console.error('Error submitting form', error)
         // Error already emitted via callback, but we catch it here to prevent it from propagating
@@ -92,17 +92,17 @@ export default defineComponent({
 
     // Handle form reset
     const handleReset = () => {
-      form.reset()
-      ctx.emit('reset', form)
+      formCtrl.reset()
+      ctx.emit('reset', formCtrl)
     }
     
     // Also listen for form_reset event
-    form.on('form_reset', ({ formController }: { formController: FormController }) => {
+    formCtrl.on('form_reset', ({ formController }: { formController: FormController }) => {
       ctx.emit('reset', formController)
     })
 
     // Expose form methods to parent component
-    ctx.expose({ ...form })
+    ctx.expose({ ...formCtrl })
 
     return () =>
       h(
@@ -112,7 +112,7 @@ export default defineComponent({
           onReset: handleReset,
           novalidate: true,
         },
-        ctx.slots.default?.(form)
+        ctx.slots.default?.(formCtrl)
       )
   },
 })
