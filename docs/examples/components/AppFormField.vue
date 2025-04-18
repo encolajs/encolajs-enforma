@@ -9,13 +9,14 @@ this is the first thing to do in your app
 <template>
   <div v-bind="$attrs">
     <HeadlessField :name="name">
-      <template #default="{ value, attrs, error, events, id }">
+      <template #default="{ model, value, attrs, error, events, id }">
         <label v-if="label" class="block" :for="id">{{ label }}</label>
         <slot
           :value="value"
           :attrs="attrs"
           :error="error"
           :events="events"
+          :model="model"
           :id="id"
         />
         <div v-if="error"

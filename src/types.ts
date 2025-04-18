@@ -52,7 +52,8 @@ export interface FieldOptions {
 }
 
 /**
- * Field state return interface
+ * Controller for a single form field
+ * Provides access to field state, validation, and HTML binding helpers
  */
 export interface FieldController {
   // Field value and state
@@ -62,6 +63,9 @@ export interface FieldController {
   isTouched: boolean
   isValidating: boolean
   isFocused: boolean
+
+  // Two-way binding model
+  model: { value: any }
 
   // Methods
   validate: () => Promise<boolean>

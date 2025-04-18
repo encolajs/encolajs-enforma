@@ -45,6 +45,31 @@ export function useField(
     }
   )
 
+  // Create a ref for the model value
+  const modelValue = ref(form[name])
+
+  // Watch for changes to the form value and update the model ref
+  watch(
+    () => form[name],
+    (newValue) => {
+      modelValue.value = newValue
+    }
+  )
+
+  // Watch for changes to the model ref and update the form
+  watch(
+    modelValue,
+    (newValue) => {
+      // Only trigger validation if the field is dirty
+      if (form[`${name}.$isDirty`]) {
+        handleChange(newValue, 'input')
+      } else {
+        // Just update the value without validation
+        form[name] = newValue
+      }
+    }
+  )
+
   /**
    * Handle value changes
    * @param value - New field value
@@ -141,6 +166,8 @@ export function useField(
     return {
       // Field value and state
       value,
+      // Use the ref for the model property
+      model: modelValue,
       error,
       isDirty: fieldState?.$isDirty || false,
       isTouched: fieldState?.$isTouched || false,

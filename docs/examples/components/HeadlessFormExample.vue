@@ -10,15 +10,22 @@
     <template #default="formCtrl">
       <div class="col-start-1 col-end-3">
         <AppFormField name="name" label="Name">
-          <template #default="{ attrs, events, id }">
+          <template #default="fieldCtrl">
             <div class="flex">
+              <!--
+              This field is using v-model to pass data.
+              Because of this we cannot use destructuring, we must use `fieldCtrl`
+              The rest of the fields are using `attrs` (which includes `value`)
+              plus `events` because it offers greater flexibility
+              -->
               <InputText
-                :id="id"
+                :id="fieldCtrl.id"
                 class="w-full"
-                v-bind="attrs"
-                v-on="events"
+                v-bind="fieldCtrl.attrs"
+                v-model="fieldCtrl.model"
               />
             </div>
+            <code>Attributes passed: {{fieldCtrl.attrs}}</code>
           </template>
         </AppFormField>
       </div>
@@ -32,6 +39,7 @@
               v-bind="attrs"
               v-on="events"
             />
+            <code>Events bound: {{Object.keys(events)}}</code>
           </template>
         </AppFormField>
       </div>
