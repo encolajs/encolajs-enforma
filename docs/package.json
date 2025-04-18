@@ -13,5 +13,8 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
     "vitepress": "^1.6.3"
+  },
+  "dependencies": {
+    "markdown-it-container": "^4.0.0"
   }
 }

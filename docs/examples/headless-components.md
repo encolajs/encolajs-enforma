@@ -4,12 +4,15 @@ import HeadlessFormExample from './components/HeadlessFormExample.vue'
 import HeadlessFormExampleRaw from './components/HeadlessFormExample.vue?raw'
 </script>
 
-# Use headless form components
+# Form using headless components
+
+## Resume form
 
 <ClientOnly>
-    <hr>
     <LiveDemo :component="HeadlessFormExample"></LiveDemo>
 </ClientOnly>
+
+## Source code
 
 ::: code-group
 <<< @/examples/components/HeadlessFormExample.vue [Headless Form]

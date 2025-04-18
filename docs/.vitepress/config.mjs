@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import markdownItContainer from 'markdown-it-container'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 
@@ -139,6 +140,36 @@ export default defineConfig({
     footer: {
       message: 'MIT Licensed',
       copyright: 'Copyright © 2025-present EncolaJS & Contributors',
+    },
+  },
+  markdown: {
+    config(md) {
+      // ::: Tabs
+      md.use(markdownItContainer, 'Tabs', {
+        render(tokens, idx) {
+          const token = tokens[idx]
+          return token.nesting === 1
+            ? `<Tabs>\n`
+            : `</Tabs>\n`
+        },
+      })
+
+      // ::: Tab "Label"
+      md.use(markdownItContainer, 'Tab', {
+        validate(params) {
+          return params.trim().match(/^Tab\s+(.*)$/)
+        },
+        render(tokens, idx) {
+          const m = tokens[idx].info.trim().match(/^Tab\s+(.*)$/)
+          if (tokens[idx].nesting === 1) {
+            const label = m[1].replace(/"/g, '')
+            const name = label.toLowerCase().replace(/\s+/g, '-')
+            return `<Tab name="${name}" label="${label}">\n`
+          } else {
+            return '</Tab>\n'
+          }
+        },
+      })
     },
   },
   vite: {
