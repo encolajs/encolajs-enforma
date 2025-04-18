@@ -57,8 +57,9 @@
                 </template>
 
                 <!-- Actions for field-based subfields -->
-                <div v-if="!component && fields" v-bind="getConfig('pt.repeatable.itemActions')">
+                <div v-if="!component && fields && (showDeleteButton || showMoveButtons)" v-bind="getConfig('pt.repeatable.itemActions')">
                   <component
+                    v-if="showDeleteButton"
                     :is="
                       removeButton ||
                       getConfig('components.repeatableRemoveButton')
@@ -66,6 +67,7 @@
                     @click="handleRemove(remove, index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveUpButton ||
                       getConfig('components.repeatableMoveUpButton')
@@ -74,6 +76,7 @@
                     @click="handleMoveUp(moveUp, index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveDownButton ||
                       getConfig('components.repeatableMoveDownButton')
@@ -108,8 +111,9 @@
                 </template>
 
                 <!-- Actions for field-based subfields -->
-                <div v-bind="getConfig('pt.repeatable.itemActions')">
+                <div v-if="showDeleteButton || showMoveButtons" v-bind="getConfig('pt.repeatable.itemActions')">
                   <component
+                    v-if="showDeleteButton"
                     :is="
                       removeButton ||
                       getConfig('components.repeatableRemoveButton')
@@ -117,6 +121,7 @@
                     @click="remove(index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveUpButton ||
                       getConfig('components.repeatableMoveUpButton')
@@ -125,6 +130,7 @@
                     @click="moveUp(index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveDownButton ||
                       getConfig('components.repeatableMoveDownButton')
@@ -179,6 +185,8 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   if: true,
   min: 0,
   animations: true,
+  showDeleteButton: true,
+  showMoveButtons: true,
 })
 
 const $attrs = useAttrs()

@@ -40,7 +40,7 @@
                   v-bind="subfield"
                 />
               </td>
-              <td v-bind="getConfig('pt.repeatable_table.actionsTd')">
+              <td v-if="showDeleteButton || showMoveButtons" v-bind="getConfig('pt.repeatable_table.actionsTd')">
                 <div
                   v-bind="
                     getConfig(
@@ -50,6 +50,7 @@
                   "
                 >
                   <component
+                    v-if="showDeleteButton"
                     :is="
                       removeButton ||
                       getConfig('components.repeatableRemoveButton')
@@ -57,6 +58,7 @@
                     @click="remove(index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveUpButton ||
                       getConfig('components.repeatableMoveUpButton')
@@ -65,6 +67,7 @@
                     @click="moveUp(index)"
                   />
                   <component
+                    v-if="showMoveButtons"
                     :is="
                       moveDownButton ||
                       getConfig('components.repeatableMoveDownButton')
@@ -115,6 +118,8 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   min: 0,
   // Disable animations by default for tables
   animations: false,
+  showDeleteButton: true,
+  showMoveButtons: true,
 })
 
 const $attrs = useAttrs()
