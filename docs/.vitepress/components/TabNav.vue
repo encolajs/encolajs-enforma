@@ -35,7 +35,7 @@ const isActive = (link) => {
     <a
       v-for="item in items"
       :key="item.link"
-      :href="item.link"
+      :href="buildHref(item.link)"
       class="tab-button"
       :class="{ active: isActive(item.link) }"
     >

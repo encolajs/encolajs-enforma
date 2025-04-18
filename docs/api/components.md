@@ -108,6 +108,8 @@ Component for repeatable/array fields.
 | `removeButton` | `Component` | No | Custom remove button component |
 | `moveUpButton` | `Component` | No | Custom move up button component |
 | `moveDownButton` | `Component` | No | Custom move down button component |
+| `showDeleteButton` | `Boolean` | No | Whether to show the delete button (default: `true`) |
+| `showMoveButtons` | `Boolean` | No | Whether to show the move up/down buttons (default: `true`) |
 
 ### Slots
 
@@ -116,6 +118,10 @@ Component for repeatable/array fields.
 | `default` | `{ items, index, ... }` | Custom item rendering |
 | `add-button` | `{ add, canAdd, ... }` | Custom add button |
 | `item-actions` | `{ remove, canRemove, ... }` | Custom item actions |
+| `moveUpButton` | `Component` | No | Custom move up button component |
+| `moveDownButton` | `Component` | No | Custom move down button component |
+| `showDeleteButton` | `Boolean` | No | Whether to show the delete button (default: `true`) |
+| `showMoveButtons` | `Boolean` | No | Whether to show the move up/down buttons (default: `true`) |
 
 ## EnformaRepeatableTable
 
@@ -139,6 +145,13 @@ Same as EnformaRepeatable, plus:
 | `row` | `{ item, index, ... }` | Custom row rendering |
 | `cell` | `{ item, field, ... }` | Custom cell rendering |
 | `actions` | `{ item, index, ... }` | Custom row actions |
+| `moveUpButton` | `Component` | No | Custom move up button component |
+| `moveDownButton` | `Component` | No | Custom move down button component |
+| `showDeleteButton` | `Boolean` | No | Whether to show the delete button (default: `true`) |
+| `showMoveButtons` | `Boolean` | No | Whether to show the move up/down buttons (default: `true`) |
+| `headers` | `Array` | No | Column headers |
+| `hideHeaders` | `Boolean` | No | Whether to hide table headers |
+| `tableProps` | `Object` | No | Props for table element |
 
 ## EnformaSubmitButton
 

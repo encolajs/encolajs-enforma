@@ -1,4 +1,4 @@
-# Headless Field
+# `<HeadlessField>` component
 
 <!-- 
 This page should provide:
@@ -11,3 +11,75 @@ This page should provide:
 7. Common patterns and best practices
 8. Advanced usage examples
 -->
+
+<TabNav :items="[
+{ label: 'Usage', link: '/headless/field' },
+{ label: 'API', link: '/headless/field_api' },
+]" />
+
+This is a field component that provides no UI, just the field state and logic.
+
+##### :notebook_with_decorative_cover: For a fully working example check out the [Headless components example](/examples/headless-components)
+
+> [!IMPORTANT]
+> The component must be used within an `EncolaForm` or `HeadlessForm` component
+
+## Single input example
+
+This is the most common scenario when the `<HeadlessField>` component renders one input field. 
+
+```html
+<HeadlessField :name="email">
+  <template #default="fieldCtrl">
+    <label :for="fieldCtrl.id">Email<sup>*</sup></label>
+    <input
+      type="email"
+      :value="fieldCtrl.value"
+      :attrs="fieldCtrl.attrs"
+      :events="fieldCtrl.events"
+      :id="fieldCtrl.id"
+      <!-- here you can add your own binding -->
+    />
+    <div v-if="fieldCtrl.error"
+         :id="fieldCtrl.attrs['aria-errormessage']"
+         class="text-red-500">
+      {{ fieldCtrl.error }}
+    </div>
+  </template>
+</HeadlessField>
+```
+
+You can read more about what the "field controller" does in the [`useField`](/advanced/usefield)  section
+
+## Multiple inputs example
+
+There are situation when a single form field must render multiple inputs (eg: a range). In this case you can provide multiple names
+
+```html
+<HeadlessField :names="{minFieldCtrl: 'salary.min', maxFieldCtrl: 'salary.max'}">
+  <template #default="{minFieldCtrl, maxFieldCtrl}">
+    <label :for="minFieldCtrl.id">Salary range<sup>*</sup></label>
+    <input
+      type="text"
+      placeholder="min"
+      :value="minFieldCtrl.value"
+      :attrs="minFieldCtrl.attrs"
+      :events="minFieldCtrl.events"
+      :id="minFieldCtrl.id"
+    />
+    <input
+      type="text"
+      placeholder="max"
+      :value="maxFieldCtrl.value"
+      :attrs="maxFieldCtrl.attrs"
+      :events="maxFieldCtrl.events"
+      :id="maxFieldCtrl.id"
+    />
+    <div v-if="minFieldCtrl.error || maxFieldCtrl.error"
+         :id="minFieldCtrl.attrs['aria-errormessage']"
+         class="text-red-500">
+      {{ minFieldCtrl.error || maxFieldCtrl.error }}
+    </div>
+  </template>
+</HeadlessField>
+```

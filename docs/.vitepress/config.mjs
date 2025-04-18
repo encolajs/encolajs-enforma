@@ -37,19 +37,6 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Headless Components',
-          items: [
-            { text: 'Overview', link: '/headless/' },
-            { text: 'HeadlessForm', link: '/headless/form' },
-            { text: 'HeadlessField', link: '/headless/field' },
-            { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
-            {
-              text: 'Custom Wrapper Components',
-              link: '/headless/wrapper-components',
-            },
-          ],
-        },
-        {
           text: 'Enforma Components',
           items: [
             { text: 'Overview', link: '/components/' },
@@ -63,6 +50,25 @@ export default defineConfig({
             { text: 'EnformaSection', link: '/components/section' },
             { text: 'EnformaSchema', link: '/components/schema' },
             { text: 'Buttons', link: '/components/buttons' },
+          ],
+        },
+        {
+          text: 'Headless Components',
+          items: [
+            { text: 'Overview', link: '/headless/' },
+            { text: 'HeadlessForm', link: '/headless/form' },
+            { text: 'HeadlessField', link: '/headless/field' },
+            { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
+            {
+              text: 'Custom Wrapper Components',
+              link: '/headless/wrapper-components',
+            },
+          ],
+        },
+        {
+          text: 'Advanced concepts',
+          items: [
+            { text: 'The `useForm` composable', link: '/advanced/useform' },
           ],
         },
       ],
