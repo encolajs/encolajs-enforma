@@ -17,16 +17,16 @@ The main form component that manages form state, validation, and submission.
 
 ### Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `data` | `Object` | Yes | The form data object |
-| `rules` | `Object` | No | Validation rules object |
-| `messages` | `Object` | No | Custom validation messages |
-| `schema` | `Object` | No | Form schema for schema-driven forms |
-| `submitHandler` | `Function` | Yes | Function to handle form submission |
-| `context` | `Object` | No | Context data provided to all fields |
-| `config` | `Object` | No | Form configuration object |
-| `showResetButton` | `Boolean` | No | Whether to show the reset button (default: `true`) |
+| Prop | Type | Required | Description                                                            |
+|------|------|----------|------------------------------------------------------------------------|
+| `data` | `Object` | Yes | The form data object                                                   |
+| `rules` | `Object` | No | Validation rules object                                                |
+| `messages` | `Object` | No | Custom validation messages                                             |
+| `schema` | `Object` | No | Form schema for schema-driven forms                                    |
+| `submitHandler` | `Function` | Yes | Function to handle form submission                                     |
+| `context` | `Object` | No | Context object. It is used when dynamic props are being used           |
+| `config` | `Object` | No | Form configuration object. It will be merged with global configuration |
+| `showResetButton` | `Boolean` | No | Whether to show the reset button (default: `true`)                     |
 
 ### Events
 
@@ -45,7 +45,7 @@ The main form component that manages form state, validation, and submission.
 
 | Slot | Props | Description |
 |------|-------|-------------|
-| `default` | Form state object | Main content area for form fields |
+| `default` | `formCtrl` | Main content area for form fields |
 | `actions` | `{ formCtrl, formConfig }` | Button area, contains submit and reset buttons |
 
 ### Exposed Methods

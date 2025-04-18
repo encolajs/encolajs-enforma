@@ -51,7 +51,7 @@ export function useDynamicProps(
   /**
    * Create the context for expression evaluation
    */
-  const getContext = (): ExpressionContext => {
+  const getExpressionContext = (): ExpressionContext => {
     // Basic context from form state and external context
     return {
       // Form values from form state
@@ -69,8 +69,8 @@ export function useDynamicProps(
    * Evaluates all expressions within props
    */
   const evaluateProps = (props: DynamicProps): DynamicProps => {
-    const context = getContext()
-    return evaluateObject(props, context, formConfig)
+    const expressionContext = getExpressionContext()
+    return evaluateObject(props, expressionContext, formConfig)
   }
 
   /**
@@ -89,10 +89,10 @@ export function useDynamicProps(
         return condition
       }
 
-      const context = getContext()
+      const expressionContext = getExpressionContext()
       return evaluateCondition(
         condition,
-        context,
+        expressionContext,
         getConfig('expressions', { delimiters: { start: '${', end: '}' } })
       )
     })
@@ -101,6 +101,6 @@ export function useDynamicProps(
   return {
     evaluateProps,
     evaluateCondition: evaluateConditionForDynamicProps,
-    getContext,
+    getContext: getExpressionContext,
   }
 }

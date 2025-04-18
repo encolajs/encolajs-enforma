@@ -15,12 +15,12 @@
     @form-initialized="emit('form-initialized', $event)"
     @reset="emit('reset', $event)"
   >
-    <template #default="formState">
-      <slot name="default" v-bind="formState">
+    <template #default="formCtrl">
+      <slot name="default" v-bind="formCtrl">
         <component :is="schemaComponent" v-if="schema" :schema="schema" />
       </slot>
 
-      <slot name="actions" v-bind="{ formState, formConfig }">
+      <slot name="actions" v-bind="{ formCtrl, formConfig }">
         <div v-bind="getConfig('pt.actions')">
           <component :is="submitButton" />
           <component :is="resetButton" v-if="showResetButton" />
