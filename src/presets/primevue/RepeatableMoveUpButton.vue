@@ -2,7 +2,7 @@
   <Button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableMoveUpButton'))"
     type="button"
-    severity="info"
+    severity="secondary"
     icon="pi pi-arrow-up"
   />
 </template>

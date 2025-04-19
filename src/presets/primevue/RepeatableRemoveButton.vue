@@ -2,7 +2,7 @@
   <Button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableRemoveButton'))"
     type="button"
-    severity="info"
+    severity="danger"
     icon="pi pi-trash"
   />
 </template>

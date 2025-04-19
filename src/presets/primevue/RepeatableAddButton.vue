@@ -2,7 +2,7 @@
   <Button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableAddButton'))"
     type="button"
-    severity="info"
+    severity="secondary"
     icon="pi pi-plus"
     :label="t('Add')"
   />
