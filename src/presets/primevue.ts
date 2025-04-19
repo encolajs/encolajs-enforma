@@ -1,6 +1,10 @@
 import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
 import Autocomplete from './primevue/Autocomplete.vue'
+import RepeatableRemoveButton from './primevue/RepeatableRemoveButton.vue'
+import RepeatableAddButton from './primevue/RepeatableAddButton.vue'
+import RepeatableMoveDownButton from './primevue/RepeatableMoveDownButton.vue'
+import RepeatableMoveUpButton from './primevue/RepeatableMoveUpButton.vue'
 import { InputText, Select } from 'primevue'
 import { FieldController, FormController } from '@/types'
 import {
@@ -48,6 +52,10 @@ export default function usePrimeVuePreset(): void {
     components: {
       submitButton: SubmitButton,
       resetButton: ResetButton,
+      repeatableAddButton: RepeatableAddButton,
+      repeatableRemoveButton: RepeatableRemoveButton,
+      repeatableMoveUpButton: RepeatableMoveUpButton,
+      repeatableMoveDownButton: RepeatableMoveDownButton,
     },
     transformers: {
       field_props: [fieldPropsTransformer],

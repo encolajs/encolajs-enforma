@@ -36,10 +36,10 @@ Custom props:
 # Checkbox
 Docs: https://primevue.org/checkbox/
 Custom props:
-- value:
+- trueValue:
     - type: any
     - purpose: what is the value sent to the form if the item is checked
-- uncheckedValue: 
+- falseValue: 
     - type: any
     - default: null
     - purpose: what is the value sent to the form if the item is unchecked
@@ -62,9 +62,12 @@ Custom props:
     - purpose: determines whether or not the value received by the field and passed back to the form is a CSV (comma separated values) string or an array.    
 
 
-Color
-Colorpicker
-Currency
+# Colorpicker
+Docs: https://primevue.org/colorpicker/
+
+# Currency
+Docs: https://primevue.org/inputnumber/#currency
+
 Date
 Datepicker
 Datetime-local
