@@ -3,7 +3,7 @@
   <div v-bind="props.wrapper" v-show="props.if">
     <label v-if="!props.hideLabel && !props.showLabelNextToInput && fieldOptions.label" v-bind="props.label">
       {{ t(fieldOptions.label) }}
-      <span v-if="props.required" v-bind="props.required">
+      <span v-if="props.required" v-bind="props.requiredProps">
         {{ requiredIndicator }}
       </span>
     </label>
@@ -19,6 +19,9 @@
         />
         <label v-if="props.showLabelNextToInput && fieldOptions.label" v-bind="props.label">
           {{ t(fieldOptions.label) }}
+          <span v-if="props.required" v-bind="props.requiredProps">
+            {{ requiredIndicator }}
+          </span>
         </label>
       </div>
     </slot>
