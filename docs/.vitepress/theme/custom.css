@@ -1,0 +1,42 @@
+.enforma-repeatable-table-actions {
+    text-wrap: nowrap;
+}
+
+.enforma-repeatable-table {
+    width: 100%;
+    display: table !important;
+    thead, tbody {
+        width: 100%;
+    }
+    th, td {
+        border-left: 0;
+        border-right: 0;
+    }
+    td {
+        padding: 0.5rem;
+    }
+    div.enforma-repeatable-item-actions {
+        width: 100%;
+        justify-content: end;
+        text-align: right;
+        display: flex;
+        gap: 0.5rem;
+    }
+}
+
+.enforma-repeatable {
+    .repeatable-item {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .enforma-repeatable-item-actions {
+        text-align: right;
+        grid-column-start: 1;
+        grid-column-end: 3;
+        justify-content: end;
+        display: flex;
+        gap: 0.5rem;
+    }
+}

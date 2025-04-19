@@ -49,8 +49,10 @@ const messages = {
 
 const submitHandler = async (formData) => {
   return new Promise((resolve) => {
-    console.log(formData)
-    setTimeout(resolve, 2000)
+    setTimeout(() => {
+      alert('Form set to server')
+      resolve(true)
+    }, 2000)
   })
 }
 export default {

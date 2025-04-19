@@ -181,7 +181,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,
-  validateOnRemove: false,
+  validateOnRemove: true,
   if: true,
   min: 0,
   animations: true,

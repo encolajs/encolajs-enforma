@@ -1,3 +1,23 @@
+<script setup>
+import FormExample from './components/FieldsFormExample.vue'
+</script>
+
+# Form using headless components
+
+> [!INFO]
+> This example is using the PrimeVue preset
+
+<ClientOnly>
+    <LiveDemo :component="FormExample"></LiveDemo>
+</ClientOnly>
+
+## Source code
+
+::: code-group
+<<< @/examples/components/FieldsFormExample.vue [Enforma Form with Fields]
+<<< @/examples/components/ExperienceEndDateField.vue
+:::
+
 # Enforma forms with fields
 
 <!-- 
@@ -13,3 +33,4 @@ This page should provide:
 Page should provide not just code but a working example. 
 Component file will be in ./components/FieldsFormExample.vue
 -->
+

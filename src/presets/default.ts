@@ -92,7 +92,7 @@ export default function useDefaultPreset(
           class: 'enforma-repeatable-actions',
         },
         itemActions: {
-          class: 'enforma-repeatable-table-actions',
+          class: 'enforma-repeatable-item-actions',
         },
       },
       repeatable_table: {

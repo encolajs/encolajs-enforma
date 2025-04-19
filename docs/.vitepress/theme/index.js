@@ -2,6 +2,9 @@ import DefaultTheme from 'vitepress/theme'
 import Tabs from '../components/Tabs.vue'
 import Tab from '../components/Tab.vue'
 import TabNav from '../components/TabNav.vue'
+import LiveDemo from '../components/LiveDemo.vue'
+import './custom.css'
+
 /** @type {import('vitepress').Theme} */
 export default {
   ...DefaultTheme,
@@ -9,6 +12,7 @@ export default {
     app.component('Tabs', Tabs)
     app.component('Tab', Tab)
     app.component('TabNav', TabNav)
+    app.component('LiveDemo', LiveDemo)
     const script = document.createElement('script')
     script.src = 'https://cdn.tailwindcss.com/' // or script.textContent = 'console.log("inline script")';
     script.type = 'text/javascript'

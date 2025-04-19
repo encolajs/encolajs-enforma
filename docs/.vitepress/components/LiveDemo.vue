@@ -15,7 +15,7 @@ import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 
 const props = defineProps({
-  component: String
+  component: String | Object
 })
 
 const el = ref()
