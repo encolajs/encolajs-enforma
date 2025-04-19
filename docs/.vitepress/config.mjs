@@ -20,7 +20,7 @@ export default defineConfig({
     ],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Getting Started', link: '/getting-started/' },
+      { text: 'Getting Started', link: '/getting-started' },
       { text: 'Guides', link: '/guides/' },
       { text: 'Presets', link: '/presets/' },
       { text: 'API', link: '/api/' },
@@ -28,14 +28,9 @@ export default defineConfig({
     ],
     sidebar: {
       '/': [
-        {
-          text: 'Getting Started',
-          items: [
-            { text: 'Introduction', link: '/getting-started/' },
-            { text: 'Installation', link: '/getting-started/installation' },
-            { text: 'Quick Start', link: '/getting-started/quick-start' },
-          ],
-        },
+        { text: 'Getting started', link: '/getting-started' },
+        { text: 'Installation', link: '/installation' },
+        { text: 'Quick Start', link: '/quick-start' },
         {
           text: 'Enforma Components',
           items: [
