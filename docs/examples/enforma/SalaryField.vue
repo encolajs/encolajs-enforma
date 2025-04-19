@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { HeadlessField } from '../../../src/'
+import { HeadlessField } from '@'
 import { InputText } from 'primevue'
 
 const props = defineProps({

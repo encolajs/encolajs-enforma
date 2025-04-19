@@ -1,5 +1,5 @@
 <script setup>
-import HeadlessFormExample from './components/HeadlessFormExample.vue'
+import HeadlessFormExample from './headless/HeadlessFormExample.vue'
 </script>
 
 # Form using headless components
@@ -15,7 +15,7 @@ import HeadlessFormExample from './components/HeadlessFormExample.vue'
 ## Source code
 
 ::: code-group
-<<< @/examples/components/HeadlessFormExample.vue [Headless Form]
-<<< @/examples/components/AppFormField.vue
-<<< @/examples/components/ExperienceEndDateField.vue
+<<< @/examples/headless/HeadlessFormExample.vue [Headless Form]
+<<< @/examples/headless/AppFormField.vue
+<<< @/examples/headless/ExperienceEndDateField.vue
 :::

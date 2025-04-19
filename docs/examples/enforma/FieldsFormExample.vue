@@ -86,8 +86,8 @@
 </template>
 
 <script setup>
-import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from '../../../src'
-import formConfig from './formConfig'
+import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from '@'
+import formConfig from '../headless/formConfig'
 import EndDateField from './EndDateField.vue'
 import SalaryField from './SalaryField.vue'
 

@@ -1,5 +1,5 @@
 <script setup>
-import FormExample from './components/FieldsFormExample.vue'
+import FormExample from './enforma/FieldsFormExample.vue'
 </script>
 
 # Form using headless components
@@ -14,9 +14,9 @@ import FormExample from './components/FieldsFormExample.vue'
 ## Source code
 
 ::: code-group
-<<< @/examples/components/FieldsFormExample.vue [Enforma Form with Fields]
-<<< @/examples/components/EndDateField.vue
-<<< @/examples/components/SalaryField.vue
+<<< @/examples/enforma/FieldsFormExample.vue [Enforma Form with Fields]
+<<< @/examples/enforma/EndDateField.vue
+<<< @/examples/enforma/SalaryField.vue
 :::
 
 # Enforma forms with fields

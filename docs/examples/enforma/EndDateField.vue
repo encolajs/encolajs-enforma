@@ -36,7 +36,7 @@ It doesn't render the errors, or label, it just renders the inputs
 </template>
 
 <script setup>
-import { formStateKey, HeadlessField } from '../../../src/'
+import { formStateKey, HeadlessField } from '@'
 import { DatePicker, ToggleSwitch } from 'primevue'
 import { inject } from 'vue'
 
