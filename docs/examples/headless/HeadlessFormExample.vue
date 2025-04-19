@@ -295,8 +295,8 @@
               </AppFormField>
 
               <ExperienceEndDateField
-                :index="index"
-                :form="$form"
+                :name="`experience.${index}.end`"
+                :form="formCtrl"
               />
 
               <div class="col-span-2 flex gap-2 items-right place-content-end">

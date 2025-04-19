@@ -5,7 +5,7 @@ import {
   watch,
   ref,
   computed,
-  ComputedRef, onMounted, Ref,
+  ComputedRef, onMounted,
 } from 'vue'
 import { useField } from './useField'
 import { FieldController, FieldOptions, FormController } from '@/types'
@@ -20,11 +20,7 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: false,
-    },
-    names: {
-      type: Object,
-      required: false,
+      required: true,
     },
     validateOn: {
       type: String,
@@ -43,75 +39,36 @@ export default defineComponent({
       )
       return () => null // Return null instead of trying to render
     }
-    // Create a trigger ref to force re-rendering when the repeatable data changes
+    
+    // Create a trigger ref to force re-rendering when the data changes
     const renderTrigger = ref(0)
-
     const unwatchers: Function[] = []
 
     onBeforeUnmount(() => {
-      if (props.name) {
-        form.removeField(props.name)
-      }
-      if (props.names) {
-        Object.values(props.names).map(form.removeField)
-      }
+      form.removeField(props.name)
       unwatchers.forEach((unwatch) => unwatch())
     })
 
-    // Handle single field case (backwards compatibility)
-    if (props.name && !props.names) {
-      const fieldCtrl: ComputedRef<FieldController> = useField(props.name, form, {
-        validateOn: props.validateOn,
-      } as FieldOptions)
+    const fieldCtrl: ComputedRef<FieldController> = useField(props.name, form, {
+      validateOn: props.validateOn,
+    } as FieldOptions)
 
-      onMounted(fieldCtrl.value.initField)
+    onMounted(fieldCtrl.value.initField)
 
-      unwatchers.push(
-        watch(
-          () => fieldCtrl.value,
-          () => {
-            renderTrigger.value++
-          },
-          { deep: true }
-        )
+    unwatchers.push(
+      watch(
+        () => fieldCtrl.value,
+        () => {
+          renderTrigger.value++
+        },
+        { deep: true }
       )
+    )
 
-      return () => {
-        // Include renderTrigger in the render function to ensure it re-evaluates
-        const currentTrigger = renderTrigger.value
-        return slots.default?.(fieldCtrl.value)
-      }
+    return () => {
+      // Include renderTrigger in the render function to ensure it re-evaluates
+      const currentTrigger = renderTrigger.value
+      return slots.default?.(fieldCtrl.value)
     }
-
-    // Handle multiple fields case
-    if (props.names) {
-      const fieldCtrls: ComputedRef<Record<string, FieldController>> = computed(() =>
-        Object.entries(props.names || {}).reduce((acc, [key, fieldName]) => {
-          acc[key] = useField(fieldName, form, {
-            validateOn: props.validateOn,
-          } as FieldOptions).value
-
-          acc[key].initField()
-
-          unwatchers.push(
-            watch(
-              () => acc[key],
-              () => {
-                renderTrigger.value++
-              },
-              { deep: true }
-            )
-          )
-
-          return acc
-        }, {} as Record<string, any>)
-      )
-
-      // Return slot with fields object
-      return () => slots.default?.(fieldCtrls.value)
-    }
-
-    console.error('HeadlessField requires either name or names prop')
-    return () => null
   },
 })

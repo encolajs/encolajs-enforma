@@ -92,40 +92,6 @@ describe('HeadlessField', () => {
         name: expect.any(String),
       })
     })
-
-    it('supports multiple fields through names prop', () => {
-      const form = createMockForm()
-      let slotProps
-
-      mount(HeadlessField, {
-        props: {
-          names: { nameField: 'name', emailField: 'email' },
-        },
-        global: {
-          provide: {
-            [formStateKey]: form,
-          },
-        },
-        slots: {
-          default: (props) => {
-            slotProps = props
-            return '<div>Multiple Fields</div>'
-          },
-        },
-      })
-
-      expect(Object.keys(slotProps)).toHaveLength(2)
-      expect(slotProps.nameField).toMatchObject({
-        name: 'name',
-        value: 'John',
-        error: null,
-      })
-      expect(slotProps.emailField).toMatchObject({
-        name: 'email',
-        value: 'john@example.com',
-        error: null,
-      })
-    })
   })
 
   describe('field validation lifecycle', () => {
@@ -263,24 +229,6 @@ describe('HeadlessField', () => {
       expect(form.hasField('new_field')).toBe(true)
       await wrapper.unmount()
       expect(form.hasField('new_field')).toBe(false)
-    })
-
-    it('cleans up multiple fields on unmount', async () => {
-      const form = createMockForm()
-      const wrapper = mount(HeadlessField, {
-        props: {
-          names: { nameField: 'name', emailField: 'email' },
-        },
-        global: {
-          provide: {
-            [formStateKey]: form,
-          },
-        },
-      })
-
-      await wrapper.unmount()
-      expect(form.hasField('name')).toBe(false)
-      expect(form.hasField('email')).toBe(false)
     })
   })
 

@@ -1,56 +1,69 @@
 <!--
-This component is a wrapper for a <HeadlessField> component
-that renders 2 input fields
+This custom field that  is a wrapper for
+a <HeadlessField> component that renders 2 input fields
 
-This should be done when you want to render multiple inputs
-in the same "block" that interact with each other, otherwise
-you could get away with just using <HeadlessField>s
-just like it was done in the Salary min/max section
+We are nesting one HeadlessField inside each other because
+1. the fields depend on each other (i.e. the datepicker's disable property
+depends on the toggleswitch's value)
+2. we want to show the error message for the date after the toggleswitch
 -->
 
 <template>
-  <HeadlessField :names="{end: endName, current: currentName}">
-    <template #default="{end, current}">
-      <div>
-        <label :for="end.id">End</label>
-        <DatePicker
-          :id="end.id"
-          date-format="yy-mm-dd"
-          fluid
-          :disabled="current.value"
-          v-bind="end.attrs"
-          v-on="end.events"
-          @update:modelValue="(date) => end.events.change({value: date})"
-        />
-        <div class="flex align-center mt-2">
-          <ToggleSwitch
-            :id="current.id"
-            class="me-2"
-            :model-value="current.value"
-            v-bind="current.attrs"
-            :true-value="true"
-            :false-value="false"
-            @change="(evt) => onChangeCurrent(evt.srcElement?.checked)"
+  <div>
+    <!-- End date field with current field nested inside -->
+    <HeadlessField :name="endName">
+      <template #default="end">
+        <div>
+          <label :for="end.id">End</label>
+          <DatePicker
+            :id="end.id"
+            date-format="yy-mm-dd"
+            :model-value="end.value"
+            fluid
+            :disabled="isCurrentlyWorking"
+            v-bind="end.attrs"
+            v-on="end.events"
+            @update:modelValue="(date) => end.events.change({value: date})"
           />
-          <span @click="onChangeCurrent(!current.value)">Currently working here</span>
+          
+          <!-- Current position field nested inside end date field -->
+          <HeadlessField :name="currentName">
+            <template #default="current">
+              <div class="flex align-center mt-2">
+                <ToggleSwitch
+                  :id="current.id"
+                  class="me-2"
+                  :model-value="current.value"
+                  v-bind="current.attrs"
+                  :true-value="true"
+                  :false-value="false"
+                  @change="(evt) => onChangeCurrent(evt.srcElement?.checked)"
+                />
+                <span @click="onChangeCurrent(!current.value)">Currently working here</span>
+              </div>
+            </template>
+          </HeadlessField>
+          
+          <!-- Error message after both fields -->
+          <div v-if="end.error"
+               :id="end.attrs['aria-errormessage']"
+               class="text-red-500">
+            {{ end.error }}
+          </div>
         </div>
-        <div v-if="end.error"
-             :id="end.attrs['aria-errormessage']"
-             class="text-red-500">
-          {{ end.error }}
-        </div>
-      </div>
-    </template>
-  </HeadlessField>
+      </template>
+    </HeadlessField>
+  </div>
 </template>
 
 <script setup>
 import { HeadlessField } from '../../../src/index'
 import { DatePicker, ToggleSwitch } from 'primevue'
+import { computed } from 'vue'
 
 const props = defineProps({
-  index: {
-    type: Number,
+  name: {
+    type: String,
     required: true
   },
   form: {
@@ -59,12 +72,17 @@ const props = defineProps({
   }
 })
 
-const endName = `experience.${props.index}.end`
-const currentName = `experience.${props.index}.current`
+const endName = props.name
+const currentName = endName.replace('.end', '.current')
+
+// Compute the current value to ensure it's always up-to-date
+const isCurrentlyWorking = computed(() => props.form[currentName])
 
 const onChangeCurrent = (value) => {
-  props.form.setFieldValue(`experience.${props.index}.current`, value)
-  props.form.setFieldValue(`experience.${props.index}.end`, null)
-  props.form.validateField(`experience.${props.index}.end`, true)
+  props.form.setFieldValue(currentName, value)
+  if (value) {
+    props.form.setFieldValue(endName, null)
+    props.form.validateField(endName, true)
+  }
 }
-</script> 
+</script>

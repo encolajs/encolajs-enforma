@@ -11,8 +11,7 @@ A field component that provides no UI, just the field state and logic.
 
 | Prop | Type | Required | Description                                                                                                                  |
 |------|------|----------|------------------------------------------------------------------------------------------------------------------------------|
-| `name` | `String` | No       | Field name/path (required if names not provided)                                                                             |
-| `names` | `Object` | No       | Multiple field names mapping (required if name not provided). The object is in the form of `{fieldControllerName: fieldPath}` |
+| `name` | `String` | Yes      | Field name/path                                                                                                          |
 | `validateOn` | `String` | No       | When to validate this field ( `'input' \| 'change' \| 'blur'    \| 'submit'`)                                                |
 | `validateOnMount` | `Boolean` | No       | Whether to validate when the componet mounts                                                                                 |
 
@@ -20,8 +19,7 @@ A field component that provides no UI, just the field state and logic.
 
 | Slot | Props | Description |
 |------|-------|-------------|
-| `default` | `fieldCtrl` | The default slot for a single input field. |
-| `default` | `{ [key: string]: fieldCtrl }` | The default slot for multiple input fields. |
+| `default` | `fieldCtrl` | The default slot receives the field controller. |
 
 ## Field Controller
 

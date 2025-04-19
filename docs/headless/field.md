@@ -53,33 +53,43 @@ You can read more about what the "field controller" does in the [`useField`](/ad
 
 ## Multiple inputs example
 
-There are situation when a single form field must render multiple inputs (eg: a range). In this case you can provide multiple names
+There are situations when you need to render multiple inputs that work together (eg: a range). In this case, you should use multiple HeadlessField components:
 
 ```html
-<HeadlessField :names="{minFieldCtrl: 'salary.min', maxFieldCtrl: 'salary.max'}">
-  <template #default="{minFieldCtrl, maxFieldCtrl}">
-    <label :for="minFieldCtrl.id">Salary range<sup>*</sup></label>
-    <input
-      type="text"
-      placeholder="min"
-      :value="minFieldCtrl.value"
-      :attrs="minFieldCtrl.attrs"
-      :events="minFieldCtrl.events"
-      :id="minFieldCtrl.id"
-    />
-    <input
-      type="text"
-      placeholder="max"
-      :value="maxFieldCtrl.value"
-      :attrs="maxFieldCtrl.attrs"
-      :events="maxFieldCtrl.events"
-      :id="maxFieldCtrl.id"
-    />
-    <div v-if="minFieldCtrl.error || maxFieldCtrl.error"
-         :id="minFieldCtrl.attrs['aria-errormessage']"
-         class="text-red-500">
-      {{ minFieldCtrl.error || maxFieldCtrl.error }}
-    </div>
-  </template>
-</HeadlessField>
+<div>
+  <label>Salary range<sup>*</sup></label>
+  <div class="flex gap-2">
+    <HeadlessField name="salary.min">
+      <template #default="fieldCtrl">
+        <input
+          type="text"
+          placeholder="min"
+          :value="fieldCtrl.value"
+          v-bind="fieldCtrl.attrs"
+          v-on="fieldCtrl.events"
+          :id="fieldCtrl.id"
+        />
+      </template>
+    </HeadlessField>
+    
+    <HeadlessField name="salary.max">
+      <template #default="fieldCtrl">
+        <input
+          type="text"
+          placeholder="max"
+          :value="fieldCtrl.value"
+          v-bind="fieldCtrl.attrs"
+          v-on="fieldCtrl.events"
+          :id="fieldCtrl.id"
+        />
+      </template>
+    </HeadlessField>
+  </div>
+  <div v-if="form['salary.min.$errors']?.length || form['salary.max.$errors']?.length"
+       class="text-red-500">
+    {{ form['salary.min.$errors']?.[0] || form['salary.max.$errors']?.[0] }}
+  </div>
+</div>
 ```
+
+For complex field combinations, you can also create wrapper components that encapsulate multiple fields, as shown in the [Headless components example](/examples/headless-components).
