@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '@/headless/useField'
 import { FieldController } from '../../src'
-import { ComputedRef } from 'vue'
+import { ComputedRef, ref } from 'vue'
 
 // Mock the form proxy (normally returned from useForm)
 const mockForm = {
@@ -29,6 +29,7 @@ const mockForm = {
   // Mock field functions
   getField: vi.fn((path) => ({
     _id: path,
+    _version: ref(0),
     $errors: mockForm[`${path}.$errors`] || [],
     $isDirty: mockForm[`${path}.$isDirty`] || false,
     $isTouched: mockForm[`${path}.$isTouched`] || false,
@@ -233,6 +234,7 @@ describe('useField', () => {
       // Setup field with error
       vi.spyOn(mockForm, 'getField').mockReturnValueOnce({
         _id: 'email',
+        _version: ref(0),
         $errors: ['This field is invalid'],
         $isDirty: true,
         $isTouched: true,

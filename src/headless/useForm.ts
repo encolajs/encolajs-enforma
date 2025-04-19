@@ -1,6 +1,6 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 import { generateId } from '@/utils/helpers'
 import { Emitter } from 'mitt'
 import { FormEvents, createFormEmitter, globalFormEmitter } from '@/utils/events'
@@ -11,6 +11,7 @@ export interface FieldState {
   $isTouched: boolean
   $isValidating: boolean
   _id: string
+  _version: Ref<number>
 }
 
 export interface StateChanges {
@@ -47,6 +48,7 @@ class FieldManager {
         $isTouched: false,
         $isValidating: false,
         _id: generateId('field', path),
+        _version: ref(0),
       })
       // No need to signal state change here as we'll do it when getting the field
     }
@@ -166,7 +168,6 @@ export function useForm<T extends object>(
     ? globalFormEmitter 
     : createFormEmitter();
   
-  const formStateVersion = ref(0)
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
     values.clone && typeof values?.clone === 'function'
@@ -179,7 +180,6 @@ export function useForm<T extends object>(
     $isSubmitting: false,
     $isDirty: false,
     $isTouched: false,
-    $stateVersion: formStateVersion,
   }
   // Create a form-specific state version counter
   const valuesRef = ref(values)
@@ -199,17 +199,19 @@ export function useForm<T extends object>(
       state.$isValidating = true
       state.$isTouched = true
       state.$isDirty = true
-      const isValid = await validator.validatePath(path, values)
+      
+      state._version.value++
+      
+      const isValid = await validator.validatePath(path, valuesRef.value)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
-        // Signal a state change when errors are added
-        formStateVersion.value++
+        state._version.value++
         return false
       }
-      // Signal a state change when errors are cleared
+      
       if (state.$errors.length > 0) {
         state.$errors = []
-        formStateVersion.value++
+        state._version.value++
       } else {
         state.$errors = []
       }
@@ -219,8 +221,8 @@ export function useForm<T extends object>(
       return false
     } finally {
       state.$isValidating = false
-      // Signal a state change when validation completes
-      formStateVersion.value++
+      
+      state._version.value++
     }
   }
 
@@ -337,17 +339,16 @@ export function useForm<T extends object>(
         formState.$isSubmitting = true;
 
         try {
-          // Validate all fields
-          const isValid = await validateForm();
-
           // Mark all fields as touched before validation
           fieldManager.all().forEach((state, path) => {
             state.$isTouched = true;
             state.$isDirty = true;
+            // Increment field versions to trigger UI updates
+            state._version.value++
           });
-
-          // Signal state change after marking all fields
-          formStateVersion.value++;
+          
+          // Validate all fields
+          const isValid = await validateForm();
 
           if (!isValid) {
             // Call validation error callback if provided
@@ -445,9 +446,10 @@ export function useForm<T extends object>(
         formState.$isTouched = false
         formState.$isValidating = false
         formState.$isSubmitting = false
-
-        // Signal form reset complete
-        formStateVersion.value++
+        
+        fieldManager.all().forEach((state) => {
+          state._version.value++
+        });
         
         // Emit form reset event
         formEmitter.emit('form_reset', { formController: this });
@@ -495,8 +497,9 @@ export function useForm<T extends object>(
       setFieldFocused(path: string): void {
         const state = fieldManager.get(path)
         state.$isTouched = true
-        formStateVersion.value++
         
+                state._version.value++
+
         // Emit field focused event
         formEmitter.emit('field_focused', {
           path,
@@ -508,8 +511,9 @@ export function useForm<T extends object>(
       setFieldBlurred(path: string): void {
         const state = fieldManager.get(path)
         state.$isTouched = true
-        formStateVersion.value++
         
+                state._version.value++
+
         // Emit field blurred event
         formEmitter.emit('field_blurred', {
           path,
@@ -522,7 +526,8 @@ export function useForm<T extends object>(
         const state = fieldManager.get(path)
         state.$errors = errors
         state.$isTouched = true
-        formStateVersion.value++
+        
+                state._version.value++
       },
 
       setErrors(errors: Record<string, string[]>): void {
@@ -547,7 +552,13 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
         fieldManager.shift(arrayPath, index, 1)
-        formStateVersion.value++
+        
+        // Update versions for affected fields
+        fieldManager.all().forEach((state, path) => {
+          if (path.startsWith(arrayPath)) {
+                        state._version.value++
+          }
+        });
       },
 
       remove(arrayPath: string, index: number): void {
@@ -568,8 +579,12 @@ export function useForm<T extends object>(
         // Reindex remaining field states
         reindexArrayFieldStates(arrayPath, index)
 
-        // Signal state change
-        formStateVersion.value++
+        // Update versions for affected fields
+        fieldManager.all().forEach((state, path) => {
+          if (path.startsWith(arrayPath)) {
+                        state._version.value++
+          }
+        });
       },
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
@@ -577,7 +592,13 @@ export function useForm<T extends object>(
         const [item] = array.splice(fromIndex, 1)
         array.splice(toIndex, 0, item)
         fieldManager.move(arrayPath, fromIndex, toIndex)
-        formStateVersion.value++
+        
+        // Update versions for affected fields
+        fieldManager.all().forEach((state, path) => {
+          if (path.startsWith(arrayPath)) {
+                        state._version.value++
+          }
+        });
       },
 
       sort(arrayPath: string, callback: (a: any, b: any) => number): void {
@@ -590,7 +611,13 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
-        formStateVersion.value++
+        
+        // Update versions for affected fields
+        fieldManager.all().forEach((state, path) => {
+          if (path.startsWith(arrayPath)) {
+                        state._version.value++
+          }
+        });
       },
     } as FormController,
     {
@@ -644,9 +671,9 @@ export function useForm<T extends object>(
               case 'isValidating':
               case 'errors': {
                 ;(state[metaKey] as any) = value
-                // Only increment if value actually changed
+                // Only increment field version if value actually changed
                 if (prevValue !== value) {
-                  formStateVersion.value++
+                  state._version.value++
                 }
                 break
               }
@@ -661,8 +688,7 @@ export function useForm<T extends object>(
             const state = fieldManager.get(prop)
             state.$isDirty = true
 
-            // Increment state version for field value changes
-            formStateVersion.value++
+                        state._version.value++
 
             // Handle validation asynchronously
             Promise.resolve().then(() => {

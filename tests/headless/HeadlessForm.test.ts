@@ -422,9 +422,6 @@ describe('HeadlessForm', () => {
       await wrapper.find('form').trigger('submit')
       await flushPromises()
 
-      // Get form controller from HeadlessForm component
-      const formController = wrapper.findComponent(HeadlessForm).vm
-
       // Check state directly on the controller after validation
       const emailState = encolaForm.getField('email')
 

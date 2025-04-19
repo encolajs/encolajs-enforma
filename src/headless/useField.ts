@@ -30,22 +30,36 @@ export function useField(
 
   // Get field state from form
   const getFieldState = () => form.getField(name)
+  
+  // Generate a unique field ID that won't change
+  const fieldState = getFieldState()
+  const fieldId = fieldState._id
 
   // Create a reference to track focus state
   const isFocused = ref(false)
 
-  // Create a reactive reference to track form state changes
-  const localStateVersion = ref(0)
+  // Subscribe to field-specific events for focus/blur state
+  let unsubscribeFocused: any = null
+  let unsubscribeBlurred: any = null
+  
+  // Only set up event subscriptions if the form controller has event methods
+  if (typeof form.on === 'function') {
+    // We don't need to track field_changed events anymore as we're using the FieldState._version
+    
+    unsubscribeFocused = form.on('field_focused', (data: any) => {
+      if (data?.path === name) {
+        isFocused.value = true
+      }
+    })
+    
+    unsubscribeBlurred = form.on('field_blurred', (data: any) => {
+      if (data?.path === name) {
+        isFocused.value = false
+      }
+    })
+  }
 
-  // Watch for form-specific state changes and update local version
-  watch(
-    () => form.$stateVersion.value,
-    (newVersion) => {
-      localStateVersion.value = newVersion
-    }
-  )
-
-  // Create a ref for the model value
+  // Create a ref for the model value 
   const modelValue = ref(form[name])
 
   // Watch for changes to the form value and update the model ref
@@ -152,14 +166,24 @@ export function useField(
     if (options.validateOnMount) {
       validate()
     }
+    
+    // Clean up event listeners when component is unmounted
+    return () => {
+      // Only unsubscribe if functions were properly set up
+      if (typeof unsubscribeFocused === 'function') unsubscribeFocused()
+      if (typeof unsubscribeBlurred === 'function') unsubscribeBlurred()
+    }
   })
 
   // Create exported API object with all field state and methods
   return computed(() => {
-    // Include the local state version in the computation to ensure reactivity
-    const currentStateVersion = localStateVersion.value
-
+    // Get the latest field state
     const fieldState = getFieldState()
+    
+    // Use the field state's version directly - this will change during field validation
+    // and when the field is updated through the form mechanisms
+    const fieldVersion = fieldState._version.value || 0
+    
     const value = form[name]
     const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null
 
@@ -173,8 +197,8 @@ export function useField(
       isTouched: fieldState?.$isTouched || false,
       isValidating: fieldState?.$isValidating || false,
       isFocused: isFocused.value,
-      // Expose the state version for debugging
-      _stateVersion: currentStateVersion,
+      // Expose the field state version for debugging
+      _fieldVersion: fieldVersion,
 
       // Methods
       validate,
