@@ -37,10 +37,13 @@
                   :is="getConfig('components.field', EnformaField)"
                   :name="`${name}.${index}.${subfieldName}`"
                   hide-label="true"
-                  v-bind="subfield"
+                  v-bind="{ ...subfield }"
                 />
               </td>
-              <td v-if="showDeleteButton || showMoveButtons" v-bind="getConfig('pt.repeatable_table.actionsTd')">
+              <td
+                v-if="showDeleteButton || showMoveButtons"
+                v-bind="getConfig('pt.repeatable_table.actionsTd')"
+              >
                 <div
                   v-bind="
                     getConfig(

@@ -29,6 +29,17 @@ export { default as HeadlessForm } from './headless/HeadlessForm'
 export { default as HeadlessField } from './headless/HeadlessField'
 export { default as HeadlessRepeatable } from './headless/HeadlessRepeatable'
 
+export { default as Enforma } from './core/Enforma.vue'
+export { default as EnformaField } from './core/EnformaField.vue'
+export { default as EnformaRepeatable } from './core/EnformaRepeatable.vue'
+export { default as EnformaRepeatableAddButton } from './core/EnformaRepeatableAddButton.vue'
+export { default as EnformaRepeatableRemoveButton } from './core/EnformaRepeatableRemoveButton.vue'
+export { default as EnformaRepeatableMoveUpButton } from './core/EnformaRepeatableMoveUpButton.vue'
+export { default as EnformaRepeatableMoveDownButton } from './core/EnformaRepeatableMoveDownButton.vue'
+export { default as EnformaRepeatableTable } from './core/EnformaRepeatableTable.vue'
+export { default as EnformaSubmitButton } from './core/EnformaSubmitButton.vue'
+export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
+
 // Presets will be imported directly by the users
 // export { default as defaultPreset } from './presets/default'
 // export { default as primevuePreset } from './presets/primevue'

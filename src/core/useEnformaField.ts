@@ -13,7 +13,7 @@ import applyTransformers from '@/utils/applyTransformers'
 export interface EnformaFieldProps {
   name: string
   label?: string | null
-  type?: string | null
+  component?: string | object | null
   placeholder?: string | null
   hideLabel?: boolean | undefined
   required?: boolean | undefined
@@ -52,7 +52,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const fieldOptions = computed(() => {
     // Default values that will be used if neither props nor schema provide a value
     const defaults: Record<string, any> = {
-      type: 'input',
+      component: 'input',
       hideLabel: false,
       required: false,
       if: true,
@@ -77,7 +77,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       result = {
         ...result,
         label: fieldSchema.value.label ?? null,
-        type: fieldSchema.value.type ?? result.type,
+        component: fieldSchema.value.component ?? result.component,
         placeholder: fieldSchema.value.placeholder ?? null,
         hideLabel: fieldSchema.value.hideLabel ?? result.hideLabel,
         required: fieldSchema.value.required ?? result.required,
@@ -99,7 +99,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       ...result,
       name: originalProps.name,
       label: originalProps.label ?? result.label,
-      type: originalProps.type ?? result.type,
+      component: originalProps.component ?? result.type,
       placeholder: originalProps.placeholder ?? result.placeholder,
       hideLabel: originalProps.hideLabel ?? result.hideLabel,
       required: originalProps.required ?? result.required,
@@ -214,7 +214,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     result.if = evaluateCondition(fieldOptions.value.if).value
 
     // Component type
-    result.component = fieldOptions.value.type || 'input'
+    result.component = fieldOptions.value.component || 'input'
     result.hideLabel = fieldOptions.value.hideLabel
 
     // Apply custom transformers if defined in config

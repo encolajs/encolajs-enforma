@@ -10,21 +10,23 @@
 
     <!-- Field content slot -->
     <slot name="default" v-bind="{ ...fieldState, attrs: props.input }">
-      <component
-        :is="props.component"
-        v-model="fieldState.value"
-        v-bind="props.input"
-        v-on="fieldState.events"
-      />
+      <div class="enforma-field-input">
+        <component
+          :is="props.component"
+          v-model="fieldState.value"
+          v-bind="props.input"
+          v-on="fieldState.events"
+        />
+      </div>
     </slot>
 
     <!-- Help text -->
-    <div v-if="fieldOptions.help" v-bind="props.help">
+    <div v-if="fieldOptions.help" class="enforma-field-help" v-bind="props.help">
       {{ t(fieldOptions.help) }}
     </div>
 
     <!-- Error message -->
-    <div v-if="errorMessage" v-bind="props.error">
+    <div v-if="errorMessage" class="enforma-field-error" v-bind="props.error">
       {{ errorMessage }}
     </div>
   </div>
@@ -36,7 +38,7 @@ import { useEnformaField } from './useEnformaField'
 const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
-  type: { type: String, default: null },
+  component: { type: String, default: null },
   placeholder: { type: String, default: null },
   hideLabel: { type: Boolean, default: null },
   required: { type: Boolean, default: undefined },
@@ -51,7 +53,6 @@ const originalProps = defineProps({
   section: { type: String, default: null },
   position: { type: Number, default: null },
 })
-
 // Use the extracted composable
 const { fieldOptions, fieldState, errorMessage, requiredIndicator, props, t } =
   useEnformaField(originalProps)
