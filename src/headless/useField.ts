@@ -1,4 +1,4 @@
-import { computed, onMounted, ComputedRef, ref, watch } from 'vue'
+import { computed, ComputedRef, ref, watch } from 'vue'
 import { FieldController, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
 
@@ -38,28 +38,7 @@ export function useField(
   // Create a reference to track focus state
   const isFocused = ref(false)
 
-  // Subscribe to field-specific events for focus/blur state
-  let unsubscribeFocused: any = null
-  let unsubscribeBlurred: any = null
-  
-  // Only set up event subscriptions if the form controller has event methods
-  if (typeof form.on === 'function') {
-    // We don't need to track field_changed events anymore as we're using the FieldState._version
-    
-    unsubscribeFocused = form.on('field_focused', (data: any) => {
-      if (data?.path === name) {
-        isFocused.value = true
-      }
-    })
-    
-    unsubscribeBlurred = form.on('field_blurred', (data: any) => {
-      if (data?.path === name) {
-        isFocused.value = false
-      }
-    })
-  }
-
-  // Create a ref for the model value 
+  // Create a ref for the model value
   const modelValue = ref(form[name])
 
   // Watch for changes to the form value and update the model ref
@@ -161,19 +140,12 @@ export function useField(
     focus: handleFocus,
   }
 
-  // Initial validation if needed
-  onMounted(() => {
+  // Helper function to initialize field
+  function initField() {
     if (options.validateOnMount) {
       validate()
     }
-    
-    // Clean up event listeners when component is unmounted
-    return () => {
-      // Only unsubscribe if functions were properly set up
-      if (typeof unsubscribeFocused === 'function') unsubscribeFocused()
-      if (typeof unsubscribeBlurred === 'function') unsubscribeBlurred()
-    }
-  })
+  }
 
   // Create exported API object with all field state and methods
   return computed(() => {
@@ -202,6 +174,9 @@ export function useField(
 
       // Methods
       validate,
+      
+      // Lifecycle methods for external management
+      initField,
 
       // HTML binding helpers
       attrs: {

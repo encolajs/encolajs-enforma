@@ -117,6 +117,7 @@ describe('useField', () => {
       field = useField('name', mockForm, {
         validateOnMount: true,
       })
+      field.value.initField()
 
       // Check validate was called
       expect(mockForm.validateField).toHaveBeenCalledWith('name')

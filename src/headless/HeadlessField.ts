@@ -1,11 +1,11 @@
 import {
   defineComponent,
   inject,
-  SetupContext,
   onBeforeUnmount,
   watch,
   ref,
-  computed, ComputedRef,
+  computed,
+  ComputedRef, onMounted, Ref,
 } from 'vue'
 import { useField } from './useField'
 import { FieldController, FieldOptions, FormController } from '@/types'
@@ -13,6 +13,9 @@ import { formStateKey } from '@/constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessField',
+
+  // Explicitly declare emitted events to avoid Vue warnings
+  emits: ['input', 'change', 'blur', 'focus'],
 
   props: {
     name: {
@@ -31,7 +34,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots }: SetupContext) {
+  setup(props, { slots }) {
     const form = inject<FormController>(formStateKey)
 
     if (!form) {
@@ -61,6 +64,8 @@ export default defineComponent({
         validateOn: props.validateOn,
       } as FieldOptions)
 
+      onMounted(fieldCtrl.value.initField)
+
       unwatchers.push(
         watch(
           () => fieldCtrl.value,
@@ -86,9 +91,11 @@ export default defineComponent({
             validateOn: props.validateOn,
           } as FieldOptions).value
 
+          acc[key].initField()
+
           unwatchers.push(
             watch(
-              () => acc[key].value,
+              () => acc[key],
               () => {
                 renderTrigger.value++
               },

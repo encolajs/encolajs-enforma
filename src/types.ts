@@ -69,6 +69,10 @@ export interface FieldController {
 
   // Methods
   validate: () => Promise<boolean>
+  
+  // Lifecycle methods (for components that need to manage field lifecycle)
+  initField?: () => void
+  cleanupField?: () => void
 
   // HTML binding helpers
   attrs: Record<string, any>
@@ -82,8 +86,7 @@ export interface FieldController {
 }
 
 export interface FormController {
-  // State version ref to track form changes
-  $stateVersion: { value: number }
+  // Form state properties
   $isValidating: boolean
   $isSubmitting: boolean
   $isDirty: boolean

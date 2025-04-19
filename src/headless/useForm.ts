@@ -498,7 +498,7 @@ export function useForm<T extends object>(
         const state = fieldManager.get(path)
         state.$isTouched = true
         
-                state._version.value++
+        state._version.value++
 
         // Emit field focused event
         formEmitter.emit('field_focused', {
@@ -512,7 +512,7 @@ export function useForm<T extends object>(
         const state = fieldManager.get(path)
         state.$isTouched = true
         
-                state._version.value++
+        state._version.value++
 
         // Emit field blurred event
         formEmitter.emit('field_blurred', {
