@@ -28,7 +28,13 @@ function fieldPropsTransformer(
 ) {
   fieldProps.input.labelId = field.value.id
   fieldProps.input.modelValue = field.value.value
-  fieldProps.component = fieldMap[fieldProps.component] || InputText
+  if (fieldProps.component && 'object' !== typeof fieldProps.component) {
+    // if the component is not already a Vue component
+    fieldProps.component = fieldMap[fieldProps.component] || InputText
+  } else if (!fieldProps.component) {
+    // default to InputText
+    fieldProps.component = InputText
+  }
   return fieldProps
 }
 
