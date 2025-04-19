@@ -175,7 +175,8 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     )
 
     // Required indicator
-    result.required = getConfig('pt.required', {})
+    result.required = originalProps.required
+    result.requiredProps = getConfig('pt.required')
 
     // Help text
     result.help = evaluateProps(
