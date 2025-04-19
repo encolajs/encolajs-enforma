@@ -1,7 +1,7 @@
 <!-- src/core/EnformaField.vue -->
 <template>
   <div v-bind="props.wrapper" v-show="props.if">
-    <label v-if="!props.hideLabel && fieldOptions.label" v-bind="props.label">
+    <label v-if="!props.hideLabel && !props.showLabelNextToInput && fieldOptions.label" v-bind="props.label">
       {{ t(fieldOptions.label) }}
       <span v-if="props.required" v-bind="props.required">
         {{ requiredIndicator }}
@@ -17,6 +17,9 @@
           v-bind="props.input"
           v-on="fieldState.events"
         />
+        <label v-if="props.showLabelNextToInput && fieldOptions.label" v-bind="props.label">
+          {{ t(fieldOptions.label) }}
+        </label>
       </div>
     </slot>
 
@@ -40,7 +43,8 @@ const originalProps = defineProps({
   label: { type: String, default: null },
   component: { type: String, default: null },
   placeholder: { type: String, default: null },
-  hideLabel: { type: Boolean, default: null },
+  hideLabel: { type: Boolean, default: false },
+  showLabelNextToInput: { type: Boolean, default: false },
   required: { type: Boolean, default: undefined },
   help: { type: String, default: null },
   if: { type: Boolean, default: null },

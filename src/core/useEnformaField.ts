@@ -16,6 +16,7 @@ export interface EnformaFieldProps {
   component?: string | object | null
   placeholder?: string | null
   hideLabel?: boolean | undefined
+  showLabelNextToInput?: boolean | undefined
   required?: boolean | undefined
   help?: string | null
   if?: boolean | null
@@ -54,6 +55,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     const defaults: Record<string, any> = {
       component: 'input',
       hideLabel: false,
+      showLabelNextToInput: false,
       required: false,
       if: true,
       labelProps: {},
@@ -80,6 +82,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         component: fieldSchema.value.component ?? result.component,
         placeholder: fieldSchema.value.placeholder ?? null,
         hideLabel: fieldSchema.value.hideLabel ?? result.hideLabel,
+        showLabelNextToInput: fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
         required: fieldSchema.value.required ?? result.required,
         help: fieldSchema.value.help ?? null,
         if: fieldSchema.value.if ?? result.if,
@@ -102,6 +105,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       component: originalProps.component ?? result.type,
       placeholder: originalProps.placeholder ?? result.placeholder,
       hideLabel: originalProps.hideLabel ?? result.hideLabel,
+      showLabelNextToInput: originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
       required: originalProps.required ?? result.required,
       help: originalProps.help ?? result.help,
       if: originalProps.if ?? result.if,
@@ -216,6 +220,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     // Component type
     result.component = fieldOptions.value.component || 'input'
     result.hideLabel = fieldOptions.value.hideLabel
+    result.showLabelNextToInput = fieldOptions.value.showLabelNextToInput
 
     // Apply custom transformers if defined in config
     return applyTransformers(
