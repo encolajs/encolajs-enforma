@@ -35,6 +35,37 @@
           label="City"
           :input-props="{class: 'w-full'}"
         />
+        <EnformaField
+          class="col-start-1 col-end-3 toggle-field"
+          name="willing_to_relocate"
+          label="Willing to relocate"
+          showLabelNextToInput
+          component="toggle"
+        />
+        <EnformaField
+          class="col-start-1 col-end-2"
+          name="salary"
+          label="Salary"
+          :component="SalaryField"
+          :input-props="{class: 'w-full'}"
+        />
+        <EnformaField
+          class="col-start-2 col-end-3"
+          name="available_date"
+          label="Available date"
+          component="datepicker"
+          :input-props="{class: 'w-full'}"
+        />
+        <EnformaField
+          name="linkedin_profile"
+          label="Linkedin Profile"
+          :input-props="{class: 'w-full'}"
+        />
+        <EnformaField
+          name="personal_site"
+          label="Personal site"
+          :input-props="{class: 'w-full'}"
+        />
       </div>
       <h3 class="w-full">Skills</h3>
       <EnformaRepeatableTable
@@ -58,6 +89,7 @@
 import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from '../../../src'
 import formConfig from './formConfig'
 import EndDateField from './EndDateField.vue'
+import SalaryField from './SalaryField.vue'
 
 const {data, rules, messages, submitHandler} = formConfig
 
@@ -101,8 +133,7 @@ const experienceFields = {
   },
   end: {
     label: "End",
-    hideLabel: true,
-    component: 'datepicker',
+    component: EndDateField,
     inputProps:  {
       fluid: true
     },

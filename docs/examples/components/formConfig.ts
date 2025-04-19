@@ -18,8 +18,8 @@ for (let i = 0; i < 2; i++) {
   data.experience.push({
     company: `Company ${i + 1}`,
     position: `Job title ${i + 1}`,
-    start: `202${5 - i}-01-01`,
-    end: i === 0 ? null : `202${5 - 1}-12-31`,
+    start: new Date(`202${5 - i}-01-01`),
+    end: i === 0 ? null : new Date(`202${5 - 1}-12-31`),
     current: i === 0
   })
 }

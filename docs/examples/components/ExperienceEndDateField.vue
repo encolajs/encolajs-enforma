@@ -15,7 +15,6 @@ just like it was done in the Salary min/max section
         <label :for="end.id">End</label>
         <DatePicker
           :id="end.id"
-          :model-value="end.value"
           date-format="yy-mm-dd"
           fluid
           :disabled="current.value"

@@ -15,7 +15,8 @@ import FormExample from './components/FieldsFormExample.vue'
 
 ::: code-group
 <<< @/examples/components/FieldsFormExample.vue [Enforma Form with Fields]
-<<< @/examples/components/ExperienceEndDateField.vue
+<<< @/examples/components/EndDateField.vue
+<<< @/examples/components/SalaryField.vue
 :::
 
 # Enforma forms with fields
