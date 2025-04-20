@@ -23,8 +23,13 @@ export default defineConfig({
       { text: 'Getting Started', link: '/getting-started' },
       { text: 'Guides', link: '/guides/' },
       { text: 'Presets', link: '/presets/' },
-      { text: 'API', link: '/api/' },
       { text: 'Examples', link: '/examples/' },
+      { text: 'More...',
+        items: [
+          {text: 'EncolaJS Validator', link: 'https://encolajs.com/validator/'},
+          {text: 'EncolaJS Hydrator', link: 'https://encolajs.com/hydrator/'},
+        ]
+      },
     ],
     sidebar: {
       '/': [
@@ -88,19 +93,6 @@ export default defineConfig({
             { text: 'Validation', link: '/guides/validation' },
             { text: 'Form Events', link: '/guides/events' },
             { text: 'Performance', link: '/guides/performance' },
-          ],
-        },
-      ],
-      '/api/': [
-        {
-          text: 'API Reference',
-          items: [
-            { text: 'Overview', link: '/api/' },
-            { text: 'Components API', link: '/api/components' },
-            { text: 'Headless API', link: '/api/headless' },
-            { text: 'Presets API', link: '/api/presets' },
-            { text: 'Utilities API', link: '/api/utilities' },
-            { text: 'Type Definitions', link: '/api/types' },
           ],
         },
       ],
