@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '@/headless/useField'
-import { FieldController } from '../../src'
-import { ComputedRef, ref } from 'vue'
+import { FieldControllerExport } from '../../src'
+import { ComputedRef } from 'vue'
 
 // Mock the form proxy (normally returned from useForm)
 const mockForm = {
@@ -71,7 +71,7 @@ vi.mock('vue', () => {
 })
 
 describe('useField', () => {
-  let field: ComputedRef<FieldController | null>
+  let field: ComputedRef<FieldControllerExport | null>
 
   beforeEach(() => {
     // Reset mocks

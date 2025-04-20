@@ -1,12 +1,12 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
-import { useForm } from '@/headless/useForm.js'
+import { useForm } from '@/headless/useForm'
 import { flushPromises } from '@vue/test-utils'
 import { FormController } from '../../src'
 
 describe('useForm', () => {
   let order
   let form: FormController
-  let submitHandler = vi.fn()
+  const submitHandler = vi.fn()
 
   beforeEach(() => {
     order = {
@@ -56,7 +56,7 @@ describe('useForm', () => {
       form['items.0.price'] = 5
       expect(form['items.1.price.$isTouched']).toBe(false)
 
-      const isValid = await form.submit(submitHandler)
+      const isValid = await form.submit()
 
       // Should not call submit handler when invalid
       expect(isValid).toBe(false)
@@ -119,18 +119,14 @@ describe('useForm', () => {
   describe('form state', () => {
     test('should track validation state', async () => {
       form['items.0.price'] = 5
-      const submitPromise = form.submit(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
+      const submitPromise = form.submit()
       expect(form.$isValidating).toBe(true)
       await submitPromise
       expect(form.$isValidating).toBe(false)
     })
 
     test('should track submit state', async () => {
-      const submitPromise = form.submit(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
+      const submitPromise = form.submit()
 
       expect(form.$isSubmitting).toBe(true)
       await submitPromise
@@ -394,7 +390,7 @@ describe('useForm', () => {
     test('should handle API validation errors in submit handler', async () => {
       // Simulate an API returning validation errors
       const mockSetErrors = vi.fn()
-      const submitHandler = vi.fn().mockImplementation((values, form) => {
+      const submitHandler = vi.fn().mockImplementation((_, form) => {
         // Verify the form controller has setErrors method
         expect(typeof form.setErrors).toBe('function')
 
@@ -574,7 +570,7 @@ describe('useForm', () => {
         age: 30,
         address: {
           street: '123 Main St',
-          city: 'Anytown',
+          city: 'LA',
         },
         tags: ['developer', 'vue'],
       }
@@ -609,7 +605,7 @@ describe('useForm', () => {
       expect(form['name']).toBe('John')
       expect(form['age']).toBe(30)
       expect(form['address.street']).toBe('123 Main St')
-      expect(form['address.city']).toBe('Anytown')
+      expect(form['address.city']).toBe('LA')
       expect(form['tags']).toEqual(['developer', 'vue'])
     })
   })
