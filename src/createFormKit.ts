@@ -6,6 +6,12 @@ import { useValidation } from './utils/useValidation'
 import { fallbackTranslate } from './utils/useTranslation'
 import useDefaultPreset from './presets/default'
 
+/**
+ * Configure EncolaJS Validator instance
+ * - add rules Record<string(name of rule), Function(validator rule factory)>
+ * - overwrite default validator messages
+ * - set the message formatter (eg: if we are using translation)
+ */
 function configureValidation(options: DeepPartial<EnformaConfig>) {
   const validation = useValidation()
   const rules = options.rules || {}
@@ -33,7 +39,7 @@ export default function createEnforma(options: EnformaConfig): Plugin {
         app.config.globalProperties.$t || fallbackTranslate
       setGlobalConfig(mergedConfig)
 
-      // Apply default preset
+      // Apply default preset. Although not necessary, the overhead is minimal
       useDefaultPreset()
 
       // Configure validation

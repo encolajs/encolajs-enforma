@@ -2,10 +2,8 @@ import { safeExecute } from './helpers'
 
 /**
  * Applies a series of transformer functions to an input value
- * @param transformers Array of transformer functions to apply
- * @param input The value to transform
- * @param args Additional arguments to pass to each transformer
- * @returns The transformed value
+ * It uses the "pipeline" pattern where each transformer's result
+ * is passed to the next transformer
  */
 export default function applyTransformers(
   transformers: Function[],

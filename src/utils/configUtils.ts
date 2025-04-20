@@ -1,7 +1,3 @@
-/**
- * Configuration utility functions for merging and managing configuration objects
- */
-
 import { ConfigObject, DeepPartial } from '@/utils/useConfig'
 import { isPlainObject, pathUtils } from './helpers'
 

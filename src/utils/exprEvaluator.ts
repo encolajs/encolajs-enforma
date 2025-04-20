@@ -1,7 +1,9 @@
 /**
- * Utility functions for evaluating expressions within the form kit
+ * Utility functions for evaluating expressions within the form library
+ * Fields (i.e. EnformaField components) can receive props that are dynamic
+ * This means the prop's value is actually a formula/expression
+ * that has to be derived at "runtime" and depends on the state of the form
  */
-
 import { EnformaConfig } from '@/utils/useConfig'
 
 /**
@@ -111,6 +113,8 @@ export interface EvaluationOptions {
 
 /**
  * Default options for expression evaluation
+ * A prop that starts with the start delimiter and ends with the end delimiter
+ * will be evaluated. Eg: `${form.price > 100}`
  */
 const DEFAULT_OPTIONS: EvaluationOptions = {
   delimiters: {
@@ -183,9 +187,6 @@ export function evaluateExpression(
     context = { form: {}, context: {} } as ExpressionContext
   }
 
-  // Merge default options
-  const config = { ...DEFAULT_OPTIONS, ...options }
-
   try {
     // Get or create the evaluation function (memoized)
     const evaluator = memoizedCreateEvaluator(expression)
@@ -217,6 +218,7 @@ export function evaluateExpression(
 
 /**
  * Evaluates a conditional expression (used for if/show properties)
+ * These are special expressions that return a boolean
  */
 export function evaluateCondition(
   condition: string | boolean | undefined,
