@@ -14,13 +14,13 @@
     </label>
 
     <!-- Field content slot -->
-    <slot name="default" v-bind="{ ...fieldState, attrs: props.input }">
+    <slot name="default" v-bind="{ ...fieldController, attrs: props.input }">
       <div class="enforma-field-input">
         <component
           :is="props.component"
-          v-model="fieldState.value"
+          v-model="fieldController.value"
           v-bind="props.input"
-          v-on="fieldState.events"
+          v-on="fieldController.events"
         />
         <label
           v-if="props.showLabelNextToInput && fieldOptions.label"
@@ -73,6 +73,12 @@ const originalProps = defineProps({
   position: { type: Number, default: null },
 })
 // Use the extracted composable
-const { fieldOptions, fieldState, errorMessage, requiredIndicator, props, t } =
-  useEnformaField(originalProps)
+const {
+  fieldOptions,
+  fieldController,
+  errorMessage,
+  requiredIndicator,
+  props,
+  t,
+} = useEnformaField(originalProps)
 </script>

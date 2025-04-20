@@ -36,9 +36,9 @@ The main form component that manages form state, validation, and submission.
 | `submit-error` | `(error, formController)` | Emitted when submission fails |
 | `validation-error` | `(formController)` | Emitted when validation fails |
 | `reset` | `(formController)` | Emitted when form is reset |
-| `field-changed` | `(path, value, fieldState, formController)` | Emitted when any field value changes |
-| `field-focused` | `(path, fieldState, formController)` | Emitted when a field receives focus |
-| `field-blurred` | `(path, fieldState, formController)` | Emitted when a field loses focus |
+| `field-changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
+| `field-focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
+| `field-blurred` | `(path, fieldController, formController)` | Emitted when a field loses focus |
 | `form-initialized` | `(formController)` | Emitted when form is initialized |
 
 ### Slots
@@ -85,7 +85,7 @@ Component for rendering individual form fields.
 
 | Slot | Props | Description |
 |------|-------|-------------|
-| `default` | `{ ...fieldState, attrs: props.input }` | Custom field content |
+| `default` | `{ ...fieldController, attrs: props.input }` | Custom field content |
 
 ## EnformaRepeatable
 
@@ -211,7 +211,7 @@ interface FormController {
   setErrors(errors: Record<string, string[]>): void;
   setFieldFocused(path: string): void;
   setFieldBlurred(path: string): void;
-  getField(path: string): FieldState;
+  getField(path: string): FieldController;
   removeField(path: string): void;
   hasField(path: string): boolean;
   
@@ -231,10 +231,10 @@ interface FormController {
 }
 ```
 
-### FieldState
+### FieldController
 
 ```typescript
-interface FieldState {
+interface FieldController {
   $errors: string[];
   $isDirty: boolean;
   $isTouched: boolean;
@@ -274,17 +274,17 @@ type FormEvents = {
   field_changed: {
     path: string;
     value: any;
-    fieldState: FieldState;
+    fieldController: FieldController;
     formController: FormController;
   };
   field_focused: {
     path: string;
-    fieldState: FieldState;
+    fieldController: FieldController;
     formController: FormController;
   };
   field_blurred: {
     path: string;
-    fieldState: FieldState;
+    fieldController: FieldController;
     formController: FormController;
   };
   form_reset: { formController: FormController };

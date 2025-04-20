@@ -44,7 +44,7 @@ describe('Enforma Events', () => {
     const eventData = eventHandler.mock.calls[0][0]
     expect(eventData.path).toBe('name')
     expect(eventData.value).toBe('New Name')
-    expect(eventData.fieldState).toBeDefined()
+    expect(eventData.fieldController).toBeDefined()
     expect(eventData.formController).toBeDefined()
   })
 

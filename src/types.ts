@@ -4,7 +4,7 @@ import {
   ValidationRule,
   ValidatorFactory,
 } from '@encolajs/validator'
-import { FieldState, StateChanges } from './headless/useForm'
+import { FieldController, StateChanges } from './headless/useForm'
 
 /**
  * Type definition for validation rules
@@ -55,7 +55,7 @@ export interface FieldOptions {
  * Controller for a single form field
  * Provides access to field state, validation, and HTML binding helpers
  */
-export interface FieldController {
+export interface FieldControllerExport {
   // Field value and state
   value: any
   error: string | null
@@ -111,7 +111,7 @@ export interface FormController {
     stateChanges?: StateChanges
   ): Promise<void>
 
-  getField(path: string): FieldState
+  getField(path: string): FieldController
 
   removeField(path: string): void
 
@@ -287,4 +287,4 @@ export interface EnformaSchema {
   [key: string]: FieldSchema | FormSectionSchema
 }
 
-export type { FieldState } from './headless/useForm'
+export type { FieldController } from './headless/useForm'

@@ -9,7 +9,12 @@ import {
   onMounted,
 } from 'vue'
 import { useField } from './useField'
-import { FieldController, FieldOptions, FormController } from '@/types'
+import {
+  FieldController,
+  FieldControllerExport,
+  FieldOptions,
+  FormController,
+} from '@/types'
 import { formStateKey } from '@/constants/symbols'
 
 export default defineComponent({
@@ -50,9 +55,13 @@ export default defineComponent({
       unwatchers.forEach((unwatch) => unwatch())
     })
 
-    const fieldCtrl: ComputedRef<FieldController> = useField(props.name, form, {
-      validateOn: props.validateOn,
-    } as FieldOptions)
+    const fieldCtrl: ComputedRef<FieldControllerExport> = useField(
+      props.name,
+      form,
+      {
+        validateOn: props.validateOn,
+      } as FieldOptions
+    )
 
     onMounted(fieldCtrl.value.initField)
 

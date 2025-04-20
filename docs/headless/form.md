@@ -82,7 +82,7 @@ function handleError(error, formController) {
   // Handle submission error
 }
 
-function handleFieldChange(path, value, fieldState, formController) {
+function handleFieldChange(path, value, fieldController, formController) {
   // Handle field change
 }
 </script>

@@ -38,7 +38,7 @@ describe('useForm events', () => {
     expect(handler).toHaveBeenCalledWith({
       path: 'name',
       value: 'Jane',
-      fieldState: form.getField('name'),
+      fieldController: form.getField('name'),
       formController: form,
     })
   })
@@ -137,12 +137,12 @@ describe('useForm events', () => {
 
     const focusEventData = focusHandler.mock.calls[0][0]
     expect(focusEventData.path).toBe('name')
-    expect(focusEventData.fieldState).toBeDefined()
+    expect(focusEventData.fieldController).toBeDefined()
     expect(focusEventData.formController).toBeDefined()
 
     const blurEventData = blurHandler.mock.calls[0][0]
     expect(blurEventData.path).toBe('name')
-    expect(blurEventData.fieldState).toBeDefined()
+    expect(blurEventData.fieldController).toBeDefined()
     expect(blurEventData.formController).toBeDefined()
   })
 

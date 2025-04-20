@@ -26,9 +26,9 @@ A form component that provides no UI, just the form state and logic.
 | `submit-error` | `(error, formController)` | Emitted when submission fails |
 | `validation-error` | `(formController)` | Emitted when validation fails |
 | `reset` | `(formController)` | Emitted when form is reset |
-| `field-changed` | `(path, value, fieldState, formController)` | Emitted when any field value changes |
-| `field-focused` | `(path, fieldState, formController)` | Emitted when a field receives focus |
-| `field-blurred` | `(path, fieldState, formController)` | Emitted when a field loses focus |
+| `field-changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
+| `field-focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
+| `field-blurred` | `(path, fieldController, formController)` | Emitted when a field loses focus |
 | `form-initialized` | `(formController)` | Emitted when form is initialized |
 
 ## Slots

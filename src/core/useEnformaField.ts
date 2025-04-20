@@ -139,9 +139,9 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const { t } = useTranslation()
 
   // Derive computed values
-  const fieldState = computed(() => field.value)
-  const fieldId = computed(() => fieldState.value.id)
-  const errorMessage = computed(() => fieldState.value.error)
+  const fieldController = computed(() => field.value)
+  const fieldId = computed(() => fieldController.value.id)
+  const errorMessage = computed(() => fieldController.value.error)
   const requiredIndicator = getConfig('pt.required.text', '*')
 
   // Create static props that don't depend on dynamic state
@@ -222,19 +222,19 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
   // Input props (changes most frequently)
   const inputProps = computed(() => {
-    // The field controller's _fieldVersion will be updated by FieldState._version
+    // The field controller's _fieldVersion will be updated by FieldController._version
     // ensuring reactivity based on field state changes
 
     return evaluateProps(
       mergeProps(
         {
           id: fieldId.value,
-          value: fieldState.value.value,
+          value: fieldController.value.value,
           name: fieldOptions.value.name,
           placeholder: t(fieldOptions.value.placeholder),
           invalid: !!errorMessage.value,
         },
-        fieldState.value.attrs || {},
+        fieldController.value.attrs || {},
         fieldOptions.value.inputProps || {},
         getConfig('pt.input', {}) as Record<string, unknown>
       )
@@ -270,7 +270,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
   return {
     fieldOptions,
-    fieldState,
+    fieldController,
     errorMessage,
     requiredIndicator,
     props,

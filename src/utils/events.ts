@@ -1,5 +1,5 @@
 import mitt, { Emitter } from 'mitt'
-import { FormController, FieldState } from '@/types'
+import { FormController, FieldController } from '@/types'
 
 /**
  * Form events types
@@ -31,17 +31,17 @@ export type FormEvents = {
   field_changed: {
     path: string
     value: any
-    fieldState: FieldState
+    fieldController: FieldController
     formController: FormController
   }
   field_focused: {
     path: string
-    fieldState: FieldState
+    fieldController: FieldController
     formController: FormController
   }
   field_blurred: {
     path: string
-    fieldState: FieldState
+    fieldController: FieldController
     formController: FormController
   }
   form_reset: {

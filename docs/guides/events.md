@@ -29,9 +29,9 @@ EncolaJS Enforma provides a comprehensive event system built on the `mitt` event
 
 | Event Name | Description | Parameters |
 |------------|-------------|------------|
-| `field_changed` | Emitted when field value changes | `{ path, value, fieldState, formController }` |
-| `field_focused` | Emitted when field receives focus | `{ path, fieldState, formController }` |
-| `field_blurred` | Emitted when field loses focus | `{ path, fieldState, formController }` |
+| `field_changed` | Emitted when field value changes | `{ path, value, fieldController, formController }` |
+| `field_focused` | Emitted when field receives focus | `{ path, fieldController, formController }` |
+| `field_blurred` | Emitted when field loses focus | `{ path, fieldController, formController }` |
 
 ## Subscribing to Events
 

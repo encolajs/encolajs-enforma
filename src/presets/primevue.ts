@@ -11,7 +11,7 @@ import {
   DatePicker,
   ToggleSwitch,
 } from 'primevue'
-import { FieldController, FormController } from '@/types'
+import { FieldController, FieldControllerExport, FormController } from '@/types'
 import {
   DeepPartial,
   EnformaConfig,
@@ -30,7 +30,7 @@ const fieldMap: Record<string, any> = {
 
 function fieldPropsTransformer(
   fieldProps: any,
-  field: FieldController,
+  field: FieldControllerExport,
   formState: FormController,
   config: any
 ) {

@@ -2,7 +2,7 @@ import { defineComponent, provide, h, PropType } from 'vue'
 import { useForm } from './useForm'
 import { formStateKey } from '@/constants/symbols'
 import { FormController } from '@/types'
-import { FieldState } from './useForm'
+import { FieldController } from './useForm'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -89,15 +89,15 @@ export default defineComponent({
       ({
         path,
         value,
-        fieldState,
+        fieldController,
         formController,
       }: {
         path: string
         value: any
-        fieldState: FieldState
+        fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-changed', path, value, fieldState, formController)
+        ctx.emit('field-changed', path, value, fieldController, formController)
       }
     )
 
@@ -105,14 +105,14 @@ export default defineComponent({
       'field_focused',
       ({
         path,
-        fieldState,
+        fieldController,
         formController,
       }: {
         path: string
-        fieldState: FieldState
+        fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-focused', path, fieldState, formController)
+        ctx.emit('field-focused', path, fieldController, formController)
       }
     )
 
@@ -120,14 +120,14 @@ export default defineComponent({
       'field_blurred',
       ({
         path,
-        fieldState,
+        fieldController,
         formController,
       }: {
         path: string
-        fieldState: FieldState
+        fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-blurred', path, fieldState, formController)
+        ctx.emit('field-blurred', path, fieldController, formController)
       }
     )
 

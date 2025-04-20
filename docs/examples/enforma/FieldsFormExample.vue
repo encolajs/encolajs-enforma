@@ -81,6 +81,9 @@
           :subfields="experienceFields"
         />
       </div>
+      {{ formCtrl.getField('experience.0.company').$errors}}<br>
+      {{ formCtrl['experience.0.company.$errors'] }}<br>
+      {{ formCtrl['experience.0.company.$isDirty'] }}<br>
     </template>
   </Enforma>
 </template>

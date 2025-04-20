@@ -1,5 +1,5 @@
 import { computed, ComputedRef, ref, watch } from 'vue'
-import { FieldController, FormController } from '@/types'
+import { FieldController, FieldControllerExport, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
 
 export type fieldValidateOnOption =
@@ -19,7 +19,7 @@ export function useField(
     validateOnMount?: boolean
     validateOn?: fieldValidateOnOption
   } = {}
-): ComputedRef<FieldController> {
+): ComputedRef<FieldControllerExport> {
   if (!name) {
     throw new Error('Field name is required')
   }
@@ -29,11 +29,7 @@ export function useField(
   }
 
   // Get field state from form
-  const getFieldState = () => form.getField(name)
-
-  // Generate a unique field ID that won't change
-  const fieldState = getFieldState()
-  const fieldId = fieldState._id
+  const getFieldController = (): FieldController => form.getField(name)
 
   // Create a reference to track focus state
   const isFocused = ref(false)
@@ -147,14 +143,15 @@ export function useField(
   // Create exported API object with all field state and methods
   return computed(() => {
     // Get the latest field state
-    const fieldState = getFieldState()
+    const fieldController = getFieldController()
 
     // Use the field state's version directly - this will change during field validation
     // and when the field is updated through the form mechanisms
-    const fieldVersion = fieldState._version.value || 0
+    const fieldVersion = fieldController._version.value || 0
 
     const value = form[name]
-    const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null
+    const error =
+      fieldController?.$errors?.length > 0 ? fieldController.$errors[0] : null
 
     return {
       // Field value and state
@@ -162,9 +159,9 @@ export function useField(
       // Use the ref for the model property
       model: modelValue,
       error,
-      isDirty: fieldState?.$isDirty || false,
-      isTouched: fieldState?.$isTouched || false,
-      isValidating: fieldState?.$isValidating || false,
+      isDirty: fieldController?.$isDirty || false,
+      isTouched: fieldController?.$isTouched || false,
+      isValidating: fieldController?.$isValidating || false,
       isFocused: isFocused.value,
       // Expose the field state version for debugging
       _fieldVersion: fieldVersion,
@@ -179,13 +176,15 @@ export function useField(
       attrs: {
         value,
         'aria-invalid': !!error,
-        ...(error ? { 'aria-errormessage': `error-${fieldState?._id}` } : {}),
+        ...(error
+          ? { 'aria-errormessage': `error-${fieldController?._id}` }
+          : {}),
       },
       events,
 
       // For arrays and custom field types
       name,
-      id: fieldState?._id,
-    } as FieldController
+      id: fieldController?._id,
+    } as FieldControllerExport
   })
 }

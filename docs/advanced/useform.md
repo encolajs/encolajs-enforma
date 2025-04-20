@@ -137,7 +137,7 @@ The form controller returned by `useForm` provides these methods and properties:
 | `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
 | `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
 | `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |
-| `getField(path)` | `path: string` | `FieldState` | Gets a field's state |
+| `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
 | `removeField(path)` | `path: string` | `void` | Removes a field from the form |
 | `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
 
