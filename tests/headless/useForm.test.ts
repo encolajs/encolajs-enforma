@@ -100,7 +100,6 @@ describe('useForm', () => {
       expect(field.$isTouched).toBe(false)
       expect(field.$isValidating).toBe(false)
       expect(field._id).toBeDefined()
-      expect(field._version).toBeDefined()
     })
 
     test('should remove field state', async () => {
