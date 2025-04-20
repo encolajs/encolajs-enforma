@@ -147,7 +147,9 @@ export function useField(
 
     const value = form[name]
     const error =
-      fieldController?.$errors.value.length > 0 ? fieldController.$errors.value[0] : null
+      fieldController?.$errors.value.length > 0
+        ? fieldController.$errors.value[0]
+        : null
 
     return {
       // Field value and state

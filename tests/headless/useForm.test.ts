@@ -428,7 +428,9 @@ describe('useForm', () => {
       expect(result).toBe(false)
 
       // Verify field errors were set
-      expect(priceFieldBefore.$errors.value).toContain('Price must be at least $50')
+      expect(priceFieldBefore.$errors.value).toContain(
+        'Price must be at least $50'
+      )
       expect(addressFieldBefore.$errors.value).toContain('Address is required')
     })
 
