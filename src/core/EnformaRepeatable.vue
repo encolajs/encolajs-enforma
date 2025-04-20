@@ -17,70 +17,70 @@
         <!-- Items container -->
         <div v-bind="getConfig('pt.repeatable.items')">
           <div
-              v-for="(itemValue, index) in value"
-              :key="index"
-              v-bind="getConfig('pt.repeatable.item')"
-            >
-              <!-- Subfields -->
-              <template v-if="!component && fields">
-                here
-                <template
-                  v-for="(subfield, subfieldName) in fields"
-                  :key="subfieldName"
-                >
-                  <component
-                    :is="getConfig('components.field')"
-                    v-bind="subfield"
-                    :name="`${name}.${index}.${subfieldName}`"
-                  />
-                </template>
-
-                <!-- Actions for field-based subfields -->
-                <div
-                  v-if="showDeleteButton || showMoveButtons"
-                  v-bind="getConfig('pt.repeatable.itemActions')"
-                >
-                  <component
-                    v-if="showDeleteButton"
-                    :is="
-                      removeButton ||
-                      getConfig('components.repeatableRemoveButton')
-                    "
-                    @click="remove(index)"
-                  />
-                  <component
-                    v-if="showMoveButtons"
-                    :is="
-                      moveUpButton ||
-                      getConfig('components.repeatableMoveUpButton')
-                    "
-                    :disabled="index === 0"
-                    @click="moveUp(index)"
-                  />
-                  <component
-                    v-if="showMoveButtons"
-                    :is="
-                      moveDownButton ||
-                      getConfig('components.repeatableMoveDownButton')
-                    "
-                    :disabled="index >= count - 1"
-                    @click="moveDown(index)"
-                  />
-                </div>
-              </template>
-
-              <!-- Component-based subfields -->
-              <template v-else-if="component">
+            v-for="(itemValue, index) in value"
+            :key="index"
+            v-bind="getConfig('pt.repeatable.item')"
+          >
+            <!-- Subfields -->
+            <template v-if="!component && fields">
+              here
+              <template
+                v-for="(subfield, subfieldName) in fields"
+                :key="subfieldName"
+              >
                 <component
-                  :is="component"
-                  :name="`${name}.${index}`"
-                  :index="index"
-                  :value="itemValue"
-                  :list-length="count"
-                  v-bind="componentProps || {}"
+                  :is="getConfig('components.field')"
+                  v-bind="subfield"
+                  :name="`${name}.${index}.${subfieldName}`"
                 />
               </template>
-        </div>
+
+              <!-- Actions for field-based subfields -->
+              <div
+                v-if="showDeleteButton || showMoveButtons"
+                v-bind="getConfig('pt.repeatable.itemActions')"
+              >
+                <component
+                  v-if="showDeleteButton"
+                  :is="
+                    removeButton ||
+                    getConfig('components.repeatableRemoveButton')
+                  "
+                  @click="remove(index)"
+                />
+                <component
+                  v-if="showMoveButtons"
+                  :is="
+                    moveUpButton ||
+                    getConfig('components.repeatableMoveUpButton')
+                  "
+                  :disabled="index === 0"
+                  @click="moveUp(index)"
+                />
+                <component
+                  v-if="showMoveButtons"
+                  :is="
+                    moveDownButton ||
+                    getConfig('components.repeatableMoveDownButton')
+                  "
+                  :disabled="index >= count - 1"
+                  @click="moveDown(index)"
+                />
+              </div>
+            </template>
+
+            <!-- Component-based subfields -->
+            <template v-else-if="component">
+              <component
+                :is="component"
+                :name="`${name}.${index}`"
+                :index="index"
+                :value="itemValue"
+                :list-length="count"
+                v-bind="componentProps || {}"
+              />
+            </template>
+          </div>
         </div>
 
         <!-- Add button -->
@@ -115,11 +115,7 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 })
 
 const $attrs = useAttrs()
-const {
-  isVisible,
-  fields,
-  component,
-  componentProps,
-} = useEnformaRepeatable(props)
+const { isVisible, fields, component, componentProps } =
+  useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
 </script>

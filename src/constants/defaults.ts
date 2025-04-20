@@ -102,6 +102,10 @@ export const DEFAULT_CONFIG: EnformaConfig = {
      * props to be passed to section components
      */
     section: {},
+    /**
+     * props to be passed to schema components
+     */
+    schema: {},
   },
 
   /**

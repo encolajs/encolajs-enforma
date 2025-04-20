@@ -67,7 +67,6 @@ export type {
   ExpressionsConfig,
   ComponentsConfig,
   ConfigProvider,
-  UseConfigReturn,
 } from './utils/useConfig'
 
 // Re-export essential validator types
