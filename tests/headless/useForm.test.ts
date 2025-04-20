@@ -41,9 +41,9 @@ describe('useForm', () => {
 
       // Check values are reset
       expect(form['items.0.price']).toBe(100)
-      expect(form['items.0.price.$isTouched']).toBe(false)
-      expect(form['items.0.price.$isDirty']).toBe(false)
-      expect(form['items.0.price.$errors']).toHaveLength(0)
+      expect(form['items.0.price.$isTouched'].value).toBe(false)
+      expect(form['items.0.price.$isDirty'].value).toBe(false)
+      expect(form['items.0.price.$errors'].value).toHaveLength(0)
 
       // Check added fields are removed
       expect(form['address.line2']).toBeUndefined()
@@ -54,7 +54,7 @@ describe('useForm', () => {
 
       // Set an invalid value
       form['items.0.price'] = 5
-      expect(form['items.1.price.$isTouched']).toBe(false)
+      expect(form['items.1.price.$isTouched'].value).toBe(false)
 
       const isValid = await form.submit()
 
@@ -64,8 +64,8 @@ describe('useForm', () => {
       await flushPromises()
 
       // All fields should be touched after submit attempt
-      expect(form['items.0.price.$isTouched']).toBe(true)
-      expect(form['items.1.price.$isTouched']).toBe(true)
+      expect(form['items.0.price.$isTouched'].value).toBe(true)
+      expect(form['items.1.price.$isTouched'].value).toBe(true)
     })
 
     test('should submit when valid', async () => {
@@ -88,8 +88,8 @@ describe('useForm', () => {
       const isValid = await form.validate()
 
       expect(isValid).toBe(false)
-      expect(form['items.0.price.$errors']).toHaveLength(1)
-      expect(form['items.1.price.$errors']).toHaveLength(1)
+      expect(form['items.0.price.$errors'].value).toHaveLength(1)
+      expect(form['items.1.price.$errors'].value).toHaveLength(1)
     })
 
     test('should get field state', () => {
@@ -105,14 +105,14 @@ describe('useForm', () => {
     test('should remove field state', async () => {
       // Set some state
       await form.setFieldValue('items.0.price', 5)
-      expect(form['items.0.price.$errors']).toHaveLength(1)
+      expect(form['items.0.price.$errors'].value).toHaveLength(1)
 
       // Remove field
       form.removeField('items.0.price')
 
       // Field should have fresh state
-      expect(form['items.0.price.$errors']).toHaveLength(0)
-      expect(form['items.0.price.$isDirty']).toBe(false)
+      expect(form['items.0.price.$errors'].value).toHaveLength(0)
+      expect(form['items.0.price.$isDirty'].value).toBe(false)
     })
   })
 
@@ -167,35 +167,35 @@ describe('useForm', () => {
       expect(form['items.0.price']).toBe(150)
       expect(order.items[0].price).toBe(150)
       await flushPromises()
-      expect(form['items.0.price.$isDirty']).toBe(true)
+      expect(form['items.0.price.$isDirty'].value).toBe(true)
     })
 
     test('should handle invalid values', async () => {
       form['items.0.price'] = 5
       expect(form['items.0.price']).toBe(5)
       await form.validateField('items.0.price')
-      expect(form['items.0.price.$errors']).toHaveLength(1)
+      expect(form['items.0.price.$errors'].value).toHaveLength(1)
     })
 
     test('should use setFieldValue for external updates', async () => {
       await form.setFieldValue('items.0.price', 150, false, { $isDirty: false })
       expect(form['items.0.price']).toBe(150)
-      expect(form['items.0.price.$isDirty']).toBe(false)
-      expect(form['items.0.price.$errors']).toHaveLength(0)
+      expect(form['items.0.price.$isDirty'].value).toBe(false)
+      expect(form['items.0.price.$errors'].value).toHaveLength(0)
     })
 
     test('should use setFieldValue with validation', async () => {
       await form.setFieldValue('items.0.price', 5)
       expect(form['items.0.price']).toBe(5)
-      expect(form['items.0.price.$isDirty']).toBe(true)
-      expect(form['items.0.price.$errors']).toHaveLength(1)
+      expect(form['items.0.price.$isDirty'].value).toBe(true)
+      expect(form['items.0.price.$errors'].value).toHaveLength(1)
     })
 
     test('should manually validate fields', async () => {
       form['items.0.price'] = 5
       const isValid = await form.validate()
       expect(isValid).toBe(false)
-      expect(form['items.0.price.$errors']).toHaveLength(1)
+      expect(form['items.0.price.$errors'].value).toHaveLength(1)
     })
   })
 
@@ -227,7 +227,7 @@ describe('useForm', () => {
 
       expect(order.items).toHaveLength(1)
       expect(order.items[0].price).toBe(200)
-      expect(form['items.0.price.$errors']).toHaveLength(0)
+      expect(form['items.0.price.$errors'].value).toHaveLength(0)
     })
 
     test('should move items with their state', async () => {
@@ -237,7 +237,7 @@ describe('useForm', () => {
 
       expect(order.items[1].price).toBe(5)
       await flushPromises()
-      expect(form['items.1.price.$errors']).toHaveLength(1)
+      expect(form['items.1.price.$errors'].value).toHaveLength(1)
     })
 
     test('should sort items with their state', async () => {
@@ -247,7 +247,7 @@ describe('useForm', () => {
 
       expect(order.items[0].price).toBe(200)
       expect(order.items[1].price).toBe(5)
-      expect(form['items.1.price.$errors']).toHaveLength(1)
+      expect(form['items.1.price.$errors'].value).toHaveLength(1)
     })
   })
 
@@ -261,7 +261,7 @@ describe('useForm', () => {
 
     test('should allow manual state changes', () => {
       form['items.0.price.$isTouched'] = true
-      expect(form['items.0.price.$isTouched']).toBe(true)
+      expect(form['items.0.price.$isTouched'].value).toBe(true)
     })
 
     test('should handle state changes with setFieldValue', async () => {
@@ -269,8 +269,8 @@ describe('useForm', () => {
         $isDirty: true,
         $isTouched: true,
       })
-      expect(form['items.0.price.$isDirty']).toBe(true)
-      expect(form['items.0.price.$isTouched']).toBe(true)
+      expect(form['items.0.price.$isDirty'].value).toBe(true)
+      expect(form['items.0.price.$isTouched'].value).toBe(true)
     })
   })
 
@@ -369,8 +369,10 @@ describe('useForm', () => {
 
       form.setFieldErrors('items.0.price', ['Custom error message'])
 
-      expect(form['items.0.price.$errors']).toEqual(['Custom error message'])
-      expect(form['items.0.price.$isTouched']).toBe(true)
+      expect(form['items.0.price.$errors'].value).toEqual([
+        'Custom error message',
+      ])
+      expect(form['items.0.price.$isTouched'].value).toBe(true)
     })
 
     test('should set multiple field errors using setErrors', async () => {
@@ -381,10 +383,10 @@ describe('useForm', () => {
         'items.1.quantity': ['Quantity error'],
       })
 
-      expect(form['items.0.price.$errors']).toEqual(['Price error'])
-      expect(form['items.1.quantity.$errors']).toEqual(['Quantity error'])
-      expect(form['items.0.price.$isTouched']).toBe(true)
-      expect(form['items.1.quantity.$isTouched']).toBe(true)
+      expect(form['items.0.price.$errors'].value).toEqual(['Price error'])
+      expect(form['items.1.quantity.$errors'].value).toEqual(['Quantity error'])
+      expect(form['items.0.price.$isTouched'].value).toBe(true)
+      expect(form['items.1.quantity.$isTouched'].value).toBe(true)
     })
 
     test('should handle API validation errors in submit handler', async () => {

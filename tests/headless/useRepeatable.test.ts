@@ -187,7 +187,7 @@ describe('useRepeatable', () => {
       // Check field state preservation
       expect(form['contacts.0.name']).toBe('Bob')
       expect(form['contacts.0.email']).toBe('bob.updated@example.com')
-      expect(form['contacts.0.email.$isTouched']).toBe(true)
+      expect(form['contacts.0.email.$isTouched'].value).toBe(true)
     })
 
     it('should preserve validation state when moving items', async () => {
@@ -214,16 +214,16 @@ describe('useRepeatable', () => {
       await form.validate()
       await flushPromises()
 
-      expect(form['skills.0.name.$errors'].length).toBe(0)
-      expect(form['skills.1.name.$errors'].length).toBe(1)
+      expect(form['skills.0.name.$errors'].value.length).toBe(0)
+      expect(form['skills.1.name.$errors'].value.length).toBe(1)
 
       // Move item with error
       await repeatable.value.move(1, 0)
       await flushPromises()
 
       // Check error state moved with item
-      expect(form['skills.0.name.$errors']).toBeTruthy()
-      expect(form['skills.0.name.$errors'].length).toBeGreaterThan(0)
+      expect(form['skills.0.name.$errors'].value).toBeTruthy()
+      expect(form['skills.0.name.$errors'].value.length).toBeGreaterThan(0)
     })
   })
 
@@ -242,7 +242,7 @@ describe('useRepeatable', () => {
       await repeatable.value.add('item2')
       await flushPromises()
 
-      expect(form['items.$errors']).toHaveLength(0)
+      expect(form['items.$errors'].value).toHaveLength(0)
     })
 
     it('should validate array when validateOnRemove is true', async () => {
@@ -261,7 +261,7 @@ describe('useRepeatable', () => {
       await repeatable.value.remove(0)
       await flushPromises()
 
-      expect(form['items.$errors']).toHaveLength(0)
+      expect(form['items.$errors'].value).toHaveLength(0)
     })
   })
 

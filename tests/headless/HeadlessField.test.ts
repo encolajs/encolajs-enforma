@@ -122,8 +122,8 @@ describe('HeadlessField', () => {
       await input.trigger('blur')
       await flushPromises()
 
-      expect(form['email.$isTouched']).toBe(true)
-      expect(form['email.$isDirty']).toBe(true)
+      expect(form['email.$isTouched'].value).toBe(true)
+      expect(form['email.$isDirty'].value).toBe(true)
     })
 
     it('validates on input when validateOn is input', async () => {
@@ -147,12 +147,12 @@ describe('HeadlessField', () => {
         },
       })
 
-      expect(form['email.$isDirty']).toBe(false)
+      expect(form['email.$isDirty'].value).toBe(false)
 
       const input = wrapper.find('input')
       await input.setValue('new@email.com')
 
-      expect(form['email.$isDirty']).toBe(true)
+      expect(form['email.$isDirty'].value).toBe(true)
     })
 
     it('validates on input when validateOn is change', async () => {
@@ -181,8 +181,8 @@ describe('HeadlessField', () => {
       await input.trigger('focus')
       await input.setValue('new@email.com')
 
-      expect(form['email.$isDirty']).toBe(true)
-      expect(form['email.$isTouched']).toBe(true)
+      expect(form['email.$isDirty'].value).toBe(true)
+      expect(form['email.$isTouched'].value).toBe(true)
     })
   })
 
@@ -314,7 +314,7 @@ describe('HeadlessField', () => {
       // Force re-render
       await wrapper.setProps({ name: 'email', validateOn: 'blur' })
 
-      expect(form['email.$isTouched']).toBe(true)
+      expect(form['email.$isTouched'].value).toBe(true)
       expect(form.email).toBe('new@email.com')
     })
   })

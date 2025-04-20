@@ -157,7 +157,7 @@ describe('HeadlessForm', () => {
       await flushPromises()
 
       // Verify touched state was set
-      expect(encolaForm['email.$isTouched']).toBe(true)
+      expect(encolaForm['email.$isTouched'].value).toBe(true)
     })
 
     it('nested field access', async () => {

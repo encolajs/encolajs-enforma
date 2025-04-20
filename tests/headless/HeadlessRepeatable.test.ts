@@ -472,17 +472,17 @@ describe('HeadlessRepeatable', () => {
       await flushPromises()
 
       // Verify initial validation state
-      expect(formState['items.0.description.$errors'].length).toBe(0)
-      expect(formState['items.1.description.$errors'].length).toBe(0)
-      expect(formState['items.2.description.$errors'].length).toBe(1)
+      expect(formState['items.0.description.$errors'].value.length).toBe(0)
+      expect(formState['items.1.description.$errors'].value.length).toBe(0)
+      expect(formState['items.2.description.$errors'].value.length).toBe(1)
 
       // Remove the last element (which is invalid)
       await slotData.remove(2)
       await flushPromises()
 
       // Verify validation state after removal
-      expect(formState['items.0.description.$errors'].length).toBe(0)
-      expect(formState['items.1.description.$errors'].length).toBe(0)
+      expect(formState['items.0.description.$errors'].value.length).toBe(0)
+      expect(formState['items.1.description.$errors'].value.length).toBe(0)
     })
 
     it('correctly preserve error messages after removing middle element', async () => {
@@ -526,17 +526,17 @@ describe('HeadlessRepeatable', () => {
       await flushPromises()
 
       // Verify initial validation state
-      expect(formState['items.0.description.$errors'].length).toBe(0)
-      expect(formState['items.1.description.$errors'].length).toBe(1)
-      expect(formState['items.2.description.$errors'].length).toBe(0)
+      expect(formState['items.0.description.$errors'].value.length).toBe(0)
+      expect(formState['items.1.description.$errors'].value.length).toBe(1)
+      expect(formState['items.2.description.$errors'].value.length).toBe(0)
 
       // Remove the middle element (which is invalid)
       await slotData.remove(1)
       await flushPromises()
 
       // Verify validation state after removal
-      expect(formState['items.0.description.$errors'].length).toBe(0)
-      expect(formState['items.1.description.$errors'].length).toBe(0)
+      expect(formState['items.0.description.$errors'].value.length).toBe(0)
+      expect(formState['items.1.description.$errors'].value.length).toBe(0)
     })
 
     it('correctly preserve error messages after removing first element', async () => {
@@ -580,17 +580,17 @@ describe('HeadlessRepeatable', () => {
       await flushPromises()
 
       // Verify initial validation state
-      expect(formState['items.0.description.$errors'].length).toBe(1)
-      expect(formState['items.1.description.$errors'].length).toBe(0)
-      expect(formState['items.2.description.$errors'].length).toBe(0)
+      expect(formState['items.0.description.$errors'].value.length).toBe(1)
+      expect(formState['items.1.description.$errors'].value.length).toBe(0)
+      expect(formState['items.2.description.$errors'].value.length).toBe(0)
 
       // Remove the first element (which is invalid)
       await slotData.remove(0)
       await flushPromises()
 
       // Verify validation state after removal
-      expect(formState['items.0.description.$errors'].length).toBe(0)
-      expect(formState['items.1.description.$errors'].length).toBe(0)
+      expect(formState['items.0.description.$errors'].value.length).toBe(0)
+      expect(formState['items.1.description.$errors'].value.length).toBe(0)
     })
   })
 })

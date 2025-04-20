@@ -1,6 +1,6 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
-import { Ref, ref } from 'vue'
+import { computed, Ref, ref } from 'vue'
 import { generateId } from '@/utils/helpers'
 import { Emitter } from 'mitt'
 import {
@@ -587,6 +587,11 @@ export function useForm<T extends object>(
         }
 
         if (typeof prop === 'string') {
+          // Vue internals
+          if (prop.startsWith('__v_')) {
+            return undefined
+          }
+
           if (prop.startsWith('$')) {
             // @ts-expect-error Form state properties are the only ones we want to expose
             return formState[prop]
@@ -597,16 +602,18 @@ export function useForm<T extends object>(
             const fieldController = fieldManager.get(path)
 
             switch (metaProp) {
-              case 'errors':
-                return fieldController.$errors.value
               case 'isDirty':
-                return fieldController.$isDirty.value
+              case 'errors':
               case 'isTouched':
-                return fieldController.$isTouched.value
-              case 'isValid':
-                return fieldController.$errors.value.length === 0
               case 'isValidating':
-                return fieldController.$isValidating
+                return computed(() => {
+                  // @ts-expect-error the props we access are correct
+                  return fieldController['$' + metaProp]?.value
+                })
+              case 'isValid':
+                return computed(() => {
+                  return fieldController.$errors.value.length === 0
+                })
             }
           } else {
             fieldManager.get(prop) // to ensure the field exists
