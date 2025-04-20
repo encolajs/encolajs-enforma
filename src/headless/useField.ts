@@ -145,13 +145,9 @@ export function useField(
     // Get the latest field state
     const fieldController = getFieldController()
 
-    // Use the field state's version directly - this will change during field validation
-    // and when the field is updated through the form mechanisms
-    const fieldVersion = fieldController._version.value || 0
-
     const value = form[name]
     const error =
-      fieldController?.$errors?.length > 0 ? fieldController.$errors[0] : null
+      fieldController?.$errors.value.length > 0 ? fieldController.$errors.value[0] : null
 
     return {
       // Field value and state
@@ -159,12 +155,10 @@ export function useField(
       // Use the ref for the model property
       model: modelValue,
       error,
-      isDirty: fieldController?.$isDirty || false,
-      isTouched: fieldController?.$isTouched || false,
-      isValidating: fieldController?.$isValidating || false,
+      isDirty: fieldController?.$isDirty.value || false,
+      isTouched: fieldController?.$isTouched.value || false,
+      isValidating: fieldController?.$isValidating.value || false,
       isFocused: isFocused.value,
-      // Expose the field state version for debugging
-      _fieldVersion: fieldVersion,
 
       // Methods
       validate,

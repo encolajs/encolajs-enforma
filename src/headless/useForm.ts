@@ -10,12 +10,11 @@ import {
 } from '@/utils/events'
 
 export interface FieldController {
-  $errors: string[]
-  $isDirty: boolean
-  $isTouched: boolean
-  $isValidating: boolean
+  $errors: Ref<string[]>
+  $isDirty: Ref<boolean>
+  $isTouched: Ref<boolean>
+  $isValidating: Ref<boolean>
   _id: string
-  _version: Ref<number>
 }
 
 export interface StateChanges {
@@ -47,12 +46,11 @@ class FieldManager {
   get(path: string): FieldController {
     if (!this._fields.has(path)) {
       this._fields.set(path, {
-        $errors: [],
-        $isDirty: false,
-        $isTouched: false,
-        $isValidating: false,
+        $errors: ref([]),
+        $isDirty: ref(false),
+        $isTouched: ref(false),
+        $isValidating: ref(false),
         _id: generateId('field', path),
-        _version: ref(0),
       })
       // No need to signal state change here as we'll do it when getting the field
     }
@@ -200,33 +198,25 @@ export function useForm<T extends object>(
     if (!validator) return true
 
     try {
-      fieldController.$isValidating = true
-      fieldController.$isTouched = true
-      fieldController.$isDirty = true
-
-      fieldController._version.value++
+      fieldController.$isValidating.value = true
+      fieldController.$isTouched.value = true
+      fieldController.$isDirty.value = true
 
       const isValid = await validator.validatePath(path, valuesRef.value)
       if (!isValid) {
-        fieldController.$errors = validator.getErrorsForPath(path)
-        fieldController._version.value++
+        fieldController.$errors.value = validator.getErrorsForPath(path)
         return false
       }
 
-      if (fieldController.$errors.length > 0) {
-        fieldController.$errors = []
-        fieldController._version.value++
-      } else {
-        fieldController.$errors = []
+      if (fieldController.$errors.value.length > 0) {
+        fieldController.$errors.value = []
       }
       return true
     } catch (e: any) {
       console.error(`Error validating field ${path}`, e)
       return false
     } finally {
-      fieldController.$isValidating = false
-
-      fieldController._version.value++
+      fieldController.$isValidating.value = false
     }
   }
 
@@ -284,7 +274,7 @@ export function useForm<T extends object>(
     }
     Object.entries(stateChanges).forEach(([key, val]) => {
       const stateKey = key as keyof FieldController
-      ;(state[stateKey] as any) = val
+      ;(state[stateKey] as any).value = val
       if (key === '$isDirty' && val === true) {
         formState.$isDirty = true
       }
@@ -346,10 +336,8 @@ export function useForm<T extends object>(
         try {
           // Mark all fields as touched before validation
           fieldManager.all().forEach((fieldController, path) => {
-            fieldController.$isTouched = true
-            fieldController.$isDirty = true
-            // Increment field versions to trigger UI updates
-            fieldController._version.value++
+            fieldController.$isTouched.value = true
+            fieldController.$isDirty.value = true
           })
 
           // Validate all fields
@@ -430,10 +418,10 @@ export function useForm<T extends object>(
 
             if (value !== undefined) {
               // Path still exists, reset the state but keep the field registered
-              fieldController.$errors = []
-              fieldController.$isDirty = false
-              fieldController.$isTouched = false
-              fieldController.$isValidating = false
+              fieldController.$errors.value = []
+              fieldController.$isDirty.value = false
+              fieldController.$isTouched.value = false
+              fieldController.$isValidating.value = false
               // Preserve the ID
             } else {
               // Path no longer exists, remove the field state
@@ -451,9 +439,7 @@ export function useForm<T extends object>(
         formState.$isValidating = false
         formState.$isSubmitting = false
 
-        fieldManager.all().forEach((fieldController) => {
-          fieldController._version.value++
-        })
+        // Field values are now refs, no need for explicit version updates
 
         // Emit form reset event
         formEmitter.emit('form_reset', { formController: this })
@@ -500,9 +486,7 @@ export function useForm<T extends object>(
 
       setFieldFocused(path: string): void {
         const fieldController = fieldManager.get(path)
-        fieldController.$isTouched = true
-
-        fieldController._version.value++
+        fieldController.$isTouched.value = true
 
         // Emit field focused event
         formEmitter.emit('field_focused', {
@@ -514,9 +498,7 @@ export function useForm<T extends object>(
 
       setFieldBlurred(path: string): void {
         const fieldController = fieldManager.get(path)
-        fieldController.$isTouched = true
-
-        fieldController._version.value++
+        fieldController.$isTouched.value = true
 
         // Emit field blurred event
         formEmitter.emit('field_blurred', {
@@ -528,10 +510,8 @@ export function useForm<T extends object>(
 
       setFieldErrors(path: string, errors: string[]): void {
         const fieldController = fieldManager.get(path)
-        fieldController.$errors = errors
-        fieldController.$isTouched = true
-
-        fieldController._version.value++
+        fieldController.$errors.value = errors
+        fieldController.$isTouched.value = true
       },
 
       setErrors(errors: Record<string, string[]>): void {
@@ -547,7 +527,7 @@ export function useForm<T extends object>(
       errors(): object {
         const errors: Record<string, string[]> = {}
         fieldManager.all().forEach((fieldController, path) => {
-          errors[path] = fieldController.$errors
+          errors[path] = fieldController.$errors.value
         })
         return errors
       },
@@ -556,13 +536,7 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
         fieldManager.shift(arrayPath, index, 1)
-
-        // Update versions for affected fields
-        fieldManager.all().forEach((fieldController, path) => {
-          if (path.startsWith(arrayPath)) {
-            fieldController._version.value++
-          }
-        })
+        // With reactive refs, we no longer need to increment version
       },
 
       remove(arrayPath: string, index: number): void {
@@ -582,13 +556,7 @@ export function useForm<T extends object>(
 
         // Reindex remaining field states
         reindexArrayFieldControllers(arrayPath, index)
-
-        // Update versions for affected fields
-        fieldManager.all().forEach((fieldController, path) => {
-          if (path.startsWith(arrayPath)) {
-            fieldController._version.value++
-          }
-        })
+        // With reactive refs, we no longer need to increment version
       },
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
@@ -596,13 +564,7 @@ export function useForm<T extends object>(
         const [item] = array.splice(fromIndex, 1)
         array.splice(toIndex, 0, item)
         fieldManager.move(arrayPath, fromIndex, toIndex)
-
-        // Update versions for affected fields
-        fieldManager.all().forEach((fieldController, path) => {
-          if (path.startsWith(arrayPath)) {
-            fieldController._version.value++
-          }
-        })
+        // With reactive refs, we no longer need to increment version
       },
 
       sort(arrayPath: string, callback: (a: any, b: any) => number): void {
@@ -615,13 +577,7 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
-
-        // Update versions for affected fields
-        fieldManager.all().forEach((fieldController, path) => {
-          if (path.startsWith(arrayPath)) {
-            fieldController._version.value++
-          }
-        })
+        // With reactive refs, we no longer need to increment version
       },
     } as FormController,
     {
@@ -648,7 +604,7 @@ export function useForm<T extends object>(
               case 'isTouched':
                 return fieldController.$isTouched
               case 'isValid':
-                return fieldController.$errors.length === 0
+                return fieldController.$errors.value.length === 0
               case 'isValidating':
                 return fieldController.$isValidating
             }
@@ -674,11 +630,7 @@ export function useForm<T extends object>(
               case 'isTouched':
               case 'isValidating':
               case 'errors': {
-                ;(fieldController[metaKey] as any) = value
-                // Only increment field version if value actually changed
-                if (prevValue !== value) {
-                  fieldController._version.value++
-                }
+                ;(fieldController[metaKey] as any).value = value
                 break
               }
             }
@@ -690,8 +642,7 @@ export function useForm<T extends object>(
             // Set the value immediately
             setValueByPath(valuesRef.value, prop, value)
             const fiel = fieldManager.get(prop)
-            fiel.$isDirty = true
-            fiel._version.value++
+            fiel.$isDirty.value = true
 
             // Handle validation asynchronously
             Promise.resolve().then(() => {
