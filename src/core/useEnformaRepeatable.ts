@@ -7,18 +7,6 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'
 
 /**
- * Animation options for repeatable fields
- */
-export interface RepeatableAnimationOptions {
-  enabled?: boolean
-  duration?: number
-  easing?: string
-  add?: boolean
-  remove?: boolean
-  move?: boolean
-}
-
-/**
  * Props passed to the component when using component-based subfields
  */
 export interface RepeatableComponentProps {
@@ -42,7 +30,6 @@ export interface RepeatableFieldSchema {
   validateOnAdd?: boolean
   validateOnRemove?: boolean
   if?: boolean
-  animations?: boolean | RepeatableAnimationOptions
   addButton?: any // EnformaRepeatableAddButton component
   removeButton?: any // EnformaRepeatableRemoveButton component
   moveUpButton?: any // EnformaRepeatableMoveUpButton component
@@ -90,53 +77,6 @@ export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
     )
   )
 
-  // Process animation options
-  const animationOptions = computed<RepeatableAnimationOptions>(() => {
-    // Default animation settings
-    const defaults = {
-      enabled: true,
-      duration: 300,
-      easing: 'ease',
-      add: true,
-      remove: true,
-      move: true,
-    }
-
-    // Handle boolean animations prop
-    if (typeof fieldConfig.animations === 'boolean') {
-      return {
-        ...defaults,
-        enabled: fieldConfig.animations,
-      }
-    }
-
-    // Handle object animations prop
-    if (fieldConfig.animations && typeof fieldConfig.animations === 'object') {
-      return {
-        ...defaults,
-        ...fieldConfig.animations,
-      }
-    }
-
-    // Default when not specified
-    return defaults
-  })
-
-  // Determine if animations should be used
-  const useAnimations = computed(() => {
-    return animationOptions.value.enabled
-  })
-
-  // Generate animation style variables
-  const animationStyles = computed(() => {
-    if (!useAnimations.value) return {}
-
-    return {
-      '--repeatable-animation-duration': `${animationOptions.value.duration}ms`,
-      '--repeatable-animation-easing': animationOptions.value.easing,
-    }
-  })
-
   // Clean up on unmount
   onBeforeUnmount(() => {
     formState?.removeField(fieldConfig.name)
@@ -149,8 +89,5 @@ export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
     componentProps: fieldConfig.componentProps,
     formState,
     getConfig,
-    useAnimations,
-    animationOptions,
-    animationStyles,
   }
 }
