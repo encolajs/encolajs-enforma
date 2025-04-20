@@ -16,7 +16,7 @@ import { _get } from './configUtils'
  */
 export function useFormConfig(localConfig?: object) {
   // Get the base configuration from useConfig
-  const { config } = useConfig(localConfig)
+  const config = useConfig(localConfig)
 
   // Inject the form configuration from the parent Enforma component
   // If not available, fallback to the base config

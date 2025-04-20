@@ -31,10 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, PropType } from 'vue'
+import { provide, ref, PropType } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
-import { mergeConfigs } from '@/utils/configUtils'
-import { getGlobalConfig } from '@/utils/useConfig'
 import {
   formContextKey,
   formConfigKey,
@@ -123,13 +121,6 @@ defineExpose({
   off,
 })
 
-const formConfig = computed(() => {
-  // Get the global config once
-  const globalConfig = getGlobalConfig()
-  // Create a new object to avoid reactivity issues
-  return mergeConfigs(globalConfig, props.config || {})
-})
-provide(formConfigKey, formConfig)
 provide(formContextKey, props.context)
 provide(formSchemaKey, props.schema)
 

@@ -15,6 +15,7 @@ import {
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
+import { useFormConfig } from '../../src'
 
 // Stub components for testing
 const EnformaFieldStub = {
@@ -92,9 +93,8 @@ describe('EnformaRepeatable', () => {
       },
       setup() {
         // Provide injections in setup
-        const { config } = useConfig()
+        useFormConfig({})
         provide(formStateKey, formState)
-        provide(formConfigKey, config)
         provide(formSchemaKey, null)
 
         return {

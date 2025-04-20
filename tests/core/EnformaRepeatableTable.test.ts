@@ -7,6 +7,7 @@ import { formStateKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
+import { useFormConfig } from '../../src'
 
 // Stub components for testing
 const EnformaFieldStub = {
@@ -41,6 +42,7 @@ describe('EnformaRepeatableTable', () => {
   // Create real form state with validation
   const createFormState = (initialData = {}) => {
     const validation = useValidation()
+    useFormConfig({})
     return useForm(
       initialData,
       {},
@@ -64,7 +66,7 @@ describe('EnformaRepeatableTable', () => {
       },
       setup() {
         // Provide injections in setup
-        const { config } = useConfig()
+        const config = useConfig()
         provide(formStateKey, formState)
         provide(formConfigKey, config)
         provide(formSchemaKey, null)

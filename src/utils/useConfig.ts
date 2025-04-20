@@ -161,16 +161,9 @@ export function getGlobalConfig(): DeepPartial<EnformaConfig> {
 }
 
 /**
- * Interface for the return value of useConfig
- */
-export interface UseConfigReturn {
-  config: EnformaConfig
-}
-
-/**
  * Composable for working with form kit configuration
  */
-export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
+export function useConfig(localConfig?: ConfigProvider): EnformaConfig {
   // Resolve local config using our helper function
   const resolvedLocalConfig = resolveValue(localConfig) || {}
 
@@ -180,7 +173,5 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
     resolvedLocalConfig // local config (form level)
   )
 
-  return {
-    config,
-  }
+  return config
 }
