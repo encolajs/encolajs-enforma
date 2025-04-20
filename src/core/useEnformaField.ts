@@ -1,5 +1,5 @@
 // src/core/useEnformaField.ts
-import { computed, inject, mergeProps, onBeforeUnmount, ref } from 'vue'
+import { computed, inject, mergeProps, onBeforeUnmount, ref, ComponentPublicInstance } from 'vue'
 import { formStateKey, formSchemaKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FieldController, FormController } from '@/types'
@@ -13,7 +13,7 @@ import applyTransformers from '@/utils/applyTransformers'
 export interface EnformaFieldProps {
   name: string
   label?: string | null
-  component?: string | object | null
+  component?: string | ComponentPublicInstance | null
   placeholder?: string | null
   hideLabel?: boolean | undefined
   showLabelNextToInput?: boolean | undefined

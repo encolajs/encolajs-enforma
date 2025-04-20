@@ -52,11 +52,12 @@
 
 <script setup lang="ts">
 import { useEnformaField } from './useEnformaField'
+import { ComponentPublicInstance, PropType } from 'vue'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
-  component: { type: [String, Object], default: null },
+  component: { type: [String, Object] as PropType<string | ComponentPublicInstance | null>, default: null },
   placeholder: { type: String, default: null },
   hideLabel: { type: Boolean, default: false },
   showLabelNextToInput: { type: Boolean, default: false },
