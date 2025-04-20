@@ -426,10 +426,10 @@ describe('HeadlessForm', () => {
       const emailState = encolaForm.getField('email')
 
       // The form should mark fields as touched and set errors
-      expect(emailState.$isTouched).toBe(true)
-      expect(emailState.$isDirty).toBe(true)
-      expect(emailState.$errors.length).toBeGreaterThan(0)
-      expect(emailState.$errors[0]).toContain('email')
+      expect(emailState.$isTouched.value).toBe(true)
+      expect(emailState.$isDirty.value).toBe(true)
+      expect(emailState.$errors.value.length).toBeGreaterThan(0)
+      expect(emailState.$errors.value[0]).toContain('email')
 
       // Check that the error message is displayed in the DOM
       const errorMessage = wrapper.find('[data-test="error-message"]')

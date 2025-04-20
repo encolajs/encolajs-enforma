@@ -95,10 +95,10 @@ describe('useForm', () => {
     test('should get field state', () => {
       const field = form.getField('items.0.price')
 
-      expect(field.$errors).toHaveLength(0)
-      expect(field.$isDirty).toBe(false)
-      expect(field.$isTouched).toBe(false)
-      expect(field.$isValidating).toBe(false)
+      expect(field.$errors.value).toHaveLength(0)
+      expect(field.$isDirty.value).toBe(false)
+      expect(field.$isTouched.value).toBe(false)
+      expect(field.$isValidating.value).toBe(false)
       expect(field._id).toBeDefined()
     })
 
@@ -258,9 +258,9 @@ describe('useForm', () => {
   describe('field state', () => {
     test('should track validation state', async () => {
       form.setFieldValue('items.0.price', 5)
-      expect(form['items.0.price.$isValidating']).toBe(true)
+      expect(form['items.0.price.$isValidating'].value).toBe(true)
       await flushPromises()
-      expect(form['items.0.price.$isValidating']).toBe(false)
+      expect(form['items.0.price.$isValidating'].value).toBe(false)
     })
 
     test('should allow manual state changes', () => {
@@ -432,8 +432,8 @@ describe('useForm', () => {
       expect(result).toBe(false)
 
       // Verify field errors were set
-      expect(priceFieldBefore.$errors).toContain('Price must be at least $50')
-      expect(addressFieldBefore.$errors).toContain('Address is required')
+      expect(priceFieldBefore.$errors.value).toContain('Price must be at least $50')
+      expect(addressFieldBefore.$errors.value).toContain('Address is required')
     })
 
     test('should handle validation errors in validateField', async () => {

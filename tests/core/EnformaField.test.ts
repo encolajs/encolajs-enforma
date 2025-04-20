@@ -83,7 +83,7 @@ describe('EnformaField', () => {
 
     // Manually set errors directly on the field state
     const fieldController = formWithErrors.getField('error_field')
-    fieldController.$errors = ['This field is required']
+    fieldController.$errors.value = ['This field is required']
 
     // Mount the component with the field that has errors
     const wrapper = mountTestComponent(

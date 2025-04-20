@@ -29,10 +29,10 @@ const mockForm = {
   // Mock field functions
   getField: vi.fn((path) => ({
     _id: path,
-    $errors: mockForm[`${path}.$errors`] || [],
-    $isDirty: mockForm[`${path}.$isDirty`] || false,
-    $isTouched: mockForm[`${path}.$isTouched`] || false,
-    $isValidating: mockForm[`${path}.$isValidating`] || false,
+    $errors: { value: mockForm[`${path}.$errors`] || [] },
+    $isDirty: { value: mockForm[`${path}.$isDirty`] || false },
+    $isTouched: { value: mockForm[`${path}.$isTouched`] || false },
+    $isValidating: { value: mockForm[`${path}.$isValidating`] || false },
   })),
 
   validateField: vi.fn().mockResolvedValue(true),
@@ -234,10 +234,10 @@ describe('useField', () => {
       // Setup field with error
       vi.spyOn(mockForm, 'getField').mockReturnValueOnce({
         _id: 'email',
-        $errors: ['This field is invalid'],
-        $isDirty: true,
-        $isTouched: true,
-        $isValidating: false,
+        $errors: { value: ['This field is invalid'] },
+        $isDirty: { value: true },
+        $isTouched: { value: true },
+        $isValidating: { value: false },
       })
 
       // Also need to modify the error array on the form
