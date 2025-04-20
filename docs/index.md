@@ -16,7 +16,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /getting-started/
+      link: /quick-start
 
     - theme: alt
       text: View on GitHub

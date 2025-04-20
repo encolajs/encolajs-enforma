@@ -21,8 +21,6 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Getting Started', link: '/getting-started' },
-      { text: 'Guides', link: '/guides/' },
-      { text: 'Presets', link: '/presets/' },
       { text: 'Examples', link: '/examples/' },
       { text: 'More...',
         items: [
@@ -33,99 +31,104 @@ export default defineConfig({
     ],
     sidebar: {
       '/': [
-        { text: 'Getting started', link: '/getting-started' },
+        { text: 'Overview', link: '/getting-started' },
         { text: 'Installation', link: '/installation' },
         { text: 'Quick Start', link: '/quick-start' },
         {
-          text: 'Enforma Components',
+          text: 'Core Concepts',
+          collapsed: false,
           items: [
-            { text: 'Overview', link: '/components/' },
-            { text: 'EnformaForm', link: '/components/form' },
-            { text: 'EnformaField', link: '/components/field' },
-            { text: 'EnformaRepeatable', link: '/components/repeatable' },
-            {
-              text: 'EnformaRepeatableTable',
-              link: '/components/repeatable-table',
-            },
-            { text: 'EnformaSection', link: '/components/section' },
-            { text: 'EnformaSchema', link: '/components/schema' },
-            { text: 'Buttons', link: '/components/buttons' },
+            { text: 'Architecture Overview', link: '/core-concepts/architecture-overview' },
+            { text: 'Form Configuration', link: '/core-concepts/form-configuration' },
+            { text: 'Validation System', link: '/core-concepts/validation-system' },
+            { text: 'Rendering Modes', link: '/core-concepts/rendering-modes' },
+            { text: 'Dynamic Props', link: '/core-concepts/dynamic-props' },
+          ],
+        },
+        {
+          text: 'Form Rendering Modes',
+          collapsed: false,
+          items: [
+            { text: 'Forms with Fields', link: '/form-rendering-modes/forms-with-fields' },
+            { text: 'Forms with a Schema', link: '/form-rendering-modes/forms-with-schema' },
+            { text: 'Headless Forms', link: '/form-rendering-modes/headless-forms' },
+            { text: 'Mixed Forms', link: '/form-rendering-modes/mixed-forms' },
+          ],
+        },
+        {
+          text: 'Built-in Base Components',
+          collapsed: false,
+          items: [
+            { text: 'Enforma Form', link: '/built-in-components/enforma-form' },
+            { text: 'EnformaField', link: '/built-in-components/enforma-field' },
+            { text: 'EnformaRepeatable', link: '/built-in-components/enforma-repeatable' },
+            { text: 'EnformaRepeatableTable', link: '/built-in-components/enforma-repeatable-table' },
+            { text: 'EnformaSection', link: '/built-in-components/enforma-section' },
+            { text: 'EnformaSchema', link: '/built-in-components/enforma-schema' },
           ],
         },
         {
           text: 'Headless Components',
+          collapsed: false,
           items: [
             { text: 'Overview', link: '/headless/' },
             { text: 'HeadlessForm', link: '/headless/form' },
             { text: 'HeadlessField', link: '/headless/field' },
             { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
-            {
-              text: 'Custom Wrapper Components',
-              link: '/headless/wrapper-components',
-            },
           ],
         },
         {
-          text: 'Advanced concepts',
+          text: 'Validation',
+          collapsed: false,
           items: [
-            { text: 'The `useForm` composable', link: '/advanced/useform' },
+            { text: 'Built-in Validators', link: '/validation/built-in-validators' },
+            { text: 'Validation Customization', link: '/validation/validation-customization' },
           ],
         },
-      ],
-      '/presets/': [
         {
-          text: 'UI Presets',
+          text: 'UI Library Integration',
+          collapsed: false,
           items: [
-            { text: 'Overview', link: '/presets/' },
-            { text: 'PrimeVue', link: '/presets/primevue' },
-            { text: 'Vuetify', link: '/presets/vuetify' },
-            { text: 'Creating Custom Presets', link: '/presets/custom' },
+            { text: 'Working with Any UI Library', link: '/ui-library-integration/working-with-any-ui-library' },
+            { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
+            { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
+            { text: 'Creating Your Own UI Preset', link: '/ui-library-integration/creating-your-own-ui-preset' },
           ],
         },
-      ],
-      '/guides/': [
         {
-          text: 'Conceptual Guides',
+          text: 'Extensibility',
+          collapsed: false,
           items: [
-            { text: 'Overview', link: '/guides/' },
-            { text: 'Form Schema', link: '/guides/schema' },
-            { text: 'Form State', link: '/guides/state' },
-            { text: 'Validation', link: '/guides/validation' },
-            { text: 'Form Events', link: '/guides/events' },
-            { text: 'Performance', link: '/guides/performance' },
+            { text: 'Global vs Form-level Configuration', link: '/extensibility/global-vs-form-level-configuration' },
+            { text: 'Integrating Custom Components', link: '/extensibility/integrating-custom-components' },
+            { text: 'Using Transformers', link: '/extensibility/using-transformers' },
+            { text: 'Dynamic Field Props', link: '/extensibility/dynamic-field-props' },
           ],
         },
-      ],
-      '/examples/': [
         {
-          text: 'Examples',
+          text: 'Recipes',
+          collapsed: false,
           items: [
-            { text: 'Overview', link: '/examples/' },
-            {
-              text: 'Forms',
-              items: [
-                {
-                  text: 'Headless components',
-                  link: '/examples/headless-components',
-                },
-                { text: 'Enforma with fields', link: '/examples/fields' },
-                {
-                  text: 'Enforma with fields and schema',
-                  link: '/examples/fields-and-schema',
-                },
-                {
-                  text: 'Enforma with schema only',
-                  link: '/examples/schema-only',
-                },
-                { text: 'Mixed forms', link: '/examples/mixed-forms' },
-              ],
-            },
-            {
-              text: 'Features',
-              items: [
-                { text: 'Dynamic props', link: '/examples/dynamic-props' },
-              ],
-            },
+            { text: 'Async Validation', link: '/recipes/async-validation' },
+            { text: 'Multi-input Fields', link: '/recipes/multi-input-fields' },
+            { text: 'Conditional Forms', link: '/recipes/conditional-forms' },
+            { text: 'Async Schema Loading', link: '/recipes/async-schema-loading' },
+            { text: 'Custom Base Components', link: '/recipes/custom-base-components' },
+          ],
+        },
+        {
+          text: 'Troubleshooting',
+          collapsed: false,
+          items: [
+            { text: 'FAQ', link: '/troubleshooting/faq' },
+          ],
+        },
+        {
+          text: 'Community',
+          collapsed: false,
+          items: [
+            { text: 'Contribution Guide', link: '/community/contribution-guide' },
+            { text: 'Discord Community', link: '/community/discord-community' },
           ],
         },
       ],
