@@ -34,6 +34,7 @@ interface ComponentProps {
 /**
  * Pass-Through configuration for field components
  * These props are attached automatically to each component
+ * @see /src/constants/defaults.ts for details
  */
 export interface FieldPassThroughConfig {
   // for the EnformaField
@@ -75,6 +76,7 @@ export interface FieldPassThroughConfig {
 
   // this is for other components
   section: ComponentProps
+  schema: ComponentProps
 
   // options for custom components
   [key: string]: any
@@ -163,8 +165,6 @@ export function getGlobalConfig(): DeepPartial<EnformaConfig> {
  */
 export interface UseConfigReturn {
   config: EnformaConfig
-  extendConfig: (config: DeepPartial<EnformaConfig>) => EnformaConfig
-  provideConfig: (config: DeepPartial<EnformaConfig>) => void
 }
 
 /**
@@ -180,28 +180,7 @@ export function useConfig(localConfig?: ConfigProvider): UseConfigReturn {
     resolvedLocalConfig // local config (form level)
   )
 
-  /**
-   * Extends the current configuration with additional configuration
-   */
-  function extendConfig(
-    additionalConfig: DeepPartial<EnformaConfig>
-  ): EnformaConfig {
-    return mergeConfigs<EnformaConfig>(config, additionalConfig)
-  }
-
-  /**
-   * Provides the configuration to child components
-   */
-  function provideConfig(
-    additionalConfig: DeepPartial<EnformaConfig> = {}
-  ): void {
-    const providedConfig = extendConfig(additionalConfig)
-    provide<EnformaConfig>(formConfigKey, providedConfig)
-  }
-
   return {
     config,
-    extendConfig,
-    provideConfig,
   }
 }
