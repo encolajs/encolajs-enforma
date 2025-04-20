@@ -598,11 +598,11 @@ export function useForm<T extends object>(
 
             switch (metaProp) {
               case 'errors':
-                return fieldController.$errors
+                return fieldController.$errors.value
               case 'isDirty':
-                return fieldController.$isDirty
+                return fieldController.$isDirty.value
               case 'isTouched':
-                return fieldController.$isTouched
+                return fieldController.$isTouched.value
               case 'isValid':
                 return fieldController.$errors.value.length === 0
               case 'isValidating':
