@@ -32,7 +32,6 @@ export interface RepeatableComponentProps {
  * Repeatable field schema with subfields
  */
 export interface RepeatableFieldSchema {
-  type: 'repeatable'
   name: string
   min?: number
   max?: number

@@ -56,7 +56,7 @@ import { useEnformaField } from './useEnformaField'
 const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
-  component: { type: String, default: null },
+  component: { type: [String, Object], default: null },
   placeholder: { type: String, default: null },
   hideLabel: { type: Boolean, default: false },
   showLabelNextToInput: { type: Boolean, default: false },

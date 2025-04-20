@@ -36,7 +36,7 @@
                 <component
                   :is="getConfig('components.field', EnformaField)"
                   :name="`${name}.${index}.${subfieldName}`"
-                  hide-label="true"
+                  :hide-label="true"
                   v-bind="{ ...subfield }"
                 />
               </td>
