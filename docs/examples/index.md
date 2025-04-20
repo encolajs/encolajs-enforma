@@ -12,8 +12,7 @@ component).
 - [Enforma form using only schema](schema-only.md)
 - [Enforma form using schema, fields and headless fields](mixed_form.md)
 
-> [!NOTE]
-> The Enforma form examples are using the PrimeVue preset
+> [!NOTE] All examples use PrimeVue components.<br>The Enforma form examples are using the PrimeVue preset that comes with the library
 
 ## Features
 - [Fields with dynamic props](dynamic-props.md)

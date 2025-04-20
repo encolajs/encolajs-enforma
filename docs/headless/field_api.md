@@ -36,5 +36,4 @@ The field controller is an object that provides properties and methods for manag
 | `events` | `object` | Event handlers for the field.                                                                                                                 |
 | `model` | `{ value: any }` | A reactive object that can be used with v-model for two-way binding. The model property will only trigger validation when the field is dirty. |
 
-> [!WARNING]
-> It is recommend to **NOT use** the `model` as you won't be able to control when the field gets validated
+> [!WARNING] It is recommend to **NOT use** the `model` as you won't be able to control when the field gets validated. If you do use it, you shouldn't pass the `onChange` and `onInput` events to the input.

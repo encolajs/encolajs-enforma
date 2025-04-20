@@ -21,8 +21,7 @@ This is a field component that provides no UI, just the field state and logic.
 
 ##### :notebook_with_decorative_cover: For a fully working example check out the [Headless components example](/examples/headless-components)
 
-> [!IMPORTANT]
-> The component must be used within an `EncolaForm` or `HeadlessForm` component
+> [!IMPORTANT] The component must be used within an `EncolaForm` or `HeadlessForm` component
 
 ## Single input example
 

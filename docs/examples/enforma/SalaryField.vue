@@ -39,6 +39,9 @@
 <script setup>
 import { HeadlessField } from '@'
 import { InputText } from 'primevue'
+import { useAttrs } from 'vue'
+
+const attrs = useAttrs()
 
 const props = defineProps({
   name: {

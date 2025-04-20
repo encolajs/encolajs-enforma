@@ -189,5 +189,12 @@ export default defineConfig({
       extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
   },
-  vue: {},
+  vue: {
+    template: {
+      compilerOptions: {
+        // Suppress the "Extraneous non-props attributes" warning
+        warnExtraProps: false
+      }
+    }
+  },
 })

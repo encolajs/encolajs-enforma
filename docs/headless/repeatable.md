@@ -21,8 +21,7 @@ The `<HeadlessRepeatable>` component provides a way to handle repeatable form fi
 
 ##### :notebook_with_decorative_cover: For a fully working example check out the [Headless components example](/examples/headless-components)
 
-> [!IMPORTANT]
-> The component must be used within an `EncolaForm` or `HeadlessForm` component
+> [!IMPORTANT] The component must be used within an `EncolaForm` or `HeadlessForm` component
 
 ## Basic Usage
 
@@ -104,8 +103,7 @@ For less complex data structures, you might want to use a table layout:
 
 The component supports validation through the parent form. You can validate on add or remove operations.
 
-> [!IMPORTANT]
-> The validation refers to the array, not individual fields/items. For example if you want to have between 3 and 5 skills and you set up validation rules for this, you can use this props to validate the skills on add/remove/both/none
+> [!IMPORTANT] The validation refers to the array, not individual fields/items. For example if you want to have between 3 and 5 skills and you set up validation rules for this, you can use this props to validate the skills on add/remove/both/none
 
 ```html
 <HeadlessRepeatable 

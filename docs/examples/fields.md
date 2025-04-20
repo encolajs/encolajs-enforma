@@ -4,8 +4,7 @@ import FormExample from './enforma/FieldsFormExample.vue'
 
 # Form using headless components
 
-> [!INFO]
-> This example is using the PrimeVue preset
+> [!INFO] This example is using the PrimeVue preset
 
 <ClientOnly>
     <LiveDemo :component="FormExample"></LiveDemo>
