@@ -34,7 +34,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
   const formState = inject<FormController>(formStateKey) as FormController
   const { formConfig, getConfig } = useFormConfig()
-  const schema = inject<Record<string, FieldSchema>>(formSchemaKey)
+  const schema = inject<Record<string, FieldSchema> | null>(formSchemaKey, null)
 
   // Validate form context
   if (!formState) {

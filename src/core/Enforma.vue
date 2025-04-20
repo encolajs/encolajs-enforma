@@ -35,7 +35,7 @@ import { computed, provide, ref, PropType } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import { mergeConfigs } from '@/utils/configUtils'
 import { getGlobalConfig } from '@/utils/useConfig'
-import { formContextKey, formConfigKey } from '@/constants/symbols'
+import { formContextKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
 import { FieldSchema } from '@/types'
 import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -127,6 +127,7 @@ const formConfig = computed(() => {
 })
 provide(formConfigKey, formConfig)
 provide(formContextKey, props.context)
+provide(formSchemaKey, props.schema)
 
 const { getConfig } = useFormConfig(props.config)
 const submitButton = getConfig('components.submitButton')
