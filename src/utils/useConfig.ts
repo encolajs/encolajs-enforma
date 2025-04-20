@@ -1,10 +1,8 @@
 /**
  * Composable for managing form kit configuration
  */
-import { inject, provide } from 'vue'
 import { mergeConfigs, _get } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
-import { formConfigKey } from '@/constants/symbols'
 import { messageFormatter } from '@encolajs/validator'
 import { resolveValue } from './helpers'
 

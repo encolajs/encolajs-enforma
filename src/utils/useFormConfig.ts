@@ -14,13 +14,14 @@ import { _get } from './configUtils'
  *
  * @returns An object with the form configuration and a helper function to get config values by path
  */
-export function useFormConfig(localConfig?: object) {
-  // Get the base configuration from useConfig
-  const config = useConfig(localConfig)
-
+export function useFormConfig() {
   // Inject the form configuration from the parent Enforma component
   // If not available, fallback to the base config
-  const formConfig = inject<EnformaConfig>(formConfigKey, config)
+  let formConfig = inject<EnformaConfig>(formConfigKey)
+
+  if (!formConfig) {
+    formConfig = useConfig()
+  }
 
   /**
    * Get a configuration value by path with a default value if the path doesn't exist
@@ -33,7 +34,7 @@ export function useFormConfig(localConfig?: object) {
     path: string,
     defaultValue?: T
   ): T | undefined => {
-    return _get<T>(config, path, defaultValue)
+    return _get<T>(formConfig, path, defaultValue)
   }
 
   return {

@@ -41,6 +41,7 @@ import {
 import { FieldSchema } from '@/types'
 import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
+import { useConfig } from '@/utils/useConfig'
 
 export interface FormSchema {
   [key: string]: FieldSchema
@@ -123,8 +124,9 @@ defineExpose({
 
 provide(formContextKey, props.context)
 provide(formSchemaKey, props.schema)
+provide(formConfigKey, useConfig(props.config))
 
-const { getConfig } = useFormConfig(props.config)
+const { getConfig } = useFormConfig()
 const submitButton = getConfig('components.submitButton')
 const resetButton = getConfig('components.resetButton')
 const schemaComponent = getConfig('components.schema')
