@@ -4,7 +4,13 @@ import RepeatableRemoveButton from './primevue/RepeatableRemoveButton.vue'
 import RepeatableAddButton from './primevue/RepeatableAddButton.vue'
 import RepeatableMoveDownButton from './primevue/RepeatableMoveDownButton.vue'
 import RepeatableMoveUpButton from './primevue/RepeatableMoveUpButton.vue'
-import { InputText, Select, AutoComplete, DatePicker, ToggleSwitch } from 'primevue'
+import {
+  InputText,
+  Select,
+  AutoComplete,
+  DatePicker,
+  ToggleSwitch,
+} from 'primevue'
 import { FieldController, FormController } from '@/types'
 import {
   DeepPartial,

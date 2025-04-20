@@ -5,7 +5,8 @@ import {
   watch,
   ref,
   computed,
-  ComputedRef, onMounted,
+  ComputedRef,
+  onMounted,
 } from 'vue'
 import { useField } from './useField'
 import { FieldController, FieldOptions, FormController } from '@/types'
@@ -39,7 +40,7 @@ export default defineComponent({
       )
       return () => null // Return null instead of trying to render
     }
-    
+
     // Create a trigger ref to force re-rendering when the data changes
     const renderTrigger = ref(0)
     const unwatchers: Function[] = []

@@ -3,7 +3,11 @@ import { useValidation } from '@/utils/useValidation'
 import { Ref, ref } from 'vue'
 import { generateId } from '@/utils/helpers'
 import { Emitter } from 'mitt'
-import { FormEvents, createFormEmitter, globalFormEmitter } from '@/utils/events'
+import {
+  FormEvents,
+  createFormEmitter,
+  globalFormEmitter,
+} from '@/utils/events'
 
 export interface FieldState {
   $errors: string[]
@@ -164,10 +168,10 @@ export function useForm<T extends object>(
   options: FormOptions = {}
 ): T & FormController {
   // Create form-specific event emitter
-  const formEmitter: Emitter<FormEvents> = options.useGlobalEvents 
-    ? globalFormEmitter 
-    : createFormEmitter();
-  
+  const formEmitter: Emitter<FormEvents> = options.useGlobalEvents
+    ? globalFormEmitter
+    : createFormEmitter()
+
   const valuesCopy: object =
     // @ts-expect-error Initial values can be a complex object with a clone() method
     values.clone && typeof values?.clone === 'function'
@@ -199,16 +203,16 @@ export function useForm<T extends object>(
       state.$isValidating = true
       state.$isTouched = true
       state.$isDirty = true
-      
+
       state._version.value++
-      
+
       const isValid = await validator.validatePath(path, valuesRef.value)
       if (!isValid) {
         state.$errors = validator.getErrorsForPath(path)
         state._version.value++
         return false
       }
-      
+
       if (state.$errors.length > 0) {
         state.$errors = []
         state._version.value++
@@ -221,7 +225,7 @@ export function useForm<T extends object>(
       return false
     } finally {
       state.$isValidating = false
-      
+
       state._version.value++
     }
   }
@@ -319,82 +323,79 @@ export function useForm<T extends object>(
     {
       // Event emitter methods
       on(event: keyof FormEvents, handler: Function) {
-        formEmitter.on(event, handler as any);
-        return this;
+        formEmitter.on(event, handler as any)
+        return this
       },
-      
+
       off(event: keyof FormEvents, handler?: Function) {
-        formEmitter.off(event, handler as any);
-        return this;
+        formEmitter.off(event, handler as any)
+        return this
       },
-      
+
       emit(event: keyof FormEvents, data: any) {
-        formEmitter.emit(event, data);
-        return this;
+        formEmitter.emit(event, data)
+        return this
       },
-      
-      submit: async function() {
-        // Store reference to the form controller
-        const formController = this;
-        formState.$isSubmitting = true;
+
+      submit: async function () {
+        formState.$isSubmitting = true
 
         try {
           // Mark all fields as touched before validation
           fieldManager.all().forEach((state, path) => {
-            state.$isTouched = true;
-            state.$isDirty = true;
+            state.$isTouched = true
+            state.$isDirty = true
             // Increment field versions to trigger UI updates
             state._version.value++
-          });
-          
+          })
+
           // Validate all fields
-          const isValid = await validateForm();
+          const isValid = await validateForm()
 
           if (!isValid) {
             // Call validation error callback if provided
             if (options.onValidationError) {
-              options.onValidationError(formController);
+              options.onValidationError(formController)
             }
-            
+
             // Emit validation error event
-            formEmitter.emit('validation_error', { formController });
-            
-            return false;
+            formEmitter.emit('validation_error', { formController })
+
+            return false
           }
 
           if (options.submitHandler) {
             try {
               // Pass both the form values and the form controller
-              await options.submitHandler(valuesRef.value, formController);
+              await options.submitHandler(valuesRef.value, formController)
 
               // Call submit success callback if provided
               if (options.onSubmitSuccess) {
-                options.onSubmitSuccess(valuesRef.value);
+                options.onSubmitSuccess(valuesRef.value)
               }
-              
+
               // Emit submit success event
-              formEmitter.emit('submit_success', { formController });
-              
+              formEmitter.emit('submit_success', { formController })
             } catch (error) {
               // Call submit error callback if provided
               if (options.onSubmitError) {
-                options.onSubmitError(error, formController);
+                options.onSubmitError(error, formController)
               }
-              
+
               // Emit submit error event
-              formEmitter.emit('submit_error', { error, formController });
-              
-              console.error('Error submitting form', error);
-              return false;
+              formEmitter.emit('submit_error', { error, formController })
+
+              console.error('Error submitting form', error)
+              return false
             }
           } else {
             // If no submit handler but form is valid, emit success
-            formEmitter.emit('submit_success', { formController });
+            formEmitter.emit('submit_success', { formController })
           }
 
-          return true;
+          return true
         } finally {
-          formState.$isSubmitting = false;
+          formState.$isSubmitting = false
         }
       },
 
@@ -446,13 +447,13 @@ export function useForm<T extends object>(
         formState.$isTouched = false
         formState.$isValidating = false
         formState.$isSubmitting = false
-        
+
         fieldManager.all().forEach((state) => {
           state._version.value++
-        });
-        
+        })
+
         // Emit form reset event
-        formEmitter.emit('form_reset', { formController: this });
+        formEmitter.emit('form_reset', { formController: this })
       },
 
       async validate(): Promise<boolean> {
@@ -471,14 +472,14 @@ export function useForm<T extends object>(
         stateChanges: StateChanges = {}
       ): Promise<void> {
         await _handleSetValue(path, value, validate, stateChanges)
-        
+
         // Emit field_changed event
         const state = fieldManager.get(path)
         formEmitter.emit('field_changed', {
           path,
           value,
           fieldState: state,
-          formController: this
+          formController: this,
         })
       },
 
@@ -493,32 +494,32 @@ export function useForm<T extends object>(
       hasField(path): boolean {
         return fieldManager.has(path)
       },
-      
+
       setFieldFocused(path: string): void {
         const state = fieldManager.get(path)
         state.$isTouched = true
-        
+
         state._version.value++
 
         // Emit field focused event
         formEmitter.emit('field_focused', {
           path,
           fieldState: state,
-          formController: this
+          formController: this,
         })
       },
-      
+
       setFieldBlurred(path: string): void {
         const state = fieldManager.get(path)
         state.$isTouched = true
-        
+
         state._version.value++
 
         // Emit field blurred event
         formEmitter.emit('field_blurred', {
           path,
           fieldState: state,
-          formController: this
+          formController: this,
         })
       },
 
@@ -526,8 +527,8 @@ export function useForm<T extends object>(
         const state = fieldManager.get(path)
         state.$errors = errors
         state.$isTouched = true
-        
-                state._version.value++
+
+        state._version.value++
       },
 
       setErrors(errors: Record<string, string[]>): void {
@@ -552,13 +553,13 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
         fieldManager.shift(arrayPath, index, 1)
-        
+
         // Update versions for affected fields
         fieldManager.all().forEach((state, path) => {
           if (path.startsWith(arrayPath)) {
-                        state._version.value++
+            state._version.value++
           }
-        });
+        })
       },
 
       remove(arrayPath: string, index: number): void {
@@ -582,9 +583,9 @@ export function useForm<T extends object>(
         // Update versions for affected fields
         fieldManager.all().forEach((state, path) => {
           if (path.startsWith(arrayPath)) {
-                        state._version.value++
+            state._version.value++
           }
-        });
+        })
       },
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
@@ -592,13 +593,13 @@ export function useForm<T extends object>(
         const [item] = array.splice(fromIndex, 1)
         array.splice(toIndex, 0, item)
         fieldManager.move(arrayPath, fromIndex, toIndex)
-        
+
         // Update versions for affected fields
         fieldManager.all().forEach((state, path) => {
           if (path.startsWith(arrayPath)) {
-                        state._version.value++
+            state._version.value++
           }
-        });
+        })
       },
 
       sort(arrayPath: string, callback: (a: any, b: any) => number): void {
@@ -611,13 +612,13 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
-        
+
         // Update versions for affected fields
         fieldManager.all().forEach((state, path) => {
           if (path.startsWith(arrayPath)) {
-                        state._version.value++
+            state._version.value++
           }
-        });
+        })
       },
     } as FormController,
     {
@@ -688,7 +689,7 @@ export function useForm<T extends object>(
             const state = fieldManager.get(prop)
             state.$isDirty = true
 
-                        state._version.value++
+            state._version.value++
 
             // Handle validation asynchronously
             Promise.resolve().then(() => {
@@ -700,11 +701,11 @@ export function useForm<T extends object>(
       },
     }
   ) as T & FormController
-  
+
   // Emit form initialization event - using setTimeout to ensure all initialization is complete
   setTimeout(() => {
-    formEmitter.emit('form_initialized', { formController });
-  }, 0);
-  
+    formEmitter.emit('form_initialized', { formController })
+  }, 0)
+
   return formController as T & FormController
 }

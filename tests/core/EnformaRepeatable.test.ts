@@ -46,13 +46,15 @@ const EnformaRepeatableMoveDownButtonStub = {
 // Custom components for component-based subfields testing
 const CustomComponent = {
   name: 'CustomComponent',
-  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }}</div>',
+  template:
+    '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }}</div>',
   props: ['name', 'index', 'value', 'listLength'],
 }
 
 const CustomComponentWithExtraProps = {
   name: 'CustomComponentWithExtraProps',
-  template: '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }} - {{ extraProp }}</div>',
+  template:
+    '<div class="custom-component">{{ name }} - {{ index }} - {{ value }} - {{ listLength }} - {{ extraProp }}</div>',
   props: ['name', 'index', 'value', 'listLength', 'extraProp'],
 }
 
@@ -400,9 +402,9 @@ describe('EnformaRepeatable', () => {
       await flushPromises()
 
       const component = wrapper.find('.custom-component')
-      expect(component.text()).toBe('items.0 - 0 - {\n' +
-        '  "name": "Item 1"\n' +
-        '} - 1 - test')
+      expect(component.text()).toBe(
+        'items.0 - 0 - {\n' + '  "name": "Item 1"\n' + '} - 1 - test'
+      )
     })
 
     it('prioritizes component over subfields when both are provided', async () => {

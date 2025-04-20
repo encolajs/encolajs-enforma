@@ -1,6 +1,8 @@
 <template>
   <Button
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableRemoveButton'))"
+    v-bind="
+      mergeProps($attrs, getConfig('pt.repeatable.repeatableRemoveButton'))
+    "
     type="button"
     severity="info"
     icon="pi pi-trash"

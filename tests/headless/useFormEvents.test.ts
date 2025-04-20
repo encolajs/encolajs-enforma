@@ -60,15 +60,19 @@ describe('useForm events', () => {
   test('should emit submit_success event on successful submission', async () => {
     const submitHandler = vi.fn().mockResolvedValue(undefined)
     const handler = vi.fn()
-    
-    const form = useForm(data, {}, {
-      submitHandler,
-    })
-    
+
+    const form = useForm(
+      data,
+      {},
+      {
+        submitHandler,
+      }
+    )
+
     form.on('submit_success', handler)
-    
+
     await form.submit()
-    
+
     expect(handler).toHaveBeenCalled()
     const eventData = handler.mock.calls[0][0]
     expect(eventData.formController).toBeDefined()
@@ -78,15 +82,19 @@ describe('useForm events', () => {
     const error = new Error('Failed to submit')
     const submitHandler = vi.fn().mockRejectedValue(error)
     const handler = vi.fn()
-    
-    const form = useForm(data, {}, {
-      submitHandler,
-    })
-    
+
+    const form = useForm(
+      data,
+      {},
+      {
+        submitHandler,
+      }
+    )
+
     form.on('submit_error', handler)
-    
+
     await form.submit()
-    
+
     expect(handler).toHaveBeenCalled()
     const eventData = handler.mock.calls[0][0]
     expect(eventData.error).toBe(error)
@@ -95,19 +103,19 @@ describe('useForm events', () => {
 
   test('should emit validation_error event when validation fails', async () => {
     const handler = vi.fn()
-    
+
     const form = useForm(data, {
-      'email': 'required|email',
+      email: 'required|email',
     })
-    
+
     form.on('validation_error', handler)
-    
+
     // Set an invalid email
     form['email'] = 'not-an-email'
-    
+
     // Try to submit the form
     await form.submit()
-    
+
     expect(handler).toHaveBeenCalled()
     const eventData = handler.mock.calls[0][0]
     expect(eventData.formController).toBeDefined()
@@ -116,22 +124,22 @@ describe('useForm events', () => {
   test('should emit field_focused and field_blurred events', () => {
     const focusHandler = vi.fn()
     const blurHandler = vi.fn()
-    
+
     form.on('field_focused', focusHandler)
     form.on('field_blurred', blurHandler)
-    
+
     // Simulate focus and blur
     form.setFieldFocused('name')
     form.setFieldBlurred('name')
-    
+
     expect(focusHandler).toHaveBeenCalled()
     expect(blurHandler).toHaveBeenCalled()
-    
+
     const focusEventData = focusHandler.mock.calls[0][0]
     expect(focusEventData.path).toBe('name')
     expect(focusEventData.fieldState).toBeDefined()
     expect(focusEventData.formController).toBeDefined()
-    
+
     const blurEventData = blurHandler.mock.calls[0][0]
     expect(blurEventData.path).toBe('name')
     expect(blurEventData.fieldState).toBeDefined()
@@ -140,21 +148,25 @@ describe('useForm events', () => {
 
   test('should emit form_initialized event', async () => {
     const handler = vi.fn()
-    
+
     // We need to create the form with the event handler already set up
     // Since the initialized event is triggered in a setTimeout
     const globalHandler = vi.fn()
-    
+
     // Use the global event emitter
-    const form = useForm(data, {}, {
-      useGlobalEvents: true
-    })
-    
+    const form = useForm(
+      data,
+      {},
+      {
+        useGlobalEvents: true,
+      }
+    )
+
     form.on('form_initialized', handler)
-    
+
     // Wait for the setTimeout to execute
     await new Promise((resolve) => setTimeout(resolve, 10))
-    
+
     expect(handler).toHaveBeenCalled()
     const eventData = handler.mock.calls[0][0]
     expect(eventData.formController).toBeDefined()

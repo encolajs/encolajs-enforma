@@ -30,7 +30,7 @@ export function useField(
 
   // Get field state from form
   const getFieldState = () => form.getField(name)
-  
+
   // Generate a unique field ID that won't change
   const fieldState = getFieldState()
   const fieldId = fieldState._id
@@ -50,18 +50,15 @@ export function useField(
   )
 
   // Watch for changes to the model ref and update the form
-  watch(
-    modelValue,
-    (newValue) => {
-      // Only trigger validation if the field is dirty
-      if (form[`${name}.$isDirty`]) {
-        handleChange(newValue, 'input')
-      } else {
-        // Just update the value without validation
-        form[name] = newValue
-      }
+  watch(modelValue, (newValue) => {
+    // Only trigger validation if the field is dirty
+    if (form[`${name}.$isDirty`]) {
+      handleChange(newValue, 'input')
+    } else {
+      // Just update the value without validation
+      form[name] = newValue
     }
-  )
+  })
 
   /**
    * Handle value changes
@@ -99,7 +96,7 @@ export function useField(
 
     // Notify the form about field blur
     if (form.setFieldBlurred) {
-      form.setFieldBlurred(name);
+      form.setFieldBlurred(name)
     }
 
     if (options.validateOn === 'blur') {
@@ -112,10 +109,10 @@ export function useField(
    */
   function handleFocus(): void {
     isFocused.value = true
-    
+
     // Notify the form about field focus
     if (form.setFieldFocused) {
-      form.setFieldFocused(name);
+      form.setFieldFocused(name)
     }
   }
 
@@ -151,11 +148,11 @@ export function useField(
   return computed(() => {
     // Get the latest field state
     const fieldState = getFieldState()
-    
+
     // Use the field state's version directly - this will change during field validation
     // and when the field is updated through the form mechanisms
     const fieldVersion = fieldState._version.value || 0
-    
+
     const value = form[name]
     const error = fieldState?.$errors?.length > 0 ? fieldState.$errors[0] : null
 
@@ -174,7 +171,7 @@ export function useField(
 
       // Methods
       validate,
-      
+
       // Lifecycle methods for external management
       initField,
 

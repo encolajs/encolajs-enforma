@@ -28,7 +28,16 @@ export default defineComponent({
     },
   },
 
-  emits: ['submit-success', 'submit-error', 'validation-error', 'reset', 'field-changed', 'field-focused', 'field-blurred', 'form-initialized'],
+  emits: [
+    'submit-success',
+    'submit-error',
+    'validation-error',
+    'reset',
+    'field-changed',
+    'field-focused',
+    'field-blurred',
+    'form-initialized',
+  ],
 
   setup(props, ctx) {
     // Create form using useForm with callbacks for events and global events option
@@ -46,35 +55,88 @@ export default defineComponent({
         ctx.emit('submit-error', error, form)
       },
     })
-    
+
     // Set up event handlers to forward events to component emits
-    formCtrl.on('submit_success', ({ formController }: { formController: FormController }) => {
-      ctx.emit('submit-success', formController.values(), formController)
-    })
-    
-    formCtrl.on('submit_error', ({ error, formController }: { error: any, formController: FormController }) => {
-      ctx.emit('submit-error', error, formController)
-    })
-    
-    formCtrl.on('validation_error', ({ formController }: { formController: FormController }) => {
-      ctx.emit('validation-error', formController)
-    })
-    
-    formCtrl.on('field_changed', ({ path, value, fieldState, formController }: { path: string, value: any, fieldState: FieldState, formController: FormController }) => {
-      ctx.emit('field-changed', path, value, fieldState, formController)
-    })
-    
-    formCtrl.on('field_focused', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
-      ctx.emit('field-focused', path, fieldState, formController)
-    })
-    
-    formCtrl.on('field_blurred', ({ path, fieldState, formController }: { path: string, fieldState: FieldState, formController: FormController }) => {
-      ctx.emit('field-blurred', path, fieldState, formController)
-    })
-    
-    formCtrl.on('form_initialized', ({ formController }: { formController: FormController }) => {
-      ctx.emit('form-initialized', formController)
-    })
+    formCtrl.on(
+      'submit_success',
+      ({ formController }: { formController: FormController }) => {
+        ctx.emit('submit-success', formController.values(), formController)
+      }
+    )
+
+    formCtrl.on(
+      'submit_error',
+      ({
+        error,
+        formController,
+      }: {
+        error: any
+        formController: FormController
+      }) => {
+        ctx.emit('submit-error', error, formController)
+      }
+    )
+
+    formCtrl.on(
+      'validation_error',
+      ({ formController }: { formController: FormController }) => {
+        ctx.emit('validation-error', formController)
+      }
+    )
+
+    formCtrl.on(
+      'field_changed',
+      ({
+        path,
+        value,
+        fieldState,
+        formController,
+      }: {
+        path: string
+        value: any
+        fieldState: FieldState
+        formController: FormController
+      }) => {
+        ctx.emit('field-changed', path, value, fieldState, formController)
+      }
+    )
+
+    formCtrl.on(
+      'field_focused',
+      ({
+        path,
+        fieldState,
+        formController,
+      }: {
+        path: string
+        fieldState: FieldState
+        formController: FormController
+      }) => {
+        ctx.emit('field-focused', path, fieldState, formController)
+      }
+    )
+
+    formCtrl.on(
+      'field_blurred',
+      ({
+        path,
+        fieldState,
+        formController,
+      }: {
+        path: string
+        fieldState: FieldState
+        formController: FormController
+      }) => {
+        ctx.emit('field-blurred', path, fieldState, formController)
+      }
+    )
+
+    formCtrl.on(
+      'form_initialized',
+      ({ formController }: { formController: FormController }) => {
+        ctx.emit('form-initialized', formController)
+      }
+    )
 
     // Provide form to child components
     provide(formStateKey, formCtrl)
@@ -95,11 +157,14 @@ export default defineComponent({
       formCtrl.reset()
       ctx.emit('reset', formCtrl)
     }
-    
+
     // Also listen for form_reset event
-    formCtrl.on('form_reset', ({ formController }: { formController: FormController }) => {
-      ctx.emit('reset', formController)
-    })
+    formCtrl.on(
+      'form_reset',
+      ({ formController }: { formController: FormController }) => {
+        ctx.emit('reset', formController)
+      }
+    )
 
     // Expose form methods to parent component
     ctx.expose({ ...formCtrl })

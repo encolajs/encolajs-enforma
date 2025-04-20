@@ -4,7 +4,7 @@ import { FormController, FieldState } from '@/types'
 /**
  * Form events types
  */
-export type FormEventType = 
+export type FormEventType =
   | 'submit_success'
   | 'submit_error'
   | 'validation_error'

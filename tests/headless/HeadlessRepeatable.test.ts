@@ -13,13 +13,9 @@ describe('HeadlessRepeatable', () => {
   // Create real form state with validation
   const createFormState = (initialData = {}, rules = {}) => {
     const validation = useValidation()
-    const formState = useForm(
-      initialData,
-      rules,
-      {
-        validatorFactory: validation.factory,
-      }
-    )
+    const formState = useForm(initialData, rules, {
+      validatorFactory: validation.factory,
+    })
     return formState
   }
 
@@ -437,16 +433,16 @@ describe('HeadlessRepeatable', () => {
   describe('error message positioning', () => {
     it('correctly preserve error messages after removing last element', async () => {
       const formState = createFormState(
-        { 
+        {
           items: [
             { name: 'Item 1', description: 'Description 1' },
             { name: 'Item 2', description: 'Description 2' },
-            { name: 'Item 3', description: '' }
-          ] 
+            { name: 'Item 3', description: '' },
+          ],
         },
         {
           'items.*.name': 'required',
-          'items.*.description': 'required'
+          'items.*.description': 'required',
         }
       )
       let slotData
@@ -491,16 +487,16 @@ describe('HeadlessRepeatable', () => {
 
     it('correctly preserve error messages after removing middle element', async () => {
       const formState = createFormState(
-        { 
+        {
           items: [
             { name: 'Item 1', description: 'Description 1' },
             { name: 'Item 2', description: '' },
-            { name: 'Item 3', description: 'Description 3' }
-          ] 
+            { name: 'Item 3', description: 'Description 3' },
+          ],
         },
         {
           'items.*.name': 'required',
-          'items.*.description': 'required'
+          'items.*.description': 'required',
         }
       )
       let slotData
@@ -545,16 +541,16 @@ describe('HeadlessRepeatable', () => {
 
     it('correctly preserve error messages after removing first element', async () => {
       const formState = createFormState(
-        { 
+        {
           items: [
             { name: 'Item 1', description: '' },
             { name: 'Item 2', description: 'Description 2' },
-            { name: 'Item 3', description: 'Description 3' }
-          ] 
+            { name: 'Item 3', description: 'Description 3' },
+          ],
         },
         {
           'items.*.name': 'required',
-          'items.*.description': 'required'
+          'items.*.description': 'required',
         }
       )
       let slotData

@@ -59,18 +59,21 @@ describe('Form Events', () => {
     const successHandler = vi.fn()
     const errorHandler = vi.fn()
     const formData = { formController: { id: 'test' } }
-    const errorData = { error: new Error('test'), formController: { id: 'test' } }
+    const errorData = {
+      error: new Error('test'),
+      formController: { id: 'test' },
+    }
 
     emitter.on('submit_success', successHandler)
     emitter.on('submit_error', errorHandler)
-    
+
     emitter.emit('submit_success', formData)
-    
+
     expect(successHandler).toHaveBeenCalledWith(formData)
     expect(errorHandler).not.toHaveBeenCalled()
-    
+
     emitter.emit('submit_error', errorData)
-    
+
     expect(errorHandler).toHaveBeenCalledWith(errorData)
     expect(successHandler).toHaveBeenCalledTimes(1)
   })

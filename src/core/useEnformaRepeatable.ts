@@ -91,7 +91,6 @@ export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
     )
   )
 
-
   // Process animation options
   const animationOptions = computed<RepeatableAnimationOptions>(() => {
     // Default animation settings

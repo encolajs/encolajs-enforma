@@ -57,7 +57,14 @@
                 </template>
 
                 <!-- Actions for field-based subfields -->
-                <div v-if="!component && fields && (showDeleteButton || showMoveButtons)" v-bind="getConfig('pt.repeatable.itemActions')">
+                <div
+                  v-if="
+                    !component &&
+                    fields &&
+                    (showDeleteButton || showMoveButtons)
+                  "
+                  v-bind="getConfig('pt.repeatable.itemActions')"
+                >
                   <component
                     v-if="showDeleteButton"
                     :is="
@@ -86,7 +93,6 @@
                   />
                 </div>
               </template>
-
             </div>
           </TransitionGroup>
 
@@ -111,7 +117,10 @@
                 </template>
 
                 <!-- Actions for field-based subfields -->
-                <div v-if="showDeleteButton || showMoveButtons" v-bind="getConfig('pt.repeatable.itemActions')">
+                <div
+                  v-if="showDeleteButton || showMoveButtons"
+                  v-bind="getConfig('pt.repeatable.itemActions')"
+                >
                   <component
                     v-if="showDeleteButton"
                     :is="
@@ -190,8 +199,14 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 })
 
 const $attrs = useAttrs()
-const { isVisible, fields, component, componentProps, useAnimations, animationStyles } =
-  useEnformaRepeatable(props)
+const {
+  isVisible,
+  fields,
+  component,
+  componentProps,
+  useAnimations,
+  animationStyles,
+} = useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
 
 // Used to store unique keys for items to maintain animation state

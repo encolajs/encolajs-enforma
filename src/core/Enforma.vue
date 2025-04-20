@@ -87,7 +87,7 @@ const emit = defineEmits([
   'field-changed',
   'field-focused',
   'field-blurred',
-  'form-initialized'
+  'form-initialized',
 ])
 
 const formRef = ref(null)
@@ -116,7 +116,7 @@ const off = (event, handler) => {
 defineExpose({
   formRef,
   on,
-  off
+  off,
 })
 
 const formConfig = computed(() => {

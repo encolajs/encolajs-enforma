@@ -17,11 +17,11 @@ export { mergeConfigs, deepMerge } from './utils/configUtils'
 export { default as applyTransformers } from './utils/applyTransformers'
 export { debounce } from './utils/debounce'
 export * from './utils/helpers'
-export { 
-  createFormEmitter, 
-  globalFormEmitter, 
+export {
+  createFormEmitter,
+  globalFormEmitter,
   type FormEvents,
-  type FormEventType 
+  type FormEventType,
 } from './utils/events'
 
 // Headless components
@@ -55,7 +55,7 @@ export type {
   EventTrigger,
   FieldSchema,
   FormSectionSchema,
-  EnformaSchema
+  EnformaSchema,
 } from './types'
 
 export type {
@@ -67,7 +67,7 @@ export type {
   ExpressionsConfig,
   ComponentsConfig,
   ConfigProvider,
-  UseConfigReturn
+  UseConfigReturn,
 } from './utils/useConfig'
 
 // Re-export essential validator types
@@ -78,7 +78,11 @@ export {
 } from '@encolajs/validator'
 
 // Constants
-export { formStateKey, formConfigKey, formContextKey } from './constants/symbols'
+export {
+  formStateKey,
+  formConfigKey,
+  formContextKey,
+} from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'
 
 export { default as createFormKit } from './createFormKit'

@@ -69,7 +69,7 @@ export interface FieldController {
 
   // Methods
   validate: () => Promise<boolean>
-  
+
   // Lifecycle methods (for components that need to manage field lifecycle)
   initField?: () => void
   cleanupField?: () => void
@@ -116,24 +116,33 @@ export interface FormController {
   removeField(path: string): void
 
   hasField(path: string): boolean
-  
+
   // Event-related methods
-  on(event: keyof import('./utils/events').FormEvents, handler: Function): FormController
-  
-  off(event: keyof import('./utils/events').FormEvents, handler?: Function): FormController
-  
-  emit(event: keyof import('./utils/events').FormEvents, data: any): FormController
-  
+  on(
+    event: keyof import('./utils/events').FormEvents,
+    handler: Function
+  ): FormController
+
+  off(
+    event: keyof import('./utils/events').FormEvents,
+    handler?: Function
+  ): FormController
+
+  emit(
+    event: keyof import('./utils/events').FormEvents,
+    data: any
+  ): FormController
+
   // Focus/Blur handling
   setFieldFocused(path: string): void
-  
+
   setFieldBlurred(path: string): void
-  
+
   // Error handling
   setFieldErrors(path: string, errors: string[]): void
 
   setErrors(errors: Record<string, string[]>): void
-  
+
   add(arrayPath: string, index: number, item: any): void
 
   remove(arrayPath: string, index: number): void

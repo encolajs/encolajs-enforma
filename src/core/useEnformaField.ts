@@ -82,7 +82,8 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         component: fieldSchema.value.component ?? result.component,
         placeholder: fieldSchema.value.placeholder ?? null,
         hideLabel: fieldSchema.value.hideLabel ?? result.hideLabel,
-        showLabelNextToInput: fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
+        showLabelNextToInput:
+          fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
         required: fieldSchema.value.required ?? result.required,
         help: fieldSchema.value.help ?? null,
         if: fieldSchema.value.if ?? result.if,
@@ -105,7 +106,8 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       component: originalProps.component ?? result.type,
       placeholder: originalProps.placeholder ?? result.placeholder,
       hideLabel: originalProps.hideLabel ?? result.hideLabel,
-      showLabelNextToInput: originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
+      showLabelNextToInput:
+        originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
       required: originalProps.required ?? result.required,
       help: originalProps.help ?? result.help,
       if: originalProps.if ?? result.if,
@@ -145,23 +147,23 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Create static props that don't depend on dynamic state
   const staticProps = computed(() => {
     const result: Record<string, any> = {}
-    
+
     // Required indicator (doesn't change after initialization)
     result.required = originalProps.required
     result.requiredProps = getConfig('pt.required')
-    
+
     // Component type and label visibility (don't change after initialization)
     result.component = fieldOptions.value.component || 'input'
     result.hideLabel = fieldOptions.value.hideLabel
     result.showLabelNextToInput = fieldOptions.value.showLabelNextToInput
-    
+
     return result
   })
-  
+
   // Create wrapper props separately
   const wrapperProps = computed(() => {
     const hasError = !!errorMessage.value
-    
+
     return evaluateProps(
       mergeProps(
         {
@@ -178,7 +180,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       )
     )
   })
-  
+
   // Compute label props
   const labelProps = computed(() => {
     return evaluateProps(
@@ -191,7 +193,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       )
     )
   })
-  
+
   // Help text props
   const helpProps = computed(() => {
     return evaluateProps(
@@ -204,7 +206,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       )
     )
   })
-  
+
   // Error message props
   const errorProps = computed(() => {
     return evaluateProps(
@@ -217,12 +219,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       )
     )
   })
-  
+
   // Input props (changes most frequently)
   const inputProps = computed(() => {
     // The field controller's _fieldVersion will be updated by FieldState._version
     // ensuring reactivity based on field state changes
-    
+
     return evaluateProps(
       mergeProps(
         {
@@ -238,12 +240,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       )
     )
   })
-  
+
   // Compute conditional visibility
   const visibilityCondition = computed(() => {
     return evaluateCondition(fieldOptions.value.if).value
   })
-  
+
   // Combine all props into a single computed property
   const props = computed(() => {
     const result: Record<string, any> = {
@@ -253,7 +255,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       help: helpProps.value,
       error: errorProps.value,
       input: inputProps.value,
-      if: visibilityCondition.value
+      if: visibilityCondition.value,
     }
 
     // Apply custom transformers if defined in config
