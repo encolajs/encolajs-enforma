@@ -36,7 +36,6 @@ export default defineConfig({
         { text: 'Quick Start', link: '/quick-start' },
         {
           text: 'Core Concepts',
-          collapsed: false,
           items: [
             { text: 'Architecture Overview', link: '/core-concepts/architecture-overview' },
             { text: 'Configuration', link: '/core-concepts/configuration' },
@@ -46,45 +45,32 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Form Rendering Modes',
+          text: 'Components',
           collapsed: false,
           items: [
-            { text: 'Forms with Fields', link: '/form-rendering-modes/forms-with-fields' },
-            { text: 'Forms with a Schema', link: '/form-rendering-modes/forms-with-schema' },
-            { text: 'Headless Forms', link: '/form-rendering-modes/headless-forms' },
-            { text: 'Mixed Forms', link: '/form-rendering-modes/mixed-forms' },
+            {
+              text: 'Base components',
+              items: [
+                { text: 'Enforma Form', link: '/built-in-components/enforma-form' },
+                { text: 'EnformaField', link: '/built-in-components/enforma-field' },
+                { text: 'EnformaRepeatable', link: '/built-in-components/enforma-repeatable' },
+                { text: 'EnformaRepeatableTable', link: '/built-in-components/enforma-repeatable-table' },
+                { text: 'EnformaSection', link: '/built-in-components/enforma-section' },
+                { text: 'EnformaSchema', link: '/built-in-components/enforma-schema' },
+              ]
+            },
+            {
+              text: 'Headless Components',
+              items: [
+                { text: 'Overview', link: '/headless/' },
+                { text: 'HeadlessForm', link: '/headless/form' },
+                { text: 'HeadlessField', link: '/headless/field' },
+                { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
+              ],
+            },
           ],
         },
-        {
-          text: 'Built-in Base Components',
-          collapsed: false,
-          items: [
-            { text: 'Enforma Form', link: '/built-in-components/enforma-form' },
-            { text: 'EnformaField', link: '/built-in-components/enforma-field' },
-            { text: 'EnformaRepeatable', link: '/built-in-components/enforma-repeatable' },
-            { text: 'EnformaRepeatableTable', link: '/built-in-components/enforma-repeatable-table' },
-            { text: 'EnformaSection', link: '/built-in-components/enforma-section' },
-            { text: 'EnformaSchema', link: '/built-in-components/enforma-schema' },
-          ],
-        },
-        {
-          text: 'Headless Components',
-          collapsed: false,
-          items: [
-            { text: 'Overview', link: '/headless/' },
-            { text: 'HeadlessForm', link: '/headless/form' },
-            { text: 'HeadlessField', link: '/headless/field' },
-            { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
-          ],
-        },
-        {
-          text: 'Validation',
-          collapsed: false,
-          items: [
-            { text: 'Built-in Validators', link: '/validation/built-in-validators' },
-            { text: 'Validation Customization', link: '/validation/validation-customization' },
-          ],
-        },
+
         {
           text: 'UI Library Integration',
           collapsed: false,
@@ -97,9 +83,8 @@ export default defineConfig({
         },
         {
           text: 'Extensibility',
-          collapsed: false,
+          collapsed: true,
           items: [
-            { text: 'Global vs Form-level Configuration', link: '/extensibility/global-vs-form-level-configuration' },
             { text: 'Integrating Custom Components', link: '/extensibility/integrating-custom-components' },
             { text: 'Using Transformers', link: '/extensibility/using-transformers' },
             { text: 'Dynamic Field Props', link: '/extensibility/dynamic-field-props' },
@@ -107,7 +92,7 @@ export default defineConfig({
         },
         {
           text: 'Recipes',
-          collapsed: false,
+          collapsed: true,
           items: [
             { text: 'Async Validation', link: '/recipes/async-validation' },
             { text: 'Multi-input Fields', link: '/recipes/multi-input-fields' },
@@ -118,7 +103,7 @@ export default defineConfig({
         },
         {
           text: 'Troubleshooting',
-          collapsed: false,
+          collapsed: true,
           items: [
             { text: 'Debugging', link: '/troubleshooting/debugging' },
             { text: 'FAQ', link: '/troubleshooting/faq' },
