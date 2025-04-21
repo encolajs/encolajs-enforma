@@ -1,4 +1,3 @@
-<!-- src/core/EnformaSchema.vue -->
 <template>
   <div v-bind="$attrs">
     {{ sectionComponent }}

@@ -75,9 +75,9 @@ export default defineConfig({
 
         {
           text: 'UI Library Integration',
+          link: '/ui-library-integration/',
           collapsed: false,
           items: [
-            { text: 'Working with Any UI Library', link: '/ui-library-integration/working-with-any-ui-library' },
             { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
             { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
             { text: 'Creating Your Own UI Preset', link: '/ui-library-integration/creating-your-own-ui-preset' },

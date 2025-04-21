@@ -1,4 +1,3 @@
-<!-- src/core/EnformaField.vue -->
 <template>
   <div v-bind="props.wrapper" v-show="props.if">
     <label
@@ -13,26 +12,23 @@
       </span>
     </label>
 
-    <!-- Field content slot -->
-    <slot name="default" v-bind="{ ...fieldController, attrs: props.input }">
-      <div class="enforma-field-input">
-        <component
-          :is="props.component"
-          v-model="fieldController.value"
-          v-bind="props.input"
-          v-on="fieldController.events"
-        />
-        <label
-          v-if="props.showLabelNextToInput && fieldOptions.label"
-          v-bind="props.label"
-        >
-          {{ t(fieldOptions.label) }}
-          <span v-if="props.required" v-bind="props.requiredProps">
-            {{ requiredIndicator }}
-          </span>
-        </label>
-      </div>
-    </slot>
+    <div class="enforma-field-input">
+      <component
+        :is="props.component"
+        v-model="fieldController.value"
+        v-bind="props.input"
+        v-on="fieldController.events"
+      />
+      <label
+        v-if="props.showLabelNextToInput && fieldOptions.label"
+        v-bind="props.label"
+      >
+        {{ t(fieldOptions.label) }}
+        <span v-if="props.required" v-bind="props.requiredProps">
+          {{ requiredIndicator }}
+        </span>
+      </label>
+    </div>
 
     <!-- Help text -->
     <div
@@ -73,6 +69,8 @@ const originalProps = defineProps({
   wrapperProps: { type: Object, default: () => ({}) },
   inputProps: { type: Object, default: () => ({}) },
   validateOn: { type: String, default: null },
+  // these are here only because they might be passed from the schema
+  // they are not actually used for rendering
   section: { type: String, default: null },
   position: { type: Number, default: null },
 })

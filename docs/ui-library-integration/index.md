@@ -1,4 +1,4 @@
-# Working with Any UI Library
+# UI Library Integration
 
 Enforma is designed to be UI-library agnostic, allowing you to integrate with any Vue UI library. This guide explains how to connect Enforma with your preferred UI components.
 

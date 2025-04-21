@@ -1,4 +1,3 @@
-<!-- src/core/EnformaRepeatable.vue -->
 <template>
   <div
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.wrapper') || {})"
