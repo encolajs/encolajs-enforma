@@ -130,16 +130,17 @@ The form controller returned by `useForm` provides these methods and properties:
 
 ### Field Management Methods
 
-| Method | Parameters | Returns | Description |
-|--------|------------|---------|-------------|
-| `setFieldValue(path, value, validate, stateChanges)` | `path: string, value: any, validate?: boolean, stateChanges?: object` | `Promise<void>` | Sets a field value |
-| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field |
-| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
-| `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
-| `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |
-| `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
-| `removeField(path)` | `path: string` | `void` | Removes a field from the form |
-| `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
+| Method                                               | Parameters | Returns           | Description                          |
+|------------------------------------------------------|------------|-------------------|--------------------------------------|
+| `setFieldValue(path, value, validate, stateChanges)` | `path: string, value: any, validate?: boolean, stateChanges?: object` | `Promise<void>`   | Sets a field value                   |
+| `getFieldValue(path)` | `path: string` | `any`             | Retrieves the value of a |
+| `setFieldErrors(path, errors)`                       | `path: string, errors: string[]` | `void`            | Sets errors for a specific field     |
+| `setErrors(errors)`                                  | `errors: Record<string, string[]>` | `void`            | Sets errors for multiple fields      |
+| `setFieldFocused(path)`                              | `path: string` | `void`            | Marks a field as focused             |
+| `setFieldBlurred(path)`                              | `path: string` | `void`            | Marks a field as blurred             |
+| `getField(path)`                                     | `path: string` | `FieldController` | Gets a field's state                 |
+| `removeField(path)`                                  | `path: string` | `void`            | Removes a field from the form        |
+| `hasField(path)`                                     | `path: string` | `boolean`         | Checks if a field exists             |
 
 ### Array Operations
 

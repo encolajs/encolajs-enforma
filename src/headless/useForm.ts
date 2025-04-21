@@ -8,6 +8,7 @@ import {
   createFormEmitter,
   globalFormEmitter,
 } from '@/utils/events'
+import { _get } from '@/utils/configUtils'
 
 export interface FieldController {
   $errors: Ref<string[]>
@@ -445,6 +446,7 @@ export function useForm<T extends object>(
         formEmitter.emit('form_reset', { formController: this })
       },
 
+      // validation-related methods
       async validate(): Promise<boolean> {
         return await validateForm()
       },
@@ -452,6 +454,31 @@ export function useForm<T extends object>(
       async validateField(path: string): Promise<boolean> {
         const state = fieldManager.get(path)
         return await validateField(path, state)
+      },
+
+      setFieldErrors(path: string, errors: string[]): void {
+        const fieldController = fieldManager.get(path)
+        fieldController.$errors.value = errors
+        fieldController.$isTouched.value = true
+      },
+
+      setErrors(errors: Record<string, string[]>): void {
+        Object.entries(errors).forEach(([path, errorMessages]) => {
+          this.setFieldErrors(path, errorMessages)
+        })
+      },
+
+      errors(): object {
+        const errors: Record<string, string[]> = {}
+        fieldManager.all().forEach((fieldController, path) => {
+          errors[path] = fieldController.$errors.value
+        })
+        return errors
+      },
+
+      // form value methods
+      values(): object {
+        return valuesRef.value
       },
 
       async setFieldValue(
@@ -472,6 +499,12 @@ export function useForm<T extends object>(
         })
       },
 
+      getFieldValue(path: string): any {
+        return _get(valuesRef.value, path)
+      },
+
+      // field related methods.
+      // these refer to items in the field manager, not the UI
       getField(path): FieldController {
         return fieldManager.get(path)
       },
@@ -508,30 +541,7 @@ export function useForm<T extends object>(
         })
       },
 
-      setFieldErrors(path: string, errors: string[]): void {
-        const fieldController = fieldManager.get(path)
-        fieldController.$errors.value = errors
-        fieldController.$isTouched.value = true
-      },
-
-      setErrors(errors: Record<string, string[]>): void {
-        Object.entries(errors).forEach(([path, errorMessages]) => {
-          this.setFieldErrors(path, errorMessages)
-        })
-      },
-
-      values(): object {
-        return valuesRef.value
-      },
-
-      errors(): object {
-        const errors: Record<string, string[]> = {}
-        fieldManager.all().forEach((fieldController, path) => {
-          errors[path] = fieldController.$errors.value
-        })
-        return errors
-      },
-
+      // array-related methods
       add(arrayPath: string, index: number, item: any): void {
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
