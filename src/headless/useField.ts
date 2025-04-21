@@ -48,11 +48,11 @@ export function useField(
   // Watch for changes to the model ref and update the form
   watch(modelValue, (newValue) => {
     // Only trigger validation if the field is dirty
-    if (form[`${name}.$isDirty`]) {
+    if (form[`${name}.$isDirty`].value) {
       handleChange(newValue, 'input')
     } else {
       // Just update the value without validation
-      form[name] = newValue
+      form.setFieldValue(name, newValue, false)
     }
   })
 
@@ -78,7 +78,7 @@ export function useField(
     }
 
     // If field is touched and dirty, validate
-    if (form[`${name}.$isTouched`] && form[`${name}.$isDirty`]) {
+    if (form[`${name}.$isTouched`] && form[`${name}.$isDirty`].value) {
       debouncedValidate()
     }
   }
