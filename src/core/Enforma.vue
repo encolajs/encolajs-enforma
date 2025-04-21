@@ -6,12 +6,12 @@
     :custom-messages="messages"
     :submit-handler="submitHandler"
     :validate-on="config.validateOn"
-    @submit-success="emit('submit-success', $event)"
-    @submit-error="emit('submit-error', $event)"
-    @validation-error="emit('validation-error', $event)"
-    @field-changed="emit('field-changed', $event)"
-    @field-focused="emit('field-focused', $event)"
-    @field-blurred="emit('field-blurred', $event)"
+    @submit_success="emit('submit_success', $event)"
+    @submit_error="emit('submit_error', $event)"
+    @validation_error="emit('validation_error', $event)"
+    @field_change="emit('field_change', $event)"
+    @field_focus="emit('field_focus', $event)"
+    @field_blur="emit('field_blur', $event)"
     @form-initialized="emit('form-initialized', $event)"
     @reset="emit('reset', $event)"
   >
@@ -83,13 +83,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'submit-success',
-  'submit-error',
-  'validation-error',
+  'submit_success',
+  'submit_error',
+  'validation_error',
   'reset',
-  'field-changed',
-  'field-focused',
-  'field-blurred',
+  'field_change',
+  'field_focus',
+  'field_blur',
   'form-initialized',
 ])
 
@@ -100,7 +100,7 @@ const form = ref(null)
  * This allows parent components to call methods like validate(), reset(), etc.
  */
 defineExpose({
-  form
+  form,
 })
 
 const formConfig = useConfig(props.config)

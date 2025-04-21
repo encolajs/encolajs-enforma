@@ -49,6 +49,7 @@ const isActive = (link) => {
   display: flex;
   border-bottom: 1px solid var(--vp-c-divider);
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .tab-button {

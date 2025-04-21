@@ -23,7 +23,7 @@ A simple headless form looks like this:
       <form @submit.prevent="submitForm">
         <HeadlessField name="firstName">
           <template #default="{ value, errors, updateValue, dirty, touched }">
-            <div :class="{ 'field-error': errors.length && touched }">
+            <div :class="{ 'field_error': errors.length && touched }">
               <label>First Name</label>
               <input
                 :value="value"
@@ -39,7 +39,7 @@ A simple headless form looks like this:
         
         <HeadlessField name="email">
           <template #default="field">
-            <div :class="{ 'field-error': field.errors.length && field.touched }">
+            <div :class="{ 'field_error': field.errors.length && field.touched }">
               <label>Email</label>
               <input
                 type="email"

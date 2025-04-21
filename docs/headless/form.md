@@ -31,12 +31,12 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
     :data="formData"
     :rules="validationRules"
     :submit-handler="handleSubmit"
-    @submit-success="handleSuccess"
-    @submit-error="handleError"
-    @validation-error="handleValidationError"
-    @field-changed="handleFieldChange"
-    @field-focused="handleFieldFocus"
-    @field-blurred="handleFieldBlur"
+    @submit_success="handleSuccess"
+    @submit_error="handleError"
+    @validation_error="handleValidationError"
+    @field_changed="handleFieldChange"
+    @field_focused="handleFieldFocus"
+    @field_blurred="handleFieldBlur"
     @form-initialized="handleInitialized"
     @reset="handleReset"
   >
@@ -86,48 +86,4 @@ function handleFieldChange(path, value, fieldController, formController) {
   // Handle field change
 }
 </script>
-```
-
-## Server-Side Validation
-
-A powerful pattern is to handle API validation errors by setting form errors:
-
-```javascript
-import { useForm } from '@encolajs/enforma';
-
-// Create form
-const form = useForm(
-  { email: 'test@example.com', username: 'testuser' },
-  {
-    email: 'required|email',
-    username: 'required|min:3'
-  },
-  {
-    async submitHandler(data, formController) {
-      try {
-        // Submit to API
-        const response = await api.createUser(data);
-        return response;
-      } catch (error) {
-        // Handle 422 Validation errors from API
-        if (error.response?.status === 422) {
-          // Process API validation errors
-          const serverErrors = error.response.data.errors;
-          
-          // Set errors on form - will automatically trigger UI updates
-          formController.setErrors(serverErrors);
-          
-          // Example output format from server:
-          // {
-          //   'email': ['This email is already registered'],
-          //   'username': ['Username must be unique']
-          // }
-        }
-        
-        // Re-throw to trigger error handling
-        throw error;
-      }
-    }
-  }
-);
 ```

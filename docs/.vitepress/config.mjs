@@ -50,19 +50,21 @@ export default defineConfig({
           items: [
             {
               text: 'Base components',
+              link: '/base-components/',
               items: [
-                { text: 'Enforma Form', link: '/built-in-components/enforma-form' },
-                { text: 'EnformaField', link: '/built-in-components/enforma-field' },
-                { text: 'EnformaRepeatable', link: '/built-in-components/enforma-repeatable' },
-                { text: 'EnformaRepeatableTable', link: '/built-in-components/enforma-repeatable-table' },
-                { text: 'EnformaSection', link: '/built-in-components/enforma-section' },
-                { text: 'EnformaSchema', link: '/built-in-components/enforma-schema' },
+                { text: 'Enforma', link: '/base-components/enforma-form' },
+                { text: 'EnformaField', link: '/base-components/enforma-field' },
+                { text: 'EnformaRepeatable', link: '/base-components/enforma-repeatable' },
+                { text: 'EnformaRepeatableTable', link: '/base-components/enforma-repeatable-table' },
+                { text: 'EnformaSection', link: '/base-components/enforma-section' },
+                { text: 'EnformaSchema', link: '/base-components/enforma-schema' },
               ]
             },
             {
               text: 'Headless Components',
+              link: '/headless/',
+              collapsed: true,
               items: [
-                { text: 'Overview', link: '/headless/' },
                 { text: 'HeadlessForm', link: '/headless/form' },
                 { text: 'HeadlessField', link: '/headless/field' },
                 { text: 'HeadlessRepeatable', link: '/headless/repeatable' },

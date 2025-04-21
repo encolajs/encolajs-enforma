@@ -88,7 +88,7 @@ describe('Enforma', () => {
     expect(schemaComponent.props().schema).toEqual(schema)
   })
 
-  it('emits submit-success event on successful form submission', async () => {
+  it('emits submit_success event on successful form submission', async () => {
     const data = { name: 'test' }
     const wrapper = mount(Enforma, {
       props: {
@@ -109,12 +109,12 @@ describe('Enforma', () => {
     await form.trigger('submit')
     await flushPromises()
 
-    const emitted = wrapper.emitted('submit-success')
+    const emitted = wrapper.emitted('submit_success')
     expect(emitted).toBeTruthy()
     expect(emitted?.[0]).toEqual([data])
   })
 
-  it('emits submit-error event when submission throws', async () => {
+  it('emits submit_error event when submission throws', async () => {
     const error = new Error('Submit failed')
 
     // Create a mock submit handler that throws an error
@@ -143,8 +143,8 @@ describe('Enforma', () => {
     await form.trigger('submit')
     await flushPromises()
 
-    // Check if submit-error was emitted with the right error
-    const emitted = wrapper.emitted('submit-error')
+    // Check if submit_error was emitted with the right error
+    const emitted = wrapper.emitted('submit_error')
     expect(emitted).toBeTruthy()
     expect(emitted?.[0]).toEqual([error])
   })

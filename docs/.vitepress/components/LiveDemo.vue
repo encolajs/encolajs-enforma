@@ -1,6 +1,5 @@
 <template>
   <div class="live-demo" ref="el">
-    fasfasdafssdasdf
     <div :is="component" />
   </div>
 </template>

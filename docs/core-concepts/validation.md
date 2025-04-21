@@ -78,7 +78,7 @@ const formConfig = {
 
 The **EncolaJS Validator** library is async by default so any function that returns a boolean-resolving `Promise` can be used as a validation rule.
 
-// @todo add code sample
+For implementing an server-calling validation rule check out the ["Async Validation" recipe](/recipes/async-validation.md)
 
 ## Validation Architecture
 

@@ -32,13 +32,13 @@ The main form component that manages form state, validation, and submission.
 
 | Event | Parameters | Description |
 |-------|------------|-------------|
-| `submit-success` | `(data, formController)` | Emitted when form submits successfully |
-| `submit-error` | `(error, formController)` | Emitted when submission fails |
-| `validation-error` | `(formController)` | Emitted when validation fails |
+| `submit_success` | `(data, formController)` | Emitted when form submits successfully |
+| `submit_error` | `(error, formController)` | Emitted when submission fails |
+| `validation_error` | `(formController)` | Emitted when validation fails |
 | `reset` | `(formController)` | Emitted when form is reset |
-| `field-changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
-| `field-focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
-| `field-blurred` | `(path, fieldController, formController)` | Emitted when a field loses focus |
+| `field_changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
+| `field_focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
+| `field_blurred` | `(path, fieldController, formController)` | Emitted when a field loses focus |
 | `form-initialized` | `(formController)` | Emitted when form is initialized |
 
 ### Slots

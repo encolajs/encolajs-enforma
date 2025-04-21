@@ -74,12 +74,12 @@ Enforma also exposes events using Vue's standard event system:
   <Enforma 
     :data="formData" 
     :submit-handler="submitData"
-    @submit-success="handleSuccess"
-    @submit-error="handleError"
-    @field-changed="handleFieldChange"
-    @field-focused="handleFieldFocus"
-    @field-blurred="handleFieldBlur"
-    @validation-error="handleValidationError"
+    @submit_success="handleSuccess"
+    @submit_error="handleError"
+    @field_changed="handleFieldChange"
+    @field_focused="handleFieldFocus"
+    @field_blurred="handleFieldBlur"
+    @validation_error="handleValidationError"
     @form-initialized="handleInitialized"
     @reset="handleReset"
   >
@@ -88,7 +88,7 @@ Enforma also exposes events using Vue's standard event system:
 </template>
 ```
 
-Note that Vue component events use kebab-case naming (e.g., `field-changed`), while direct event subscriptions use snake_case (e.g., `field_changed`).
+Note that Vue component events use kebab-case naming (e.g., `field_changed`), while direct event subscriptions use snake_case (e.g., `field_changed`).
 
 ## Unsubscribing from Events
 

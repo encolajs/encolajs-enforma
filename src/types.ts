@@ -111,7 +111,7 @@ export interface FormController {
     stateChanges?: StateChanges
   ): Promise<void>
 
-  getFieldValue (path: string): any
+  getFieldValue(path: string): any
 
   getField(path: string): FieldController
 

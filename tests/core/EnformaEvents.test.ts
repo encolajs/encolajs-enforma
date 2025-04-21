@@ -26,11 +26,11 @@ describe('Enforma Events', () => {
     })
   })
 
-  it('emits field-changed event when a field value changes', async () => {
+  it('emits field_change event when a field value changes', async () => {
     // Get the form state from the slot
     const formRef = wrapper.vm.form
 
-    // Set up a mock for the field-changed event
+    // Set up a mock for the field_change event
     const eventHandler = vi.fn()
     formRef.on('field_changed', eventHandler)
 
@@ -48,7 +48,7 @@ describe('Enforma Events', () => {
     expect(eventData.formController).toBeDefined()
   })
 
-  it('emits field-focused and field-blurred events', async () => {
+  it('emits field_focus and field_blur events', async () => {
     // Get the form state from the slot
     const formRef = wrapper.vm.form
 
@@ -72,7 +72,7 @@ describe('Enforma Events', () => {
     // Get the component instance
     const form = wrapper.vm.form
 
-    // Set up a mock for the field-changed event
+    // Set up a mock for the field_change event
     const eventHandler = vi.fn()
 
     // Use the convenience method to register event handler
@@ -106,16 +106,16 @@ describe('Enforma Events', () => {
 
     // Check that the Vue event was emitted
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted('field-changed')).toBeTruthy()
+    expect(wrapper.emitted('field_change')).toBeTruthy()
 
     // Focus and blur fields
     formRef.setFieldFocused('email')
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted('field-focused')).toBeTruthy()
+    expect(wrapper.emitted('field_focus')).toBeTruthy()
 
     formRef.setFieldBlurred('email')
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted('field-blurred')).toBeTruthy()
+    expect(wrapper.emitted('field_blur')).toBeTruthy()
   })
 
   it('emits form-initialized event', async () => {
@@ -155,7 +155,7 @@ describe('Enforma Events', () => {
 
     // Check success event
     expect(successHandler).toHaveBeenCalled()
-    expect(wrapper.emitted('submit-success')).toBeTruthy()
+    expect(wrapper.emitted('submit_success')).toBeTruthy()
 
     // Error case
     const errorHandler = vi.fn()
@@ -170,6 +170,6 @@ describe('Enforma Events', () => {
 
     // Check error event
     expect(errorHandler).toHaveBeenCalled()
-    expect(wrapper.emitted('submit-error')).toBeTruthy()
+    expect(wrapper.emitted('submit_error')).toBeTruthy()
   })
 })

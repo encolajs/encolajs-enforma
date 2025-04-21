@@ -128,6 +128,8 @@ This approach provides behavior without enforcing design:
 </template>
 ```
 
+Using headless fields along side base components should be reserved for prototyping. Once you know what you want you should create your own components.
+
 ## Choosing a Rendering Mode
 
 Consider these factors when selecting a rendering mode:

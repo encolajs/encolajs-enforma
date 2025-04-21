@@ -29,13 +29,13 @@ export default defineComponent({
   },
 
   emits: [
-    'submit-success',
-    'submit-error',
-    'validation-error',
+    'submit_success',
+    'submit_error',
+    'validation_error',
     'reset',
-    'field-changed',
-    'field-focused',
-    'field-blurred',
+    'field_change',
+    'field_focus',
+    'field_blur',
     'form-initialized',
   ],
 
@@ -46,13 +46,13 @@ export default defineComponent({
       submitHandler: props.submitHandler,
       useGlobalEvents: true, // Use global event emitter for component integration
       onValidationError: (form) => {
-        ctx.emit('validation-error', form)
+        ctx.emit('validation_error', form)
       },
       onSubmitSuccess: (data) => {
-        ctx.emit('submit-success', data)
+        ctx.emit('submit_success', data)
       },
       onSubmitError: (error, form) => {
-        ctx.emit('submit-error', error, form)
+        ctx.emit('submit_error', error, form)
       },
     })
 
@@ -60,7 +60,7 @@ export default defineComponent({
     formCtrl.on(
       'submit_success',
       ({ formController }: { formController: FormController }) => {
-        ctx.emit('submit-success', formController.values(), formController)
+        ctx.emit('submit_success', formController.values(), formController)
       }
     )
 
@@ -73,14 +73,14 @@ export default defineComponent({
         error: any
         formController: FormController
       }) => {
-        ctx.emit('submit-error', error, formController)
+        ctx.emit('submit_error', error, formController)
       }
     )
 
     formCtrl.on(
       'validation_error',
       ({ formController }: { formController: FormController }) => {
-        ctx.emit('validation-error', formController)
+        ctx.emit('validation_error', formController)
       }
     )
 
@@ -97,7 +97,7 @@ export default defineComponent({
         fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-changed', path, value, fieldController, formController)
+        ctx.emit('field_change', path, value, fieldController, formController)
       }
     )
 
@@ -112,7 +112,7 @@ export default defineComponent({
         fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-focused', path, fieldController, formController)
+        ctx.emit('field_focus', path, fieldController, formController)
       }
     )
 
@@ -127,7 +127,7 @@ export default defineComponent({
         fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field-blurred', path, fieldController, formController)
+        ctx.emit('field_blur', path, fieldController, formController)
       }
     )
 
