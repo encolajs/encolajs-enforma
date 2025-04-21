@@ -1,6 +1,6 @@
 <template>
   <HeadlessForm
-    ref="formRef"
+    ref="form"
     :data="data"
     :rules="rules"
     :custom-messages="messages"
@@ -93,33 +93,14 @@ const emit = defineEmits([
   'form-initialized',
 ])
 
-const formRef = ref(null)
+const form = ref(null)
 
 /**
- * Methods for directly working with the form's event system
- */
-const on = (event, handler) => {
-  if (formRef.value) {
-    formRef.value.on(event, handler)
-  }
-  return { off: () => off(event, handler) }
-}
-
-const off = (event, handler) => {
-  if (formRef.value) {
-    formRef.value.off(event, handler)
-  }
-}
-
-/**
- * Expose the formRef and convenience methods
+ * Expose the form controller
  * This allows parent components to call methods like validate(), reset(), etc.
- * It also provides direct access to the event system via on() and off()
  */
 defineExpose({
-  formRef,
-  on,
-  off,
+  form
 })
 
 provide(formContextKey, props.context)

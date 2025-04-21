@@ -28,7 +28,7 @@ describe('Enforma Events', () => {
 
   it('emits field-changed event when a field value changes', async () => {
     // Get the form state from the slot
-    const formRef = wrapper.vm.formRef
+    const formRef = wrapper.vm.form
 
     // Set up a mock for the field-changed event
     const eventHandler = vi.fn()
@@ -50,7 +50,7 @@ describe('Enforma Events', () => {
 
   it('emits field-focused and field-blurred events', async () => {
     // Get the form state from the slot
-    const formRef = wrapper.vm.formRef
+    const formRef = wrapper.vm.form
 
     // Set up mocks for the events
     const focusHandler = vi.fn()
@@ -70,7 +70,7 @@ describe('Enforma Events', () => {
 
   it('exposes on() and off() convenience methods', async () => {
     // Get the component instance
-    const form = wrapper.vm
+    const form = wrapper.vm.form
 
     // Set up a mock for the field-changed event
     const eventHandler = vi.fn()
@@ -79,19 +79,19 @@ describe('Enforma Events', () => {
     const subscription = form.on('field_changed', eventHandler)
 
     // Check that we can change a field value
-    await form.formRef.setFieldValue('name', 'Another Name')
+    await form.setFieldValue('name', 'Another Name')
 
     // Check that the event was emitted
     expect(eventHandler).toHaveBeenCalled()
 
     // Use the returned subscription to unregister
-    subscription.off()
+    form.off('field_changed', eventHandler)
 
     // Reset the mock
     eventHandler.mockReset()
 
     // Change value again
-    await form.formRef.setFieldValue('name', 'Yet Another Name')
+    await form.setFieldValue('name', 'Yet Another Name')
 
     // Check that the event was not emitted
     expect(eventHandler).not.toHaveBeenCalled()
@@ -99,7 +99,7 @@ describe('Enforma Events', () => {
 
   it('emits events through Vue component emit system', async () => {
     // Get the form state from the slot
-    const formRef = wrapper.vm.formRef
+    const formRef = wrapper.vm.form
 
     // Change a field value
     await formRef.setFieldValue('name', 'New Name')
@@ -132,7 +132,7 @@ describe('Enforma Events', () => {
     })
 
     // Register event handler
-    newWrapper.vm.on('form_initialized', initHandler)
+    newWrapper.vm.form.on('form_initialized', initHandler)
 
     // Wait for the setTimeout in the form initialization
     await new Promise((resolve) => setTimeout(resolve, 10))
@@ -145,12 +145,12 @@ describe('Enforma Events', () => {
   it('emits form events during submission', async () => {
     // Success case
     const successHandler = vi.fn()
-    wrapper.vm.on('submit_success', successHandler)
+    wrapper.vm.form.on('submit_success', successHandler)
 
     submitHandler.mockResolvedValueOnce({})
 
     // Submit the form
-    await wrapper.vm.formRef.submit()
+    await wrapper.vm.form.submit()
     await flushPromises()
 
     // Check success event
@@ -159,13 +159,13 @@ describe('Enforma Events', () => {
 
     // Error case
     const errorHandler = vi.fn()
-    wrapper.vm.on('submit_error', errorHandler)
+    wrapper.vm.form.on('submit_error', errorHandler)
 
     const error = new Error('Submission failed')
     submitHandler.mockRejectedValueOnce(error)
 
     // Submit the form again
-    await wrapper.vm.formRef.submit()
+    await wrapper.vm.form.submit()
     await flushPromises()
 
     // Check error event
