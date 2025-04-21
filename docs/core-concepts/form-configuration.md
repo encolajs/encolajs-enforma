@@ -18,7 +18,7 @@ Global configuration is done using 2 mechanisms:
 
 The global configuration options are available via VueJS' [provide/inject](https://vuejs.org/guide/components/provide-inject) mechanism in all base components.
 
-> [!WARNING] If you are using headless component and want access to the configuration options you have to load it yourself. 
+> [!WARNING] If you are using headless component and want access to the configuration options you have to import it yourself (see "Accessing Configuration"). 
 
 ## Form Configuration
 

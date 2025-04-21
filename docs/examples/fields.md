@@ -2,7 +2,7 @@
 import FormExample from './enforma/FieldsFormExample.vue'
 </script>
 
-# Form using headless components
+# Form using field components (EnformaField)
 
 > [!INFO] This example is using the PrimeVue preset
 

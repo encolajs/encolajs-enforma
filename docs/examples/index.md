@@ -10,7 +10,7 @@ component).
 - [Enforma form using fields](fields.md)
 - [Enforma form using fields and schema](fields-and-schema.md)
 - [Enforma form using only schema](schema-only.md)
-- [Enforma form using schema, fields and headless fields](mixed_form.md)
+- [Enforma form using schema, fields and headless fields](mixed-form.md)
 
 > [!NOTE] All examples use PrimeVue components.<br>The Enforma form examples are using the PrimeVue preset that comes with the library
 

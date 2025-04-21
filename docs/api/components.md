@@ -168,8 +168,7 @@ Submit button for the form.
 ## EnformaResetButton
 
 Reset button for the form.
-[FETCH_HEAD](../../.git/FETCH_HEAD)
-[config](../../.git/config)
+
 ### Props
 
 | Prop | Type | Required | Description |

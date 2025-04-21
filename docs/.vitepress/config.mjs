@@ -168,15 +168,17 @@ export default defineConfig({
       })
     },
   },
-  vite: {
-    build: {
-      rollupOptions: {
-        external: [
-          // Match the file(s) you want to ignore
-          /\/src\//,
-        ]
+  head: [
+    [
+      'script',
+      {
+        src: 'https://cdn.tailwindcss.com/',
+        async: true,
+        defer: true
       }
-    },
+    ]
+  ],
+  vite: {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '../../src'),

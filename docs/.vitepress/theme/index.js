@@ -4,6 +4,9 @@ import Tab from '../components/Tab.vue'
 import TabNav from '../components/TabNav.vue'
 import LiveDemo from '../components/LiveDemo.vue'
 import './custom.css'
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
+import { createEnforma } from '@'
 
 /** @type {import('vitepress').Theme} */
 export default {
@@ -13,10 +16,13 @@ export default {
     app.component('Tab', Tab)
     app.component('TabNav', TabNav)
     app.component('LiveDemo', LiveDemo)
-    const script = document.createElement('script')
-    script.src = 'https://cdn.tailwindcss.com/' // or script.textContent = 'console.log("inline script")';
-    script.type = 'text/javascript'
-    script.defer = true // optional: defer execution
-    document.head.appendChild(script) // or document.body.appendChild(script)
+
+    app.use(PrimeVue, {
+      theme: {
+        preset: Aura
+      }
+    })
+    app.use(createEnforma({}))
+
   },
 }
