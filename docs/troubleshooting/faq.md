@@ -38,11 +38,11 @@ Then import and use it in your Vue application:
 
 ```js
 import { createApp } from 'vue';
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import App from './App.vue';
 
 const app = createApp(App);
-const formkit = createFormKit();
+const formkit = createEnforma();
 
 app.use(formkit);
 app.mount('#app');

@@ -9,7 +9,7 @@
 import 'primeicons/primeicons.css'
 import { ref, onMounted } from 'vue'
 import { createApp, h } from 'vue'
-import { createFormKit } from '../../../src'
+import { createEnforma } from '../../../src'
 import usePrimeVuePreset from '../../../src/presets/primevue.ts'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
@@ -28,7 +28,7 @@ onMounted(() => {
       preset: Aura
     }
   })
-  app.use(createFormKit({}))
+  app.use(createEnforma({}))
   usePrimeVuePreset()
   app.mount(el.value)
 })

@@ -103,9 +103,11 @@ defineExpose({
   form
 })
 
+const formConfig = useConfig(props.config)
+
 provide(formContextKey, props.context)
 provide(formSchemaKey, props.schema)
-provide(formConfigKey, useConfig(props.config))
+provide(formConfigKey, formConfig)
 
 const { getConfig } = useFormConfig()
 const submitButton = getConfig('components.submitButton')

@@ -138,10 +138,10 @@ export const myUiPreset = {
 };
 
 // Usage in app
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import { myUiPreset } from './presets/my-ui-preset';
 
-const formKit = createFormKit({
+const formKit = createEnforma({
   preset: myUiPreset
 });
 ```

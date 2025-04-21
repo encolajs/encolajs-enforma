@@ -1,5 +1,4 @@
 // Core setup
-export { default as createEnforma } from './createFormKit'
 export { setGlobalConfig, getGlobalConfig } from './utils/useConfig'
 
 // Core composables
@@ -84,4 +83,4 @@ export {
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'
 
-export { default as createFormKit } from './createFormKit'
+export { createEnforma } from './createEnforma'

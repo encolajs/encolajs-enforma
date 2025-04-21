@@ -19,7 +19,7 @@ Import and use the PrimeVue preset:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import { primevuePreset } from 'encolajs-formkit/presets/primevue';
 import PrimeVue from 'primevue/config';
 import App from './App.vue';
@@ -28,7 +28,7 @@ import App from './App.vue';
 const app = createApp(App);
 
 // Configure FormKit with PrimeVue preset
-const formkit = createFormKit({
+const formkit = createEnforma({
   preset: primevuePreset
 });
 
@@ -144,8 +144,8 @@ const customPrimeVuePreset = {
   }
 };
 
-// Use in createFormKit
-const formkit = createFormKit({
+// Use in createEnforma
+const formkit = createEnforma({
   preset: customPrimeVuePreset
 });
 ```

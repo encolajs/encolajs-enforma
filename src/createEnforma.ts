@@ -30,7 +30,7 @@ function configureValidation(options: DeepPartial<EnformaConfig>) {
 }
 
 // Export a factory function for easier instantiation
-export default function createEnforma(options: EnformaConfig): Plugin {
+export function createEnforma(options: EnformaConfig): Plugin {
   return {
     install(app: App): void {
       // Set global configuration by merging defaults with provided config

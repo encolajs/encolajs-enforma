@@ -19,7 +19,7 @@ Import and use the Vuetify preset:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import { vuetifyPreset } from 'encolajs-formkit/presets/vuetify';
 import { createVuetify } from 'vuetify';
 import App from './App.vue';
@@ -31,7 +31,7 @@ const vuetify = createVuetify();
 const app = createApp(App);
 
 // Configure FormKit with Vuetify preset
-const formkit = createFormKit({
+const formkit = createEnforma({
   preset: vuetifyPreset
 });
 
@@ -150,8 +150,8 @@ const customVuetifyPreset = {
   }
 };
 
-// Use in createFormKit
-const formkit = createFormKit({
+// Use in createEnforma
+const formkit = createEnforma({
   preset: customVuetifyPreset
 });
 ```

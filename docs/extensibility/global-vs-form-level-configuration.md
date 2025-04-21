@@ -21,11 +21,11 @@ Global configuration is set when creating a FormKit instance and applies to all 
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import App from './App.vue';
 
 // Create a FormKit instance with global configuration
-const formkit = createFormKit({
+const formkit = createEnforma({
   config: {
     validateOn: ['blur', 'submit'],
     
@@ -179,7 +179,7 @@ const mergedConfig = {
 Use global configuration for consistent styling:
 
 ```js
-const formkit = createFormKit({
+const formkit = createEnforma({
   config: {
     fieldDefaults: {
       class: 'app-form-field',

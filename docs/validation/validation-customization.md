@@ -66,9 +66,9 @@ import { isEven, isUniqueUsername } from './validators';
 Register custom validators globally for use throughout your application:
 
 ```js
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 
-const formKit = createFormKit({
+const formKit = createEnforma({
   validators: {
     even: {
       validate: (value) => Number(value) % 2 === 0,

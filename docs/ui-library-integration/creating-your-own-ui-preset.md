@@ -366,14 +366,14 @@ Use your preset when creating the FormKit instance:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createFormKit } from 'encolajs-formkit';
+import { createEnforma } from 'encolajs-formkit';
 import { myUiPreset } from './presets/my-ui-preset';
 import App from './App.vue';
 
 const app = createApp(App);
 
 // Configure FormKit with your preset
-const formkit = createFormKit({
+const formkit = createEnforma({
   preset: myUiPreset
 });
 

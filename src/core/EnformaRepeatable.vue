@@ -23,7 +23,6 @@
           >
             <!-- Subfields -->
             <template v-if="!component && fields">
-              here
               <template
                 v-for="(subfield, subfieldName) in fields"
                 :key="subfieldName"
