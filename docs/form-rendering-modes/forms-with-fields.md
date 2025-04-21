@@ -8,7 +8,7 @@ A simple form using the field-based approach looks like this:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="firstName" label="First Name" />
     <EnformaField name="lastName" label="Last Name" />
     <EnformaField name="email" type="email" label="Email Address" />
@@ -26,7 +26,7 @@ const formData = ref({
   email: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
   // Process form data
 }
@@ -50,7 +50,7 @@ You can specify different field types using the `type` prop:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField name="name" type="text" label="Name" />
     <EnformaField name="email" type="email" label="Email" />
     <EnformaField name="password" type="password" label="Password" />
@@ -71,7 +71,7 @@ The field-based approach gives you complete control over form layout:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <div class="form-row">
       <EnformaField name="firstName" label="First Name" class="col-6" />
       <EnformaField name="lastName" label="Last Name" class="col-6" />
@@ -94,7 +94,7 @@ You can add validation rules directly to fields:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="username" 
       label="Username" 
@@ -105,14 +105,14 @@ You can add validation rules directly to fields:
       name="email" 
       type="email" 
       label="Email" 
-      :validators="['required', 'email']"
+      :rules="['required', 'email']"
     />
     
     <EnformaField 
       name="password" 
       type="password" 
       label="Password" 
-      :validators="passwordValidators"
+      :rules="passwordValidators"
     />
   </Enforma>
 </template>

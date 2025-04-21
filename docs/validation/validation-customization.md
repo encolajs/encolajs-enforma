@@ -40,18 +40,18 @@ Add custom validators to individual fields:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="value" 
       type="number" 
       label="Even Number" 
-      :validators="[isEven]" 
+      :rules="[isEven]" 
     />
     
     <EnformaField 
       name="username" 
       label="Username" 
-      :validators="['required', isUniqueUsername]" 
+      :rules="['required', isUniqueUsername]" 
     />
   </Enforma>
 </template>
@@ -149,7 +149,7 @@ Control when validation occurs:
 <template>
   <!-- Form-level validation triggers -->
   <Enforma 
-    v-model="formData" 
+    :data="formData" 
     :validateOn="['blur', 'submit']"
   >
     <!-- Field-level override -->
@@ -175,7 +175,7 @@ Trigger validation programmatically:
 
 ```vue
 <template>
-  <Enforma ref="form" v-model="formData">
+  <Enforma ref="form" :data="formData">
     <!-- Fields -->
   </Enforma>
   

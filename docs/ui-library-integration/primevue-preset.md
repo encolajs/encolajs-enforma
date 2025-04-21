@@ -43,7 +43,7 @@ Now use Enforma components with PrimeVue styling:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
     <EnformaField name="email" type="email" label="Email" />
     <EnformaField name="country" type="select" label="Country" :options="countries" />
@@ -67,7 +67,7 @@ const countries = [
   { value: 'mx', label: 'Mexico' }
 ];
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -158,7 +158,7 @@ The PrimeVue preset includes support for the AutoComplete component:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="city" 
       type="autocomplete" 
@@ -198,7 +198,7 @@ Use PrimeVue's rich select features:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="country" 
       type="select" 
@@ -230,7 +230,7 @@ Combine with PrimeVue's layout components:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <div class="grid">
       <div class="col-12 md:col-6">
         <EnformaField name="firstName" label="First Name" />
@@ -262,7 +262,7 @@ PrimeVue components display validation state automatically:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :validators="validators">
+  <Enforma :data="formData" :rules="validators">
     <EnformaField name="email" type="email" label="Email" />
     <EnformaField name="password" type="password" label="Password" />
     <EnformaSubmitButton>Register</EnformaSubmitButton>

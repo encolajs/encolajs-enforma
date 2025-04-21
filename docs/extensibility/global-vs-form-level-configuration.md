@@ -79,9 +79,9 @@ Form-level configuration applies only to a specific form instance. It overrides 
 ```vue
 <template>
   <Enforma 
-    v-model="formData" 
+    :data="formData" 
     :config="formConfig"
-    @submit="onSubmit"
+    :submitHandler="submit"
   >
     <!-- Form fields -->
   </Enforma>
@@ -124,7 +124,7 @@ Field-level configuration is the most specific and has the highest priority. It 
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <!-- Field with specific configuration -->
     <EnformaField 
       name="username" 

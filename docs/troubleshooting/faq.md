@@ -20,33 +20,9 @@ Enforma focuses on flexibility in rendering approaches while maintaining a consi
 
 ### What Vue versions does Enforma support?
 
-Enforma is built for Vue 3 and requires Vue 3.2 or later. It leverages Vue's Composition API and the latest reactivity system for optimal performance.
+Enforma is built for Vue 3. It leverages Vue's Composition API and the latest reactivity system for optimal performance.
 
 ## Getting Started
-
-### How do I install Enforma?
-
-Install Enforma via npm or yarn:
-
-```bash
-npm install encolajs-formkit
-# or
-yarn add encolajs-formkit
-```
-
-Then import and use it in your Vue application:
-
-```js
-import { createApp } from 'vue';
-import { createEnforma } from 'encolajs-formkit';
-import App from './App.vue';
-
-const app = createApp(App);
-const formkit = createEnforma();
-
-app.use(formkit);
-app.mount('#app');
-```
 
 ### Do I need to use a specific UI library with Enforma?
 
@@ -57,13 +33,15 @@ No, Enforma is UI-library agnostic. You can use it with:
 - Your own custom components
 - Headless mode for complete UI freedom
 
+However the library comes with 2 presets: PrimeVue and Vuetify
+
 ### How do I create a basic form?
 
 Here's a simple example:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
     <EnformaField name="email" type="email" label="Email" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
@@ -79,7 +57,7 @@ const formData = ref({
   email: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -93,7 +71,7 @@ You can add validation at the form level:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :validators="validators" @submit="onSubmit">
+  <Enforma :data="formData" :rules="validators" :submitHandler="submit">
     <EnformaField name="username" label="Username" />
     <EnformaField name="email" type="email" label="Email" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
@@ -124,7 +102,7 @@ Use the `if` prop with an expression:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="hasShipping" 
       type="checkbox" 
@@ -146,14 +124,14 @@ Use the `@submit` event:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <!-- Form fields -->
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
 
 <script setup>
-async function onSubmit(data) {
+async function submit(data) {
   try {
     // Submit to your API
     const response = await api.submitForm(data);
@@ -191,7 +169,7 @@ Use the `useForm` composable to access form state:
 
 ```vue
 <template>
-  <Enforma v-model="formData" id="myForm">
+  <Enforma :data="formData" id="myForm">
     <!-- Form fields -->
   </Enforma>
   
@@ -222,7 +200,7 @@ Use the file field type:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField 
       name="profileImage" 
       type="file" 
@@ -234,7 +212,7 @@ Use the file field type:
 </template>
 
 <script setup>
-async function onSubmit(data) {
+async function submit(data) {
   const formData = new FormData();
   formData.append('file', data.profileImage);
   
@@ -335,8 +313,8 @@ Connect your store with two-way binding:
 ```vue
 <template>
   <Enforma 
-    v-model="userData" 
-    @submit="updateUser"
+    :data="userData" 
+    :submitHandler="updateUser"
   >
     <!-- Form fields -->
   </Enforma>

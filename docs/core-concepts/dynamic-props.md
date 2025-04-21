@@ -21,7 +21,7 @@ The simplest way to define dynamic behavior is with expression strings:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="employmentType" 
       type="select" 
@@ -53,7 +53,7 @@ For more complex logic, you can use functions:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="password" 
       type="password" 
@@ -64,7 +64,7 @@ For more complex logic, you can use functions:
       name="confirmPassword" 
       type="password" 
       label="Confirm Password"
-      :validators="confirmPasswordValidators"
+      :rules="confirmPasswordValidators"
     />
   </Enforma>
 </template>

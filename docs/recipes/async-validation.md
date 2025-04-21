@@ -33,17 +33,17 @@ Use async validators like regular validators:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField 
       name="username" 
       label="Username" 
-      :validators="['required', isUsernameAvailable]" 
+      :rules="['required', isUsernameAvailable]" 
     />
     <EnformaField 
       name="email" 
       type="email" 
       label="Email" 
-      :validators="['required', 'email', isEmailAvailable]" 
+      :rules="['required', 'email', isEmailAvailable]" 
     />
     <EnformaSubmitButton>Register</EnformaSubmitButton>
   </Enforma>
@@ -59,7 +59,7 @@ const formData = ref({
   email: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -73,7 +73,7 @@ Show loading state during async validation:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <HeadlessField name="username">
       <template #default="{ value, errors, updateValue, validating }">
         <div class="field-container">
@@ -99,11 +99,11 @@ With EnformaField, you can use slots:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="username" 
       label="Username" 
-      :validators="['required', isUsernameAvailable]"
+      :rules="['required', isUsernameAvailable]"
     >
       <template #suffix="{ validating }">
         <span v-if="validating" class="spinner"></span>
@@ -132,11 +132,11 @@ Or for specific fields:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="username" 
       label="Username" 
-      :validators="['required', isUsernameAvailable]" 
+      :rules="['required', isUsernameAvailable]" 
       :validationDebounce="500" 
     />
   </Enforma>

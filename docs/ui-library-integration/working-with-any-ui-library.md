@@ -18,7 +18,7 @@ The simplest approach is to register components in your form configuration:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :config="formConfig">
+  <Enforma :data="formData" :config="formConfig">
     <!-- Form fields will use mapped components -->
     <EnformaField name="name" label="Name" />
     <EnformaField name="email" type="email" label="Email" />

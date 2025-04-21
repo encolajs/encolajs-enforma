@@ -39,8 +39,8 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Architecture Overview', link: '/core-concepts/architecture-overview' },
-            { text: 'Form Configuration', link: '/core-concepts/form-configuration' },
-            { text: 'Validation System', link: '/core-concepts/validation-system' },
+            { text: 'Configuration', link: '/core-concepts/configuration' },
+            { text: 'Validation System', link: '/core-concepts/validation' },
             { text: 'Rendering Modes', link: '/core-concepts/rendering-modes' },
             { text: 'Dynamic Props', link: '/core-concepts/dynamic-props' },
           ],
@@ -120,6 +120,7 @@ export default defineConfig({
           text: 'Troubleshooting',
           collapsed: false,
           items: [
+            { text: 'Debugging', link: '/troubleshooting/debugging' },
             { text: 'FAQ', link: '/troubleshooting/faq' },
           ],
         },
@@ -129,6 +130,39 @@ export default defineConfig({
           items: [
             { text: 'Contribution Guide', link: '/community/contribution-guide' },
             { text: 'Discord Community', link: '/community/discord-community' },
+          ],
+        },
+      ],
+      '/examples/': [
+        {
+          text: 'Examples',
+          items: [
+            { text: 'Overview', link: '/examples/' },
+            {
+              text: 'Forms',
+              items: [
+                {
+                  text: 'Headless components',
+                  link: '/examples/headless-components',
+                },
+                { text: 'Enforma with fields', link: '/examples/fields' },
+                {
+                  text: 'Enforma with fields and schema',
+                  link: '/examples/fields-and-schema',
+                },
+                {
+                  text: 'Enforma with schema only',
+                  link: '/examples/schema-only',
+                },
+                { text: 'Mixed forms', link: '/examples/mixed-forms' },
+              ],
+            },
+            {
+              text: 'Features',
+              items: [
+                { text: 'Dynamic props', link: '/examples/dynamic-props' },
+              ],
+            },
           ],
         },
       ],

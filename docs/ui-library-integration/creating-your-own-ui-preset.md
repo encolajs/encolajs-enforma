@@ -413,7 +413,7 @@ Create a simple form to test your preset:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
     <EnformaField name="email" type="email" label="Email" />
     <EnformaField 
@@ -438,7 +438,7 @@ const formData = ref({
   agree: false
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>

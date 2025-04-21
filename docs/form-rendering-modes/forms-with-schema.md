@@ -8,7 +8,7 @@ A simple form using the schema-based approach:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :schema="formSchema" @submit="onSubmit" />
+  <Enforma :data="formData" :schema="formSchema" :submitHandler="submit" />
 </template>
 
 <script setup>
@@ -32,7 +32,7 @@ const formSchema = {
   ]
 };
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
   // Process form data
 }
@@ -178,7 +178,7 @@ You can use the `EnformaSchema` component to include schema-defined sections wit
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <h2>Personal Information</h2>
     <EnformaSchema :schema="personalInfoSchema" />
     

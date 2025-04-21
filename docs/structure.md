@@ -16,7 +16,7 @@
 - Mixed Forms
 
 # Built-in Base Components
-- EnformaForm
+- Enforma
 - EnformaField
 - EnformaRepeatable
 - EnformaRepeatableTable

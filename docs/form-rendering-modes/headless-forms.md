@@ -18,7 +18,7 @@ A simple headless form looks like this:
 
 ```vue
 <template>
-  <HeadlessForm v-model="formData" :validators="validators" @submit="onSubmit">
+  <HeadlessForm :data="formData" :rules="validators" :submitHandler="submit">
     <template #default="{ submitForm, formState, reset }">
       <form @submit.prevent="submitForm">
         <HeadlessField name="firstName">
@@ -79,7 +79,7 @@ const validators = {
   email: ['required', 'email']
 };
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
   // Process form submission
 }
@@ -143,7 +143,7 @@ Headless forms work seamlessly with any UI library:
 
 ```vue
 <template>
-  <HeadlessForm v-model="formData" @submit="onSubmit">
+  <HeadlessForm :data="formData" :submitHandler="submit">
     <template #default="{ submitForm }">
       <v-form @submit.prevent="submitForm">
         <HeadlessField name="firstName">
@@ -208,7 +208,7 @@ Then use it in your forms:
 
 ```vue
 <template>
-  <HeadlessForm v-model="formData" @submit="onSubmit">
+  <HeadlessForm :data="formData" :submitHandler="submit">
     <template #default="{ submitForm }">
       <form @submit.prevent="submitForm">
         <AppFormField name="firstName" label="First Name" />

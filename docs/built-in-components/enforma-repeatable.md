@@ -6,7 +6,7 @@
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaRepeatable name="contacts" add-label="Add Contact">
       <template #default="{ index }">
         <div class="contact-item">
@@ -32,7 +32,7 @@ const formData = ref({
   ]
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -87,7 +87,7 @@ By default, `EnformaRepeatable` provides add, remove, and move buttons, but you 
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatable 
       name="skills" 
       add-label="Add Another Skill" 
@@ -135,7 +135,7 @@ Specify default values for new items with the `addItemTemplate` prop:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatable 
       name="addresses" 
       :addItemTemplate="addressTemplate"
@@ -166,7 +166,7 @@ You can nest repeatable components for complex data structures:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatable name="departments" add-label="Add Department">
       <template #default="{ index: deptIndex }">
         <div class="department">
@@ -206,7 +206,7 @@ You can validate repeatable items:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :validators="validators">
+  <Enforma :data="formData" :rules="validators">
     <EnformaRepeatable name="contacts">
       <template #default="{ index }">
         <EnformaField 
@@ -238,7 +238,7 @@ You can conditionally show fields within repeatable items:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatable name="experiences">
       <template #default="{ index }">
         <EnformaField 

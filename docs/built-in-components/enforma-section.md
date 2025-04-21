@@ -6,7 +6,7 @@
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaSection title="Personal Information">
       <EnformaField name="firstName" label="First Name" />
       <EnformaField name="lastName" label="Last Name" />
@@ -38,7 +38,7 @@ const formData = ref({
   preferredContact: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -77,7 +77,7 @@ Make sections collapsible to save space in long forms:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSection 
       title="Basic Information" 
       collapsible
@@ -103,7 +103,7 @@ Show sections conditionally based on form state:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="needsShipping" 
       type="checkbox" 
@@ -129,7 +129,7 @@ Use slots for custom title rendering:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSection>
       <template #title>
         <div class="custom-title">
@@ -151,7 +151,7 @@ Add action buttons to section headers:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSection title="Payment Methods">
       <template #actions>
         <button 
@@ -181,7 +181,7 @@ Sections can be nested for complex forms:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSection title="User Profile">
       <EnformaField name="name" label="Full Name" />
       <EnformaField name="email" type="email" label="Email" />
@@ -216,7 +216,7 @@ You can use sections with schema-based forms:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :schema="formSchema">
+  <Enforma :data="formData" :schema="formSchema">
     <!-- This section is added to the schema-generated form -->
     <EnformaSection title="Custom Section">
       <EnformaField name="customField" label="Custom Field" />
@@ -252,7 +252,7 @@ Apply custom styling to sections:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSection 
       title="Personal Information" 
       section-class="primary-section"

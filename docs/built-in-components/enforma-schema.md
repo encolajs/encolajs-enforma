@@ -6,7 +6,7 @@
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaSchema :schema="formSchema" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
@@ -34,7 +34,7 @@ const formSchema = {
   ]
 };
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -226,7 +226,7 @@ You can use `EnformaSchema` inside field-based forms to mix approaches:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <!-- Direct field declarations -->
     <h2>Personal Information</h2>
     <EnformaField name="firstName" label="First Name" />
@@ -262,7 +262,7 @@ Use `baseFieldPath` for nested data structures:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <h2>Billing Address</h2>
     <EnformaSchema :schema="addressSchema" baseFieldPath="billing" />
     
@@ -318,7 +318,7 @@ Override the rendering of specific fields using slots:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaSchema :schema="formSchema">
       <!-- Custom rendering for the "avatar" field -->
       <template #field:avatar="{ fieldProps }">
@@ -354,7 +354,7 @@ You can fetch schema definitions from an API:
 <template>
   <div>
     <div v-if="loading">Loading form...</div>
-    <Enforma v-else v-model="formData" @submit="onSubmit">
+    <Enforma v-else :data="formData" :submitHandler="submit">
       <EnformaSchema :schema="formSchema" />
       <EnformaSubmitButton>Submit</EnformaSubmitButton>
     </Enforma>
@@ -416,7 +416,7 @@ function buildInitialData(schema) {
   return data;
 }
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>

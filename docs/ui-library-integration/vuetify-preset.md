@@ -47,7 +47,7 @@ Now use Enforma components with Vuetify styling:
 ```vue
 <template>
   <v-container>
-    <Enforma v-model="formData" @submit="onSubmit">
+    <Enforma :data="formData" :submitHandler="submit">
       <EnformaField name="name" label="Name" />
       <EnformaField name="email" type="email" label="Email" />
       <EnformaField name="country" type="select" label="Country" :options="countries" />
@@ -72,7 +72,7 @@ const countries = [
   { value: 'mx', label: 'Mexico' }
 ];
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -164,7 +164,7 @@ Use Vuetify's density prop:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="username" 
       label="Username" 
@@ -186,7 +186,7 @@ Apply Vuetify's input variants:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="name" 
       label="Name" 
@@ -214,7 +214,7 @@ Add icons to your fields:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="email" 
       type="email" 
@@ -244,7 +244,7 @@ Combine with Vuetify's layout components:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <v-row>
       <v-col cols="12" md="6">
         <EnformaField name="firstName" label="First Name" />
@@ -276,7 +276,7 @@ Vuetify components display validation state automatically:
 
 ```vue
 <template>
-  <Enforma v-model="formData" :validators="validators">
+  <Enforma :data="formData" :rules="validators">
     <EnformaField name="email" type="email" label="Email" />
     <EnformaField name="password" type="password" label="Password" />
     <EnformaSubmitButton>Register</EnformaSubmitButton>
@@ -326,7 +326,7 @@ Then use theme colors in your form:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="email" 
       type="email" 
@@ -346,7 +346,7 @@ Use Vuetify's Card component for sections:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <v-card class="mb-4">
       <v-card-title>Personal Information</v-card-title>
       <v-card-text>

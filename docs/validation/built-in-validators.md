@@ -22,7 +22,7 @@ Validators can be specified in several ways:
 <EnformaField 
   name="email" 
   label="Email" 
-  :validators="['required', 'email']" 
+  :rules="['required', 'email']" 
 />
 ```
 
@@ -32,7 +32,7 @@ Validators can be specified in several ways:
 <EnformaField 
   name="password" 
   label="Password" 
-  :validators="[
+  :rules="[
     'required',
     { name: 'min', params: [8], message: 'Password must be at least 8 characters' },
     { 
@@ -82,7 +82,7 @@ validators="pattern:^[A-Za-z0-9]+$"
 Or with a RegExp object:
 
 ```js
-:validators="[
+:rules="[
   { name: 'pattern', params: [/^[A-Za-z0-9]+$/] }
 ]"
 ```
@@ -162,7 +162,7 @@ validators="matches:password"
 Or for password confirmation:
 
 ```js
-:validators="[
+:rules="[
   'required',
   { name: 'matches', params: ['password'] }
 ]"
@@ -181,7 +181,7 @@ validators="oneOf:option1,option2,option3"
 For inline custom validation:
 
 ```js
-:validators="[
+:rules="[
   {
     name: 'custom',
     validate: (value) => value.includes('@company.com'),
@@ -195,7 +195,7 @@ For inline custom validation:
 Some validators can work asynchronously:
 
 ```js
-:validators="[
+:rules="[
   {
     name: 'unique',
     validate: async (value) => {
@@ -213,13 +213,13 @@ Some validators can work asynchronously:
 Validators can be conditionally applied:
 
 ```js
-:validators="formData.accountType === 'business' ? ['required'] : []"
+:rules="formData.accountType === 'business' ? ['required'] : []"
 ```
 
 Or using dynamic expressions:
 
 ```js
-:validators="[
+:rules="[
   { 
     name: 'required', 
     when: '$form.needsValidation' 
@@ -232,7 +232,7 @@ Or using dynamic expressions:
 Customize error messages:
 
 ```js
-:validators="[
+:rules="[
   { 
     name: 'required', 
     message: 'This field cannot be left empty' 
@@ -267,7 +267,7 @@ const validators = {
 Then use at the form level:
 
 ```vue
-<Enforma v-model="formData" :validators="validators">
+<Enforma :data="formData" :rules="validators">
   <!-- Form fields -->
 </Enforma>
 ```

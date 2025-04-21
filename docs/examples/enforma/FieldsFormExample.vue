@@ -5,83 +5,81 @@
     :custom-messages="messages"
     :submit-handler="submitHandler"
   >
-    <template #default="formCtrl">
-      <div class="grid grid-cols-2 gap-4">
-        <EnformaField
-          class="col-start-1 col-end-3"
-          name="name"
-          required
-          label="Name"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          class="col-start-1 col-end-3"
-          name="email"
-          required
-          label="Email"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          class="col-start-1 col-end-2"
-          name="address.country"
-          required
-          label="Country"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          class="col-start-2 col-end-3"
-          name="address.city"
-          required
-          label="City"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          class="col-start-1 col-end-3 toggle-field"
-          name="willing_to_relocate"
-          label="Willing to relocate"
-          showLabelNextToInput
-          component="toggle"
-        />
-        <EnformaField
-          class="col-start-1 col-end-2"
-          name="salary"
-          label="Salary"
-          :component="SalaryField"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          class="col-start-2 col-end-3"
-          name="available_date"
-          label="Available date"
-          component="datepicker"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          name="linkedin_profile"
-          label="Linkedin Profile"
-          :input-props="{class: 'w-full'}"
-        />
-        <EnformaField
-          name="personal_site"
-          label="Personal site"
-          :input-props="{class: 'w-full'}"
-        />
-      </div>
-      <h3 class="w-full">Skills</h3>
-      <EnformaRepeatableTable
-        class="mb-4"
-        name="skills"
-        :subfields="skillFields"
+    <div class="grid grid-cols-2 gap-4">
+      <EnformaField
+        class="col-start-1 col-end-3"
+        name="name"
+        required
+        label="Name"
+        :input-props="{class: 'w-full'}"
       />
-      <h3 class="w-full">Experience</h3>
-      <div>
-        <EnformaRepeatable
-          class="mb-4"
-          name="experience"
-          :subfields="experienceFields"
-        />
-      </div>
-    </template>
+      <EnformaField
+        class="col-start-1 col-end-3"
+        name="email"
+        required
+        label="Email"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        class="col-start-1 col-end-2"
+        name="address.country"
+        required
+        label="Country"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        class="col-start-2 col-end-3"
+        name="address.city"
+        required
+        label="City"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        class="col-start-1 col-end-3 toggle-field"
+        name="willing_to_relocate"
+        label="Willing to relocate"
+        showLabelNextToInput
+        component="toggle"
+      />
+      <EnformaField
+        class="col-start-1 col-end-2"
+        name="salary"
+        label="Salary"
+        :component="SalaryField"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        class="col-start-2 col-end-3"
+        name="available_date"
+        label="Available date"
+        component="datepicker"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        name="linkedin_profile"
+        label="Linkedin Profile"
+        :input-props="{class: 'w-full'}"
+      />
+      <EnformaField
+        name="personal_site"
+        label="Personal site"
+        :input-props="{class: 'w-full'}"
+      />
+    </div>
+    <h3 class="w-full">Skills</h3>
+    <EnformaRepeatableTable
+      class="mb-4"
+      name="skills"
+      :subfields="skillFields"
+    />
+    <h3 class="w-full">Experience</h3>
+    <div>
+      <EnformaRepeatable
+        class="mb-4"
+        name="experience"
+        :subfields="experienceFields"
+      />
+    </div>
   </Enforma>
 </template>
 

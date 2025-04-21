@@ -19,7 +19,7 @@ This page should provide:
 
 EncolaJS provides a component wrapper (`HeadlessForm`) for complete control over your form's UI while maintaining robust state management and validation capabilities.
 
-##### :notebook_with_decorative_cover: For a fully working example check out the [Headless components example](/examples/headless-components)
+##### :notebook_with_decorative_cover: For a complete working example check out the [Headless components example](/examples/headless-components)
 
 ## Basic example
 

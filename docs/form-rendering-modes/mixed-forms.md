@@ -18,7 +18,7 @@ Here's a simple mixed form that combines field-based and schema-based approaches
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <h2>Personal Information</h2>
     
     <!-- Explicit field declarations -->
@@ -69,7 +69,7 @@ const contactSchema = {
   ]
 };
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
   // Process form submission
 }
@@ -82,7 +82,7 @@ You can also include headless components for custom UI elements:
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <!-- Standard form fields -->
     <EnformaField name="name" label="Full Name" />
     <EnformaField name="email" type="email" label="Email" />
@@ -125,7 +125,7 @@ You can use schema-driven forms but override specific fields with custom impleme
 
 ```vue
 <template>
-  <Enforma v-model="formData" :schema="formSchema" @submit="onSubmit">
+  <Enforma :data="formData" :schema="formSchema" :submitHandler="submit">
     <template #field:specialField="{ fieldProps }">
       <div class="custom-field-implementation">
         <label>{{ fieldProps.label }}</label>
@@ -158,7 +158,7 @@ Mixed forms are especially powerful for building forms that have both static and
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <!-- Static form header -->
     <h2>Product Order Form</h2>
     

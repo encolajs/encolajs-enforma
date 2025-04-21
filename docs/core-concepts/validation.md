@@ -1,0 +1,90 @@
+# Validation System
+
+Enforma provides a comprehensive validation system powered by EncolaJS Validator, ensuring data integrity while maintaining a smooth user experience.
+
+Enforma's validation approach focuses on:
+
+- **Immediate feedback** - Issues are detected and reported as users interact with the form
+- **Clear error messages** - Helpful, specific messages guide users to correct issues
+- **Localization** - Support for internationalized validation messages
+- **Cross-field validation** - Fields can be validated in relation to one another
+
+## Form Validation
+
+Forms receive 2 key props related to validation:
+
+- `rules` - Validation rules using the pipe notation
+- `customMessages` - Optional custom error messages
+
+Validation rules are specified using the pipe notation, making it easy to chain multiple rules:
+
+```vue
+<template>
+   <Enforma v-bind=formProps>
+    ... form content goes here ...
+  </Enforma>
+</template>
+
+<script setup>
+const formProps = {
+  data: {
+    email: '',
+    password: ''
+  },
+  rules: {
+    email: 'required|email',
+    password: 'required|min:8|confirmed'
+  },
+  customMessages: {
+    'email.required': 'Please provide your email address',
+    'password.min': 'Password must be at least 8 characters'
+  }
+};
+</script>
+```
+
+## Built-in Validators
+
+Enforma uses EncolaJS Validator for all validation needs. For a complete list of available validation rules and their usage, visit [EncolaJS Validator Documentation](https://encolajs.com/validator/).
+
+Common validation rules include:
+
+- `required` - Field must not be empty
+- `email` - Must be a valid email address
+- `gt:{value}` - Minimum value (exclusive)
+- `gte:{value}` - Minimum value (inclusive)
+- `date:{format}` - Must be a valid date
+- `number` - Must be a number
+- ... and [many more](https://encolajs.com/validator/guide/validation-rules.html)
+
+## Cross-field Validation
+
+Enforma supports validators that reference other field values through the pipe notation:
+
+```js
+const formConfig = {
+  data: {
+    password: '',
+    password_confirmation: ''
+  },
+  rules: {
+    password: 'required|min:8',
+    password_confirmation: 'required|same_as:@password'
+  }
+};
+```
+
+## Async Validation
+
+The **EncolaJS Validator** library is async by default so any function that returns a boolean-resolving `Promise` can be used as a validation rule.
+
+// @todo add code sample
+
+## Validation Architecture
+
+The validation system consists of:
+
+1. **Validators** - Functions that test field values against specific rules
+2. **Validation Engine** - Coordinates validation execution and result tracking
+3. **Error Message System** - Generates and manages user-friendly error feedback
+4. **Validation UI Integration** - Connects validation results with visual feedback

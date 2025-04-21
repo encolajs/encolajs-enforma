@@ -6,7 +6,7 @@
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaRepeatableTable 
       name="products" 
       :columns="productColumns"
@@ -56,7 +56,7 @@ const productColumns = [
   }
 ];
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -137,7 +137,7 @@ Use slots to customize cell rendering:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatableTable name="users" :columns="userColumns">
       <!-- Custom rendering for the actions column -->
       <template #cell-actions="{ item, index }">
@@ -228,7 +228,7 @@ const orderTotal = computed(() => {
 </script>
 
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaRepeatableTable name="products" :columns="productColumns" />
     
     <div class="order-summary">

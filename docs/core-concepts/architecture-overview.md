@@ -21,7 +21,7 @@ Enforma follows a layered architecture:
 ## Component Hierarchy
 
 ```
-EnformaForm
+Enforma
 ├── EnformaField
 ├── EnformaRepeatable
 │   └── EnformaField

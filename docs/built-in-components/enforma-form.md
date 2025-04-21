@@ -1,30 +1,30 @@
-# EnformaForm
+# Enforma Form
 
-`EnformaForm` is the root component for creating forms with Enforma. It manages form state, validation, and submission handling.
+`Enforma` is the root component for creating forms with Enforma. It manages form state, validation, and submission handling.
 
 ## Basic Usage
 
 ```vue
 <template>
-  <EnformaForm v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <!-- Form fields go here -->
     <EnformaField name="firstName" label="First Name" />
     <EnformaField name="lastName" label="Last Name" />
     
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
-  </EnformaForm>
+  </Enforma>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { EnformaForm, EnformaField, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaField, EnformaSubmitButton } from 'encolajs-formkit';
 
 const formData = ref({
   firstName: '',
   lastName: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
   // Process form data
 }
@@ -70,13 +70,13 @@ You can configure the form behavior with the `config` prop:
 
 ```vue
 <template>
-  <EnformaForm 
-    v-model="formData" 
+  <Enforma 
+    :data="formData" 
     :config="formConfig"
-    @submit="onSubmit"
+    :submitHandler="submit"
   >
     <!-- Form fields -->
-  </EnformaForm>
+  </Enforma>
 </template>
 
 <script setup>
@@ -99,7 +99,7 @@ With the `schema` prop, you can define your form structure via JSON:
 
 ```vue
 <template>
-  <EnformaForm v-model="formData" :schema="formSchema" @submit="onSubmit" />
+  <Enforma :data="formData" :schema="formSchema" :submitHandler="submit" />
 </template>
 
 <script setup>
@@ -121,13 +121,13 @@ Add validation with the `validators` prop:
 
 ```vue
 <template>
-  <EnformaForm 
-    v-model="formData" 
-    :validators="validators"
-    @submit="onSubmit"
+  <Enforma 
+    :data="formData" 
+    :rules="validators"
+    :submitHandler="submit"
   >
     <!-- Form fields -->
-  </EnformaForm>
+  </Enforma>
 </template>
 
 <script setup>
@@ -146,13 +146,13 @@ Use UI library presets to change the rendered components:
 
 ```vue
 <template>
-  <EnformaForm 
-    v-model="formData" 
+  <Enforma 
+    :data="formData" 
     :preset="primevuePreset"
-    @submit="onSubmit"
+    :submitHandler="submit"
   >
     <!-- Form fields -->
-  </EnformaForm>
+  </Enforma>
 </template>
 
 <script setup>

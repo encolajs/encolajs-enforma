@@ -6,7 +6,7 @@
 
 ```vue
 <template>
-  <Enforma v-model="formData" @submit="onSubmit">
+  <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="firstName" label="First Name" />
     <EnformaField name="email" type="email" label="Email Address" />
     <EnformaField 
@@ -29,7 +29,7 @@ const formData = ref({
   message: ''
 });
 
-function onSubmit(data) {
+function submit(data) {
   console.log('Form submitted:', data);
 }
 </script>
@@ -58,7 +58,7 @@ function onSubmit(data) {
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField name="text" type="text" label="Text Input" />
     <EnformaField name="email" type="email" label="Email Input" />
     <EnformaField name="password" type="password" label="Password Input" />
@@ -95,7 +95,7 @@ Add validation rules with the `validators` prop:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <!-- String-based validators with pipe separator -->
     <EnformaField 
       name="username" 
@@ -108,7 +108,7 @@ Add validation rules with the `validators` prop:
       name="email" 
       type="email" 
       label="Email" 
-      :validators="['required', 'email']" 
+      :rules="['required', 'email']" 
     />
     
     <!-- Complex validators with options -->
@@ -116,7 +116,7 @@ Add validation rules with the `validators` prop:
       name="password" 
       type="password" 
       label="Password" 
-      :validators="passwordValidators" 
+      :rules="passwordValidators" 
     />
   </Enforma>
 </template>
@@ -140,7 +140,7 @@ Field properties can be dynamic based on form state:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField 
       name="accountType" 
       type="select" 
@@ -172,7 +172,7 @@ Options for select, radio, and checkbox fields can be specified in several forma
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <!-- Simple array of strings -->
     <EnformaField 
       name="color" 
@@ -245,7 +245,7 @@ Override the default component for a field type:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <!-- Use a custom component -->
     <EnformaField 
       name="tags" 
@@ -266,7 +266,7 @@ Customize field rendering with slots:
 
 ```vue
 <template>
-  <Enforma v-model="formData">
+  <Enforma :data="formData">
     <EnformaField name="email" label="Email">
       <!-- Custom prefix inside the input -->
       <template #prefix>
