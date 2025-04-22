@@ -53,7 +53,7 @@ export type {
   FieldController,
   EventTrigger,
   FieldSchema,
-  FormSectionSchema,
+  SectionSchema,
   EnformaSchema,
 } from './types'
 

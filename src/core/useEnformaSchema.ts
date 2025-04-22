@@ -1,8 +1,8 @@
 // src/core/useEnformaSchema.ts
 import { computed } from 'vue'
-import type { EnformaSchema, FieldSchema, FormSectionSchema } from '@/types'
+import type { EnformaSchema, FieldSchema, SectionSchema } from '@/types'
 
-export interface SectionWithFields extends FormSectionSchema {
+export interface SectionWithFields extends SectionSchema {
   fields: FieldSchema[]
   subsections: Record<string, SectionWithFields>
 }
@@ -15,7 +15,7 @@ export function useEnformaSchema(schema: EnformaSchema) {
     // First pass: collect all sections
     Object.entries(schema).forEach(([key, item]) => {
       if ('section' in item && 'title' in item) {
-        const section = item as FormSectionSchema
+        const section = item as SectionSchema
         if (!section.section) {
           // This is a root section
           sections[key] = {

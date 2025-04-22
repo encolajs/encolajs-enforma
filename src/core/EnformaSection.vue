@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, inject, resolveComponent, mergeProps } from 'vue'
 import { formSchemaKey } from '@/constants/symbols'
-import { FieldSchema, FormSectionSchema, EnformaSchema } from '@/types'
+import { FieldSchema, SectionSchema, EnformaSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 interface FieldWithPosition extends FieldSchema {
@@ -29,7 +29,7 @@ interface FieldWithPosition extends FieldSchema {
   name: string
 }
 
-interface SectionWithPosition extends FormSectionSchema {
+interface SectionWithPosition extends SectionSchema {
   position?: number
   name: string
 }
@@ -38,7 +38,7 @@ function isFieldSchema(value: any): value is FieldSchema {
   return value && typeof value === 'object' && 'type' in value
 }
 
-function isSectionSchema(value: any): value is FormSectionSchema {
+function isSectionSchema(value: any): value is SectionSchema {
   return (
     value && typeof value === 'object' && 'title' in value && 'section' in value
   )
@@ -70,7 +70,7 @@ function getFields(
 function getSubSections(
   schema: EnformaSchema | undefined,
   sectionName: string
-): Array<[string, FormSectionSchema]> {
+): Array<[string, SectionSchema]> {
   if (!schema) return []
 
   // Find all sections that belong to this section
@@ -83,7 +83,7 @@ function getSubSections(
     }
     // For other sections, only include fields that belong to this section
     return field.section === sectionName
-  }) as Array<[string, FormSectionSchema]>
+  }) as Array<[string, SectionSchema]>
 }
 
 // Helper function to sort items by position

@@ -3,13 +3,13 @@ import { flushPromises, mount } from '@vue/test-utils'
 // @ts-expect-error IDE not working properly
 import EnformaSection from '../../src/core/EnformaSection.vue'
 import { formSchemaKey, formStateKey, formConfigKey } from '@/constants/symbols'
-import type { EnformaSchema, FieldSchema, FormSectionSchema } from '@/types'
+import type { EnformaSchema, FieldSchema, SectionSchema } from '@/types'
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Create a mock schema for testing
 const createMockSchema = (
-  fields: Record<string, FieldSchema | FormSectionSchema>
+  fields: Record<string, FieldSchema | SectionSchema>
 ): EnformaSchema => {
   return fields as EnformaSchema
 }

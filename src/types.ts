@@ -162,8 +162,9 @@ export interface FormController {
 export interface FieldSchema {
   /**
    * The component type that is used to render this field
+   * This defaults to
    */
-  wrapper: string
+  wrapper: string | ComponentPublicInstance
 
   /**
    * The field type that maps to a registered component in the field registry
@@ -270,23 +271,29 @@ export interface FieldSchema {
   [key: string]: any
 }
 
-export interface FormSectionSchema {
-  /**
-   * The label for the section
-   */
+export interface SectionSchema {
+  // title of the component
   title: string
 
-  title_component: string
+  // tag/component used for title
+  title_component?: string
 
-  title_props: Record<string, any>
+  // props to be passed to the title
+  title_props?: Record<string, any>
 
-  section: string
+  // component to be used for rendering
+  // in case we need to use a different component
+  component?: string
 
-  priority: number
+  // parent section
+  section?: string
+
+  // priority in the parent section
+  priority?: number
 }
 
 export interface EnformaSchema {
-  [key: string]: FieldSchema | FormSectionSchema
+  [key: string]: FieldSchema | SectionSchema
 }
 
 export type { FieldController } from './headless/useForm'
