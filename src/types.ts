@@ -157,30 +157,42 @@ export interface FormController {
 }
 
 /**
- * Represents the schema definition for a single form field
+ * Base schema interface with common properties
  */
-export interface FieldSchema {
+export interface BaseSchema {
   /**
-   * The component type that is used to render this field
-   * This defaults to
+   * The type of schema this represents
    */
-  wrapper: string | ComponentPublicInstance
+  type: 'field' | 'section' | 'repeatable' | 'repeatable-table'
 
   /**
-   * The field type that maps to a registered component in the field registry
+   * The component used for rendering this part of the form
+   * Depending on each type of element there will be defaults
    */
-  type: string
+  component?: string
 
   /**
-   * The section this field belongs to, used for organizing fields into groups
+   * The section this schema belongs to, used for organizing into groups
    */
   section?: string
 
   /**
-   * Conditional expression to determine if the field should be shown
+   * Position for rendering this in the form/parent section
+   */
+  position?: number
+
+  /**
+   * Conditional expression to determine if the schema should be shown
    * Can be a string containing an expression referencing form state: "${form.country === 'US'}"
    */
   if?: string
+}
+
+/**
+ * Represents the schema definition for a single form field
+ */
+export interface FieldSchema extends BaseSchema {
+  type: 'field'
 
   /**
    * Label text for the field
@@ -196,7 +208,7 @@ export interface FieldSchema {
    * Whether the field is required
    * Note: This is for UI purposes - actual validation is defined in validation_rules
    */
-  required?: boolean
+  required?: boolean | string
 
   /**
    * Props to apply to the entire field component (wrapper)
@@ -224,54 +236,21 @@ export interface FieldSchema {
   error_props?: Record<string, any>
 
   /**
-   * For repeatable fields (arrays), whether this field represents a repeatable group
-   */
-  is_repeatable?: boolean
-
-  /**
-   * For repeatable fields, the minimum number of items allowed
-   */
-  min_items?: number
-
-  /**
-   * For repeatable fields, the maximum number of items allowed
-   */
-  max_items?: number
-
-  /**
-   * For repeatable fields, the definition of fields within each repeatable item
-   */
-  subfields?: Record<string, FieldSchema>
-
-  /**
    * Default value for the field
    */
   default_value?: any
 
   /**
-   * Component to use for this field, alternative to using 'type'
+   * Component to use for this field
    * Allows direct component references
    */
-  component?: string | ComponentPublicInstance
+  input?: string | ComponentPublicInstance
 
-  /**
-   * Custom transformers to apply to this field
-   * Used in the transformer pipeline
-   */
-  transformers?: string[]
-
-  /**
-   * Additional custom configuration specific to this field
-   */
-  config?: Record<string, any>
-
-  /**
-   * Allow any other properties to be included in the field schema
-   */
-  [key: string]: any
 }
 
-export interface SectionSchema {
+export interface SectionSchema extends BaseSchema {
+  type: 'section'
+
   // title of the component
   title: string
 
@@ -292,8 +271,68 @@ export interface SectionSchema {
   priority?: number
 }
 
+/**
+ * Schema for repeatable field groups
+ */
+export interface RepeatableSchema extends BaseSchema {
+  type: 'repeatable'
+
+  /**
+   * The minimum number of items allowed
+   */
+  min_items?: number
+
+  /**
+   * The maximum number of items allowed
+   */
+  max_items?: number
+
+  /**
+   * The definition of fields within each repeatable item
+   * This must be passed if the `item_component` is not provided
+   */
+  subfields?: Record<string, FieldSchema>
+
+  /**
+   * Props to apply to the repeatable container
+   */
+  props?: Record<string, any>
+
+  /**
+   * Component to use for each repeatable item
+   */
+  item_component?: string
+}
+
+/**
+ * Schema for repeatable fields displayed in a table format
+ */
+export interface RepeatableTableSchema extends BaseSchema {
+  type: 'repeatable-table'
+
+  /**
+   * The minimum number of items allowed
+   */
+  min_items?: number
+
+  /**
+   * The maximum number of items allowed
+   */
+  max_items?: number
+
+  /**
+   * The definition of fields within each repeatable item
+   */
+  subfields: Record<string, FieldSchema>
+
+  /**
+   * Props to apply to the repeatable container
+   */
+  props?: Record<string, any>
+}
+
 export interface EnformaSchema {
-  [key: string]: FieldSchema | SectionSchema
+  [key: string]: FieldSchema | SectionSchema | RepeatableSchema | RepeatableTableSchema
 }
 
 export type { FieldController } from './headless/useForm'
