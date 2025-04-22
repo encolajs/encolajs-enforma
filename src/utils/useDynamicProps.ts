@@ -21,11 +21,13 @@ export type DynamicProps = Record<string, any>
 export interface UseDynamicPropsReturn {
   /**
    * Evaluate all expressions in the props object
+   * Returns an object with computed refs for properties that contain expressions
    */
-  evaluateProps: (props: DynamicProps) => DynamicProps
+  evaluateProps: (props: DynamicProps) => Record<string, ComputedRef<any> | any>
 
   /**
    * Evaluate a conditional expression
+   * Returns a computed ref that will automatically update when the context changes
    */
   evaluateCondition: (
     condition: string | boolean | undefined
@@ -52,50 +54,41 @@ export function useDynamicProps(
    * Create the context for expression evaluation
    */
   const getExpressionContext = (): ExpressionContext => {
-    // Basic context from form state and external context
+    // Create context object with the three main keys
     return {
-      // Form values from form state
-      form: formState?.values() ?? {},
+      // Form controller (not just values)
+      form: formState ?? {},
       // External context
       context: { ...formContext },
-      // Validation errors
-      errors: formState?.errors() ?? {},
-      // Local context specific to this instance
+      // Form configuration
+      config: formConfig,
+      // Local context specific to this instance (for backward compatibility)
       ...localContext,
     }
   }
 
   /**
    * Evaluates all expressions within props
+   * Returns an object with computed refs for properties that contain expressions
    */
-  const evaluateProps = (props: DynamicProps): DynamicProps => {
-    const expressionContext = getExpressionContext()
-    return evaluateObject(props, expressionContext, formConfig)
+  const evaluateProps = (props: DynamicProps): Record<string, ComputedRef<any> | any> => {
+    // Pass getExpressionContext as function to ensure reactivity
+    return evaluateObject(props, getExpressionContext, formConfig)
   }
 
   /**
    * Evaluates a conditional expression
+   * Returns a computed ref that will automatically update when the context changes
    */
   const evaluateConditionForDynamicProps = (
     condition: string | boolean | undefined
-  ): ComputedRef<any> => {
-    return computed(() => {
-      // assume the condition is true if not defined
-      if (condition === undefined) {
-        return true
-      }
-
-      if (typeof condition === 'boolean') {
-        return condition
-      }
-
-      const expressionContext = getExpressionContext()
-      return evaluateCondition(
-        condition,
-        expressionContext,
-        getConfig('expressions', { delimiters: { start: '${', end: '}' } })
-      )
-    })
+  ): ComputedRef<boolean> => {
+    // Pass getExpressionContext as function to ensure reactivity
+    return evaluateCondition(
+      condition,
+      getExpressionContext,
+      getConfig('expressions', { delimiters: { start: '${', end: '}' } })
+    )
   }
 
   return {

@@ -15,9 +15,12 @@ Dynamic props are evaluated at runtime when components are defined in a schema:
 
 Dynamic props are evaluated in an environment that provides access to:
 
-- `form` - is the **FormController** and gives you access to the entire form state
-- `context` - is a **Context Object** passed to the form as the `context` prop. It can contain data an functions
-- `config` - is the **Form Configuration**
+- `form` - The **FormController** instance that gives you access to the form's methods and state
+  - `form.values()` - Get all form values
+  - `form.errors()` - Get all validation errors
+  - `form.getField(name)` - Get a specific field controller
+- `context` - The **Context Object** passed to the form via the `context` prop. Can contain custom data and functions
+- `config` - The **Form Configuration** used to configure the form's behavior
 
 ## Using Dynamic Props
 
@@ -39,7 +42,7 @@ const formSchema = {
       component: 'select',
       label: 'State/Province',
       inputProps: {
-        options: '${context.getStatesByCountry(form.country)}'
+        options: '${context.getStatesByCountry(form.values().country)}'
       }
     }
   ]
@@ -65,7 +68,7 @@ const formSchema = {
       name: 'company',
       component: 'text',
       label: 'Company',
-      if: '${form.employmentType !== "Not employed"}'
+      if: '${form.values().employmentType !== "Not employed"}'
     }
   ]
 };
@@ -76,7 +79,7 @@ const formSchema = {
 In order for a prop's value to be considered as "dynamic" it has to have the following form:
 
 ```js
-'${form.age > 18 && context.require_age_verification === true}'
+'${form.values().age > 18 && context.require_age_verification === true}'
 ```
 
 This behaviour can be changed by using the [`expressions` config option](/core-concepts/configuration.md)

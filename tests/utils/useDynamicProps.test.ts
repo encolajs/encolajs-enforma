@@ -63,15 +63,15 @@ describe('useDynamicProps', () => {
     const { evaluateCondition } = useDynamicProps()
 
     // Test with a simple expression
-    const simpleCondition = evaluateCondition('form.name === "John"')
+    const simpleCondition = evaluateCondition('form.values().name === "John"')
     expect(simpleCondition.value).toBe(true)
 
     // Test with a more complex expression
-    const complexCondition = evaluateCondition('form.age > 25')
+    const complexCondition = evaluateCondition('form.values().age > 25')
     expect(complexCondition.value).toBe(true)
 
     // Test with a false expression
-    const falseCondition = evaluateCondition('form.age < 20')
+    const falseCondition = evaluateCondition('form.values().age < 20')
     expect(falseCondition.value).toBe(false)
   })
 
@@ -97,21 +97,23 @@ describe('useDynamicProps', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  test('should evaluate props with expressions', () => {
+  test('should evaluate props with expressions returning computed refs', () => {
     const { evaluateProps } = useDynamicProps()
 
     // Test with props containing expressions
     const props = {
-      label: '${form.name}',
-      placeholder: '${form.age}',
+      label: '${form.values().name}',
+      placeholder: '${form.values().age}',
       type: 'text',
     }
 
     const evaluatedProps = evaluateProps(props)
 
-    // Verify that the expressions were evaluated
-    expect(evaluatedProps.label).toBe('John')
-    expect(evaluatedProps.placeholder).toBe(30)
+    // Verify that expressions are evaluated as computed refs
+    expect(evaluatedProps.label.value).toBe('John')
+    expect(evaluatedProps.placeholder.value).toBe(30)
+    
+    // Non-expression values remain as is
     expect(evaluatedProps.type).toBe('text')
   })
 
@@ -122,9 +124,17 @@ describe('useDynamicProps', () => {
     const context = getContext()
 
     // Verify that the context contains the expected properties
-    expect(context.form).toEqual({ name: 'John', age: 30 })
+    // Form should be the form controller now
+    expect(typeof context.form.values).toBe('function')
+    expect(typeof context.form.errors).toBe('function')
+    expect(context.form.values()).toEqual({ name: 'John', age: 30 })
+    expect(context.form.errors()).toEqual({ name: ['Name is required'] })
+    
+    // Context and config
     expect(context.context).toEqual({ theme: 'dark', locale: 'en' })
-    expect(context.errors).toEqual({ name: ['Name is required'] })
+    expect(context.config).toEqual({ expressions: { allowComplex: true } })
+    
+    // Local context still works
     expect(context.localValue).toBe('local')
   })
 })
