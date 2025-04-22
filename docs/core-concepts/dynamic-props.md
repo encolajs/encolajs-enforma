@@ -1,20 +1,15 @@
 # Dynamic Props
 
-Enforma provides a powerful dynamic props system that allows form components to adapt their behavior and appearance based on form state, context, and configuration. 
+Enforma provides a powerful dynamic props system that allows form components defined in a schema to adapt their behavior and appearance based on form state, context, and configuration.
 
-Dynamic props enable your form components to:
+> [!IMPORTANT] 
+> Dynamic props using expressions are **only available in schema-based forms**. When directly using components like EnformaField, EnformaSection, etc., you must provide plain values (not expressions) for all props.
+
+Dynamic props enable your schema-defined form components to:
 - Adapt behavior based on form state
 - Conditionally render components using the special `if` prop
 
-> [!WARNING] This feature should be used only when working with schema-based forms.
-> In all other rendering modes you are in control on what is being shown or not
-
-Dynamic props are available for all Enforma components:
-
-- `EnformaField`
-- `EnformaSection`
-- `EnformaRepeatable`
-- `EnformaRepeatableTable`
+Dynamic props are evaluated at runtime when components are defined in a schema:
 
 ## Evaluation Environment
 

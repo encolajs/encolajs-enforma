@@ -39,7 +39,7 @@ function submit(data) {
 | `showLabelNextToInput` | `Boolean`                        | Whether to show the label next to the input instead of above it                               |
 | `required` | `Boolean`                        | Whether the field is required                                                                 |
 | `help` | `String`                         | Help text to display below the field                                                          |
-| `if` | `Boolean` \| `DynamicExpression` | For conditionally displaying the field (see [Dynamic Props](/core-concepts/dynamic-props.md)) |
+| `if` | `Boolean` | Controls whether the field is displayed or hidden (in schema-based forms, this prop can also accept expressions - see [Dynamic Props](/core-concepts/dynamic-props.md)) |
 | `labelProps` | `Object`                         | Additional props to pass to the label element                                                 |
 | `errorProps` | `Object`                         | Additional props to pass to the error message element                                         |
 | `helpProps` | `Object`                         | Additional props to pass to the help text element                                             |
@@ -71,7 +71,9 @@ import { InputText } from 'your-ui-library-of-choice'
 
 ### The `if` Prop
 
-This prop is similar to VueJS' `v-if` with the only difference that it is evaluated in the context of the form. For more details check the [dynamic props section](/core-concepts/dynamic-props.md)
+This prop is similar to VueJS' `v-show` and controls whether the field is displayed or hidden. When used directly in EnformaField, it only accepts boolean values. 
+
+When a field is defined in a schema, the `if` prop can use dynamic expressions (like `${form.country === 'US'}`) which will be evaluated at runtime. For more details on dynamic expressions in schemas, see the [dynamic props section](/core-concepts/dynamic-props.md).
 
 ## Slots
 

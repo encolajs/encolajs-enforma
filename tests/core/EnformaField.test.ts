@@ -110,45 +110,6 @@ describe('EnformaField', () => {
     expect(wrapper.find('.enforma-error').text()).toBe('This field is required')
   })
 
-  it('evaluates dynamic props correctly', async () => {
-    const dynamicFormState = createFormState({ someField: 'test' })
-
-    const wrapper = mountTestComponent(
-      EnformaField,
-      {
-        name: 'dynamic-field',
-        label: 'Dynamic Field',
-        type: 'input',
-        inputProps: {
-          'data-test': '${form.someField === "test" ? "ok" : "notok"}',
-          disabled: '${form.someField === "test"}',
-        },
-      },
-      {
-        global: {
-          provide: {
-            [formStateKey]: dynamicFormState,
-            [formSchemaKey]: schema,
-          },
-        },
-      }
-    )
-
-    // Allow the dynamic props to be evaluated
-    await flushPromises()
-
-    // Initially, the field should be disabled since someField === "test"
-    expect(wrapper.find('input').attributes('data-test')).toBe('ok')
-    expect(wrapper.find('input').element.disabled).toBe(true)
-
-    // Change the form value to make the condition false
-    dynamicFormState.someField = 'different'
-    await flushPromises()
-
-    // Now the field should be enabled since someField !== "test"
-    expect(wrapper.find('input').attributes('data-test')).toBe('notok')
-    expect(wrapper.find('input').element.disabled).toBe(false)
-  })
 
   it('shows help text when provided', async () => {
     const wrapper = mountTestComponent(
@@ -174,7 +135,7 @@ describe('EnformaField', () => {
     )
   })
 
-  it('handles visibility toggle correctly', async () => {
+  it('handles visibility toggle with boolean values correctly', async () => {
     const wrapper = mountTestComponent(
       EnformaField,
       {

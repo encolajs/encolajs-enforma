@@ -142,7 +142,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   })
 
   // Get utilities
-  const { evaluateProps, evaluateCondition } = useDynamicProps()
   const { t } = useTranslation()
 
   // Derive computed values
@@ -171,59 +170,51 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const wrapperProps = computed(() => {
     const hasError = !!errorMessage.value
 
-    return evaluateProps(
-      mergeProps(
-        {
-          id: `wrapper-${fieldId.value}`,
-        },
-        fieldOptions.value.wrapperProps || {},
-        getConfig('pt.wrapper', {}) as Record<string, unknown>,
-        hasError
-          ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
-          : {},
-        fieldOptions.value.required
-          ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
-          : {}
-      )
+    return mergeProps(
+      {
+        id: `wrapper-${fieldId.value}`,
+      },
+      fieldOptions.value.wrapperProps || {},
+      getConfig('pt.wrapper', {}) as Record<string, unknown>,
+      hasError
+        ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
+        : {},
+      fieldOptions.value.required
+        ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
+        : {}
     )
   })
 
   // Compute label props
   const labelProps = computed(() => {
-    return evaluateProps(
-      mergeProps(
-        {
-          for: fieldId.value,
-        },
-        fieldOptions.value.labelProps || {},
-        getConfig('pt.label', {}) as Record<string, unknown>
-      )
+    return mergeProps(
+      {
+        for: fieldId.value,
+      },
+      fieldOptions.value.labelProps || {},
+      getConfig('pt.label', {}) as Record<string, unknown>
     )
   })
 
   // Help text props
   const helpProps = computed(() => {
-    return evaluateProps(
-      mergeProps(
-        {
-          id: `help-${fieldId.value}`,
-        },
-        fieldOptions.value.helpProps || {},
-        getConfig('pt.help', {}) as Record<string, unknown>
-      )
+    return mergeProps(
+      {
+        id: `help-${fieldId.value}`,
+      },
+      fieldOptions.value.helpProps || {},
+      getConfig('pt.help', {}) as Record<string, unknown>
     )
   })
 
   // Error message props
   const errorProps = computed(() => {
-    return evaluateProps(
-      mergeProps(
-        {
-          id: `error-${fieldId.value}`,
-        },
-        fieldOptions.value.errorProps || {},
-        getConfig('pt.error', {}) as Record<string, unknown>
-      )
+    return mergeProps(
+      {
+        id: `error-${fieldId.value}`,
+      },
+      fieldOptions.value.errorProps || {},
+      getConfig('pt.error', {}) as Record<string, unknown>
     )
   })
 
@@ -232,25 +223,23 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     // The field controller's _fieldVersion will be updated by FieldController._version
     // ensuring reactivity based on field state changes
 
-    return evaluateProps(
-      mergeProps(
-        {
-          id: fieldId.value,
-          value: fieldController.value.value,
-          name: fieldOptions.value.name,
-          placeholder: t(fieldOptions.value.placeholder),
-          invalid: !!errorMessage.value,
-        },
-        fieldController.value.attrs || {},
-        fieldOptions.value.inputProps || {},
-        getConfig('pt.input', {}) as Record<string, unknown>
-      )
+    return mergeProps(
+      {
+        id: fieldId.value,
+        value: fieldController.value.value,
+        name: fieldOptions.value.name,
+        placeholder: t(fieldOptions.value.placeholder),
+        invalid: !!errorMessage.value,
+      },
+      fieldController.value.attrs || {},
+      fieldOptions.value.inputProps || {},
+      getConfig('pt.input', {}) as Record<string, unknown>
     )
   })
 
-  // Compute conditional visibility
+  // Compute conditional visibility (now just uses the boolean value from fieldOptions)
   const visibilityCondition = computed(() => {
-    return evaluateCondition(fieldOptions.value.if).value
+    return !!fieldOptions.value.if
   })
 
   // Combine all props into a single computed property
