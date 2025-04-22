@@ -6,13 +6,12 @@
 { label: 'FormController API', link: '/base-components/enforma-form-controller_api' },
 ]" />
 
-The FormController is the object returned by `useForm` composable, which is used by the [HeadlessForm component](/headless/form.md) and provides the following properties and methods:
+The FormController is the object returned by the `useForm` composable, which is used by the [HeadlessForm component](/headless/form.md) and provides the following properties and methods:
 
 ## State Properties
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `$stateVersion` | `{ value: number }` | A reactive reference tracking form state changes |
 | `$isValidating` | `boolean` | Whether the form is currently validating |
 | `$isSubmitting` | `boolean` | Whether the form is currently submitting |
 | `$isDirty` | `boolean` | Whether any field has been modified |

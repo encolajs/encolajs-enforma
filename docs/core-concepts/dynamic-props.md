@@ -1,91 +1,32 @@
 # Dynamic Props
 
-Enforma allows you to create reactive form components whose properties can change based on form state, user interactions, or external data.
+Enforma provides a powerful dynamic props system that allows form components to adapt their behavior and appearance based on form state, context, and configuration. 
 
-## Understanding Dynamic Props
+Dynamic props enable your form components to:
+- Adapt behavior based on form state
+- Conditionally render components using the special `if` prop
 
-Dynamic props enable your form fields to:
+> [!WARNING] This feature should be used only when working with schema-based forms.
+> In all other rendering modes you are in control on what is being shown or not
 
-- Change behavior based on other field values
-- Update appearance based on validation state
-- Adapt to user interactions
-- React to external data changes
+Dynamic props are available for all Enforma components:
+
+- `EnformaField`
+- `EnformaSection`
+- `EnformaRepeatable`
+- `EnformaRepeatableTable`
+
+## Evaluation Environment
+
+Dynamic props are evaluated in an environment that provides access to:
+
+- `form` - is the **FormController** and gives you access to the entire form state
+- `context` - is a **Context Object** passed to the form as the `context` prop. It can contain data an functions
+- `config` - is the **Form Configuration**
 
 ## Using Dynamic Props
 
-You can define dynamic props in several ways:
-
-### 1. Expression Strings
-
-The simplest way to define dynamic behavior is with expression strings:
-
-```vue
-<template>
-  <Enforma :data="formData">
-    <EnformaField 
-      name="employmentType" 
-      type="select" 
-      label="Employment Type"
-      :options="['Full-time', 'Part-time', 'Contract', 'Not employed']"
-    />
-    
-    <!-- This field is only required when employmentType is not "Not employed" -->
-    <EnformaField 
-      name="company" 
-      label="Company"
-      :required="$form.employmentType !== 'Not employed'"
-    />
-    
-    <!-- This field is entirely hidden when employmentType is "Not employed" -->
-    <EnformaField 
-      name="yearsOfExperience" 
-      label="Years at Company"
-      type="number"
-      :if="$form.employmentType !== 'Not employed'"
-    />
-  </Enforma>
-</template>
-```
-
-### 2. Function Props
-
-For more complex logic, you can use functions:
-
-```vue
-<template>
-  <Enforma :data="formData">
-    <EnformaField 
-      name="password" 
-      type="password" 
-      label="Password"
-    />
-    
-    <EnformaField 
-      name="confirmPassword" 
-      type="password" 
-      label="Confirm Password"
-      :rules="confirmPasswordValidators"
-    />
-  </Enforma>
-</template>
-
-<script setup>
-const confirmPasswordValidators = ($form) => {
-  return [
-    'required',
-    { 
-      name: 'matches', 
-      params: [$form.password],
-      message: 'Passwords must match'
-    }
-  ];
-};
-</script>
-```
-
-### 3. In Schema Definitions
-
-Dynamic props work with schema-based forms too:
+Dynamic props are particularly useful when defining form schemas:
 
 ```js
 const formSchema = {
@@ -94,46 +35,62 @@ const formSchema = {
       name: 'country',
       component: 'select',
       label: 'Country',
-      options: ['US', 'Canada', 'UK', 'Other']
+      inputProps: {
+        options: ['US', 'Canada', 'UK', 'Other']
+      }
     },
     {
       name: 'state',
       component: 'select',
       label: 'State/Province',
-      if: '$form.country === "US" || $form.country === "Canada"',
-      options: ($form) => getStatesByCountry($form.country)
+      inputProps: {
+        options: '${context.getStatesByCountry(form.country)}'
+      }
     }
   ]
 };
 ```
 
-## Available Context Variables
+## The special `if` Prop
 
-In dynamic prop expressions, you have access to:
+The `if` prop is a special dynamic prop that is evaluated and used as a `v-if` directive:
 
-- **$form** - The entire form state object
-- **$field** - The current field's state
-- **$parent** - For nested fields, the parent's state
-- **$index** - For repeatable fields, the current item index
-- **$dirty** - Whether the field has been modified
-- **$errors** - Validation errors for the field
-- **$touched** - Whether the field has been focused and then blurred
+```js
+const formSchema = {
+  fields: [
+    {
+      name: 'employmentType',
+      component: 'select',
+      label: 'Employment Type',
+      inputProps: {
+        options: ['Full-time', 'Part-time', 'Contract', 'Not employed']
+      }
+    },
+    {
+      name: 'company',
+      component: 'text',
+      label: 'Company',
+      if: '${form.employmentType !== "Not employed"}'
+    }
+  ]
+};
+```
 
-## Performance Optimization
+## Expression Syntax
 
-Dynamic props are reactive, meaning they recalculate when dependencies change. For optimal performance:
+In order for a prop's value to be considered as "dynamic" it has to have the following form:
 
-- Use the simplest expressions that meet your needs
-- Avoid expensive computations in dynamic prop functions
-- Consider memoizing complex calculations
+```js
+'${form.age > 18 && context.require_age_verification === true}'
+```
+
+This behaviour can be changed by using the [`expressions` config option](/core-concepts/configuration.md)
 
 ## Common Use Cases
 
 Dynamic props are particularly useful for:
 
-1. **Conditional validation** - Apply different validation rules based on context
-2. **Dependent fields** - Show/hide fields based on other values
-3. **Adaptive UI** - Change field appearance based on validation state
-4. **Dynamic options** - Populate select options based on other selections
-
-By leveraging dynamic props, you can create forms that adapt intelligently to user input and application state, improving both usability and data quality.
+1. **Conditional Rendering** - Show/hide components based on form state
+2. **Adaptive UI** - Change component appearance based on validation state
+3. **Context-Aware Forms** - Adapt form behavior based on application context
+4. **Dynamic Options** - Populate select options based on other selections
