@@ -429,7 +429,7 @@ export function evaluateObject<T extends Record<string, any>>(
           // For arrays, we need to compute each element that contains expressions
           result[key] = computed(() => {
             const currentContext = typeof context === 'function' ? context() : context
-            return value.map((item) => {
+            return value.map((item: any) => {
               try {
                 if (
                   typeof item === 'string' &&
