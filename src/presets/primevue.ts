@@ -1,3 +1,4 @@
+import { Component } from 'vue'
 import SubmitButton from './primevue/SubmitButton.vue'
 import ResetButton from './primevue/ResetButton.vue'
 import RepeatableRemoveButton from './primevue/RepeatableRemoveButton.vue'
@@ -19,7 +20,7 @@ import {
   getGlobalConfig,
 } from '@/utils/useConfig'
 
-const fieldMap: Record<string, any> = {
+const inputComponents: Record<string, Component> = {
   input: InputText,
   select: Select,
   autocomplete: AutoComplete,
@@ -28,17 +29,20 @@ const fieldMap: Record<string, any> = {
   switch: ToggleSwitch,
 }
 
-function fieldPropsTransformer(
+/**
+ * Function that ensures an input field is using a PrimeVue component
+ * It uses the `fieldMap` to convert something like `select`
+ * into the Select component from PrimeVue
+ */
+function usePrimeVueComponent(
   fieldProps: any,
   field: FieldControllerExport,
   formState: FormController,
   config: any
 ) {
-  fieldProps.input.labelId = field.value.id
-  fieldProps.input.modelValue = field.value.value
   if (fieldProps.component && 'object' !== typeof fieldProps.component) {
     // if the component is not already a Vue component
-    fieldProps.component = fieldMap[fieldProps.component] || InputText
+    fieldProps.component = inputComponents[fieldProps.component] || InputText
   } else if (!fieldProps.component) {
     // default to InputText
     fieldProps.component = InputText
@@ -47,14 +51,42 @@ function fieldPropsTransformer(
 }
 
 /**
- * Applies the PrimeVue preset to the global configuration
- * This function modifies the global configuration by merging the PrimeVue preset
- * with the existing global configuration
+ * Most PrimeVue components use labelId and modelValue props
+ * This function adds them to the input field component
  */
-export default function usePrimeVuePreset(): void {
+function setPrimeVueSpecificProps(
+  fieldProps: any,
+  field: FieldControllerExport,
+  formState: FormController,
+  config: any
+) {
+  fieldProps.input.labelId = field.value.id
+  fieldProps.input.modelValue = field.value.value
+  return fieldProps
+}
+
+
+/**
+ * Applies the PrimeVue preset to the global configuration
+ * This function modifies the global configuration
+ * by merging the PrimeVue preset with the existing global configuration
+ */
+export default function usePrimeVuePreset(components?: Record<string, Component>): void {
+  /**
+   * Because we don't know which PrimeVue components are used in an app
+   * the developer must provide the list of components after importing them
+   */
+  if (components) {
+    Object.keys(components ).map((key) => inputComponents[key] = components[key])
+  }
+
   const currentConfig = getGlobalConfig()
 
   const primeVuePreset: DeepPartial<EnformaConfig> = {
+    /**
+     * Pass-Through configuration
+     * Props to be passed added to various components
+     */
     pt: {
       actions: {
         class: 'flex gap-2',
@@ -63,6 +95,9 @@ export default function usePrimeVuePreset(): void {
         class: 'text-red-500',
       },
     },
+    /**
+     * Default components to be used for specific situations
+     */
     components: {
       submitButton: SubmitButton,
       resetButton: ResetButton,
@@ -71,8 +106,14 @@ export default function usePrimeVuePreset(): void {
       repeatableMoveUpButton: RepeatableMoveUpButton,
       repeatableMoveDownButton: RepeatableMoveDownButton,
     },
+    /**
+     * Functions to change the props of Enforma components before rendering
+     */
     transformers: {
-      field_props: [fieldPropsTransformer],
+      field_props: [
+        usePrimeVueComponent,
+        setPrimeVueSpecificProps,
+      ],
     },
   }
 
@@ -95,6 +136,7 @@ export default function usePrimeVuePreset(): void {
       ],
     },
   }
+
   // Set the global configuration
   setGlobalConfig(mergedConfig)
 }
