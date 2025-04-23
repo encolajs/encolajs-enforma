@@ -1,6 +1,6 @@
 import { defineComponent, provide, h, PropType } from 'vue'
 import { useForm } from './useForm'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import { FieldController } from './useForm'
 
@@ -139,7 +139,7 @@ export default defineComponent({
     )
 
     // Provide form to child components
-    provide(formStateKey, formCtrl)
+    provide(formControllerKey, formCtrl)
 
     // Handle form submission
     const handleSubmit = async (e: Event) => {

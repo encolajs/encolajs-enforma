@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 // @ts-expect-error IDE not working properly
 import EnformaSection from '../../src/core/EnformaSection.vue'
-import { formSchemaKey, formStateKey, formConfigKey } from '@/constants/symbols'
+import { formSchemaKey, formControllerKey, formConfigKey } from '@/constants/symbols'
 import type { EnformaSchema, FieldSchema, SectionSchema } from '@/types'
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
@@ -49,7 +49,7 @@ describe('EnformaSection', () => {
         global: {
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -100,7 +100,7 @@ describe('EnformaSection', () => {
         global: {
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -162,7 +162,7 @@ describe('EnformaSection', () => {
           },
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -220,7 +220,7 @@ describe('EnformaSection', () => {
         global: {
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -272,7 +272,7 @@ describe('EnformaSection', () => {
           },
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -327,7 +327,7 @@ describe('EnformaSection', () => {
           },
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -360,7 +360,7 @@ describe('EnformaSection', () => {
         global: {
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -394,7 +394,7 @@ describe('EnformaSection', () => {
           },
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }
@@ -446,7 +446,7 @@ describe('EnformaSection', () => {
         global: {
           provide: {
             [formSchemaKey]: schema,
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       }

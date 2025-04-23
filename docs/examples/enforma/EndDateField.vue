@@ -43,7 +43,7 @@ It doesn't render the errors, or label, it just renders the inputs
 </template>
 
 <script setup>
-import { formStateKey, HeadlessField } from '@'
+import { formControllerKey, HeadlessField } from '@'
 import { DatePicker, ToggleSwitch } from 'primevue'
 import { inject, computed } from 'vue'
 
@@ -57,7 +57,7 @@ const props = defineProps({
 const endName = props.name
 const currentName = endName.replace('.end', '.current')
 
-const form = inject(formStateKey)
+const form = inject(formControllerKey)
 const isCurrentlyWorking = computed(() => form[currentName])
 
 const onChangeCurrent = (value) => {

@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
 import { useForm } from '@/headless/useForm'
 import { useValidation } from '@/utils/useValidation'
-import { formStateKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
+import { formControllerKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
 import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
@@ -67,7 +67,7 @@ describe('EnformaRepeatableTable', () => {
       setup() {
         // Provide injections in setup
         const config = useConfig()
-        provide(formStateKey, formState)
+        provide(formControllerKey, formState)
         provide(formConfigKey, config)
         provide(formSchemaKey, null)
 

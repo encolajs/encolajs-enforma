@@ -3,7 +3,7 @@
  */
 
 import { computed, ComputedRef, inject } from 'vue'
-import { formContextKey, formStateKey } from '@/constants/symbols'
+import { formContextKey, formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import {
   evaluateCondition,
@@ -46,7 +46,7 @@ export function useDynamicProps(
   localContext: Record<string, any> = {}
 ): UseDynamicPropsReturn {
   // Inject dependencies
-  const formState = inject<FormController | undefined>(formStateKey, undefined)
+  const formState = inject<FormController | undefined>(formControllerKey, undefined)
   const formContext = inject<Record<string, any>>(formContextKey, {})
   const { formConfig, getConfig } = useFormConfig()
 

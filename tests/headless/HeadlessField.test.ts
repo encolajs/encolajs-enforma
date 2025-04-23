@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { h } from 'vue'
 import HeadlessField from '@/headless/HeadlessField'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 import { useForm } from '@/headless/useForm'
 
 describe('HeadlessField', () => {
@@ -39,7 +39,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
       })
@@ -69,7 +69,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -104,7 +104,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -135,7 +135,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -164,7 +164,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -195,7 +195,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -221,7 +221,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
       })
@@ -241,7 +241,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -268,7 +268,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {
@@ -291,7 +291,7 @@ describe('HeadlessField', () => {
         },
         global: {
           provide: {
-            [formStateKey]: form,
+            [formControllerKey]: form,
           },
         },
         slots: {

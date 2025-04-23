@@ -3,7 +3,7 @@ import { config, flushPromises, mount } from '@vue/test-utils'
 import { h, inject } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import HeadlessField from '@/headless/HeadlessField'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 
 import { FormController } from '../../src'
 
@@ -21,10 +21,10 @@ describe('HeadlessForm', () => {
   let encolaForm: FormController
   const FormStateExposer = {
     setup() {
-      const formState = inject(formStateKey)
+      const formState = inject(formControllerKey)
       encolaForm = formState as FormController
       return {
-        [formStateKey]: formState,
+        [formControllerKey]: formState,
       }
     },
     template: '<div></div>',

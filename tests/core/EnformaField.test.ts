@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import EnformaField from '../../src/core/EnformaField.vue'
 // @ts-ignore
-import { formStateKey, formSchemaKey } from '@/constants/symbols'
+import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 // @ts-ignore
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
@@ -43,7 +43,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
             [formSchemaKey]: schema,
           },
         },
@@ -67,7 +67,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
             [formSchemaKey]: schema,
           },
         },
@@ -96,7 +96,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formWithErrors,
+            [formControllerKey]: formWithErrors,
             [formSchemaKey]: schema,
           },
         },
@@ -123,7 +123,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
             [formSchemaKey]: schema,
           },
         },
@@ -147,7 +147,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
             [formSchemaKey]: schema,
           },
         },
@@ -185,7 +185,7 @@ describe('EnformaField', () => {
       {
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
             [formSchemaKey]: schema,
           },
         },

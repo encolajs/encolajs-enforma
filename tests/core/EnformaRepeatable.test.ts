@@ -6,7 +6,7 @@ import { useForm } from '@/headless/useForm'
 // @ts-ignore
 import { useValidation } from '@/utils/useValidation'
 import {
-  formStateKey,
+  formControllerKey,
   formConfigKey,
   formSchemaKey,
   // @ts-ignore
@@ -94,7 +94,7 @@ describe('EnformaRepeatable', () => {
       setup() {
         // Provide injections in setup
         useFormConfig({})
-        provide(formStateKey, formState)
+        provide(formControllerKey, formState)
         provide(formSchemaKey, null)
 
         return {

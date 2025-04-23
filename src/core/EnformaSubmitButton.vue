@@ -14,11 +14,11 @@
 import { useFormConfig } from '@/utils/useFormConfig'
 import { inject, mergeProps, useAttrs } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 
 const $attrs = useAttrs()
-const formState = inject(formStateKey) as FormController
+const formState = inject(formControllerKey) as FormController
 const { isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()

@@ -13,7 +13,7 @@ export const formConfigKey = Symbol('formConfig')
 /**
  * Symbol for providing/injecting the form state
  */
-export const formStateKey = Symbol('formState')
+export const formControllerKey = Symbol('formController')
 
 /**
  * Symbol for providing/injecting the form context

@@ -7,7 +7,7 @@ import {
   ref,
   ComponentPublicInstance,
 } from 'vue'
-import { formStateKey, formSchemaKey } from '@/constants/symbols'
+import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FieldController, FormController } from '@/types'
 import { useTranslation } from '@/utils/useTranslation'
@@ -39,7 +39,7 @@ export interface EnformaFieldProps {
 
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
-  const formState = inject<FormController>(formStateKey) as FormController
+  const formState = inject<FormController>(formControllerKey) as FormController
   const { formConfig, getConfig } = useFormConfig()
   const schema = inject<Record<string, FieldSchema> | null>(formSchemaKey, null)
 

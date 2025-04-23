@@ -15,7 +15,7 @@ import {
   FieldOptions,
   FormController,
 } from '@/types'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 
 export default defineComponent({
   name: 'HeadlessField',
@@ -37,7 +37,7 @@ export default defineComponent({
   },
 
   setup(props, { slots }) {
-    const form = inject<FormController>(formStateKey)
+    const form = inject<FormController>(formControllerKey)
 
     if (!form) {
       console.error(

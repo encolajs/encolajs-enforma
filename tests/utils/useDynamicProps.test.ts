@@ -3,7 +3,7 @@ import { useDynamicProps } from '@/utils/useDynamicProps'
 import {
   formConfigKey,
   formContextKey,
-  formStateKey,
+  formControllerKey,
 } from '@/constants/symbols'
 import { FormController } from '@/types'
 import { evaluateCondition, evaluateObject } from '@/utils/exprEvaluator'
@@ -14,7 +14,7 @@ vi.mock('vue', async () => {
   return {
     ...actual,
     inject: vi.fn((key) => {
-      if (key === formStateKey) {
+      if (key === formControllerKey) {
         return {
           values: vi.fn().mockReturnValue({ name: 'John', age: 30 }),
           errors: vi.fn().mockReturnValue({ name: ['Name is required'] }),

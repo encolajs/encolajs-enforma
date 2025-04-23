@@ -77,7 +77,7 @@ export {
 
 // Constants
 export {
-  formStateKey,
+  formControllerKey,
   formConfigKey,
   formContextKey,
 } from './constants/symbols'

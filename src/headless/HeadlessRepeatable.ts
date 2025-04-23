@@ -1,6 +1,6 @@
 import { defineComponent, inject, ref, watch, onBeforeUnmount } from 'vue'
 import { useRepeatable } from './useRepeatable'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 
 import { FormController } from '@/types'
 
@@ -35,7 +35,7 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const formState = inject<FormController>(formStateKey)
+    const formState = inject<FormController>(formControllerKey)
 
     if (!formState) {
       console.error('HeadlessRepeatable must be used within an EncolaForm')

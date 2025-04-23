@@ -4,7 +4,7 @@ import { h } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import { useForm } from '@/headless/useForm'
 import { useValidation } from '@/utils/useValidation'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 import { RepeatableController } from '@/headless/useRepeatable'
 
 describe('HeadlessRepeatable', () => {
@@ -32,7 +32,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       })
@@ -62,7 +62,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -100,7 +100,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -144,7 +144,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -187,7 +187,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -223,7 +223,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -257,7 +257,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -292,7 +292,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -322,7 +322,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -350,7 +350,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -377,7 +377,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -414,7 +414,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
       })
@@ -453,7 +453,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -507,7 +507,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {
@@ -561,7 +561,7 @@ describe('HeadlessRepeatable', () => {
         },
         global: {
           provide: {
-            [formStateKey]: formState,
+            [formControllerKey]: formState,
           },
         },
         slots: {

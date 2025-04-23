@@ -1,6 +1,6 @@
 // src/core/useEnformaRepeatable.ts
 import { computed, inject, onBeforeUnmount } from 'vue'
-import { formStateKey } from '@/constants/symbols'
+import { formControllerKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -47,7 +47,7 @@ export interface RepeatableFieldConfig extends RepeatableFieldSchema {
 
 export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
   // Get form state from context
-  const formState = inject<FormController>(formStateKey) as FormController
+  const formState = inject<FormController>(formControllerKey) as FormController
   const { getConfig } = useFormConfig()
 
   if (!formState) {
