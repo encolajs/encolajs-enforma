@@ -76,6 +76,9 @@ export default function useDefaultPreset(
         items: {
           class: 'enforma-repeatable-items',
         },
+        item: {
+          class: 'enforma-repeatable-item',
+        },
         add: {
           class: 'enforma-repeatable-add-button',
         },

@@ -49,6 +49,7 @@ export interface FieldPassThroughConfig {
   repeatable?: {
     wrapper: ComponentProps
     items: ComponentProps
+    item: ComponentProps
     add: ComponentProps
     remove: ComponentProps
     moveUp: ComponentProps

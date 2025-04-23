@@ -75,7 +75,7 @@
     <h3 class="w-full">Experience</h3>
     <div>
       <EnformaRepeatable
-        class="mb-4"
+        class="mb-4 form-repeatable-experience"
         name="experience"
         :subfields="experienceFields"
       />
@@ -111,12 +111,18 @@ const skillFields = {
 const experienceFields = {
   company: {
     label: "Company",
+    wrapperProps: {
+      class: 'col-start-1 col-end-2'
+    },
     inputProps:  {
       fluid: true
     },
   },
   position: {
     label: "Position",
+    wrapperProps: {
+      class: 'col-start-2 col-end-3'
+    },
     inputProps:  {
       fluid: true
     },
