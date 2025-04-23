@@ -227,8 +227,8 @@ FormKit
 
 ### Phase 3: Repeatable Fields
 - [x] Implement HeadlessRepeatable core functionality
-- [ ] Create FormKitRepeatable component
-- [ ] Develop FormKitRepeatableTable component
+- [x] Create FormKitRepeatable component
+- [x] Develop FormKitRepeatableTable component
 
 ### Phase 4: UI Integration
 - [x] Create PrimeVue preset
