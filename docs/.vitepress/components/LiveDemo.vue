@@ -10,6 +10,7 @@ import { ref, onMounted } from 'vue'
 import { createApp, h } from 'vue'
 import { createEnforma } from '../../../src'
 import usePrimeVuePreset from '../../../src/presets/primevue.ts'
+import { InputText } from 'primevue'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 
@@ -20,21 +21,32 @@ const props = defineProps({
 const el = ref()
 
 onMounted(() => {
-  const app = createApp({ render: () => h(props.component) })
+  const app = createApp({
+    render: () => h(props.component)
+  })
 
+  // configure PrimeVue
   app.use(PrimeVue, {
     theme: {
-      preset: Aura
+      preset: Aura,
+      options: {
+        prefix: 'p',
+        darkModeSelector: 'system',
+        cssLayer: false
+      }
     }
   })
+
+  // configure Enforma
   app.use(createEnforma({}))
-  usePrimeVuePreset()
+  usePrimeVuePreset({
+    input: InputText,
+    text: InputText,
+  })
+
   app.mount(el.value)
 })
 </script>
 
 <style>
-.live-demo {
-  all: revert !important;
-}
 </style>

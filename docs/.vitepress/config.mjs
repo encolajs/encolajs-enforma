@@ -197,7 +197,7 @@ export default defineConfig({
         async: true,
         defer: true
       }
-    ]
+    ],
   ],
   vite: {
     resolve: {

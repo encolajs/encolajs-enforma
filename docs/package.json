@@ -9,12 +9,12 @@
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
-    "@primeuix/themes": "^1.0.3",
-    "primeicons": "^7.0.0",
-    "primevue": "^4.3.3",
     "vitepress": "^1.6.3"
   },
   "dependencies": {
+    "@primeuix/themes": "^1.0.3",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.3",
     "markdown-it-container": "^4.0.0"
   }
 }
