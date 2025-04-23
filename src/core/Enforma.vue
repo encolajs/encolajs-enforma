@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, PropType } from 'vue'
+import { provide, ref, onMounted, PropType, defineExpose, reactive } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import {
   formContextKey,
@@ -93,14 +93,18 @@ const emit = defineEmits([
   'form-initialized',
 ])
 
-const form = ref(null)
+const form = ref()
 
 /**
  * Expose the form controller
  * This allows parent components to call methods like validate(), reset(), etc.
  */
-defineExpose({
-  form,
+const exposedController = reactive({})
+defineExpose(exposedController)
+onMounted(() => {
+  if (form.value) {
+    Object.assign(exposedController, form.value)
+  }
 })
 
 const formConfig = useConfig(props.config)
