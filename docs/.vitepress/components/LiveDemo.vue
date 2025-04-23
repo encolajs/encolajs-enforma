@@ -49,4 +49,7 @@ onMounted(() => {
 </script>
 
 <style>
+.live-demo {
+  all: revert !important;
+}
 </style>

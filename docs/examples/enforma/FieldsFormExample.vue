@@ -1,5 +1,6 @@
 <template>
   <Enforma
+    ref="formRef"
     :data="data"
     :rules="rules"
     :custom-messages="messages"
@@ -81,6 +82,27 @@
       />
     </div>
   </Enforma>
+
+  <h5 class="mt-8 mb-4">Manipulating the form from outside</h5>
+  <div class="flex gap-2">
+  <Button
+    severity="secondary"
+    @click="formRef?.submit()"
+    label="Submit"
+    :loading="formRef?.$isSubmitting" />
+  <Button
+    severity="secondary"
+    @click="formRef?.setFieldValue('name', 'John Doe')"
+    label="Set name to 'John Doe'" />
+  <Button
+    severity="secondary"
+    @click="formRef?.add('skills', 0, {name: 'new skill', level: 'Expert'})"
+    label="Prepend new skill" />
+  </div>
+  <h5 class="mt-8 mb-4">Accessing the form details from outside</h5>
+  <strong>First skill</strong>: {{ formRef?.getFieldValue('skills.0.name') }}<br>
+  <strong>Email errors</strong>: {{ formRef?.errors().email }}<br>
+
 </template>
 
 <script setup>
@@ -88,6 +110,11 @@ import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from
 import formConfig from '../headless/formConfig'
 import EndDateField from './EndDateField.vue'
 import SalaryField from './SalaryField.vue'
+import { Button } from 'primevue'
+import { ref } from 'vue'
+
+// for accessing the FormController
+const formRef = ref()
 
 const {data, rules, messages, submitHandler} = formConfig
 
