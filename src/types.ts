@@ -201,8 +201,14 @@ export interface FieldSchema extends BaseSchema {
    */
   label?: string
 
+  /**
+   * Should hide the label from the field
+   */
   hideLabel?: boolean
 
+  /**
+   * For checkbox-like inputs
+   */
   showLabelNextToInput?: boolean
 
   /**
@@ -245,7 +251,7 @@ export interface FieldSchema extends BaseSchema {
    * Component to use for this field
    * Allows direct component references
    */
-  input?: string | ComponentPublicInstance
+  inputComponent?: string | ComponentPublicInstance
 
 }
 
@@ -260,16 +266,6 @@ export interface SectionSchema extends BaseSchema {
 
   // props to be passed to the title
   titleProps?: Record<string, any>
-
-  // component to be used for rendering
-  // in case we need to use a different component
-  component?: string
-
-  // parent section
-  section?: string
-
-  // priority in the parent section
-  priority?: number
 }
 
 /**
