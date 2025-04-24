@@ -147,80 +147,68 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const errorMessage = computed(() => fieldController.value.error)
   const requiredIndicator = getConfig('pt.required.text', '*')
 
-  // Create static props that don't depend on dynamic state
-  const staticProps = computed(() => {
-    const result: Record<string, any> = {}
+  // Combine all props into a single computed property
+  const props = computed(() => {
+    // Create static props that don't depend on dynamic state
+    const staticProps = (() => {
+      const result: Record<string, any> = {}
 
-    // Required indicator (doesn't change after initialization)
-    result.required = originalProps.required
-    result.requiredProps = getConfig('pt.required')
+      // Required indicator (doesn't change after initialization)
+      result.required = originalProps.required
+      result.requiredProps = getConfig('pt.required')
 
-    // Component type and label visibility (don't change after initialization)
-    result.component = fieldOptions.value.component || 'input'
-    result.hideLabel = fieldOptions.value.hideLabel
-    result.showLabelNextToInput = fieldOptions.value.showLabelNextToInput
+      // Component type and label visibility (don't change after initialization)
+      result.component = fieldOptions.value.component || 'input'
+      result.hideLabel = fieldOptions.value.hideLabel
+      result.showLabelNextToInput = fieldOptions.value.showLabelNextToInput
 
-    return result
-  })
+      return result
+    })()
 
-  // Create wrapper props separately
-  const wrapperProps = computed(() => {
-    const hasError = !!errorMessage.value
-
-    return mergeProps(
+    // Create wrapper props separately
+    const wrapperProps = mergeProps(
       {
         id: `wrapper-${fieldId.value}`,
       },
       fieldOptions.value.wrapperProps || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
-      hasError
+      !!errorMessage.value
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
         : {},
       fieldOptions.value.required
         ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
         : {}
     )
-  })
 
-  // Compute label props
-  const labelProps = computed(() => {
-    return mergeProps(
+    // Compute label props
+    const labelProps = mergeProps(
       {
         for: fieldId.value,
       },
       fieldOptions.value.labelProps || {},
       getConfig('pt.label', {}) as Record<string, unknown>
     )
-  })
 
-  // Help text props
-  const helpProps = computed(() => {
-    return mergeProps(
+    // Help text props
+    const helpProps = mergeProps(
       {
         id: `help-${fieldId.value}`,
       },
       fieldOptions.value.helpProps || {},
       getConfig('pt.help', {}) as Record<string, unknown>
     )
-  })
 
-  // Error message props
-  const errorProps = computed(() => {
-    return mergeProps(
+    // Error message props
+    const errorProps = mergeProps(
       {
         id: `error-${fieldId.value}`,
       },
       fieldOptions.value.errorProps || {},
       getConfig('pt.error', {}) as Record<string, unknown>
     )
-  })
 
-  // Input props (changes most frequently)
-  const inputProps = computed(() => {
-    // The field controller's _fieldVersion will be updated by FieldController._version
-    // ensuring reactivity based on field state changes
-
-    return mergeProps(
+    // Input props (changes most frequently)
+    const inputProps = mergeProps(
       {
         id: fieldId.value,
         value: fieldController.value.value,
@@ -232,23 +220,15 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       fieldOptions.value.inputProps || {},
       getConfig('pt.input', {}) as Record<string, unknown>
     )
-  })
 
-  // Compute conditional visibility (now just uses the boolean value from fieldOptions)
-  const visibilityCondition = computed(() => {
-    return !!fieldOptions.value.if
-  })
-
-  // Combine all props into a single computed property
-  const props = computed(() => {
     const result: Record<string, any> = {
-      ...staticProps.value,
-      wrapper: wrapperProps.value,
-      label: labelProps.value,
-      help: helpProps.value,
-      error: errorProps.value,
-      input: inputProps.value,
-      if: visibilityCondition.value,
+      ...staticProps,
+      wrapper: wrapperProps,
+      label: labelProps,
+      help: helpProps,
+      error: errorProps,
+      input: inputProps,
+      if: !!fieldOptions.value.if,
     }
 
     // Apply custom transformers if defined in config
