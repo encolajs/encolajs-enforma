@@ -1,12 +1,14 @@
 # `FormController` API
 
 <TabNav :items="[
-{ label: 'Usage', link: '/base-components/enforma-form' },
-{ label: 'API', link: '/base-components/enforma-form_api' },
-{ label: 'FormController API', link: '/base-components/enforma-form-controller_api' },
+{ label: 'Usage', link: '/field-forms/enforma-form' },
+{ label: 'API', link: '/field-forms/enforma-form_api' },
+{ label: 'FormController API', link: '/field-forms/enforma-form-controller_api' },
 ]" />
 
 The FormController is the object returned by the `useForm` composable, which is used by the [HeadlessForm component](/headless/form.md) and provides the following properties and methods:
+
+> :notebook_with_decorative_cover: Example manipulating the form from outside [here](/examples/fields.md), at the bottom of the form
 
 ## State Properties
 
@@ -51,10 +53,12 @@ The FormController is the object returned by the `useForm` composable, which is 
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
-| `add(arrayPath, index, item)` | `arrayPath: string, index: number, item: any` | `void` | Adds an item to an array |
-| `remove(arrayPath, index)` | `arrayPath: string, index: number` | `void` | Removes an item from an array |
-| `move(arrayPath, fromIndex, toIndex)` | `arrayPath: string, fromIndex: number, toIndex: number` | `void` | Moves an item in an array |
-| `sort(arrayPath, callback)` | `arrayPath: string, callback: (a, b) => number` | `void` | Sorts array items |
+| `add(path, index, item)` | `path: string, index: number, item: any` | `void` | Adds an item to an array |
+| `remove(path, index)` | `path: string, index: number` | `void` | Removes an item from an array |
+| `move(path, fromIndex, toIndex)` | `path: string, fromIndex: number, toIndex: number` | `void` | Moves an item in an array |
+| `sort(path, callback)` | `path: string, callback: (a, b) => number` | `void` | Sorts array items |
+
+> [!WARNING] You must ensure that the path holds an array or array-like object
 
 ## Event Methods
 
@@ -66,20 +70,14 @@ The FormController is the object returned by the `useForm` composable, which is 
 
 ## Field State
 
+The field state is returned by calling `form.getField(path)`
+
 Each field in the form has the following state properties:
 
 | Path | Type | Description |
 |------|------|-------------|
-| `fieldPath` | `any` | Direct access to field value |
-| `fieldPath.$errors` | `string[]` | Validation error messages |
-| `fieldPath.$isDirty` | `boolean` | Field has been modified |
-| `fieldPath.$isTouched` | `boolean` | Field has been focused/interacted with |
-| `fieldPath.$isValidating` | `boolean` | Field is currently validating |
-| `fieldPath.$isValid` | `boolean` | Computed property: field has no errors |
-
-And they can be accessed via the form controller like so
-
-```js
-form['items.2.price.$errors']
-form['items.1.price.$isValid']
-```
+| `$errors` | `string[]` | Validation error messages |
+| `$isDirty` | `boolean` | Field has been modified |
+| `$isTouched` | `boolean` | Field has been focused/interacted with |
+| `$isValidating` | `boolean` | Field is currently validating |
+| `$isValid` | `boolean` | Computed property: field has no errors |

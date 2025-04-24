@@ -1,9 +1,9 @@
 # `<Enforma/>` API
 
 <TabNav :items="[
-{ label: 'Usage', link: '/base-components/enforma-form' },
-{ label: 'API', link: '/base-components/enforma-form_api' },
-{ label: 'FormController API', link: '/base-components/enforma-form-controller_api' },
+{ label: 'Usage', link: '/field-forms/enforma-form' },
+{ label: 'API', link: '/field-forms/enforma-form_api' },
+{ label: 'FormController API', link: '/field-forms/enforma-form-controller_api' },
 ]" />
 
 ## Props

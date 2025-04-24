@@ -1,8 +1,8 @@
 # `<HeadlessForm />` API
 
 <TabNav :items="[
-{ label: 'Usage', link: '/headless/form' },
-{ label: 'API', link: '/headless/form_api' },
+{ label: 'Usage', link: '/headless-forms/form' },
+{ label: 'API', link: '/headless-forms/form_api' },
 ]" />
 
 

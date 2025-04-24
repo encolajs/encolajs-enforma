@@ -13,8 +13,8 @@ This page should provide:
 -->
 
 <TabNav :items="[
-{ label: 'Usage', link: '/headless/repeatable' },
-{ label: 'API', link: '/headless/repeatable_api' },
+{ label: 'Usage', link: '/headless-forms/repeatable' },
+{ label: 'API', link: '/headless-forms/repeatable_api' },
 ]" />
 
 The `<HeadlessRepeatable>` component provides a way to handle repeatable form fields (arrays) with no built-in UI. It manages the state and logic for array operations while allowing complete control over the presentation.

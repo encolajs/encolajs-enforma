@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress'
 import markdownItContainer from 'markdown-it-container'
 import path from 'path'
-import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   title: 'EncolaJS Enforma',
@@ -41,33 +40,41 @@ export default defineConfig({
             { text: 'Configuration', link: '/core-concepts/configuration' },
             { text: 'Validation System', link: '/core-concepts/validation' },
             { text: 'Rendering Modes', link: '/core-concepts/rendering-modes' },
-            { text: 'Dynamic Props', link: '/core-concepts/dynamic-props' },
           ],
         },
         {
-          text: 'Components',
+          text: 'Enforma Forms',
           collapsed: false,
           items: [
             {
-              text: 'Base components',
-              link: '/base-components/',
+              text: 'Forms with Fields',
+              link: '/field-forms/',
               items: [
-                { text: 'Enforma', link: '/base-components/enforma-form' },
-                { text: 'EnformaField', link: '/base-components/enforma-field' },
-                { text: 'EnformaRepeatable', link: '/base-components/enforma-repeatable' },
-                { text: 'EnformaRepeatableTable', link: '/base-components/enforma-repeatable-table' },
-                { text: 'EnformaSection', link: '/base-components/enforma-section' },
-                { text: 'EnformaSchema', link: '/base-components/enforma-schema' },
+                { text: 'Enforma', link: '/field-forms/enforma-form' },
+                { text: 'EnformaField', link: '/field-forms/enforma-field' },
+                { text: 'EnformaRepeatable', link: '/field-forms/enforma-repeatable' },
+                { text: 'EnformaRepeatableTable', link: '/field-forms/enforma-repeatable-table' },
+                { text: 'EnformaSection', link: '/field-forms/enforma-section' },
               ]
             },
             {
-              text: 'Headless Components',
-              link: '/headless/',
+              text: 'Forms with Schema',
+              link: '/schema-forms/',
+              items: [
+                { text: 'Schema Reference', link: '/schema-forms/schema-reference' },
+                { text: 'Dynamic Props', link: '/schema-forms/dynamic-props' },
+                { text: 'Transformers', link: '/schema-forms/transformers' },
+                { text: 'Mixed Forms', link: '/schema-forms/mixed-forms' },
+              ]
+            },
+            {
+              text: 'Headless Forms',
+              link: '/headless-forms/',
               collapsed: true,
               items: [
-                { text: 'HeadlessForm', link: '/headless/form' },
-                { text: 'HeadlessField', link: '/headless/field' },
-                { text: 'HeadlessRepeatable', link: '/headless/repeatable' },
+                { text: 'HeadlessForm', link: '/headless-forms/form' },
+                { text: 'HeadlessField', link: '/headless-forms/field' },
+                { text: 'HeadlessRepeatable', link: '/headless-forms/repeatable' },
               ],
             },
           ],
@@ -100,7 +107,7 @@ export default defineConfig({
             { text: 'Multi-input Fields', link: '/recipes/multi-input-fields' },
             { text: 'Conditional Forms', link: '/recipes/conditional-forms' },
             { text: 'Async Schema Loading', link: '/recipes/async-schema-loading' },
-            { text: 'Custom Base Components', link: '/recipes/custom-base-components' },
+            { text: 'Custom Base Components', link: '/recipes/custom-field-forms' },
           ],
         },
         {

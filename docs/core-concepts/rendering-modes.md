@@ -11,7 +11,7 @@ Enforma supports four main rendering modes:
 
 ## Field-based Rendering
 
-##### :notebook_with_decorative_cover: Complete working example [here](/examples/fields.md)
+> :notebook_with_decorative_cover: Complete working example [here](/examples/fields.md)
 
 This approach uses explicit component declarations for each form element:
 
@@ -38,7 +38,7 @@ This approach uses explicit component declarations for each form element:
 
 ## Schema-based Rendering
 
-##### :notebook_with_decorative_cover: Complete working example [here](/examples/schema.md)
+> :notebook_with_decorative_cover: Complete working example [here](/examples/schema.md)
 
 ```vue
 <template>
@@ -68,7 +68,7 @@ You can learn more about using schemas in the [EnformaSchema component section](
 
 ## Headless Mode
 
-##### :notebook_with_decorative_cover: Complete working example [here](/examples/headless-components.md)
+> :notebook_with_decorative_cover: Complete working example [here](/examples/headless-components.md)
 
 This approach provides behavior without enforcing design:
 
@@ -105,7 +105,7 @@ This approach provides behavior without enforcing design:
 
 ## Mixed Mode
 
-##### :notebook_with_decorative_cover: Complete working example [here](/examples/mixed-form.md)
+> :notebook_with_decorative_cover: Complete working example [here](/examples/mixed-form.md)
 
 ```vue
 <template>

@@ -13,8 +13,8 @@ This page should provide:
 -->
 
 <TabNav :items="[
-{ label: 'Usage', link: '/headless/field' },
-{ label: 'API', link: '/headless/field_api' },
+{ label: 'Usage', link: '/headless-forms/field' },
+{ label: 'API', link: '/headless-forms/field_api' },
 ]" />
 
 This is a field component that provides no UI, just the field state and logic.

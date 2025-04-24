@@ -1,12 +1,14 @@
 # `<Enforma/>` Component
 
 <TabNav :items="[
-{ label: 'Usage', link: '/base-components/enforma-form' },
-{ label: 'API', link: '/base-components/enforma-form_api' },
-{ label: 'FormController API', link: '/base-components/enforma-form-controller_api' },
+{ label: 'Usage', link: '/field-forms/enforma-form' },
+{ label: 'API', link: '/field-forms/enforma-form_api' },
+{ label: 'FormController API', link: '/field-forms/enforma-form-controller_api' },
 ]" />
 
 `Enforma` is the root component for creating forms with Enforma. It manages form state, validation, and submission handling.
+
+> :notebook_with_decorative_cover: Complete working example [here](/examples/fields.md)
 
 ## Basic Usage
 

@@ -13,8 +13,8 @@ This page should provide:
 -->
 
 <TabNav :items="[
-    { label: 'Usage', link: '/headless/form' },
-    { label: 'API', link: '/headless/form_api' },
+    { label: 'Usage', link: '/headless-forms/form' },
+    { label: 'API', link: '/headless-forms/form_api' },
 ]" />
 
 EncolaJS provides a component wrapper (`HeadlessForm`) for complete control over your form's UI while maintaining robust state management and validation capabilities.
