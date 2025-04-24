@@ -476,6 +476,11 @@ export function useForm<T extends object>(
         return errors
       },
 
+      getFieldErrors(path: string): string[] {
+        const fieldController = fieldManager.get(path)
+        return fieldController.$errors.value
+      },
+
       // form value methods
       values(): object {
         return valuesRef.value

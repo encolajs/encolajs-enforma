@@ -17,29 +17,35 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `$isDirty` | `boolean` | Whether any field has been modified |
 | `$isTouched` | `boolean` | Whether any field has been touched/focused |
 
-## State Management Methods
+## Form Values Management
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
 | `values()` | - | `object` | Gets the current form values |
-| `errors()` | - | `object` | Gets all form errors by field path |
+| `setFieldValue(path, value, validate, stateChanges)` | `path: string, value: any, validate?: boolean, stateChanges?: object` | `Promise<void>` | Sets a field value |
+| `getFieldValue(path)` | `path: string` | `any` | Retrieves the value of a field |
 | `reset()` | - | `void` | Resets form to initial state |
+
+## Validation Methods
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
 | `validate()` | - | `Promise<boolean>` | Validates all fields |
 | `validateField(path)` | `path: string` | `Promise<boolean>` | Validates a specific field |
+| `errors()` | - | `object` | Gets all form errors by field path |
+| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field |
+| `getFieldErrors(path)` | `path: string` | `string[]` | Gets errors for a specific field |
+| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
 
-## Field Management Methods
+## Field Management
 
-| Method                                               | Parameters | Returns           | Description                          |
-|------------------------------------------------------|------------|-------------------|--------------------------------------|
-| `setFieldValue(path, value, validate, stateChanges)` | `path: string, value: any, validate?: boolean, stateChanges?: object` | `Promise<void>`   | Sets a field value                   |
-| `getFieldValue(path)` | `path: string` | `any`             | Retrieves the value of a |
-| `setFieldErrors(path, errors)`                       | `path: string, errors: string[]` | `void`            | Sets errors for a specific field     |
-| `setErrors(errors)`                                  | `errors: Record<string, string[]>` | `void`            | Sets errors for multiple fields      |
-| `setFieldFocused(path)`                              | `path: string` | `void`            | Marks a field as focused             |
-| `setFieldBlurred(path)`                              | `path: string` | `void`            | Marks a field as blurred             |
-| `getField(path)`                                     | `path: string` | `FieldController` | Gets a field's state                 |
-| `removeField(path)`                                  | `path: string` | `void`            | Removes a field from the form        |
-| `hasField(path)`                                     | `path: string` | `boolean`         | Checks if a field exists             |
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
+| `removeField(path)` | `path: string` | `void` | Removes a field from the form |
+| `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
+| `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
+| `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |
 
 ## Array Operations
 

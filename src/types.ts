@@ -144,6 +144,8 @@ export interface FormController {
   setFieldErrors(path: string, errors: string[]): void
 
   setErrors(errors: Record<string, string[]>): void
+  
+  getFieldErrors(path: string): string[]
 
   add(arrayPath: string, index: number, item: any): void
 
