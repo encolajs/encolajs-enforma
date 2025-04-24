@@ -1,12 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
-import applyTransformers from '@/utils/applyTransformers'
-import { EnformaSchema } from '@/types'
+import { describe, it, expect, vi } from 'vitest'
+import applyTransformers from '../../src/utils/applyTransformers'
+import { FormSchema } from '../../src'
 
 describe('Schema Transformers', () => {
   it('applies schema transformers to modify schema', () => {
     // Define a simple transformer that adds a required flag to all fields
-    const addRequiredTransformer = vi.fn((schema) => {
+    const addRequiredTransformer = vi.fn((schema: FormSchema) => {
       const result = { ...schema }
       
       // Add required: true to all field schemas

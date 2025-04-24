@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
-import { useForm } from '@/headless/useForm'
-import { useValidation } from '@/utils/useValidation'
-import { formControllerKey, formConfigKey, formSchemaKey } from '@/constants/symbols'
-import { useConfig } from '@/utils/useConfig'
+import EnformaRepeatableTable from '../../src/core/EnformaRepeatableTable.vue'
+import { useForm } from '../../src/headless/useForm'
+import { useValidation } from '../../src/utils/useValidation'
+import { formControllerKey, formConfigKey, formSchemaKey } from '../../src/constants/symbols'
+import { useConfig } from '../../src/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
 import { useFormConfig } from '../../src'
@@ -42,7 +42,7 @@ describe('EnformaRepeatableTable', () => {
   // Create real form state with validation
   const createFormState = (initialData = {}) => {
     const validation = useValidation()
-    useFormConfig({})
+    useFormConfig()
     return useForm(
       initialData,
       {},
@@ -130,12 +130,10 @@ describe('EnformaRepeatableTable', () => {
       const subfields = {
         name: {
           type: 'text',
-          name: 'name',
           label: 'Full Name',
         },
         email: {
           type: 'email',
-          name: 'email',
           label: 'Email Address',
         },
       }
@@ -154,11 +152,9 @@ describe('EnformaRepeatableTable', () => {
       const subfields = {
         name: {
           type: 'text',
-          name: 'name',
         },
         email: {
           type: 'email',
-          name: 'email',
         },
       }
 
@@ -179,11 +175,9 @@ describe('EnformaRepeatableTable', () => {
       const subfields = {
         name: {
           type: 'text',
-          name: 'name',
         },
         email: {
           type: 'email',
-          name: 'email',
         },
       }
 
@@ -202,7 +196,7 @@ describe('EnformaRepeatableTable', () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(
         {
-          subfields: { name: { type: 'text', name: 'name' } },
+          subfields: { name: { type: 'text' } },
           max: 2,
         },
         formState

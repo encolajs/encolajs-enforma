@@ -9,12 +9,12 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import type { EnformaSchema } from '@/types'
+import type { FormSchema } from '@/types'
 import { useEnformaSchema } from './useEnformaSchema'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 const props = defineProps<{
-  schema: EnformaSchema
+  schema: FormSchema
 }>()
 
 const $attrs = useAttrs()

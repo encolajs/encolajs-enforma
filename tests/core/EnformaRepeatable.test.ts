@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-// @ts-expect-error IDE not working properly
 import EnformaRepeatable from '../../src/core/EnformaRepeatable.vue'
 // @ts-ignore
 import { useForm } from '@/headless/useForm'

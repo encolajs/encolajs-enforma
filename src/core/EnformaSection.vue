@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, inject, resolveComponent, mergeProps } from 'vue'
 import { formSchemaKey } from '@/constants/symbols'
-import { FieldSchema, SectionSchema, EnformaSchema } from '@/types'
+import { FieldSchema, SectionSchema, FormSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 interface FieldWithPosition extends FieldSchema {
@@ -39,7 +39,7 @@ function isSectionSchema(value: any): value is SectionSchema {
 }
 
 function getFields(
-  schema: EnformaSchema | undefined,
+  schema: FormSchema | undefined,
   sectionName: string
 ): Record<string, FieldSchema> {
   if (!schema) return {}
@@ -61,7 +61,7 @@ function getFields(
 }
 
 function getSubSections(
-  schema: EnformaSchema | undefined,
+  schema: FormSchema | undefined,
   sectionName: string
 ): Array<[string, SectionSchema]> {
   if (!schema) return []
@@ -102,7 +102,7 @@ const props = defineProps<{
 }>()
 
 // Inject dependencies
-const schema = inject<EnformaSchema>(formSchemaKey)
+const schema = inject<FormSchema>(formSchemaKey)
 
 // Get the configuration
 const { getConfig } = useFormConfig()

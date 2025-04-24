@@ -69,8 +69,7 @@ export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
   const fields = computed(() =>
     Object.entries(fieldConfig.subfields || []).reduce(
       (acc, [subfieldName, subfield]) => {
-        const { name, ...rest } = subfield
-        acc[subfieldName] = rest
+        acc[subfieldName] = subfield
         return acc
       },
       {} as Record<string, any>

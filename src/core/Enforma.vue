@@ -38,7 +38,7 @@ import {
   formConfigKey,
   formSchemaKey,
 } from '@/constants/symbols'
-import { FieldSchema, EnformaSchema } from '@/types'
+import { FieldSchema, FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
@@ -54,7 +54,7 @@ const props = defineProps({
     required: true,
   },
   schema: {
-    type: Object as PropType<EnformaSchema>,
+    type: Object as PropType<FormSchema>,
     default: null,
   },
   rules: {

@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import Enforma from '@/core/Enforma.vue'
-import HeadlessForm from '@/headless/HeadlessForm'
-import { setGlobalConfig } from '@/utils/useConfig'
+import HeadlessForm from '../../src/headless/HeadlessForm'
+import { setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
-import { formContextKey } from '@/constants/symbols'
+import { formContextKey } from '../../src/constants/symbols'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Stub components for testing

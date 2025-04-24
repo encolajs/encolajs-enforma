@@ -338,7 +338,7 @@ export interface RepeatableTableSchema extends BaseSchema {
   defaultValue?: any
 }
 
-export interface EnformaSchema {
+export interface FormSchema {
   [key: string]: FieldSchema | SectionSchema | RepeatableSchema | RepeatableTableSchema
 }
 

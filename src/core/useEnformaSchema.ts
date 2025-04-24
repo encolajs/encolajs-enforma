@@ -1,13 +1,13 @@
 // src/core/useEnformaSchema.ts
 import { computed } from 'vue'
-import type { EnformaSchema, FieldSchema, SectionSchema } from '@/types'
+import type { FormSchema, FieldSchema, SectionSchema } from '@/types'
 
 export interface SectionWithFields extends SectionSchema {
   fields: FieldSchema[]
   subsections: Record<string, SectionWithFields>
 }
 
-export function useEnformaSchema(schema: EnformaSchema) {
+export function useEnformaSchema(schema: FormSchema) {
   // Get root sections (sections that don't belong to any other section)
   const sections = computed(() => {
     const sections: Record<string, SectionWithFields> = {}

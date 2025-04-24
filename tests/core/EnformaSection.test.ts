@@ -1,16 +1,15 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-// @ts-expect-error IDE not working properly
 import EnformaSection from '../../src/core/EnformaSection.vue'
-import { formSchemaKey, formControllerKey, EnformaSchema, FieldSchema, SectionSchema } from '../../src/'
+import { formSchemaKey, formControllerKey, FormSchema, FieldSchema, SectionSchema } from '../../src/'
 import { useForm } from '../../src'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Create a mock schema for testing
 const createMockSchema = (
   fields: Record<string, FieldSchema | SectionSchema>
-): EnformaSchema => {
-  return fields as EnformaSchema
+): FormSchema => {
+  return fields as FormSchema
 }
 
 describe('EnformaSection', () => {
