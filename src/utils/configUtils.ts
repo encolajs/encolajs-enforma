@@ -59,15 +59,3 @@ export function deepMerge(target: any, source: any): any {
 
   return output
 }
-
-/**
- * Safely retrieves a value by path
- * @deprecated Use pathUtils.get instead
- */
-export function _get<T = any>(
-  obj: any,
-  path: string,
-  defaultValue?: T
-): T | undefined {
-  return pathUtils.get(obj, path, defaultValue)
-}

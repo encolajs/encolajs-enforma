@@ -23,7 +23,7 @@ export const pathUtils = {
   /**
    * Gets a value from an object by path
    */
-  get: <T = any>(obj: any, path: string, defaultValue?: T): T | undefined => {
+  get: <T = any>(obj: any, path: string, defaultValue?: T): T | null | undefined => {
     if (obj == null || !path) {
       return defaultValue
     }
@@ -38,7 +38,7 @@ export const pathUtils = {
       current = current[key]
     }
 
-    return current ?? defaultValue
+    return current === undefined ? defaultValue : current
   },
 
   /**
@@ -51,18 +51,16 @@ export const pathUtils = {
 
     const parts = path.split('.')
     const lastPart = parts.pop()!
-    let current = obj
 
-    for (const part of parts) {
-      if (current[part] == null) {
-        // Create missing object or array (if next key is numeric)
-        const nextKey = parts[parts.indexOf(part) + 1]
-        current[part] = nextKey && !isNaN(Number(nextKey)) ? [] : {}
+    const target = parts.reduce((curr, part) => {
+      if (!curr[part] || typeof curr[part] !== 'object') {
+        const nextPart = parts[parts.indexOf(part) + 1]
+        curr[part] = !isNaN(Number(nextPart)) ? [] : {}
       }
-      current = current[part]
-    }
+      return curr[part]
+    }, obj)
 
-    current[lastPart] = value
+    target[lastPart] = value
     return obj
   },
 }

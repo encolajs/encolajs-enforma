@@ -1,14 +1,13 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import { computed, Ref, ref } from 'vue'
-import { generateId } from '@/utils/helpers'
+import { generateId, pathUtils } from '@/utils/helpers'
 import { Emitter } from 'mitt'
 import {
   FormEvents,
   createFormEmitter,
   globalFormEmitter,
 } from '@/utils/events'
-import { _get } from '@/utils/configUtils'
 
 export interface FieldController {
   $errors: Ref<string[]>
@@ -239,27 +238,8 @@ export function useForm<T extends object>(
     return false
   }
 
-  function getValueByPath(obj: any, path: string): any {
-    return path.split('.').reduce((curr, part) => curr?.[part], obj)
-  }
-
-  function setValueByPath(obj: any, path: string, value: any): void {
-    const parts = path.split('.')
-    const lastPart = parts.pop()!
-
-    const target = parts.reduce((curr, part) => {
-      if (!curr[part] || typeof curr[part] !== 'object') {
-        const nextPart = parts[parts.indexOf(part) + 1]
-        curr[part] = !isNaN(Number(nextPart)) ? [] : {}
-      }
-      return curr[part]
-    }, obj)
-
-    target[lastPart] = value
-  }
-
   function getArrayByPath(obj: any, arrayPath: string): any[] {
-    return getValueByPath(obj, arrayPath)
+    return pathUtils.get(obj, arrayPath) as any[]
   }
 
   async function _handleSetValue(
@@ -269,7 +249,7 @@ export function useForm<T extends object>(
     stateChanges: StateChanges = {}
   ): Promise<void> {
     const state = fieldManager.get(path)
-    setValueByPath(valuesRef.value, path, value)
+    pathUtils.set(valuesRef.value, path, value)
     if (validate) {
       await validateField(path, state)
     }
@@ -415,7 +395,7 @@ export function useForm<T extends object>(
         fieldManager.all().forEach((fieldController, path) => {
           try {
             // Check if the path still exists in the business object
-            const value = getValueByPath(valuesRef.value, path)
+            const value = pathUtils.get(valuesRef.value, path)
 
             if (value !== undefined) {
               // Path still exists, reset the state but keep the field registered
@@ -505,7 +485,7 @@ export function useForm<T extends object>(
       },
 
       getFieldValue(path: string): any {
-        return _get(valuesRef.value, path)
+        return pathUtils.get(valuesRef.value, path)
       },
 
       // field related methods.
@@ -632,7 +612,7 @@ export function useForm<T extends object>(
             }
           } else {
             fieldManager.get(prop) // to ensure the field exists
-            return getValueByPath(valuesRef.value, prop)
+            return pathUtils.get(valuesRef.value, prop)
           }
         }
 
@@ -662,7 +642,7 @@ export function useForm<T extends object>(
             }
           } else {
             // Set the value immediately
-            setValueByPath(valuesRef.value, prop, value)
+            pathUtils.set(valuesRef.value, prop, value)
             const fiel = fieldManager.get(prop)
             fiel.$isDirty.value = true
 

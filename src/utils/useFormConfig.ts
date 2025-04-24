@@ -5,7 +5,7 @@
 import { inject } from 'vue'
 import { formConfigKey } from '@/constants/symbols'
 import { EnformaConfig, useConfig } from './useConfig'
-import { _get } from './configUtils'
+import { pathUtils } from '@/utils/helpers'
 
 /**
  * Composable for accessing form configuration in components
@@ -34,7 +34,7 @@ export function useFormConfig() {
     path: string,
     defaultValue?: T
   ): T | undefined => {
-    return _get<T>(formConfig, path, defaultValue)
+    return pathUtils.get<T>(formConfig, path, defaultValue)
   }
 
   return {

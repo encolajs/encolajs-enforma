@@ -1,7 +1,7 @@
 /**
  * Composable for managing form kit configuration
  */
-import { mergeConfigs, _get } from './configUtils'
+import { mergeConfigs } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { messageFormatter } from '@encolajs/validator'
 import { resolveValue } from './helpers'
