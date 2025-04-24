@@ -50,7 +50,7 @@ const formSchema = {
   first_name: {
     label: 'First name',
     required: true, // mark field as required
-    input_props: {
+    inputProps: {
       // custom props for the input component
     }
   }

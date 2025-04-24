@@ -201,6 +201,10 @@ export interface FieldSchema extends BaseSchema {
    */
   label?: string
 
+  hideLabel?: boolean
+
+  showLabelNextToInput?: boolean
+
   /**
    * Help text to display alongside the field
    */
@@ -220,27 +224,22 @@ export interface FieldSchema extends BaseSchema {
   /**
    * Props to apply to the label component
    */
-  label_props?: Record<string, any>
+  labelProps?: Record<string, any>
 
   /**
    * Props to apply to the input component
    */
-  input_props?: Record<string, any>
+  inputProps?: Record<string, any>
 
   /**
    * Props to apply to the help text component
    */
-  help_props?: Record<string, any>
+  helpProps?: Record<string, any>
 
   /**
    * Props to apply to the error message component
    */
-  error_props?: Record<string, any>
-
-  /**
-   * Default value for the field
-   */
-  default_value?: any
+  errorProps?: Record<string, any>
 
   /**
    * Component to use for this field
@@ -257,10 +256,10 @@ export interface SectionSchema extends BaseSchema {
   title: string
 
   // tag/component used for title
-  title_component?: string
+  titleComponent?: string
 
   // props to be passed to the title
-  title_props?: Record<string, any>
+  titleProps?: Record<string, any>
 
   // component to be used for rendering
   // in case we need to use a different component
@@ -282,16 +281,16 @@ export interface RepeatableSchema extends BaseSchema {
   /**
    * The minimum number of items allowed
    */
-  min_items?: number
+  min?: number
 
   /**
    * The maximum number of items allowed
    */
-  max_items?: number
+  max?: number
 
   /**
    * The definition of fields within each repeatable item
-   * This must be passed if the `item_component` is not provided
+   * This must be passed if the `itemComponent` is not provided
    */
   subfields?: Record<string, FieldSchema>
 
@@ -303,7 +302,12 @@ export interface RepeatableSchema extends BaseSchema {
   /**
    * Component to use for each repeatable item
    */
-  item_component?: string
+  itemComponent?: string
+
+  /**
+   * Default value for the field
+   */
+  defaultValue?: any
 }
 
 /**
@@ -315,12 +319,12 @@ export interface RepeatableTableSchema extends BaseSchema {
   /**
    * The minimum number of items allowed
    */
-  min_items?: number
+  min?: number
 
   /**
    * The maximum number of items allowed
    */
-  max_items?: number
+  max?: number
 
   /**
    * The definition of fields within each repeatable item
@@ -331,6 +335,11 @@ export interface RepeatableTableSchema extends BaseSchema {
    * Props to apply to the repeatable container
    */
   props?: Record<string, any>
+
+  /**
+   * Default value for the field
+   */
+  defaultValue?: any
 }
 
 export interface EnformaSchema {

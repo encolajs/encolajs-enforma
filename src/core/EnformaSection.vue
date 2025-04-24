@@ -2,8 +2,8 @@
   <div v-bind="mergeProps($attrs, getConfig('pt.section'))">
     <component
       v-if="sectionSchema?.title"
-      :is="sectionSchema.title_component"
-      v-bind="sectionSchema.title_props"
+      :is="sectionSchema.titleComponent"
+      v-bind="sectionSchema.titleProps"
     >
       {{ sectionSchema.title }}
     </component>

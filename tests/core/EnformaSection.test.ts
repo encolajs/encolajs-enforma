@@ -35,8 +35,8 @@ describe('EnformaSection', () => {
         section: 'root',
         title: 'Test Section',
         priority: 1,
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
       },
     })
 
@@ -64,8 +64,8 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Section 1',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       field1: {
@@ -118,8 +118,8 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Section 1',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       field1: {
@@ -181,32 +181,32 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Section 1',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       subsection1: {
         section: 'section1',
         title: 'Subsection 1',
         position: 2,
-        title_component: 'h3',
-        title_props: {},
+        titleComponent: 'h3',
+        titleProps: {},
         priority: 1,
       },
       subsection2: {
         section: 'section1',
         title: 'Subsection 2',
         position: 1,
-        title_component: 'h3',
-        title_props: {},
+        titleComponent: 'h3',
+        titleProps: {},
         priority: 0,
       },
       subsection3: {
         section: 'section1',
         title: 'Subsection 3',
         position: 3,
-        title_component: 'h3',
-        title_props: {},
+        titleComponent: 'h3',
+        titleProps: {},
         priority: 1,
       },
     })
@@ -238,8 +238,8 @@ describe('EnformaSection', () => {
       default: {
         section: 'root',
         title: 'Default Section',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       field1: {
@@ -291,8 +291,8 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Section 1',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       field1: {
@@ -345,8 +345,8 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Test Section',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
     })
@@ -376,8 +376,8 @@ describe('EnformaSection', () => {
       section1: {
         section: 'root',
         title: 'Empty Section',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
     })
@@ -411,22 +411,22 @@ describe('EnformaSection', () => {
       section1: {
         section: 'default',
         title: 'Root Section',
-        title_component: 'h2',
-        title_props: {},
+        titleComponent: 'h2',
+        titleProps: {},
         priority: 1,
       },
       subsection1: {
         section: 'section1',
         title: 'Subsection 1',
-        title_component: 'h3',
-        title_props: {},
+        titleComponent: 'h3',
+        titleProps: {},
         priority: 1,
       },
       subsubsection1: {
         section: 'subsection1',
         title: 'Sub-subsection 1',
-        title_component: 'h4',
-        title_props: {},
+        titleComponent: 'h4',
+        titleProps: {},
         priority: 1,
       },
       field1: {
