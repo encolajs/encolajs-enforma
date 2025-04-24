@@ -100,8 +100,8 @@
     label="Prepend new skill" />
   </div>
   <h5 class="mt-8 mb-4">Accessing the form details from outside</h5>
-  <strong>First skill</strong>: {{ formRef?.getFieldValue('skills.0.name') }}<br>
-  <strong>Email errors</strong>: {{ formRef?.errors().email }}<br>
+  <strong>First skill</strong>: <code>{{ formRef?.getFieldValue('skills.0.name') }}</code><br>
+  <strong>Email errors</strong>: <code>{{ formRef?.getFieldErrors('email') }}</code><br>
 
 </template>
 
