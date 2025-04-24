@@ -20,7 +20,7 @@ export default defineConfig({
     ],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Getting Started', link: '/getting-started' },
+      { text: 'Documentation', link: '/getting-started' },
       { text: 'Examples', link: '/examples/' },
       { text: 'More...',
         items: [
