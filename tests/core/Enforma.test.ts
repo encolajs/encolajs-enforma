@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
-import Enforma from '../../src/core/Enforma.vue'
+import Enforma from '@/core/Enforma.vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import { setGlobalConfig } from '@/utils/useConfig'
 import { h, inject } from 'vue'

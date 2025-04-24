@@ -1,6 +1,5 @@
 <template>
   <div v-bind="$attrs">
-    {{ sectionComponent }}
     <template v-for="(section, sectionId) in sections" :key="sectionId">
       <component :is="sectionComponent" :name="sectionId" />
     </template>

@@ -29,7 +29,11 @@ export function useEnformaSchema(schema: EnformaSchema) {
 
     // Sort sections by priority
     return Object.fromEntries(
-      Object.entries(sections).sort(([, a], [, b]) => a.priority - b.priority)
+      Object.entries(sections).sort(([, a], [, b]) => {
+        const aPriority = a.position || 0
+        const bPriority = b.position || 0
+        return aPriority - bPriority
+      })
     )
   })
 

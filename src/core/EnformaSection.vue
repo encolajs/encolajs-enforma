@@ -34,14 +34,8 @@ interface SectionWithPosition extends SectionSchema {
   name: string
 }
 
-function isFieldSchema(value: any): value is FieldSchema {
-  return value && typeof value === 'object' && 'type' in value
-}
-
 function isSectionSchema(value: any): value is SectionSchema {
-  return (
-    value && typeof value === 'object' && 'title' in value && 'section' in value
-  )
+  return value && typeof value === 'object' && value?.type === 'section'
 }
 
 function getFields(
@@ -52,7 +46,6 @@ function getFields(
 
   const entries = Object.entries(schema)
     .filter(([_, field]) => {
-      if (!isFieldSchema(field)) return false
       if (isSectionSchema(field)) return false
 
       // For default section, include fields without a section

@@ -54,7 +54,6 @@ export default defineConfig({
                 { text: 'EnformaField', link: '/field-forms/enforma-field' },
                 { text: 'EnformaRepeatable', link: '/field-forms/enforma-repeatable' },
                 { text: 'EnformaRepeatableTable', link: '/field-forms/enforma-repeatable-table' },
-                { text: 'EnformaSection', link: '/field-forms/enforma-section' },
               ]
             },
             {

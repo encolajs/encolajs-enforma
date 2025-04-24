@@ -119,6 +119,14 @@ export interface ComponentsConfig {
 }
 
 /**
+ * Transformer function type definitions
+ */
+export type SchemaTransformer = (schema: Record<string, any>, formController?: any) => Record<string, any>
+export type ContextTransformer = (context: Record<string, any>, formController?: any) => Record<string, any>
+export type FormConfigTransformer = (config: Record<string, any>, formController?: any) => Record<string, any>
+export type FieldPropsTransformer = (props: Record<string, any>, ...args: any[]) => Record<string, any>
+
+/**
  * Complete form kit configuration
  */
 export interface EnformaConfig {
@@ -130,7 +138,15 @@ export interface EnformaConfig {
   expressions: ExpressionsConfig
   components: ComponentsConfig
   transformers?: {
-    [key: string]: Function[]
+    // transformers that are applied to EnformaField props
+    field_props?: FieldPropsTransformer[]
+    // transformers applied to Enforma `schema` prop
+    schema?: SchemaTransformer[]
+    // transformers applied to Enforma `context` prop
+    context?: ContextTransformer[]
+    // // transformers applied to Enforma `config` prop
+    form_config?: FormConfigTransformer[]
+    [key: string]: Function[] | undefined
   }
   [key: string]: any
 }
