@@ -1,12 +1,10 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
-import { useDynamicProps } from '@/utils/useDynamicProps'
+import { useDynamicProps } from '../../src/'
 import {
   formConfigKey,
   formContextKey,
   formControllerKey,
-} from '@/constants/symbols'
-import { FormController } from '@/types'
-import { evaluateCondition, evaluateObject } from '@/utils/exprEvaluator'
+} from '../../src/'
 
 // Mock the Vue inject function
 vi.mock('vue', async () => {

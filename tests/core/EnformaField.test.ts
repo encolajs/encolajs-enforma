@@ -1,6 +1,7 @@
 // tests/core/EnformaField.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
+// @ts-expect-error IDE not working properly
 import EnformaField from '../../src/core/EnformaField.vue'
 // @ts-ignore
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'

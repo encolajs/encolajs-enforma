@@ -1,7 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
-import { useForm } from '@/headless/useForm'
 import { flushPromises } from '@vue/test-utils'
-import { FormController } from '../../src'
+import { FormController, useForm } from '../../src'
 
 describe('useForm', () => {
   let order

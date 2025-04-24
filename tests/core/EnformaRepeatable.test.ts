@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+// @ts-expect-error IDE not working properly
 import EnformaRepeatable from '../../src/core/EnformaRepeatable.vue'
 // @ts-ignore
 import { useForm } from '@/headless/useForm'
@@ -7,12 +8,9 @@ import { useForm } from '@/headless/useForm'
 import { useValidation } from '@/utils/useValidation'
 import {
   formControllerKey,
-  formConfigKey,
   formSchemaKey,
   // @ts-ignore
 } from '@/constants/symbols'
-// @ts-ignore
-import { useConfig } from '@/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
 import { useFormConfig } from '../../src'
@@ -93,7 +91,7 @@ describe('EnformaRepeatable', () => {
       },
       setup() {
         // Provide injections in setup
-        useFormConfig({})
+        useFormConfig()
         provide(formControllerKey, formState)
         provide(formSchemaKey, null)
 

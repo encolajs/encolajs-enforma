@@ -80,6 +80,7 @@ export {
   formControllerKey,
   formConfigKey,
   formContextKey,
+  formSchemaKey,
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'
 

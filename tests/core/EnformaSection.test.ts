@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises } from '@vue/test-utils'
 // @ts-expect-error IDE not working properly
 import EnformaSection from '../../src/core/EnformaSection.vue'
-import { formSchemaKey, formControllerKey, formConfigKey } from '@/constants/symbols'
-import type { EnformaSchema, FieldSchema, SectionSchema } from '@/types'
-import { useForm } from '@/headless/useForm'
+import { formSchemaKey, formControllerKey, EnformaSchema, FieldSchema, SectionSchema } from '../../src/'
+import { useForm } from '../../src'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Create a mock schema for testing
@@ -32,9 +31,10 @@ describe('EnformaSection', () => {
   it('renders section with title', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Test Section',
-        priority: 1,
+        position: 1,
         titleComponent: 'h2',
         titleProps: {},
       },
@@ -62,31 +62,32 @@ describe('EnformaSection', () => {
   it('renders fields in the correct order based on position', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Section 1',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       field1: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field1',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
         position: 2,
       },
       field2: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field2',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
         position: 1,
       },
       field3: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field3',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
         position: 3,
       },
     })
@@ -116,37 +117,38 @@ describe('EnformaSection', () => {
   it('renders fields without position after fields with position', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Section 1',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       field1: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field1',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
         position: 1,
       },
       field2: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field2',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
       field3: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field3',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
         position: 2,
       },
       field4: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field4',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
     })
 
@@ -179,35 +181,36 @@ describe('EnformaSection', () => {
   it('renders nested sections in the correct order', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Section 1',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       subsection1: {
+        type: 'section',
         section: 'section1',
         title: 'Subsection 1',
-        position: 2,
         titleComponent: 'h3',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       subsection2: {
+        type: 'section',
         section: 'section1',
         title: 'Subsection 2',
-        position: 1,
         titleComponent: 'h3',
         titleProps: {},
-        priority: 0,
+        position: 0,
       },
       subsection3: {
+        type: 'section',
         section: 'section1',
         title: 'Subsection 3',
-        position: 3,
         titleComponent: 'h3',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
     })
 
@@ -236,27 +239,28 @@ describe('EnformaSection', () => {
   it('includes fields without section in the default section', async () => {
     const schema = createMockSchema({
       default: {
+        type: 'section',
         section: 'root',
         title: 'Default Section',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       field1: {
-        type: 'input',
-        name: 'field1',
-        wrapper: 'div',
+        type: 'field',
+        inputComponent: 'input',
+        component: 'div',
       },
       field2: {
+        type: 'field',
         section: 'default',
-        type: 'input',
-        name: 'field2',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
       field3: {
-        type: 'input',
-        name: 'field3',
-        wrapper: 'div',
+        type: 'field',
+        inputComponent: 'input',
+        component: 'div',
       },
     })
 
@@ -289,29 +293,30 @@ describe('EnformaSection', () => {
   it('excludes fields from other sections', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Section 1',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       field1: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field1',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
       field2: {
+        type: 'field',
         section: 'section2',
-        type: 'input',
-        name: 'field2',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
       field3: {
+        type: 'field',
         section: 'section1',
-        type: 'input',
-        name: 'field3',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
     })
 
@@ -343,11 +348,12 @@ describe('EnformaSection', () => {
   it('applies correct section classes', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Test Section',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
     })
 
@@ -374,11 +380,12 @@ describe('EnformaSection', () => {
   it('handles empty sections gracefully', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'root',
         title: 'Empty Section',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
     })
 
@@ -409,31 +416,34 @@ describe('EnformaSection', () => {
   it('handles deeply nested sections', async () => {
     const schema = createMockSchema({
       section1: {
+        type: 'section',
         section: 'default',
         title: 'Root Section',
         titleComponent: 'h2',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       subsection1: {
+        type: 'section',
         section: 'section1',
         title: 'Subsection 1',
         titleComponent: 'h3',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       subsubsection1: {
+        type: 'section',
         section: 'subsection1',
         title: 'Sub-subsection 1',
         titleComponent: 'h4',
         titleProps: {},
-        priority: 1,
+        position: 1,
       },
       field1: {
+        type: 'field',
         section: 'subsubsection1',
-        type: 'input',
-        name: 'field1',
-        wrapper: 'div',
+        inputComponent: 'input',
+        component: 'div',
       },
     })
 
