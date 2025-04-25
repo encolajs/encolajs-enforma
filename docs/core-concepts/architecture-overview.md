@@ -17,6 +17,7 @@ Enforma follows a layered architecture:
 - **Progressive Enhancement** - Simple forms with minimal configuration, scaling to complex use cases
 - **Extensibility** - All levels of the system can be extended and customized
 - **Performance** - Optimized rendering to handle complex forms efficiently
+- **Transformation Pipeline** - Using transformer functions to modify forms at runtime
 
 ## Component Hierarchy
 
@@ -53,3 +54,16 @@ Enforma supports multiple rendering strategies:
 - **Mixed rendering** - Combining all approaches for flexibility
 
 This architecture gives you the freedom to choose the approach that best fits your application's needs.
+
+## Transformation System
+
+Enforma includes a powerful transformation system that allows you to modify form elements at runtime:
+
+1. **Schema Transformers** - Modify the form schema before it's rendered
+2. **Context Transformers** - Adjust the form context that's available to expressions and components
+3. **Form Config Transformers** - Customize form configuration at runtime
+4. **Field Props Transformers** - Adjust field properties during rendering
+
+These transformers follow a pipeline pattern where each transformer receives input, modifies it, and passes the result to the next transformer. This system enables dynamic form behavior without complex component logic.
+
+Learn more in the [Transformers guide](/extensibility/using-transformers).

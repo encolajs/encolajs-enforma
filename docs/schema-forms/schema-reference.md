@@ -44,8 +44,8 @@ All schema types share these base properties:
 | `position` | number | No | Position for rendering in the form/parent section                                |
 | `if` | string | No | Conditional expression to determine if this part of the should be shown          |
 
-> [!WARNING] 
-> For the `type` you can use a custom type but you will lose TS support. It's better to use one of the standard types and use the `component` for customizing the rendering of the form
+> [!IMPORTANT] 
+> Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/integrating-custom-components.md) 
 
 ## Field Schema Reference
 
@@ -65,14 +65,14 @@ All schema types share these base properties:
 
 ## Repeatable Schema Reference
 
-| Property | Type | Required | Description                                          |
-|----------|------|----------|------------------------------------------------------|
-| `min` | number | No | The minimum number of items allowed                  |
-| `max` | number | No | The maximum number of items allowed                  |
-| `subfields` | object | No | The definition of fields within each repeatable item |
-| `props` | object | No | Props to apply to the repeatable container           |
-| `itemComponent` | string | No | Component to use for each repeatable item            |
-| `defaultValue` | any | No | Default value when adding a new item in the array    |
+| Property | Type | Required | Description                                                                                        |
+|----------|------|----------|----------------------------------------------------------------------------------------------------|
+| `min` | number | No | The minimum number of items allowed                                                                |
+| `max` | number | No | The maximum number of items allowed                                                                |
+| `subfields` | object | No | The definition of fields within each repeatable item, **if you are not using the `itemComponent`** |
+| `props` | object | No | Props to apply to the repeatable container                                                         |
+| `itemComponent` | string | No | Component to use for each repeatable item, **if you are not using `subfieds`**                       |
+| `defaultValue` | any | No | Default value when adding a new item in the array                                                  |
 
 ## Repeatable Table Schema Reference
 
@@ -92,5 +92,9 @@ All schema types share these base properties:
 | `titleComponent` | string | No | Tag/component used for title |
 | `titleProps` | object | No | Props to be passed to the title |
 
+Sections can contain both fields and sections.
+
 > [!WARNING]
-> Sections can contain both fields and sections. However, the fields are rendered before the sub-sections. If you want to render fields last, you must assign them to a sub-section in the last position
+> The fields are rendered before the sub-sections. 
+> If you want to render fields last, you must assign them to a sub-section in the last position. 
+> If you want to alternate fields with sub-sections you have to use only sub-sections
