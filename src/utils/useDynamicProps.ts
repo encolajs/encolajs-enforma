@@ -7,7 +7,7 @@ import { formContextKey, formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import {
   evaluateCondition,
-  evaluateObject,
+  evaluateObject, EvaluationOptions,
   ExpressionContext,
 } from './exprEvaluator'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -87,7 +87,7 @@ export function useDynamicProps(
     return evaluateCondition(
       condition,
       getExpressionContext,
-      getConfig('expressions', { delimiters: { start: '${', end: '}' } })
+      getConfig('expressions', { delimiters: { start: '${', end: '}' } }) as EvaluationOptions
     )
   }
 

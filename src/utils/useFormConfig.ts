@@ -33,7 +33,7 @@ export function useFormConfig() {
   const getConfig = <T = any>(
     path: string,
     defaultValue?: T
-  ): T | undefined => {
+  ): T | null | undefined => {
     return pathUtils.get<T>(formConfig, path, defaultValue)
   }
 
