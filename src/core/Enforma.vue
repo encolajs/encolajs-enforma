@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, onMounted, PropType, defineExpose, reactive, computed } from 'vue'
+import { provide, ref, onMounted, PropType, reactive, computed } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import {
   formContextKey,

@@ -35,11 +35,11 @@
 
               <!-- Actions for field-based subfields -->
               <div
-                v-if="showDeleteButton || showMoveButtons"
+                v-if="allowRemove || allowSort"
                 v-bind="getConfig('pt.repeatable.itemActions')"
               >
                 <component
-                  v-if="showDeleteButton"
+                  v-if="allowRemove"
                   :is="
                     removeButton ||
                     getConfig('components.repeatableRemoveButton')
@@ -47,7 +47,7 @@
                   @click="remove(index)"
                 />
                 <component
-                  v-if="showMoveButtons"
+                  v-if="allowSort"
                   :is="
                     moveUpButton ||
                     getConfig('components.repeatableMoveUpButton')
@@ -56,7 +56,7 @@
                   @click="moveUp(index)"
                 />
                 <component
-                  v-if="showMoveButtons"
+                  v-if="allowSort"
                   :is="
                     moveDownButton ||
                     getConfig('components.repeatableMoveDownButton')
@@ -84,9 +84,9 @@
         <!-- Add button -->
         <div v-bind="getConfig('pt.repeatable.actions')">
           <component
-            v-if="canAdd"
+            v-if="canAdd && allowAdd"
             :is="addButton || getConfig('components.repeatableAddButton')"
-            @click="add(add, defaultValue)"
+            @click="add(defaultValue)"
           />
         </div>
       </template>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs, mergeProps, ref } from 'vue'
+import { useAttrs, mergeProps } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
@@ -108,8 +108,9 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnRemove: true,
   if: true,
   min: 0,
-  showDeleteButton: true,
-  showMoveButtons: true,
+  allowAdd: true,
+  allowRemove: true,
+  allowSort: true,
 })
 
 const $attrs = useAttrs()

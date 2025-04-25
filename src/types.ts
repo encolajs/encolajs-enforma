@@ -298,6 +298,31 @@ export interface RepeatableSchema extends BaseSchema {
    * Default value for the field
    */
   defaultValue?: any
+  
+  /**
+   * Whether to allow adding new items
+   */
+  allowAdd?: boolean
+  
+  /**
+   * Whether to allow removing items
+   */
+  allowRemove?: boolean
+  
+  /**
+   * Whether to allow sorting items
+   */
+  allowSort?: boolean
+  
+  /**
+   * Whether to validate the field when a new item is added
+   */
+  validateOnAdd?: boolean
+  
+  /**
+   * Whether to validate the field when an item is removed
+   */
+  validateOnRemove?: boolean
 }
 
 /**
@@ -330,6 +355,31 @@ export interface RepeatableTableSchema extends BaseSchema {
    * Default value for the field
    */
   defaultValue?: any
+  
+  /**
+   * Whether to allow adding new items
+   */
+  allowAdd?: boolean
+  
+  /**
+   * Whether to allow removing items
+   */
+  allowRemove?: boolean
+  
+  /**
+   * Whether to allow sorting items
+   */
+  allowSort?: boolean
+  
+  /**
+   * Whether to validate the field when a new item is added
+   */
+  validateOnAdd?: boolean
+  
+  /**
+   * Whether to validate the field when an item is removed
+   */
+  validateOnRemove?: boolean
 }
 
 export interface FormSchema {

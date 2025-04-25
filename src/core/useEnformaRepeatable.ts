@@ -34,8 +34,9 @@ export interface RepeatableFieldSchema {
   removeButton?: any // EnformaRepeatableRemoveButton component
   moveUpButton?: any // EnformaRepeatableMoveUpButton component
   moveDownButton?: any // EnformaRepeatableMoveDownButton component
-  showDeleteButton?: boolean // Whether to show the delete button
-  showMoveButtons?: boolean // Whether to show the move up/down buttons
+  allowAdd?: boolean // Whether to allow adding new items
+  allowRemove?: boolean // Whether to allow removing items
+  allowSort?: boolean // Whether to allow sorting items
 }
 
 export interface RepeatableFieldConfig extends RepeatableFieldSchema {

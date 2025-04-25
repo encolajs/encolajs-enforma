@@ -41,7 +41,7 @@
                 />
               </td>
               <td
-                v-if="showDeleteButton || showMoveButtons"
+                v-if="allowRemove || allowSort"
                 v-bind="getConfig('pt.repeatable_table.actionsTd')"
               >
                 <div
@@ -53,7 +53,7 @@
                   "
                 >
                   <component
-                    v-if="showDeleteButton"
+                    v-if="allowRemove"
                     :is="
                       removeButton ||
                       getConfig('components.repeatableRemoveButton')
@@ -61,7 +61,7 @@
                     @click="remove(index)"
                   />
                   <component
-                    v-if="showMoveButtons"
+                    v-if="allowSort"
                     :is="
                       moveUpButton ||
                       getConfig('components.repeatableMoveUpButton')
@@ -70,7 +70,7 @@
                     @click="moveUp(index)"
                   />
                   <component
-                    v-if="showMoveButtons"
+                    v-if="allowSort"
                     :is="
                       moveDownButton ||
                       getConfig('components.repeatableMoveDownButton')
@@ -94,7 +94,7 @@
           "
         >
           <component
-            v-if="canAdd"
+            v-if="canAdd && allowAdd"
             :is="addButton || getConfig('components.repeatableAddButton')"
             @click="add(defaultValue)"
           />
@@ -119,8 +119,9 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnRemove: false,
   if: true,
   min: 0,
-  showDeleteButton: true,
-  showMoveButtons: true,
+  allowAdd: true,
+  allowRemove: true,
+  allowSort: true,
 })
 
 const $attrs = useAttrs()

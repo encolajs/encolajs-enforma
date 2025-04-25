@@ -72,6 +72,11 @@ All schema types share these base properties:
 | `max` | number | No | The maximum number of items allowed                                                                |
 | `props` | object | No | Props to apply to the repeatable container                                                         |
 | `defaultValue` | any | No | Default value when adding a new item in the array                                                  |
+| `allowAdd` | boolean | No | Whether to show the add button (defaults to true)                                             |
+| `allowRemove` | boolean | No | Whether to show the remove button (defaults to true)                                       |
+| `allowSort` | boolean | No | Whether to show the move up/down buttons (defaults to true)                                  |
+| `validateOnAdd` | boolean | No | Whether to validate the field when a new item is added (defaults to true)                |
+| `validateOnRemove` | boolean | No | Whether to validate the field when an item is removed (defaults to true)              |
 
 ## Repeatable Table Schema Reference
 
@@ -82,6 +87,11 @@ All schema types share these base properties:
 | `max` | number | No | The maximum number of items allowed |
 | `props` | object | No | Props to apply to the repeatable container |
 | `defaultValue` | any | No | Default value when adding a new item in the array |
+| `allowAdd` | boolean | No | Whether to show the add button (defaults to true) |
+| `allowRemove` | boolean | No | Whether to show the remove button (defaults to true) |
+| `allowSort` | boolean | No | Whether to show the move up/down buttons (defaults to true) |
+| `validateOnAdd` | boolean | No | Whether to validate the field when a new item is added (defaults to true) |
+| `validateOnRemove` | boolean | No | Whether to validate the field when an item is removed (defaults to false) |
 
 ## Section Schema Reference
 

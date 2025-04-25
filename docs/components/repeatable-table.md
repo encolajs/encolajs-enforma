@@ -35,8 +35,9 @@ The Repeatable Table component provides a tabular interface for handling array-l
 | `removeButton` | `Component` | No | - | Custom remove button component |
 | `moveUpButton` | `Component` | No | - | Custom move up button component |
 | `moveDownButton` | `Component` | No | - | Custom move down button component |
-| `showDeleteButton` | `Boolean` | No | `true` | Whether to show the delete button |
-| `showMoveButtons` | `Boolean` | No | `true` | Whether to show the move up/down buttons |
+| `allowAdd` | `Boolean` | No | `true` | Whether to allow adding new items |
+| `allowRemove` | `Boolean` | No | `true` | Whether to allow removing items |
+| `allowSort` | `Boolean` | No | `true` | Whether to allow sorting items |
 
 ## Examples
 

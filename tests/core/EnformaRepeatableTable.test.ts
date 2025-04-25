@@ -220,7 +220,7 @@ describe('EnformaRepeatableTable', () => {
       )
       await flushPromises()
 
-      const addButton = wrapper.find('.add-button')
+      const addButton = wrapper.find('.enforma-repeatable-add-button')
       expect(addButton.exists()).toBe(false)
     })
 
@@ -253,17 +253,64 @@ describe('EnformaRepeatableTable', () => {
       )
       await flushPromises()
 
-      const moveUpButtons = wrapper.findAll(
-        '.enforma-repeatable-move-up-button'
-      )
+      const moveUpButtons = wrapper.findAll('.enforma-repeatable-move-up-button')
       expect(moveUpButtons[0].attributes()['disabled']).toBe('')
       expect(moveUpButtons[1].attributes()['disabled']).toBeUndefined()
 
-      const moveDownButtons = wrapper.findAll(
-        '.enforma-repeatable-move-down-button'
-      )
+      const moveDownButtons = wrapper.findAll('.enforma-repeatable-move-down-button')
       expect(moveDownButtons[1].attributes()['disabled']).toBeUndefined()
       expect(moveDownButtons[2].attributes()['disabled']).toBe('')
+    })
+    
+    it('honors allowAdd=false prop to hide add button', async () => {
+      const formState = createFormState({ items: [{ name: 'Item 1' }] })
+      const wrapper = createTestWrapper(
+        {
+          subfields: { name: { type: 'text', name: 'name' } },
+          allowAdd: false,
+        },
+        formState
+      )
+      await flushPromises()
+
+      const addButton = wrapper.find('.add-button')
+      expect(addButton.exists()).toBe(false)
+    })
+
+    it('honors allowRemove=false prop to hide remove buttons', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
+      })
+      const wrapper = createTestWrapper(
+        {
+          subfields: { name: { type: 'text', name: 'name' } },
+          allowRemove: false,
+        },
+        formState
+      )
+      await flushPromises()
+
+      const removeButtons = wrapper.findAll('.remove-button')
+      expect(removeButtons).toHaveLength(0)
+    })
+
+    it('honors allowSort=false prop to hide sort buttons', async () => {
+      const formState = createFormState({
+        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
+      })
+      const wrapper = createTestWrapper(
+        {
+          subfields: { name: { type: 'text', name: 'name' } },
+          allowSort: false,
+        },
+        formState
+      )
+      await flushPromises()
+
+      const moveUpButtons = wrapper.findAll('.move-up-button')
+      const moveDownButtons = wrapper.findAll('.move-down-button')
+      expect(moveUpButtons).toHaveLength(0)
+      expect(moveDownButtons).toHaveLength(0)
     })
   })
 
