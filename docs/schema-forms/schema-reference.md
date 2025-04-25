@@ -67,11 +67,10 @@ All schema types share these base properties:
 
 | Property | Type | Required | Description                                                                                        |
 |----------|------|----------|----------------------------------------------------------------------------------------------------|
+| `subfields` | object | Yes | The definition of fields within each repeatable item |
 | `min` | number | No | The minimum number of items allowed                                                                |
 | `max` | number | No | The maximum number of items allowed                                                                |
-| `subfields` | object | No | The definition of fields within each repeatable item, **if you are not using the `itemComponent`** |
 | `props` | object | No | Props to apply to the repeatable container                                                         |
-| `itemComponent` | string | No | Component to use for each repeatable item, **if you are not using `subfieds`**                       |
 | `defaultValue` | any | No | Default value when adding a new item in the array                                                  |
 
 ## Repeatable Table Schema Reference

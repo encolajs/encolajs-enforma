@@ -286,19 +286,13 @@ export interface RepeatableSchema extends BaseSchema {
 
   /**
    * The definition of fields within each repeatable item
-   * This must be passed if the `itemComponent` is not provided
    */
-  subfields?: Record<string, FieldSchema>
+  subfields: Record<string, FieldSchema>
 
   /**
    * Props to apply to the repeatable container
    */
   props?: Record<string, any>
-
-  /**
-   * Component to use for each repeatable item
-   */
-  itemComponent?: string
 
   /**
    * Default value for the field
