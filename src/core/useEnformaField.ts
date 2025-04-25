@@ -5,11 +5,10 @@ import {
   mergeProps,
   onBeforeUnmount,
   ref,
-  ComponentPublicInstance,
+  ComponentPublicInstance, ComputedRef,
 } from 'vue'
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'
-import { useDynamicProps } from '@/utils/useDynamicProps'
-import { FieldController, FormController } from '@/types'
+import { FormController } from '@/types'
 import { useTranslation } from '@/utils/useTranslation'
 import { fieldValidateOnOption, useField } from '@/headless/useField'
 import { FieldSchema } from '@/types'
@@ -21,7 +20,6 @@ export interface EnformaFieldProps {
   name: string
   label?: string | null
   component?: string | ComponentPublicInstance | null
-  placeholder?: string | null
   hideLabel?: boolean | undefined
   showLabelNextToInput?: boolean | undefined
   required?: boolean | undefined
@@ -71,7 +69,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       wrapperProps: {},
       inputProps: {},
       label: null,
-      placeholder: null,
       help: null,
       validateOn: null,
       section: null,
@@ -141,9 +138,27 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get utilities
   const { t } = useTranslation()
 
+  // First, apply transformers to the field options
+  const transformedFieldOptions: ComputedRef<EnformaFieldProps> = computed(() => {
+    // Apply field props transformers if defined in config
+    const fieldPropsTransformers = getConfig('transformers.field_props', []) as Function[]
+    
+    if (fieldPropsTransformers.length === 0) {
+      return fieldOptions.value
+    }
+    
+    return applyTransformers(
+      fieldPropsTransformers,
+      { ...fieldOptions.value },
+      field,
+      formState,
+      formConfig
+    )
+  })
+
   // Derive computed values
   const fieldController = computed(() => field.value)
-  const fieldId = computed(() => fieldController.value.id)
+  const fieldId = computed(() => transformedFieldOptions.value.inputProps?.id || fieldController.value.id)
   const errorMessage = computed(() => fieldController.value.error)
   const requiredIndicator = getConfig('pt.required.text', '*')
 
@@ -154,91 +169,91 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       const result: Record<string, any> = {}
 
       // Required indicator (doesn't change after initialization)
-      result.required = originalProps.required
+      result.required = transformedFieldOptions.value.required
       result.requiredProps = getConfig('pt.required')
 
       // Component type and label visibility (don't change after initialization)
-      result.component = fieldOptions.value.component || 'input'
-      result.hideLabel = fieldOptions.value.hideLabel
-      result.showLabelNextToInput = fieldOptions.value.showLabelNextToInput
+      result.component = transformedFieldOptions.value.component || 'input'
+      result.hideLabel = transformedFieldOptions.value.hideLabel
+      result.showLabelNextToInput = transformedFieldOptions.value.showLabelNextToInput
 
       return result
     })()
 
-    // Create wrapper props separately
+    // Get a reference to the transformed input props to determine if an ID was already provided
+    const transformedInputProps = transformedFieldOptions.value.inputProps || {}
+    
+    // Create wrapper props separately - use transformedFieldOptions
     const wrapperProps = mergeProps(
       {
         id: `wrapper-${fieldId.value}`,
       },
-      fieldOptions.value.wrapperProps || {},
+      transformedFieldOptions.value.wrapperProps || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
       errorMessage.value
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
         : {},
-      fieldOptions.value.required
+      transformedFieldOptions.value.required
         ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
         : {}
     )
 
-    // Compute label props
+    // Compute label props - use transformedFieldOptions
     const labelProps = mergeProps(
       {
         for: fieldId.value,
       },
-      fieldOptions.value.labelProps || {},
+      transformedFieldOptions.value.labelProps || {},
       getConfig('pt.label', {}) as Record<string, unknown>
     )
 
-    // Help text props
+    // Help text props - use transformedFieldOptions
     const helpProps = mergeProps(
       {
         id: `help-${fieldId.value}`,
       },
-      fieldOptions.value.helpProps || {},
+      transformedFieldOptions.value.helpProps || {},
       getConfig('pt.help', {}) as Record<string, unknown>
     )
 
-    // Error message props
+    // Error message props - use transformedFieldOptions
     const errorProps = mergeProps(
       {
         id: `error-${fieldId.value}`,
       },
-      fieldOptions.value.errorProps || {},
+      transformedFieldOptions.value.errorProps || {},
       getConfig('pt.error', {}) as Record<string, unknown>
     )
 
-    // Input props (changes most frequently)
+    // Input props (changes most frequently) - use transformedFieldOptions
+    // Only add id if it's not already present in transformedInputProps
+    const defaultInputProps: Record<string, any> = {
+      value: fieldController.value.value,
+      name: transformedFieldOptions.value.name,
+      invalid: !!errorMessage.value,
+    }
+    
+    // Only add id if not already provided by the transformer
+    if (!transformedInputProps.id) {
+      defaultInputProps.id = fieldId.value
+    }
+    
     const inputProps = mergeProps(
-      {
-        id: fieldId.value,
-        value: fieldController.value.value,
-        name: fieldOptions.value.name,
-        placeholder: t(fieldOptions.value.placeholder),
-        invalid: !!errorMessage.value,
-      },
+      defaultInputProps,
       fieldController.value.attrs || {},
-      fieldOptions.value.inputProps || {},
+      transformedInputProps,
       getConfig('pt.input', {}) as Record<string, unknown>
     )
 
-    const result: Record<string, any> = {
+    return {
       ...staticProps,
       wrapper: wrapperProps,
       label: labelProps,
       help: helpProps,
       error: errorProps,
       input: inputProps,
-      if: !!fieldOptions.value.if,
+      if: !!transformedFieldOptions.value.if,
     }
-
-    // Apply custom transformers if defined in config
-    return applyTransformers(
-      getConfig('transformers.field_props', []) as Function[],
-      result,
-      field,
-      formState,
-      formConfig
-    )
   })
 
   return {
