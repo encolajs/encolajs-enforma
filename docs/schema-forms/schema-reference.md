@@ -36,13 +36,13 @@ const schema = {
 
 All schema types share these base properties:
 
-| Property | Type | Required | Description                                                                      |
-|----------|------|----------|----------------------------------------------------------------------------------|
-| `type` | string | Yes | Type of schema: 'field', 'section', 'repeatable', or 'repeatable-table'.         |
-| `component` | string | No | The component used for rendering this part of the form. If not provided, the components provided via documentation will be used |
-| `section` | string | No | The section this schema belongs to                                               |
-| `position` | number | No | Position for rendering in the form/parent section                                |
-| `if` | string | No | Conditional expression to determine if this part of the should be shown          |
+| Property | Type | Required | Description                                                                                                                     |
+|----------|------|----------|---------------------------------------------------------------------------------------------------------------------------------|
+| `type` | string | Yes | Type of schema: 'field', 'section', 'repeatable', or 'repeatable-table'.                                                        |
+| `component` | string | No | The component used for rendering this part of the form. If not provided, the components provided via configuration will be used |
+| `section` | string | No | The section this schema belongs to                                                                                              |
+| `position` | number | No | Position for rendering in the form/parent section                                                                               |
+| `if` | string | No | Conditional expression to determine if this part of the should be shown                                                         |
 
 > [!IMPORTANT] 
 > Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/integrating-custom-components.md) 

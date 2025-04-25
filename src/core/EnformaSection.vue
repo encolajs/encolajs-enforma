@@ -20,9 +20,10 @@
 
 <script setup lang="ts">
 import { computed, inject, resolveComponent, mergeProps } from 'vue'
-import { formSchemaKey } from '@/constants/symbols'
-import { FieldSchema, SectionSchema, FormSchema } from '@/types'
+import { formSchemaKey, formControllerKey } from '@/constants/symbols'
+import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
+import applyTransformers from '@/utils/applyTransformers'
 
 interface FieldWithPosition extends FieldSchema {
   position?: number
@@ -103,22 +104,48 @@ const props = defineProps<{
 
 // Inject dependencies
 const schema = inject<FormSchema>(formSchemaKey)
+const formState = inject<FormController>(formControllerKey)
 
 // Get the configuration
-const { getConfig } = useFormConfig()
+const { getConfig, formConfig } = useFormConfig()
 
 const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
 const sectionComponent = resolveComponent('EnformaSection')
 
 // Get the section schema for this section
-const sectionSchema = computed(() => {
+const originalSectionSchema = computed(() => {
   if (!schema) return null
   const item = schema[props.name]
   if (isSectionSchema(item)) {
     return item
   }
   return null
+})
+
+// Apply section props transformers
+const sectionSchema = computed(() => {
+  if (!originalSectionSchema.value) return null
+  
+  // Apply section props transformers if defined in config
+  const sectionPropsTransformers = getConfig('transformers.section_props', []) as Function[]
+  
+  if (sectionPropsTransformers.length === 0) {
+    return originalSectionSchema.value
+  }
+  
+  // Create a copy with name property for the transformer to use
+  const sectionWithName = {
+    ...originalSectionSchema.value,
+    name: props.name
+  }
+  
+  return applyTransformers(
+    sectionPropsTransformers,
+    sectionWithName,
+    formState,
+    formConfig
+  )
 })
 
 // Get fields for this section and sort them by position

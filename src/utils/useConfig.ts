@@ -140,6 +140,12 @@ export interface EnformaConfig {
     field_props?: FieldPropsTransformer[]
     // transformers applied to Enforma form props (schema, context, config)
     form_props?: FormPropsTransformer[]
+    // transformers applied to EnformaRepeatable props
+    repeatable_props?: FormPropsTransformer[]
+    // transformers applied to EnformaRepeatableTable props
+    repeatable_table_props?: FormPropsTransformer[]
+    // transformers applied to EnformaSection props
+    section_props?: FormPropsTransformer[]
     [key: string]: Function[] | undefined
   }
   [key: string]: any

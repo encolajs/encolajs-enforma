@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs, mergeProps } from 'vue'
+import { useAttrs, mergeProps, computed } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
@@ -113,6 +113,7 @@ import {
 } from './useEnformaRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
 import EnformaField from '@/core/EnformaField.vue'
+import applyTransformers from '@/utils/applyTransformers'
 
 const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
   validateOnAdd: true,
@@ -125,6 +126,41 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 })
 
 const $attrs = useAttrs()
-const { isVisible, fields } = useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
+
+// Use the useEnformaRepeatable hook, but apply table-specific transformers
+const repeatableResult = useEnformaRepeatable(props)
+const { isVisible, fields, transformedFieldConfig } = repeatableResult
+
+// Apply table-specific transformers
+const transformedTableConfig = computed(() => {
+  // Apply repeatable table props transformers if defined in config
+  const repeatableTablePropsTransformers = getConfig('transformers.repeatable_table_props', []) as Function[]
+  
+  if (repeatableTablePropsTransformers.length === 0) {
+    return transformedFieldConfig.value
+  }
+  
+  return applyTransformers(
+    repeatableTablePropsTransformers,
+    { ...transformedFieldConfig.value },
+    repeatableResult.formState,
+    getConfig() // pass the full config
+  )
+})
+
+// Derive additional props from the transformed config
+const addButton = computed(() => transformedTableConfig.value.addButton)
+const removeButton = computed(() => transformedTableConfig.value.removeButton)
+const moveUpButton = computed(() => transformedTableConfig.value.moveUpButton)
+const moveDownButton = computed(() => transformedTableConfig.value.moveDownButton)
+const allowAdd = computed(() => transformedTableConfig.value.allowAdd !== false)
+const allowRemove = computed(() => transformedTableConfig.value.allowRemove !== false)
+const allowSort = computed(() => transformedTableConfig.value.allowSort !== false)
+const defaultValue = computed(() => transformedTableConfig.value.defaultValue)
+const name = computed(() => transformedTableConfig.value.name)
+const min = computed(() => transformedTableConfig.value.min || 0)
+const max = computed(() => transformedTableConfig.value.max)
+const validateOnAdd = computed(() => transformedTableConfig.value.validateOnAdd !== false)
+const validateOnRemove = computed(() => transformedTableConfig.value.validateOnRemove !== false)
 </script>

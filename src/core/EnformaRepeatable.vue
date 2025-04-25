@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs, mergeProps } from 'vue'
+import { useAttrs, mergeProps, computed } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
   RepeatableFieldSchema,
@@ -114,7 +114,22 @@ const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
 })
 
 const $attrs = useAttrs()
-const { isVisible, fields, component, componentProps } =
+const { isVisible, fields, component, componentProps, transformedFieldConfig } =
   useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
+
+// Derive additional props from the transformed config
+const addButton = computed(() => transformedFieldConfig.value.addButton)
+const removeButton = computed(() => transformedFieldConfig.value.removeButton)
+const moveUpButton = computed(() => transformedFieldConfig.value.moveUpButton)
+const moveDownButton = computed(() => transformedFieldConfig.value.moveDownButton)
+const allowAdd = computed(() => transformedFieldConfig.value.allowAdd !== false)
+const allowRemove = computed(() => transformedFieldConfig.value.allowRemove !== false)
+const allowSort = computed(() => transformedFieldConfig.value.allowSort !== false)
+const defaultValue = computed(() => transformedFieldConfig.value.defaultValue)
+const name = computed(() => transformedFieldConfig.value.name)
+const min = computed(() => transformedFieldConfig.value.min || 0)
+const max = computed(() => transformedFieldConfig.value.max)
+const validateOnAdd = computed(() => transformedFieldConfig.value.validateOnAdd !== false)
+const validateOnRemove = computed(() => transformedFieldConfig.value.validateOnRemove !== false)
 </script>

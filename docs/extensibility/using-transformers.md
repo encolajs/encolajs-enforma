@@ -2,10 +2,13 @@
 
 Transformers are powerful functions that allow you to modify form elements at runtime. They follow a pipeline pattern where each transformer function receives an object, modifies it, and returns the modified version. Enforma includes multiple transformer types that target different aspects of your forms.
 
-Enforma supports two types of transformers:
+Enforma supports several types of transformers:
 
 1. **Form Props Transformers** - Modify all form properties (schema, context, config) before rendering
-2. **Field Props Transformers** - Modify field properties during rendering
+2. **Field Props Transformers** - Modify field properties immediately after field controller initialization
+3. **Repeatable Props Transformers** - Modify repeatable field properties 
+4. **Repeatable Table Props Transformers** - Modify repeatable table properties
+5. **Section Props Transformers** - Modify section properties
 
 ## Transformer Function Pattern
 
@@ -89,29 +92,156 @@ const formPropsTransformer = (props, formController) => {
 - Adjusting component configurations for different devices
 - Implementing A/B testing for form behavior
 
-## Field Props Transformers
+## Component Props Transformers
 
-Field props transformers modify field properties during rendering.
+All component props transformers follow a similar pattern - they receive the component props and form controller, modify the props, and return the transformed version.
+
+### Field Props Transformers
+
+Field props transformers modify field properties immediately after the field controller is initialized and before additional component-specific props are applied.
 
 ```js
 // A field props transformer that adds CSS classes based on validation
-const validationClassTransformer = (props, field) => {
-  // Add special classes based on validation state
-  if (field.error) {
-    props.input.class = `${props.input.class || ''} invalid-input`;
-  } else if (field.isTouched) {
-    props.input.class = `${props.input.class || ''} touched-input`;
-  }
+// and sets custom IDs for the field inputs
+const fieldPropsTransformer = (fieldOptions, field, formController) => {
+  // Create a copy to avoid mutating the original
+  const result = { ...fieldOptions };
   
-  return props;
+  // Add custom input props
+  result.inputProps = {
+    ...result.inputProps,
+    // Add custom ID (will be preserved and respected in the component)
+    id: `custom-${field.value.name}-${formController.values().formId}`,
+    // Add special classes based on validation state
+    class: field.value.error 
+      ? 'invalid-input' 
+      : field.value.isTouched 
+        ? 'touched-input' 
+        : ''
+  };
+  
+  // Add accessibility attributes to label props
+  result.labelProps = {
+    ...result.labelProps,
+    'aria-required': result.required === true,
+  };
+  
+  return result;
 };
 ```
 
 ### Use Cases for Field Props Transformers
+- Setting custom IDs for fields that will be respected by the component
 - Adding UI framework specific props
 - Enhancing accessibility attributes
 - Customizing appearance based on field state
 - Implementing custom formatting or display logic
+
+### Repeatable Props Transformers
+
+Repeatable props transformers modify repeatable field properties before rendering.
+
+```js
+// A repeatable props transformer that customizes the repeatable component
+const repeatablePropsTransformer = (repeatableOptions, formController) => {
+  // Create a copy to avoid mutating the original
+  const result = { ...repeatableOptions };
+  
+  // Customize based on the field name or other properties
+  if (result.name === 'experiences') {
+    // Disable sorting for certain fields
+    result.allowSort = false;
+    
+    // Set minimum items based on form state
+    result.min = formController.values().requireExperience ? 1 : 0;
+    
+    // Customize component props
+    result.componentProps = {
+      ...result.componentProps,
+      customClass: 'experience-repeatable'
+    };
+  }
+  
+  return result;
+};
+```
+
+### Use Cases for Repeatable Props Transformers
+- Dynamically controlling add/remove/sort capabilities
+- Setting minimum or maximum items based on form state
+- Customizing appearance and behavior of repeatable fields
+- Adding custom buttons or actions to repeatable components
+
+### Repeatable Table Props Transformers
+
+Repeatable table props transformers modify repeatable table properties, extending the repeatable props transformers.
+
+```js
+// A repeatable table props transformer that customizes table display
+const repeatableTablePropsTransformer = (tableOptions, formController) => {
+  // Create a copy to avoid mutating the original
+  const result = { ...tableOptions };
+  
+  // Modify cell props based on content
+  if (result.name === 'budgetItems') {
+    // Add special handling for the budget table
+    result.subfields = {
+      ...result.subfields,
+      amount: {
+        ...result.subfields.amount,
+        inputProps: {
+          ...result.subfields.amount.inputProps,
+          class: 'currency-input',
+          format: 'currency'
+        }
+      }
+    };
+  }
+  
+  return result;
+};
+```
+
+### Use Cases for Repeatable Table Props Transformers
+- Customizing table layout and styling
+- Adding special cell formatting based on content type
+- Creating responsive tables for different screen sizes
+- Implementing column-specific behaviors
+
+### Section Props Transformers
+
+Section props transformers modify section properties before rendering.
+
+```js
+// A section props transformer that adds toggle functionality
+const sectionPropsTransformer = (sectionOptions, formController) => {
+  // Create a copy to avoid mutating the original
+  const result = { ...sectionOptions };
+  
+  // Add collapsible behavior to sections
+  result.titleProps = {
+    ...result.titleProps,
+    class: 'collapsible-section-title',
+    onClick: 'toggleSection',
+    'aria-expanded': 'true',
+    'aria-controls': `section-${result.name}-content`
+  };
+  
+  // Make certain sections collapsed by default based on form state
+  if (formController.values().sectionPreferences?.[result.name] === 'collapsed') {
+    result.collapsed = true;
+  }
+  
+  return result;
+};
+```
+
+### Use Cases for Section Props Transformers
+- Creating collapsible/expandable sections
+- Implementing section visibility logic based on user roles
+- Customizing section styling based on content
+- Adding accessibility features to sections
+- Implementing conditional section rendering
 
 ## Registering Transformers
 
@@ -127,6 +257,9 @@ const enforma = createEnforma({
   transformers: {
     form_props: [userRolePropsTransformer, responsivePropsTransformer],
     field_props: [validationClassTransformer, ui5Transformer],
+    repeatable_props: [repeatablePropsTransformer],
+    repeatable_table_props: [responsiveTableTransformer],
+    section_props: [conditionalSectionsTransformer],
   }
 });
 
@@ -151,6 +284,8 @@ import { ref } from 'vue';
 const formConfig = {
   transformers: {
     form_props: [dynamicFormPropsTransformer],
+    repeatable_props: [dynamicRepeatableTransformer],
+    section_props: [accordionSectionTransformer],
   }
 };
 </script>

@@ -59,10 +59,11 @@ This architecture gives you the freedom to choose the approach that best fits yo
 
 Enforma includes a powerful transformation system that allows you to modify form elements at runtime:
 
-1. **Schema Transformers** - Modify the form schema before it's rendered
-2. **Context Transformers** - Adjust the form context that's available to expressions and components
-3. **Form Config Transformers** - Customize form configuration at runtime
-4. **Field Props Transformers** - Adjust field properties during rendering
+1. **Form Props Transformers** - Modify the form properties (schema, context, and config) before rendering
+2. **Field Props Transformers** - Modify field properties after field controller initialization
+3. **Repeatable Props Transformers** - Modify repeatable field properties
+4. **Repeatable Table Props Transformers** - Modify repeatable table properties
+5. **Section Props Transformers** - Modify section properties
 
 These transformers follow a pipeline pattern where each transformer receives input, modifies it, and passes the result to the next transformer. This system enables dynamic form behavior without complex component logic.
 

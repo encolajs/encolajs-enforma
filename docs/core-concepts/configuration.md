@@ -187,12 +187,16 @@ Defines which components to use for rendering different parts of the form.
 
 ### Transformers Configuration
 
-Functions that transform field props before rendering.
+Functions that transform form and field properties.
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `transformers.field_props` | `Function[]` | Transformers for field props |
-| `[key: string]` | `Function[]` | Other custom transformers. Of course you will need to  |
+| `transformers.form_props` | `Function[]` | Transformers for form properties (schema, context, config) |
+| `transformers.field_props` | `Function[]` | Transformers for field properties |
+| `transformers.repeatable_props` | `Function[]` | Transformers for repeatable field properties |
+| `transformers.repeatable_table_props` | `Function[]` | Transformers for repeatable table properties |
+| `transformers.section_props` | `Function[]` | Transformers for section properties |
+| `[key: string]` | `Function[]` | Other custom transformers |
 
 ### Custom Configuration
 

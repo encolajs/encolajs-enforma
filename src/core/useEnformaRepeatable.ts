@@ -1,10 +1,11 @@
 // src/core/useEnformaRepeatable.ts
-import { computed, inject, onBeforeUnmount } from 'vue'
+import { computed, inject, onBeforeUnmount, ComputedRef } from 'vue'
 import { formControllerKey } from '@/constants/symbols'
 import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'
+import applyTransformers from '@/utils/applyTransformers'
 
 /**
  * Props passed to the component when using component-based subfields
@@ -46,29 +47,48 @@ export interface RepeatableFieldConfig extends RepeatableFieldSchema {
   min?: number
 }
 
-export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
+export function useEnformaRepeatable(originalFieldConfig: RepeatableFieldConfig) {
   // Get form state from context
   const formState = inject<FormController>(formControllerKey) as FormController
-  const { getConfig } = useFormConfig()
+  const { formConfig, getConfig } = useFormConfig()
 
   if (!formState) {
     console.error(
-      `EnformaRepeatable '${fieldConfig.name}' must be used within a Enforma form component`
+      `EnformaRepeatable '${originalFieldConfig.name}' must be used within a Enforma form component`
     )
   }
 
   const { evaluateCondition } = useDynamicProps()
 
-  // Compute visibility state
+  // First, apply transformers to the repeatable field options
+  const transformedFieldConfig = computed(() => {
+    // Apply repeatable props transformers if defined in config
+    const repeatablePropsTransformers = getConfig('transformers.repeatable_props', []) as Function[]
+    
+    if (repeatablePropsTransformers.length === 0) {
+      return originalFieldConfig
+    }
+    
+    // applyTransformers is now imported at the top
+    
+    return applyTransformers(
+      repeatablePropsTransformers,
+      { ...originalFieldConfig },
+      formState,
+      formConfig
+    )
+  })
+
+  // Compute visibility state based on transformed props
   const isVisible = computed(() =>
-    fieldConfig.if !== undefined
-      ? evaluateCondition(fieldConfig.if).value
+    transformedFieldConfig.value.if !== undefined
+      ? evaluateCondition(transformedFieldConfig.value.if).value
       : true
   )
 
   // Process subfields by removing the name property
   const fields = computed(() =>
-    Object.entries(fieldConfig.subfields || []).reduce(
+    Object.entries(transformedFieldConfig.value.subfields || []).reduce(
       (acc, [subfieldName, subfield]) => {
         acc[subfieldName] = subfield
         return acc
@@ -79,15 +99,17 @@ export function useEnformaRepeatable(fieldConfig: RepeatableFieldConfig) {
 
   // Clean up on unmount
   onBeforeUnmount(() => {
-    formState?.removeField(fieldConfig.name)
+    formState?.removeField(transformedFieldConfig.value.name)
   })
 
   return {
     isVisible,
     fields,
-    component: fieldConfig.component,
-    componentProps: fieldConfig.componentProps,
+    component: transformedFieldConfig.value.component,
+    componentProps: transformedFieldConfig.value.componentProps,
     formState,
     getConfig,
+    // Return the transformed config so the component can use all transformed props
+    transformedFieldConfig,
   }
 }
