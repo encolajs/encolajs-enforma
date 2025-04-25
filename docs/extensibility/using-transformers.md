@@ -2,12 +2,10 @@
 
 Transformers are powerful functions that allow you to modify form elements at runtime. They follow a pipeline pattern where each transformer function receives an object, modifies it, and returns the modified version. Enforma includes multiple transformer types that target different aspects of your forms.
 
-Enforma supports four types of transformers:
+Enforma supports two types of transformers:
 
-1. **Schema Transformers** - Modify the form schema before rendering
-2. **Context Transformers** - Adjust the form context values and functions
-3. **Form Config Transformers** - Customize form configuration at runtime
-4. **Field Props Transformers** - Modify field properties during rendering
+1. **Form Props Transformers** - Modify all form properties (schema, context, config) before rendering
+2. **Field Props Transformers** - Modify field properties during rendering
 
 ## Transformer Function Pattern
 
@@ -33,46 +31,30 @@ Each transformer:
 - Returns a modified version of the object
 - Should not mutate the original object
 
-## Schema Transformers
+## Form Props Transformers
 
-Schema transformers modify your form schema before rendering, allowing you to dynamically adjust the form structure.
+Form props transformers modify all form properties (schema, context, and config) in a single pipeline before rendering, allowing you to dynamically adjust the entire form.
 
 ```js
-// A schema transformer that adds fields based on user role
-const userRoleSchemaTransformer = (schema, formController) => {
-  const result = { ...schema };
+// A form props transformer that modifies schema, context, and config
+const formPropsTransformer = (props, formController) => {
+  // Create a copy to avoid mutating the original
+  const result = { ...props };
   const userRole = formController?.context?.userRole || 'user';
   
-  if (userRole === 'admin') {
-    // Add admin-only fields
-    result.adminSettings = {
+  // Modify schema based on user role
+  if (result.schema && userRole === 'admin') {
+    result.schema.adminSettings = {
       type: 'field',
       label: 'Admin Settings',
       component: 'textarea',
     };
   }
   
-  return result;
-};
-```
-
-### Use Cases for Schema Transformers
-- Adding or removing fields based on permissions
-- Converting API-derived schemas to Enforma format
-- Adjusting field structure based on form state
-- Implementing complex conditional logic
-
-## Context Transformers
-
-Context transformers modify the form context object, which is available to all form components through injection.
-
-```js
-// A context transformer that adds date utilities
-const dateContextTransformer = (context) => {
+  // Add date utilities to context
   const now = new Date();
-  
-  return {
-    ...context,
+  result.context = {
+    ...result.context,
     // Add date values and utilities
     dates: {
       currentDate: now.toISOString().split('T')[0],
@@ -80,36 +62,28 @@ const dateContextTransformer = (context) => {
       formatDate: (date) => new Date(date).toLocaleDateString(),
     }
   };
+  
+  // Modify form configuration for mobile
+  const isMobile = window.innerWidth < 768;
+  if (result.config && result.config.behavior) {
+    result.config.behavior = {
+      ...result.config.behavior,
+      // On mobile, validate on blur instead of input to improve performance
+      validateOn: isMobile ? 'blur' : result.config.behavior.validateOn,
+    };
+  }
+  
+  return result;
 };
 ```
 
-### Use Cases for Context Transformers
+### Use Cases for Form Props Transformers
+- Adding or removing fields based on permissions
+- Converting API-derived schemas to Enforma format
 - Adding computed or derived values to context
 - Injecting utility functions for expressions
 - Enhancing context with user information
 - Creating reactive values available to all fields
-
-## Form Config Transformers
-
-Form config transformers allow you to modify the form configuration at runtime.
-
-```js
-// A form config transformer that changes validation behavior
-const mobileValidationTransformer = (config, formController) => {
-  const isMobile = window.innerWidth < 768;
-  
-  return {
-    ...config,
-    behavior: {
-      ...config.behavior,
-      // On mobile, validate on blur instead of input to improve performance
-      validateOn: isMobile ? 'blur' : config.behavior.validateOn,
-    }
-  };
-};
-```
-
-### Use Cases for Form Config Transformers
 - Adapting form behavior to different environments
 - Changing validation timing based on form complexity
 - Adjusting component configurations for different devices
@@ -151,9 +125,7 @@ const app = createApp(App);
 // Create Enforma instance with transformers
 const enforma = createEnforma({
   transformers: {
-    schema: [userRoleSchemaTransformer, apiSchemaTransformer],
-    context: [dateContextTransformer, userInfoTransformer],
-    form_config: [mobileValidationTransformer],
+    form_props: [userRolePropsTransformer, responsivePropsTransformer],
     field_props: [validationClassTransformer, ui5Transformer],
   }
 });
@@ -178,8 +150,7 @@ import { ref } from 'vue';
 
 const formConfig = {
   transformers: {
-    schema: [addDynamicFieldsTransformer],
-    context: [addHelperFunctionsTransformer],
+    form_props: [dynamicFormPropsTransformer],
   }
 };
 </script>
@@ -276,54 +247,47 @@ const combinedTransformer = chainTransformers(
 
 ## Examples
 
-### User Role-Based Fields
+### Comprehensive Form Props Transformer
+
+This example combines user role-based fields, form validation mode, and utility functions in a single transformer:
 
 ```js
-const roleBasedFieldsTransformer = (schema, formController) => {
-  const result = { ...schema };
+const comprehensivePropsTransformer = (props, formController) => {
+  const result = { ...props };
   const userRole = formController?.context?.userRole || 'user';
   
-  const roleFieldMap = {
-    admin: ['adminSettings', 'userManagement', 'systemConfig'],
-    manager: ['teamSettings', 'reportAccess'],
-    user: []
-  };
+  // 1. Modify schema based on user role
+  if (result.schema) {
+    const roleFieldMap = {
+      admin: ['adminSettings', 'userManagement', 'systemConfig'],
+      manager: ['teamSettings', 'reportAccess'],
+      user: []
+    };
+    
+    // Add fields based on user role
+    (roleFieldMap[userRole] || []).forEach(fieldKey => {
+      if (!result.schema[fieldKey] && fieldDefinitions[fieldKey]) {
+        result.schema[fieldKey] = fieldDefinitions[fieldKey];
+      }
+    });
+  }
   
-  // Add fields based on user role
-  (roleFieldMap[userRole] || []).forEach(fieldKey => {
-    if (!result[fieldKey] && fieldDefinitions[fieldKey]) {
-      result[fieldKey] = fieldDefinitions[fieldKey];
+  // 2. Modify form config based on complexity
+  if (result.config) {
+    // Count the number of fields in the form
+    const fieldCount = Object.keys(formController?.values() || {}).length;
+    
+    if (!result.config.behavior) {
+      result.config.behavior = {};
     }
-  });
+    
+    // For complex forms with many fields, validate on submit to improve performance
+    result.config.behavior.validateOn = fieldCount > 10 ? 'submit' : 'blur';
+  }
   
-  return result;
-};
-```
-
-### Form Validation Mode Based on Complexity
-
-```js
-const formComplexityTransformer = (config, formController) => {
-  // Count the number of fields in the form
-  const fieldCount = Object.keys(formController?.values() || {}).length;
-  
-  return {
-    ...config,
-    behavior: {
-      ...config.behavior,
-      // For complex forms with many fields, validate on submit to improve performance
-      validateOn: fieldCount > 10 ? 'submit' : 'blur',
-    }
-  };
-};
-```
-
-### Adding Context-Based Utility Functions
-
-```js
-const utilityFunctionsTransformer = (context) => {
-  return {
-    ...context,
+  // 3. Add utility functions to context
+  result.context = {
+    ...result.context,
     utils: {
       formatCurrency: (value) => `$${parseFloat(value).toFixed(2)}`,
       formatPhone: (phone) => {
@@ -343,6 +307,8 @@ const utilityFunctionsTransformer = (context) => {
       }
     }
   };
+  
+  return result;
 };
 ```
 

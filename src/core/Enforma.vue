@@ -111,54 +111,37 @@ onMounted(() => {
 const formConfig = useConfig(props.config)
 const { getConfig } = useFormConfig()
 
-// Apply schema transformers if defined in config
-const transformedSchema = computed(() => {
-  if (!props.schema) return null
+// Apply form props transformers to handle schema, context, and config in a single pipeline
+const transformedProps = computed(() => {
+  const formPropsTransformers = getConfig('transformers.form_props', []) as Function[]
   
-  const schemaTransformers = getConfig('transformers.schema', []) as Function[]
-  
-  if (schemaTransformers.length === 0) {
-    return props.schema
+  if (formPropsTransformers.length === 0) {
+    return {
+      schema: props.schema,
+      context: props.context || {},
+      config: formConfig
+    }
   }
   
+  // Create a single props object containing schema, context and config
+  const formProps = {
+    schema: props.schema ? { ...props.schema } : null,
+    context: props.context ? { ...props.context } : {},
+    config: { ...formConfig }
+  }
+  
+  // Apply all transformers at once to the combined props
   return applyTransformers(
-    schemaTransformers,
-    { ...props.schema }, // Create a copy to avoid mutating the original
+    formPropsTransformers,
+    formProps,
     form.value // Pass the form controller
   )
 })
 
-// Apply context transformers if defined in config
-const transformedContext = computed(() => {
-  if (!props.context) return {}
-  
-  const contextTransformers = getConfig('transformers.context', []) as Function[]
-  
-  if (contextTransformers.length === 0) {
-    return props.context
-  }
-  
-  return applyTransformers(
-    contextTransformers,
-    { ...props.context }, // Create a copy to avoid mutating the original
-    form.value // Pass the form controller
-  )
-})
-
-// Apply form config transformers if defined in config
-const transformedFormConfig = computed(() => {
-  const formConfigTransformers = getConfig('transformers.form_config', []) as Function[]
-  
-  if (formConfigTransformers.length === 0) {
-    return formConfig
-  }
-  
-  return applyTransformers(
-    formConfigTransformers,
-    { ...formConfig }, // Create a copy to avoid mutating the original
-    form.value // Pass the form controller
-  )
-})
+// Extract the transformed props into individual reactive properties
+const transformedSchema = computed(() => transformedProps.value.schema)
+const transformedContext = computed(() => transformedProps.value.context)
+const transformedFormConfig = computed(() => transformedProps.value.config)
 
 provide(formContextKey, transformedContext)
 provide(formSchemaKey, transformedSchema)

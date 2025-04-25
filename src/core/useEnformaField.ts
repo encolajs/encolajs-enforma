@@ -172,7 +172,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       },
       fieldOptions.value.wrapperProps || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
-      !!errorMessage.value
+      errorMessage.value
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
         : {},
       fieldOptions.value.required
