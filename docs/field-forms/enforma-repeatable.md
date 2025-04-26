@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Enforma, EnformaRepeatable, EnformaField, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaRepeatable, EnformaField, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({
   contacts: [

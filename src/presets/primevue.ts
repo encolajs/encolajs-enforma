@@ -96,11 +96,13 @@ export default function usePrimeVuePreset(components?: Record<string, Component>
       },
     },
     /**
-     * Default components to be used for specific situations
+     * Default components to be used inside Enforma forms
      */
     components: {
+      // this will be the default form submit button
       submitButton: SubmitButton,
       resetButton: ResetButton,
+      // this will be the default for the add button on repeatable components
       repeatableAddButton: RepeatableAddButton,
       repeatableRemoveButton: RepeatableRemoveButton,
       repeatableMoveUpButton: RepeatableMoveUpButton,
@@ -130,6 +132,10 @@ export default function usePrimeVuePreset(components?: Record<string, Component>
     },
     transformers: {
       ...currentConfig.transformers,
+      // this will remove existing field_props transformers
+      // which is not something that you want all the time
+      // if you have your own transformers configured
+      // before the preset they will be removed
       field_props: [
         ...(currentConfig.transformers?.field_props || []),
         ...(primeVuePreset.transformers?.field_props || []),

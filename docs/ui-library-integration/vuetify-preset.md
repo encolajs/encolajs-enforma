@@ -19,8 +19,8 @@ Import and use the Vuetify preset:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createEnforma } from 'encolajs-formkit';
-import { vuetifyPreset } from 'encolajs-formkit/presets/vuetify';
+import { createEnforma } from '@encolajs/enforma';
+import { vuetifyPreset } from '@encolajs/enforma/presets/vuetify';
 import { createVuetify } from 'vuetify';
 import App from './App.vue';
 
@@ -30,14 +30,14 @@ const vuetify = createVuetify();
 // Create the app
 const app = createApp(App);
 
-// Configure FormKit with Vuetify preset
-const formkit = createEnforma({
+// Configure Enforma with Vuetify preset
+const enforma = createEnforma({
   preset: vuetifyPreset
 });
 
 // Add plugins
 app.use(vuetify);
-app.use(formkit);
+app.use(enforma);
 
 app.mount('#app');
 ```
@@ -58,7 +58,7 @@ Now use Enforma components with Vuetify styling:
 
 <script setup>
 import { ref } from 'vue';
-import { Enforma, EnformaField, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaField, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({
   name: '',
@@ -122,7 +122,7 @@ The preset also includes styled button components:
 You can extend or override the default Vuetify preset:
 
 ```js
-import { vuetifyPreset } from 'encolajs-formkit/presets/vuetify';
+import { vuetifyPreset } from '@encolajs/enforma/presets/vuetify';
 import MyCustomComponent from './components/MyCustomComponent.vue';
 
 // Create a customized version of the preset
@@ -151,7 +151,7 @@ const customVuetifyPreset = {
 };
 
 // Use in createEnforma
-const formkit = createEnforma({
+const enforma = createEnforma({
   preset: customVuetifyPreset
 });
 ```

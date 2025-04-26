@@ -9,8 +9,8 @@ Enforma is an open-source project, and we welcome contributions from the communi
 1. **Fork the repository** on GitHub
 2. **Clone your fork** to your local machine
    ```bash
-   git clone https://github.com/YOUR_USERNAME/encolajs-formkit.git
-   cd encolajs-formkit
+   git clone https://github.com/YOUR_USERNAME/@encolajs/enforma.git
+   cd @encolajs/enforma
    ```
 3. **Install dependencies**
    ```bash

@@ -50,7 +50,7 @@ Here's a simple example:
 
 <script setup>
 import { ref } from 'vue';
-import { Enforma, EnformaField, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaField, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({
   name: '',
@@ -177,7 +177,7 @@ Use the `useForm` composable to access form state:
 </template>
 
 <script setup>
-import { useForm } from 'encolajs-formkit';
+import { useForm } from '@encolajs/enforma';
 
 const { formState } = useForm('myForm');
 </script>

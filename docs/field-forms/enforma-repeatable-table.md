@@ -19,7 +19,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Enforma, EnformaRepeatableTable, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaRepeatableTable, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({
   products: [

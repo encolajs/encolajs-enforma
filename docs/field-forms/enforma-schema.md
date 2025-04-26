@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Enforma, EnformaSchema, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaSchema, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({
   firstName: '',
@@ -363,7 +363,7 @@ You can fetch schema definitions from an API:
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Enforma, EnformaSchema, EnformaSubmitButton } from 'encolajs-formkit';
+import { Enforma, EnformaSchema, EnformaSubmitButton } from '@encolajs/enforma';
 
 const formData = ref({});
 const formSchema = ref(null);
