@@ -108,14 +108,14 @@
 import { useAttrs, mergeProps, computed } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
-  RepeatableFieldSchema,
+  RepeatableFieldProps,
   useEnformaRepeatable,
 } from './useEnformaRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
 import EnformaField from '@/core/EnformaField.vue'
 import applyTransformers from '@/utils/applyTransformers'
 
-const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
+const props = withDefaults(defineProps<RepeatableFieldProps>(), {
   validateOnAdd: true,
   validateOnRemove: false,
   if: true,

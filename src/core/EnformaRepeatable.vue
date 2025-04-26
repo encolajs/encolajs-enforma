@@ -98,15 +98,14 @@
 import { useAttrs, mergeProps, computed } from 'vue'
 import HeadlessRepeatable from '@/headless/HeadlessRepeatable'
 import {
-  RepeatableFieldSchema,
+  RepeatableFieldProps,
   useEnformaRepeatable,
 } from './useEnformaRepeatable'
 import { useFormConfig } from '@/utils/useFormConfig'
 
-const props = withDefaults(defineProps<RepeatableFieldSchema>(), {
+const props = withDefaults(defineProps<RepeatableFieldProps>(), {
   validateOnAdd: true,
   validateOnRemove: true,
-  if: true,
   min: 0,
   allowAdd: true,
   allowRemove: true,
