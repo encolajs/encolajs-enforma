@@ -9,17 +9,24 @@
 
 ## Basic Usage
 
+### Using Fields and the Default Slot 
+
+This gives you full and instant control over the layout of the repeatable
+
 ```vue
 <template>
   <Enforma :data="formData" :submitHandler="submit">
     <EnformaRepeatable name="contacts" add-label="Add Contact">
-      <template #default="{ index }">
-        <div class="contact-item">
+      <template
+        #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
+      >
+        <div class="contact-item" v-for="(contact, index) in value" :key="index">
           <h4>Contact {{ index + 1 }}</h4>
           <EnformaField :name="`contacts.${index}.name`" label="Name" />
           <EnformaField :name="`contacts.${index}.email`" label="Email" />
           <EnformaField :name="`contacts.${index}.phone`" label="Phone" />
         </div>
+        <button @click="add({})">Add contact</button>
       </template>
     </EnformaRepeatable>
   </Enforma>
@@ -41,6 +48,23 @@ function submit(data) {
 </script>
 ```
 
+### Using the Subfields Prop
+
+This is simpler and fits most of the cases. The `subfiels` format has to match the [field schema definitions](/schema-forms/schema-reference.md#field-schema)
+
+```vue
+<EnformaRepeatable
+  name="contacts"
+  type="repeatable"
+  :subfields="{
+    name: { label: 'Name' },
+    email: { label: 'Email' },
+    phone: { label: 'Phone' }
+  }"
+  :allowSort="false" 
+/>
+```
+
 ## Array Notation
 
 The repeatable component uses dot notation for field names. The general pattern is:
@@ -53,85 +77,6 @@ For example:
 - `contacts.0..name`
 - `addresses.2.street`
 - `products.1.quantity`
-
-## Adding Controls
-
-By default, `EnformaRepeatable` provides add, remove, and move buttons, but you can customize them:
-
-```vue
-<template>
-  <Enforma :data="formData">
-    <EnformaRepeatable 
-      name="skills" 
-      add-label="Add Another Skill" 
-      :min="1" 
-      :max="5"
-    >
-      <template #default="{ index, remove }">
-        <div class="skill-row">
-          <EnformaField :name="`skills.${index}.name`" label="Skill Name" />
-          <EnformaField 
-            :name="`skills.${index}.level`" 
-            inputComponent="select" 
-            label="Skill Level" 
-            :options="['Beginner', 'Intermediate', 'Advanced', 'Expert']" 
-          />
-          <button 
-            type="button" 
-            class="remove-btn" 
-            @click="remove"
-          >
-            Remove
-          </button>
-        </div>
-      </template>
-      
-      <!-- Custom add button -->
-      <template #add-button="{ add, canAdd }">
-        <button 
-          type="button" 
-          class="custom-add-btn" 
-          @click="add" 
-          :disabled="!canAdd"
-        >
-          <i class="plus-icon"></i> Add New Skill
-        </button>
-      </template>
-    </EnformaRepeatable>
-  </Enforma>
-</template>
-```
-
-## Default Values for New Items
-
-Specify default values for new items with the `addItemTemplate` prop:
-
-```vue
-<template>
-  <Enforma :data="formData">
-    <EnformaRepeatable 
-      name="addresses" 
-      :addItemTemplate="addressTemplate"
-    >
-      <template #default="{ index }">
-        <EnformaField :name="`addresses.${index}.street`" label="Street" />
-        <EnformaField :name="`addresses.${index}.city`" label="City" />
-        <EnformaField :name="`addresses.${index}.country`" label="Country" />
-        <EnformaField :name="`addresses.${index}.isPrimary`" type="checkbox" label="Primary Address" />
-      </template>
-    </EnformaRepeatable>
-  </Enforma>
-</template>
-
-<script setup>
-const addressTemplate = {
-  street: '',
-  city: '',
-  country: 'United States',
-  isPrimary: false
-};
-</script>
-```
 
 ## Validation
 

@@ -30,3 +30,15 @@ The EnformaField doesn't have slots because it is very simple. If you need to cu
 - extend the library with [your own `<AppField>` component](/extensibility/custom-components.md) or 
 - create [your own UI preset](/ui-library-integration/creating-your-own-ui-preset.md) 
 
+## Styling
+
+The component uses the following props from the configuration:
+
+- `pt.wrapper` - The outer wrapper div for the field
+- `pt.wrapper__invalid` - Additional props applied to the wrapper when the field is invalid
+- `pt.wrapper__required` - Additional props applied to the wrapper when the field is required
+- `pt.label` - The label element
+- `pt.required` - The required indicator element (typically an asterisk)
+- `pt.input` - The input element
+- `pt.error` - The error message element
+- `pt.help` - The help text element

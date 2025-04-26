@@ -29,3 +29,17 @@ The [schema for repeatable components](/schema-forms/schema-reference.md#repeata
 ## Slots
 
 The component only exposes the `#default` slot which you can use to organize the layout of the component if the `subfields` props is not enough or you don't want to use it.
+
+## Styling
+
+The component uses the following props from the configuration:
+
+- `pt.repeatable.wrapper` - The outer wrapper div
+- `pt.repeatable.items` - The container for repeatable items
+- `pt.repeatable.item` - Each individual repeatable item
+- `pt.repeatable.actions` - The container for the add button
+- `pt.repeatable.itemActions` - The container for item action buttons (remove, move)
+- `pt.repeatable.add` - The add button styling
+- `pt.repeatable.remove` - The remove button styling
+- `pt.repeatable.moveUp` - The move up button styling
+- `pt.repeatable.moveDown` - The move down button styling
