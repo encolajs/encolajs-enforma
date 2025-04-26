@@ -33,11 +33,13 @@ const formProps = {
   },
   rules: {
     email: 'required|email',
-    password: 'required|min:8|confirmed'
+    password: 'required|min:8|same_as:@password_confirmation',
+    password_confirmation: 'required'
   },
   customMessages: {
     'email.required': 'Please provide your email address',
-    'password.min': 'Password must be at least 8 characters'
+    'password.min': 'Password must be at least 8 characters',
+    'password.same_as': 'Passwords must match',
   }
 };
 </script>
@@ -68,8 +70,8 @@ const formConfig = {
     password_confirmation: ''
   },
   rules: {
-    password: 'required|min:8',
-    password_confirmation: 'required|same_as:@password'
+    password: 'required|min:8|same_as:@password_confirmation',
+    password_confirmation: 'required'
   }
 };
 ```

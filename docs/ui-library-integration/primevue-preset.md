@@ -45,8 +45,8 @@ Now use Enforma components with PrimeVue styling:
 <template>
   <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
-    <EnformaField name="email" type="email" label="Email" />
-    <EnformaField name="country" type="select" label="Country" :options="countries" />
+    <EnformaField name="email" label="Email" />
+    <EnformaField name="country" inputComponent="select" label="Country" :options="countries" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
@@ -201,7 +201,7 @@ Use PrimeVue's rich select features:
   <Enforma :data="formData">
     <EnformaField 
       name="country" 
-      type="select" 
+      inputComponent="select" 
       label="Country" 
       :options="countries"
       option-label="name"
@@ -263,7 +263,7 @@ PrimeVue components display validation state automatically:
 ```vue
 <template>
   <Enforma :data="formData" :rules="validators">
-    <EnformaField name="email" type="email" label="Email" />
+    <EnformaField name="email" label="Email" />
     <EnformaField name="password" type="password" label="Password" />
     <EnformaSubmitButton>Register</EnformaSubmitButton>
   </Enforma>

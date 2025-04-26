@@ -21,8 +21,8 @@ The simplest approach is to register components in your form configuration:
   <Enforma :data="formData" :config="formConfig">
     <!-- Form fields will use mapped components -->
     <EnformaField name="name" label="Name" />
-    <EnformaField name="email" type="email" label="Email" />
-    <EnformaField name="subscription" type="select" label="Subscription Plan" 
+    <EnformaField name="email" label="Email" />
+    <EnformaField name="subscription" inputComponent="select" label="Subscription Plan" 
                  :options="subscriptionOptions" />
   </Enforma>
 </template>

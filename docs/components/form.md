@@ -25,7 +25,7 @@ The Form component (`Enforma`) is the main container for your forms. It manages 
   >
     <!-- Form fields here -->
     <EnformaField name="name" label="Name" />
-    <EnformaField name="email" label="Email" type="email" />
+    <EnformaField name="email" label="Email" />
     
     <!-- Buttons are automatically added by default -->
   </Enforma>

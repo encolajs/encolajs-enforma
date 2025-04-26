@@ -1,4 +1,4 @@
-# Dynamic props
+# Dynamic Props
 
 <!-- 
 This page should provide:

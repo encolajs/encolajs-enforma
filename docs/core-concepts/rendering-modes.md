@@ -7,7 +7,7 @@ Enforma supports four main rendering modes:
 1. **Field-based Rendering** - Explicit component declarations with maximum control
 2. **Schema-based Rendering** - JSON-driven form generation with minimal markup
 3. **Headless Mode** - Pure behavior with complete UI control
-4. **Mixed Mode** - Combining approaches for optimal flexibility
+4. **Mixed Mode** - Combining approaches for edge-cases
 
 ## Field-based Rendering
 
@@ -24,7 +24,7 @@ This approach uses explicit component declarations for each form element:
       ... rest of the props go here 
     />
     <EnformaField name="lastName" label="Last Name" />
-    <EnformaField name="email" type="email" label="Email Address" />
+    <EnformaField name="email" label="Email Address" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
@@ -129,12 +129,3 @@ This approach provides behavior without enforcing design:
 ```
 
 Using headless fields along side base components should be reserved for prototyping. Once you know what you want you should create your own components.
-
-## Choosing a Rendering Mode
-
-Consider these factors when selecting a rendering mode:
-
-- **Form complexity** - More complex forms may benefit from schema approach
-- **Design requirements** - Custom designs may require headless mode
-- **Dynamic requirements** - Server-driven forms work best with schema mode
-- **Developer preferences** - Some teams prefer explicit markup over schemas

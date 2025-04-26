@@ -1,4 +1,4 @@
-# Enforma forms with only schema
+# Form Using Only Schema
 
 <!-- 
 This page should provide:

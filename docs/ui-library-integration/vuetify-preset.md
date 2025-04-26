@@ -49,7 +49,7 @@ Now use Enforma components with Vuetify styling:
   <v-container>
     <Enforma :data="formData" :submitHandler="submit">
       <EnformaField name="name" label="Name" />
-      <EnformaField name="email" type="email" label="Email" />
+      <EnformaField name="email" label="Email" />
       <EnformaField name="country" type="select" label="Country" :options="countries" />
       <EnformaSubmitButton>Submit</EnformaSubmitButton>
     </Enforma>
@@ -194,7 +194,7 @@ Apply Vuetify's input variants:
     />
     <EnformaField 
       name="email" 
-      type="email" 
+      
       label="Email" 
       variant="filled" 
     />
@@ -217,7 +217,7 @@ Add icons to your fields:
   <Enforma :data="formData">
     <EnformaField 
       name="email" 
-      type="email" 
+      
       label="Email" 
       prependIcon="mdi-email" 
     />
@@ -277,7 +277,7 @@ Vuetify components display validation state automatically:
 ```vue
 <template>
   <Enforma :data="formData" :rules="validators">
-    <EnformaField name="email" type="email" label="Email" />
+    <EnformaField name="email" label="Email" />
     <EnformaField name="password" type="password" label="Password" />
     <EnformaSubmitButton>Register</EnformaSubmitButton>
   </Enforma>
@@ -329,7 +329,7 @@ Then use theme colors in your form:
   <Enforma :data="formData">
     <EnformaField 
       name="email" 
-      type="email" 
+      
       label="Email" 
       color="primary" 
     />
@@ -359,7 +359,7 @@ Use Vuetify's Card component for sections:
     <v-card class="mb-4">
       <v-card-title>Contact Information</v-card-title>
       <v-card-text>
-        <EnformaField name="email" type="email" label="Email" />
+        <EnformaField name="email" label="Email" />
         <EnformaField name="phone" label="Phone" />
       </v-card-text>
     </v-card>

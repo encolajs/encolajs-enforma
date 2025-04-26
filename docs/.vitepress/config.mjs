@@ -20,6 +20,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Documentation', link: '/getting-started' },
+      { text: 'Recipes', link: '/recipes/' },
       { text: 'Examples', link: '/examples/' },
       { text: 'More...',
         items: [
@@ -100,17 +101,6 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Recipes',
-          collapsed: true,
-          items: [
-            { text: 'Async Validation', link: '/recipes/async-validation' },
-            { text: 'Multi-input Fields', link: '/recipes/multi-input-fields' },
-            { text: 'Conditional Forms', link: '/recipes/conditional-forms' },
-            { text: 'Async Schema Loading', link: '/recipes/async-schema-loading' },
-            { text: 'Custom Base Components', link: '/recipes/custom-field-forms' },
-          ],
-        },
-        {
           text: 'Troubleshooting',
           collapsed: true,
           items: [
@@ -127,6 +117,28 @@ export default defineConfig({
           ],
         },
       ],
+      '/recipes/': [
+        {
+          text: 'Components',
+          items: [
+            { text: 'Multi-input Fields', link: '/recipes/multi-input-field' },
+            { text: 'Address Picker', link: '/recipes/address-select-with-add' },
+          ],
+        },
+        {
+          text: 'Validation',
+          items: [
+            { text: 'Async Validation Rule', link: '/recipes/async-validation' },
+          ],
+        },
+        {
+          text: 'Other',
+          items: [
+            { text: 'Conditional Forms', link: '/recipes/conditional-forms' },
+            { text: 'Forms in Modals', link: '/recipes/forms-in-modals' },
+          ],
+        },
+      ],
       '/examples/': [
         {
           text: 'Examples',
@@ -135,26 +147,22 @@ export default defineConfig({
             {
               text: 'Forms',
               items: [
+                { text: 'Form with Fields', link: '/examples/fields' },
                 {
-                  text: 'Headless components',
-                  link: '/examples/headless-components',
-                },
-                { text: 'Enforma with fields', link: '/examples/fields' },
-                {
-                  text: 'Enforma with fields and schema',
-                  link: '/examples/fields-and-schema',
-                },
-                {
-                  text: 'Enforma with schema only',
+                  text: 'Form with Schema Only',
                   link: '/examples/schema-only',
                 },
-                { text: 'Mixed forms', link: '/examples/mixed-forms' },
+                { text: 'Mixed Form', link: '/examples/mixed-forms' },
+                {
+                  text: 'Form with Headless Components',
+                  link: '/examples/headless-components',
+                },
               ],
             },
             {
               text: 'Features',
               items: [
-                { text: 'Dynamic props', link: '/examples/dynamic-props' },
+                { text: 'Dynamic Props', link: '/examples/dynamic-props' },
               ],
             },
           ],

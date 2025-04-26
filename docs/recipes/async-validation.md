@@ -83,9 +83,13 @@ function submit(data) {
 </script>
 ```
 
-## Handling Loading States
+## Debounced Validation
 
-### Loading Indicators
+To prevent excessive validations during typing the Enforma library uses a standard 200ms debounce for validation calls regardless of the validation rule's type (completely client-side or not). 
+
+> [!IMPORTANT] If you want to change this you must use a debounced validation function for the validator.
+
+## Handling Loading States
 
 Show loading state during async validation:
 
@@ -113,8 +117,6 @@ Show loading state during async validation:
 </template>
 ```
 
-## Debounced Validation
-
-To prevent excessive validations during typing the Enforma library uses a standard 200ms debounce for validation calls regardless of the validation rule's type (completely client-side or not). 
-
-> [!IMPORTANT] If you want to change this you should provide a debounced validation function for the validator.
+> [!WARNING]
+> We think loading indicators for server-side based validation rules are not good UX so the `<EncolaField/>` component does not offer support for it.
+> If you want to do this, you have to create your [own field component](/extensibility/custom-components.md).

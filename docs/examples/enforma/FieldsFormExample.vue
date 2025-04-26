@@ -40,7 +40,7 @@
         name="willing_to_relocate"
         label="Willing to relocate"
         showLabelNextToInput
-        component="toggle"
+        input-component="toggle"
       />
       <EnformaField
         class="col-start-1 col-end-2"
@@ -121,14 +121,14 @@ const {data, rules, messages, submitHandler} = formConfig
 const skillFields = {
   name: {
     label: "Skill",
-    component: 'input', // not necessary with the Primevue preset, it's the default
+    inputComponent: 'input', // not necessary with the Primevue preset, it's the default
     inputProps:  {
       fluid: true
     }
   },
   level: {
     label: "Level",
-    component: 'select',
+    inputComponent: 'select',
     inputProps: {
       fluid: true,
       options: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
@@ -156,7 +156,7 @@ const experienceFields = {
   },
   start: {
     label: "Start",
-    component: 'datepicker',
+    inputComponent: 'datepicker',
     inputProps:  {
       dateFormat: "yy-mm-dd",
       fluid: true
@@ -164,7 +164,7 @@ const experienceFields = {
   },
   end: {
     label: "End",
-    component: EndDateField,
+    inputComponent: EndDateField,
     inputProps:  {
       fluid: true
     },

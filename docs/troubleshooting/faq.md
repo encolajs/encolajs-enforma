@@ -43,7 +43,7 @@ Here's a simple example:
 <template>
   <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
-    <EnformaField name="email" type="email" label="Email" />
+    <EnformaField name="email" label="Email" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
@@ -73,7 +73,7 @@ You can add validation at the form level:
 <template>
   <Enforma :data="formData" :rules="validators" :submitHandler="submit">
     <EnformaField name="username" label="Username" />
-    <EnformaField name="email" type="email" label="Email" />
+    <EnformaField name="email" label="Email" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>

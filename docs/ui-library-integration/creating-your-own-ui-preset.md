@@ -104,7 +104,7 @@ export const myUiPreset = {
     // Input components
     text: MyTextInput,
     password: MyPasswordInput,
-    email: MyTextInput,  // Reuse with type="email"
+    email: MyTextInput,  // Reuse with
     number: MyTextInput, // Reuse with type="number"
     select: MySelect,
     checkbox: MyCheckbox,
@@ -415,10 +415,10 @@ Create a simple form to test your preset:
 <template>
   <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
-    <EnformaField name="email" type="email" label="Email" />
+    <EnformaField name="email" label="Email" />
     <EnformaField 
       name="option" 
-      type="select" 
+      inputComponent="select" 
       label="Select Option" 
       :options="['Option 1', 'Option 2', 'Option 3']" 
     />

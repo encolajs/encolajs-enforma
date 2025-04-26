@@ -12,7 +12,7 @@
         <div class="contact-item">
           <h4>Contact {{ index + 1 }}</h4>
           <EnformaField :name="`contacts[${index}].name`" label="Name" />
-          <EnformaField :name="`contacts[${index}].email`" type="email" label="Email" />
+          <EnformaField :name="`contacts[${index}].email`" label="Email" />
           <EnformaField :name="`contacts[${index}].phone`" label="Phone" />
         </div>
       </template>
@@ -99,7 +99,7 @@ By default, `EnformaRepeatable` provides add, remove, and move buttons, but you 
           <EnformaField :name="`skills[${index}].name`" label="Skill Name" />
           <EnformaField 
             :name="`skills[${index}].level`" 
-            type="select" 
+            inputComponent="select" 
             label="Skill Level" 
             :options="['Beginner', 'Intermediate', 'Advanced', 'Expert']" 
           />
@@ -215,7 +215,7 @@ You can validate repeatable items:
         />
         <EnformaField 
           :name="`contacts[${index}].email`" 
-          type="email" 
+          
           label="Email" 
         />
       </template>

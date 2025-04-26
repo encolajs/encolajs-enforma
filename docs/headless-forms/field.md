@@ -32,7 +32,7 @@ This is the most common scenario when the `<HeadlessField>` component renders on
   <template #default="fieldCtrl">
     <label :for="fieldCtrl.id">Email<sup>*</sup></label>
     <input
-      type="email"
+     
       :value="fieldCtrl.value"
       :attrs="fieldCtrl.attrs"
       :events="fieldCtrl.events"

@@ -41,7 +41,7 @@ You should use form configuration under specific circumstances of that particula
 
 ## Accessing Configuration
 
-### Inside Enforma Forms
+### Inside Custom Components
 
 Usually you will need to access the configuration if you're building custom components or if you add custom configuration to your application.
 
@@ -51,7 +51,7 @@ Here's an example of accessing the form's config for a a custom input component
 <template>
   <!-- assuming you are using tailwind options already configured -->
   <input
-    type="email"
+   
     :class="getConfig('tailwind.text')"
     v-bind="$attrs"
   />
