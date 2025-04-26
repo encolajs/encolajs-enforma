@@ -42,7 +42,7 @@ describe('EnformaRepeatableTable', () => {
   // Create real form state with validation
   const createFormState = (initialData = {}) => {
     const validation = useValidation()
-    useFormConfig()
+    useFormConfig(false)
     return useForm(
       initialData,
       {},
@@ -368,21 +368,6 @@ describe('EnformaRepeatableTable', () => {
       expect(fields).toHaveLength(0)
       const addButton = wrapper.find('.enforma-repeatable-add-button')
       expect(addButton.exists()).toBe(true)
-    })
-
-    it('handles conditional rendering with if prop', async () => {
-      const formState = createFormState({ items: [{ name: 'Item 1' }] })
-      const wrapper = createTestWrapper(
-        {
-          subfields: { name: { type: 'text', name: 'name' } },
-          if: false,
-        },
-        formState
-      )
-      await flushPromises()
-
-      const fields = wrapper.findAllComponents(EnformaFieldStub)
-      expect(fields).toHaveLength(0)
     })
   })
 

@@ -14,10 +14,14 @@ import { pathUtils } from '@/utils/helpers'
  *
  * @returns An object with the form configuration and a helper function to get config values by path
  */
-export function useFormConfig() {
+export function useFormConfig(injectFormConfig = true) {
+  let formConfig: EnformaConfig | undefined
+
   // Inject the form configuration from the parent Enforma component
   // If not available, fallback to the base config
-  let formConfig = inject<EnformaConfig>(formConfigKey)
+  if (injectFormConfig) {
+    formConfig = inject<EnformaConfig>(formConfigKey)
+  }
 
   if (!formConfig) {
     formConfig = useConfig()

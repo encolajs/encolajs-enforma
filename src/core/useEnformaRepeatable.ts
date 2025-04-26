@@ -67,13 +67,6 @@ export function useEnformaRepeatable(originalFieldConfig: RepeatableFieldConfig)
     )
   })
 
-  // Compute visibility state based on transformed props
-  const isVisible = computed(() =>
-    transformedFieldConfig.value.if !== undefined
-      ? evaluateCondition(transformedFieldConfig.value.if).value
-      : true
-  )
-
   // Process subfields by removing the name property
   const fields = computed(() =>
     Object.entries(transformedFieldConfig.value.subfields || []).reduce(
@@ -91,7 +84,6 @@ export function useEnformaRepeatable(originalFieldConfig: RepeatableFieldConfig)
   })
 
   return {
-    isVisible,
     fields,
     component: transformedFieldConfig.value.component,
     componentProps: transformedFieldConfig.value.componentProps,

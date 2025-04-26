@@ -1,7 +1,6 @@
 <template>
   <div
     v-bind="mergeProps($attrs, getConfig('pt.repeatable_table.wrapper'))"
-    v-if="isVisible"
   >
     <HeadlessRepeatable
       :name="name"
@@ -130,7 +129,7 @@ const { getConfig } = useFormConfig()
 
 // Use the useEnformaRepeatable hook, but apply table-specific transformers
 const repeatableResult = useEnformaRepeatable(props)
-const { isVisible, fields, transformedFieldConfig } = repeatableResult
+const { fields, transformedFieldConfig } = repeatableResult
 
 // Apply table-specific transformers
 const transformedTableConfig = computed(() => {

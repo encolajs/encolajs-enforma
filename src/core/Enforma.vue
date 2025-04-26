@@ -109,7 +109,7 @@ onMounted(() => {
 })
 
 const formConfig = useConfig(props.config)
-const { getConfig } = useFormConfig()
+const { getConfig } = useFormConfig(false)
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
 const transformedProps = computed(() => {

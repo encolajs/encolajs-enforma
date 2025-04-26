@@ -1,7 +1,6 @@
 <template>
   <div
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.wrapper') || {})"
-    v-if="isVisible"
   >
     <HeadlessRepeatable
       :name="name"
@@ -10,6 +9,7 @@
       :validate-on-add="validateOnAdd"
       :validate-on-remove="validateOnRemove"
     >
+
       <template
         #default="{ value, add, remove, canAdd, moveUp, moveDown, count }"
       >
@@ -113,7 +113,7 @@ const props = withDefaults(defineProps<RepeatableFieldProps>(), {
 })
 
 const $attrs = useAttrs()
-const { isVisible, fields, component, componentProps, transformedFieldConfig } =
+const { fields, component, componentProps, transformedFieldConfig } =
   useEnformaRepeatable(props)
 const { getConfig } = useFormConfig()
 
