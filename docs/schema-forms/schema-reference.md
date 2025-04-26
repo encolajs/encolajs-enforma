@@ -1,4 +1,4 @@
-# Schema Reference
+# Schema
 
 This page provides a comprehensive reference for all schema types used in EnformaJS.
 
@@ -47,7 +47,7 @@ All schema types share these base properties:
 > [!IMPORTANT] 
 > Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/integrating-custom-components.md) 
 
-## Field Schema Reference
+## Field Schema
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
@@ -63,7 +63,7 @@ All schema types share these base properties:
 | `errorProps` | object | No | Props to apply to the error message component |
 | `inputComponent` | string \| component | No | Component to use for this field |
 
-## Repeatable Schema Reference
+## Repeatable Schema
 
 | Property | Type | Required | Description                                                                                        |
 |----------|------|----------|----------------------------------------------------------------------------------------------------|
@@ -78,7 +78,7 @@ All schema types share these base properties:
 | `validateOnAdd` | boolean | No | Whether to validate the field when a new item is added (defaults to true)                |
 | `validateOnRemove` | boolean | No | Whether to validate the field when an item is removed (defaults to true)              |
 
-## Repeatable Table Schema Reference
+## Repeatable Table Schema
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
@@ -93,7 +93,7 @@ All schema types share these base properties:
 | `validateOnAdd` | boolean | No | Whether to validate the field when a new item is added (defaults to true) |
 | `validateOnRemove` | boolean | No | Whether to validate the field when an item is removed (defaults to false) |
 
-## Section Schema Reference
+## Section Schema
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
