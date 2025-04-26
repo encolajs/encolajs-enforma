@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import Enforma from '@/core/Enforma.vue'
+import EnformaSchema from '@/core/EnformaSchema.vue'
+import EnformaSection from '@/core/EnformaSection.vue'
+import EnformaField from '@/core/EnformaField.vue'
 import HeadlessForm from '../../src/headless/HeadlessForm'
 import { setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
-import { formContextKey } from '../../src/constants/symbols'
+import { formContextKey, formConfigKey, formSchemaKey } from '../../src/constants/symbols'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Stub components for testing
@@ -86,6 +89,65 @@ describe('Enforma', () => {
     const schemaComponent = wrapper.findComponent({ name: 'EnformaSchema' })
     expect(schemaComponent.exists()).toBe(true)
     expect(schemaComponent.props().schema).toEqual(schema)
+  })
+  
+  it('handles field visibility in schema with if property', async () => {
+    // Create a simple form state schema with conditional fields
+    const schema = {
+      visibleField: {
+        label: 'Visible Field',
+        type: 'field',
+        if: true,
+      },
+      hiddenField: {
+        label: 'Hidden Field',
+        type: 'field',
+        if: false,
+      }
+    }
+    
+    // First setup the global config with all necessary components
+    setGlobalConfig({
+      components: {
+        submitButton: 'button',
+        resetButton: 'button',
+        field: EnformaField,
+        section: EnformaSection,
+        schema: EnformaSchema
+      },
+      pt: {
+        wrapper: { class: 'field-wrapper' },
+      }
+    })
+
+    // Use a stub for the EnformaField component to make testing easier
+    const FieldStub = {
+      name: 'EnformaField',
+      template: '<div :data-field-name="name" class="field-stub">{{ label }}</div>',
+      props: ['name', 'label', 'inputComponent']
+    }
+    
+    // Mount the Enforma component with the schema
+    const wrapper = mount(Enforma, {
+      props: {
+        data: {},
+        submitHandler: () => {},
+        schema
+      },
+      global: {
+      }
+    })
+    
+    await wrapper.vm.$nextTick()
+    await flushPromises() // Wait for all promises to resolve
+    
+    // Check for the visible field
+    const visibleFieldElement = wrapper.find('[name="visibleField"]')
+    expect(visibleFieldElement.exists()).toBe(true)
+    
+    // The hidden field should not be in the DOM
+    const hiddenFieldElement = wrapper.find('[name="hiddenField"]')
+    expect(hiddenFieldElement.exists()).toBe(false)
   })
 
   it('emits submit_success event on successful form submission', async () => {

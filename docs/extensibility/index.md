@@ -6,6 +6,6 @@ Enforma is designed to be highly extensible, allowing you to customize, enhance,
 
 Enforma provides multiple ways to extend its functionality:
 
-- [Integrating Custom Components](/extensibility/integrating-custom-components) - Integrate your own UI components
+- [Integrating Custom Components](/extensibility/custom-components) - Integrate your own UI components
 - [Using Transformers](/extensibility/using-transformers) - Modify forms at runtime with transformer functions
-- [Dynamic Field Props](/extensibility/dynamic-field-props) - Create reactive field properties
+- [Dynamic Field Props](/extensibility/dynamic-props) - Create reactive field properties

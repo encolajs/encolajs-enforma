@@ -135,36 +135,6 @@ describe('EnformaField', () => {
     )
   })
 
-  it('handles visibility toggle with boolean values correctly', async () => {
-    const wrapper = mountTestComponent(
-      EnformaField,
-      {
-        name: 'visibility-field',
-        label: 'Visibility Field',
-        type: 'input',
-        if: false,
-      },
-      {
-        global: {
-          provide: {
-            [formControllerKey]: formState,
-            [formSchemaKey]: schema,
-          },
-        },
-      }
-    )
-
-    // Vue's v-show doesn't actually remove the element but hides it with style="display: none"
-    const wrapper_div = wrapper.find('.enforma-field-wrapper')
-    expect(wrapper_div.exists()).toBe(true)
-    expect(wrapper_div.attributes('style')).toContain('display: none')
-
-    await wrapper.setProps({ if: true })
-    // After changing to visible, the style should no longer contain display: none
-    expect(
-      wrapper.find('.enforma-field-wrapper').attributes('style')
-    ).toBeFalsy()
-  })
 
   it('applies custom props correctly', async () => {
     const customProps = {

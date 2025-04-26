@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="props.wrapper" v-show="props.if">
+  <div v-bind="props.wrapper">
     <label
       v-if="
         !props.hideLabel && !props.showLabelNextToInput && fieldOptions.label
@@ -14,7 +14,7 @@
 
     <div class="enforma-field-input">
       <component
-        :is="props.component"
+        :is="props.inputComponent"
         v-model="fieldController.value"
         v-bind="props.input"
         v-on="fieldController.events"
@@ -53,22 +53,19 @@ import { ComponentPublicInstance, PropType } from 'vue'
 const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
-  component: {
+  inputComponent: {
     type: [String, Object] as PropType<string | ComponentPublicInstance | null>,
     default: null,
   },
-  placeholder: { type: String, default: null },
   hideLabel: { type: Boolean, default: false },
   showLabelNextToInput: { type: Boolean, default: false },
-  required: { type: Boolean, default: undefined },
+  required: { type: [Boolean, String], default: undefined },
   help: { type: String, default: null },
-  if: { type: Boolean, default: null },
   labelProps: { type: Object, default: () => ({}) },
   errorProps: { type: Object, default: () => ({}) },
   helpProps: { type: Object, default: () => ({}) },
-  wrapperProps: { type: Object, default: () => ({}) },
+  props: { type: Object, default: () => ({}) },
   inputProps: { type: Object, default: () => ({}) },
-  validateOn: { type: String, default: null },
   // these are here only because they might be passed from the schema
   // they are not actually used for rendering
   section: { type: String, default: null },

@@ -143,9 +143,9 @@ const transformedSchema = computed(() => transformedProps.value.schema)
 const transformedContext = computed(() => transformedProps.value.context)
 const transformedFormConfig = computed(() => transformedProps.value.config)
 
-provide(formContextKey, transformedContext)
-provide(formSchemaKey, transformedSchema)
-provide(formConfigKey, transformedFormConfig)
+provide(formContextKey, transformedContext.value)
+provide(formSchemaKey, transformedSchema.value)
+provide(formConfigKey, transformedFormConfig.value)
 
 const submitButton = getConfig('components.submitButton')
 const resetButton = getConfig('components.resetButton')

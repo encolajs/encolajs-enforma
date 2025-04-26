@@ -92,10 +92,11 @@ export default defineConfig({
         {
           text: 'Extensibility',
           collapsed: true,
+          link: '/extensibility/',
           items: [
-            { text: 'Integrating Custom Components', link: '/extensibility/integrating-custom-components' },
+            { text: 'Using Custom Components', link: '/extensibility/custom-components' },
             { text: 'Using Transformers', link: '/extensibility/using-transformers' },
-            { text: 'Dynamic Field Props', link: '/extensibility/dynamic-field-props' },
+            { text: 'Using Dynamic Props', link: '/extensibility/dynamic-props' },
           ],
         },
         {

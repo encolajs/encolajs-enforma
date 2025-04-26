@@ -10,7 +10,7 @@ import {
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import { useTranslation } from '@/utils/useTranslation'
-import { fieldValidateOnOption, useField } from '@/headless/useField'
+import { useField } from '@/headless/useField'
 import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
@@ -19,18 +19,16 @@ import applyTransformers from '@/utils/applyTransformers'
 export interface EnformaFieldProps {
   name: string
   label?: string | null
-  component?: string | ComponentPublicInstance | null
+  inputComponent?: string | ComponentPublicInstance | null
   hideLabel?: boolean | undefined
   showLabelNextToInput?: boolean | undefined
-  required?: boolean | undefined
+  required?: boolean | string | undefined
   help?: string | null
-  if?: boolean | null
   labelProps?: Record<string, any>
   errorProps?: Record<string, any>
   helpProps?: Record<string, any>
-  wrapperProps?: Record<string, any>
+  props?: Record<string, any>
   inputProps?: Record<string, any>
-  validateOn?: string | null
   section?: string | null
   position?: number | null
 }
@@ -59,18 +57,17 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     // Default values that will be used if neither props nor schema provide a value
     const defaults: Record<string, any> = {
       component: 'input',
+      inputComponent: null,
       hideLabel: false,
       showLabelNextToInput: false,
       required: false,
-      if: true,
       labelProps: {},
       errorProps: {},
       helpProps: {},
-      wrapperProps: {},
+      props: {},
       inputProps: {},
       label: null,
       help: null,
-      validateOn: null,
       section: null,
       position: null,
     }
@@ -84,16 +81,16 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         ...result,
         label: fieldSchema.value.label ?? null,
         component: fieldSchema.value.component ?? result.component,
+        inputComponent: fieldSchema.value.inputComponent ?? result.component,
         hideLabel: fieldSchema.value.hideLabel ?? result.hideLabel,
         showLabelNextToInput:
           fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
         required: fieldSchema.value.required ?? result.required,
         help: fieldSchema.value.help ?? null,
-        if: fieldSchema.value.if ?? result.if,
         labelProps: { ...result.labelProps, ...fieldSchema.value.labelProps },
         errorProps: { ...result.errorProps, ...fieldSchema.value.errorProps },
         helpProps: { ...result.helpProps, ...fieldSchema.value.helpProps },
-        wrapperProps: { ...result.wrapperProps, ...fieldSchema.value.props },
+        props: { ...result.props, ...fieldSchema.value.props },
         inputProps: { ...result.inputProps, ...fieldSchema.value.inputProps },
         section: fieldSchema.value.section ?? null,
         position: fieldSchema.value.position ?? null,
@@ -105,19 +102,18 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       ...result,
       name: originalProps.name,
       label: originalProps.label ?? result.label,
-      component: originalProps.component ?? result.type,
+      component: result.component, // Keep component from schema or defaults
+      inputComponent: originalProps.inputComponent ?? result.inputComponent,
       hideLabel: originalProps.hideLabel ?? result.hideLabel,
       showLabelNextToInput:
         originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
       required: originalProps.required ?? result.required,
       help: originalProps.help ?? result.help,
-      if: originalProps.if ?? result.if,
       labelProps: { ...result.labelProps, ...originalProps.labelProps },
       errorProps: { ...result.errorProps, ...originalProps.errorProps },
       helpProps: { ...result.helpProps, ...originalProps.helpProps },
-      wrapperProps: { ...result.wrapperProps, ...originalProps.wrapperProps },
+      props: { ...result.props, ...originalProps.props },
       inputProps: { ...result.inputProps, ...originalProps.inputProps },
-      validateOn: originalProps.validateOn ?? result.validateOn,
       section: originalProps.section ?? result.section,
       position: originalProps.position ?? result.position,
     }
@@ -126,9 +122,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   })
 
   // Initialize field with useField composable
-  const field = useField(fieldOptions.value.name, formState, {
-    validateOn: fieldOptions.value.validateOn as fieldValidateOnOption,
-  })
+  const field = useField(fieldOptions.value.name, formState, {})
 
   // Set up cleanup
   onBeforeUnmount(() => {
@@ -173,7 +167,8 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       result.requiredProps = getConfig('pt.required')
 
       // Component type and label visibility (don't change after initialization)
-      result.component = transformedFieldOptions.value.component || 'input'
+      result.inputComponent = transformedFieldOptions.value.inputComponent ||
+                         'input'
       result.hideLabel = transformedFieldOptions.value.hideLabel
       result.showLabelNextToInput = transformedFieldOptions.value.showLabelNextToInput
 
@@ -188,7 +183,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       {
         id: `wrapper-${fieldId.value}`,
       },
-      transformedFieldOptions.value.wrapperProps || {},
+      transformedFieldOptions.value.props || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
       errorMessage.value
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
@@ -252,7 +247,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       help: helpProps,
       error: errorProps,
       input: inputProps,
-      if: !!transformedFieldOptions.value.if,
     }
   })
 

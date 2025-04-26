@@ -9,17 +9,25 @@
     </component>
 
     <template v-for="field in sortedFields" :key="field.name">
-      <component :is="fieldComponent" v-bind="field" />
+      <component
+        :is="fieldComponent" 
+        v-bind="field" 
+        v-if="shouldRenderField(field)"
+      />
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
-      <component :is="sectionComponent" :name="subSection.name" />
+      <component
+        :is="sectionComponent" 
+        :name="subSection.name" 
+        v-if="shouldRenderSection(subSection)"
+      />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, resolveComponent, mergeProps } from 'vue'
+import { computed, inject, resolveComponent, mergeProps, ComputedRef } from 'vue'
 import { formSchemaKey, formControllerKey } from '@/constants/symbols'
 import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -47,6 +55,7 @@ function getFields(
 
   const entries = Object.entries(schema)
     .filter(([_, field]) => {
+      if (!field) return false
       if (isSectionSchema(field)) return false
 
       // For default section, include fields without a section
@@ -69,6 +78,7 @@ function getSubSections(
 
   // Find all sections that belong to this section
   return Object.entries(schema).filter(([_, field]) => {
+    if (!field) return false
     if (!isSectionSchema(field)) return false
 
     // For default section, include fields without a section
@@ -101,6 +111,35 @@ defineOptions({ name: 'EnformaSection' })
 const props = defineProps<{
   name: string
 }>()
+
+// Helper function to determine if a field should be rendered based on its 'if' property
+function shouldRenderField(field: FieldSchema & { name: string }): boolean {
+  // If no 'if' property, always render
+  if (field['if'] === undefined) return true
+  
+  // If 'if' is a boolean, use it directly
+  if (typeof field['if'] === 'boolean') return field['if']
+  
+  // If 'if' is a string in a schema it will be converted to a computed ref
+  // via the dynamic props
+  // @ts-expect-error at this point the field.if is an evaluted dynamic prop
+  return (field['if'] as ComputedRef<boolean>).value
+}
+
+// Helper function to determine if a section should be rendered based on its 'if' property
+function shouldRenderSection(section: SectionSchema & { name: string }): boolean {
+  // If no 'if' property, always render
+  if (section['if']  === undefined) return true
+  
+  // If 'if' is a boolean, use it directly
+  if (typeof section['if']  === 'boolean') return section.if
+
+  // If 'if' is a string in a schema it will be converted to a computed ref
+  // via the dynamic props
+  // @ts-expect-error at this point the field.if is an evaluted dynamic prop
+  return (section['if'] as ComputedRef<boolean>).value
+
+}
 
 // Inject dependencies
 const schema = inject<FormSchema>(formSchemaKey)

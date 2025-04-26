@@ -186,8 +186,9 @@ export interface BaseSchema {
   /**
    * Conditional expression to determine if the schema should be shown
    * Can be a string containing an expression referencing form state: "${form.country === 'US'}"
+   * Or a boolean value
    */
-  if?: string
+  if?: string | boolean
 }
 
 /**
