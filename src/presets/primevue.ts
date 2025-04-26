@@ -40,12 +40,12 @@ function usePrimeVueComponent(
   formState: FormController,
   config: any
 ) {
-  if (fieldProps.component && 'object' !== typeof fieldProps.component) {
+  if (fieldProps.inputComponent && 'object' !== typeof fieldProps.inputComponent) {
     // if the component is not already a Vue component
-    fieldProps.component = inputComponents[fieldProps.component] || InputText
-  } else if (!fieldProps.component) {
+    fieldProps.inputComponent = inputComponents[fieldProps.inputComponent] || InputText
+  } else if (!fieldProps.inputComponent) {
     // default to InputText
-    fieldProps.component = InputText
+    fieldProps.inputComponent = InputText
   }
   return fieldProps
 }
@@ -60,8 +60,8 @@ function setPrimeVueSpecificProps(
   formState: FormController,
   config: any
 ) {
-  fieldProps.input.labelId = field.value.id
-  fieldProps.input.modelValue = field.value.value
+  fieldProps.inputProps.labelId = field.value.id
+  fieldProps.inputProps.modelValue = field.value.value
   return fieldProps
 }
 
