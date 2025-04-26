@@ -165,6 +165,12 @@ export default defineConfig({
                 { text: 'Dynamic Props', link: '/examples/dynamic-props' },
               ],
             },
+            {
+              text: 'Presets',
+              items: [
+                { text: 'Vuetify', link: '/examples/vuetify-preset' },
+              ],
+            },
           ],
         },
       ],

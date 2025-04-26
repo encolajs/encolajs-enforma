@@ -40,8 +40,9 @@ export { default as EnformaSubmitButton } from './core/EnformaSubmitButton.vue'
 export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
 
 // Presets will be imported directly by the users
-// export { default as defaultPreset } from './presets/default'
-// export { default as primevuePreset } from './presets/primevue'
+// export { default as useDefaultPreset } from './presets/default'
+// export { default as usePrimeVuePreset } from './presets/primevue'
+// export { default as useVuetifyPreset } from './presets/vuetify'
 
 // Type exports
 export type {

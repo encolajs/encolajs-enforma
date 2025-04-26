@@ -92,7 +92,8 @@
     "peerDependencies": {
         "@primeuix/themes": "^1.0.0",
         "primeicons": "^7.0.0",
-        "primevue": "^4.3.2"
+        "primevue": "^4.3.2",
+        "vuetify": "^3.8.2"
     },
     "dependencies": {
         "@encolajs/validator": "^1.0.0",

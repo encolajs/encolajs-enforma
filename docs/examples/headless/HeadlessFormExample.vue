@@ -14,7 +14,7 @@
             <div class="flex">
               <!--
               This field is using v-model to pass data.
-              Because of this we cannot use destructuring, we must use `fieldCtrl`
+              Because of this destructuring is not possible, we must use `fieldCtrl`
               The rest of the fields are using `attrs` (which includes `value`)
               plus `events` because it offers greater flexibility
               -->

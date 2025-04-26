@@ -15,6 +15,7 @@
     "@primeuix/themes": "^1.0.3",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
+    "vuetify": "^3.8.2",
     "markdown-it-container": "^4.0.0"
   }
 }

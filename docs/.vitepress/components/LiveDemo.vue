@@ -10,9 +10,15 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { createApp, h } from 'vue'
 import { createEnforma } from '../../../src'
 import usePrimeVuePreset from '../../../src/presets/primevue.ts'
+import useVuetifyPreset from '../../../src/presets/vuetify.ts'
 import { InputText } from 'primevue'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
+
+// Import for Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import { VTextField } from 'vuetify/components'
 
 const props = defineProps({
   component: String | Object,
@@ -47,6 +53,20 @@ onMounted(() => {
     usePrimeVuePreset({
       input: InputText,
       text: InputText,
+    })
+  } else if (props.preset === 'vuetify') {
+    // Configure Vuetify
+    const vuetify = createVuetify({
+      theme: {
+        defaultTheme: 'light'
+      }
+    })
+    app.use(vuetify)
+    
+    // Apply Vuetify preset
+    useVuetifyPreset({
+      input: VTextField,
+      text: VTextField,
     })
   }
 
