@@ -110,7 +110,6 @@ describe('EnformaField', () => {
     expect(wrapper.find('.enforma-error').text()).toBe('This field is required')
   })
 
-
   it('shows help text when provided', async () => {
     const wrapper = mountTestComponent(
       EnformaField,
@@ -134,7 +133,6 @@ describe('EnformaField', () => {
       'This is a helpful message'
     )
   })
-
 
   it('applies custom props correctly', async () => {
     const customProps = {

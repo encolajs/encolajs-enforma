@@ -261,11 +261,15 @@ describe('EnformaRepeatable', () => {
       )
       await flushPromises()
 
-      const moveUpButtons = wrapper.findAll('.enforma-repeatable-move-up-button')
+      const moveUpButtons = wrapper.findAll(
+        '.enforma-repeatable-move-up-button'
+      )
       expect(moveUpButtons[0].attributes()['disabled']).toBe('')
       expect(moveUpButtons[1].attributes()['disabled']).toBeUndefined()
 
-      const moveDownButtons = wrapper.findAll('.enforma-repeatable-move-down-button')
+      const moveDownButtons = wrapper.findAll(
+        '.enforma-repeatable-move-down-button'
+      )
       expect(moveDownButtons[1].attributes()['disabled']).toBeUndefined()
       expect(moveDownButtons[2].attributes()['disabled']).toBe('')
     })

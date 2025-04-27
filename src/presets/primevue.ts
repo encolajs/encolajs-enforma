@@ -40,9 +40,13 @@ function usePrimeVueComponent(
   formState: FormController,
   config: any
 ) {
-  if (fieldProps.inputComponent && 'object' !== typeof fieldProps.inputComponent) {
+  if (
+    fieldProps.inputComponent &&
+    'object' !== typeof fieldProps.inputComponent
+  ) {
     // if the component is not already a Vue component
-    fieldProps.inputComponent = inputComponents[fieldProps.inputComponent] || InputText
+    fieldProps.inputComponent =
+      inputComponents[fieldProps.inputComponent] || InputText
   } else if (!fieldProps.inputComponent) {
     // default to InputText
     fieldProps.inputComponent = InputText
@@ -65,19 +69,22 @@ function setPrimeVueSpecificProps(
   return fieldProps
 }
 
-
 /**
  * Applies the PrimeVue preset to the global configuration
  * This function modifies the global configuration
  * by merging the PrimeVue preset with the existing global configuration
  */
-export default function usePrimeVuePreset(components?: Record<string, Component>): void {
+export default function usePrimeVuePreset(
+  components?: Record<string, Component>
+): void {
   /**
    * Because we don't know which PrimeVue components are used in an app
    * the developer must provide the list of components after importing them
    */
   if (components) {
-    Object.keys(components ).map((key) => inputComponents[key] = components[key])
+    Object.keys(components).map(
+      (key) => (inputComponents[key] = components[key])
+    )
   }
 
   const currentConfig = getGlobalConfig()
@@ -112,10 +119,7 @@ export default function usePrimeVuePreset(components?: Record<string, Component>
      * Functions to change the props of Enforma components before rendering
      */
     transformers: {
-      field_props: [
-        usePrimeVueComponent,
-        setPrimeVueSpecificProps,
-      ],
+      field_props: [usePrimeVueComponent, setPrimeVueSpecificProps],
     },
   }
 

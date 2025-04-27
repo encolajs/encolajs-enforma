@@ -10,16 +10,16 @@
 
     <template v-for="field in sortedFields" :key="field.name">
       <component
-        :is="fieldComponent" 
-        v-bind="field" 
+        :is="fieldComponent"
+        v-bind="field"
         v-if="shouldRenderField(field)"
       />
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
       <component
-        :is="sectionComponent" 
-        :name="subSection.name" 
+        :is="sectionComponent"
+        :name="subSection.name"
         v-if="shouldRenderSection(subSection)"
       />
     </template>
@@ -27,7 +27,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, resolveComponent, mergeProps, ComputedRef } from 'vue'
+import {
+  computed,
+  inject,
+  resolveComponent,
+  mergeProps,
+  ComputedRef,
+} from 'vue'
 import { formSchemaKey, formControllerKey } from '@/constants/symbols'
 import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -116,10 +122,10 @@ const props = defineProps<{
 function shouldRenderField(field: FieldSchema & { name: string }): boolean {
   // If no 'if' property, always render
   if (field['if'] === undefined) return true
-  
+
   // If 'if' is a boolean, use it directly
   if (typeof field['if'] === 'boolean') return field['if']
-  
+
   // If 'if' is a string in a schema it will be converted to a computed ref
   // via the dynamic props
   // @ts-expect-error at this point the field.if is an evaluted dynamic prop
@@ -127,18 +133,19 @@ function shouldRenderField(field: FieldSchema & { name: string }): boolean {
 }
 
 // Helper function to determine if a section should be rendered based on its 'if' property
-function shouldRenderSection(section: SectionSchema & { name: string }): boolean {
+function shouldRenderSection(
+  section: SectionSchema & { name: string }
+): boolean {
   // If no 'if' property, always render
-  if (section['if']  === undefined) return true
-  
+  if (section['if'] === undefined) return true
+
   // If 'if' is a boolean, use it directly
-  if (typeof section['if']  === 'boolean') return section.if
+  if (typeof section['if'] === 'boolean') return section.if
 
   // If 'if' is a string in a schema it will be converted to a computed ref
   // via the dynamic props
   // @ts-expect-error at this point the field.if is an evaluted dynamic prop
   return (section['if'] as ComputedRef<boolean>).value
-
 }
 
 // Inject dependencies
@@ -165,20 +172,23 @@ const originalSectionSchema = computed(() => {
 // Apply section props transformers
 const sectionSchema = computed(() => {
   if (!originalSectionSchema.value) return null
-  
+
   // Apply section props transformers if defined in config
-  const sectionPropsTransformers = getConfig('transformers.section_props', []) as Function[]
-  
+  const sectionPropsTransformers = getConfig(
+    'transformers.section_props',
+    []
+  ) as Function[]
+
   if (sectionPropsTransformers.length === 0) {
     return originalSectionSchema.value
   }
-  
+
   // Create a copy with name property for the transformer to use
   const sectionWithName = {
     ...originalSectionSchema.value,
-    name: props.name
+    name: props.name,
   }
-  
+
   return applyTransformers(
     sectionPropsTransformers,
     sectionWithName,

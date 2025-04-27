@@ -35,7 +35,9 @@ export interface RepeatableFieldConfig extends RepeatableFieldProps {
   min?: number
 }
 
-export function useEnformaRepeatable(originalFieldConfig: RepeatableFieldConfig) {
+export function useEnformaRepeatable(
+  originalFieldConfig: RepeatableFieldConfig
+) {
   // Get form state from context
   const formState = inject<FormController>(formControllerKey) as FormController
   const { formConfig, getConfig } = useFormConfig()
@@ -51,14 +53,17 @@ export function useEnformaRepeatable(originalFieldConfig: RepeatableFieldConfig)
   // First, apply transformers to the repeatable field options
   const transformedFieldConfig = computed(() => {
     // Apply repeatable props transformers if defined in config
-    const repeatablePropsTransformers = getConfig('transformers.repeatable_props', []) as Function[]
-    
+    const repeatablePropsTransformers = getConfig(
+      'transformers.repeatable_props',
+      []
+    ) as Function[]
+
     if (repeatablePropsTransformers.length === 0) {
       return originalFieldConfig
     }
-    
+
     // applyTransformers is now imported at the top
-    
+
     return applyTransformers(
       repeatablePropsTransformers,
       { ...originalFieldConfig },

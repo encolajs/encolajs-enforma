@@ -144,7 +144,7 @@ export interface FormController {
   setFieldErrors(path: string, errors: string[]): void
 
   setErrors(errors: Record<string, string[]>): void
-  
+
   getFieldErrors(path: string): string[]
 
   add(arrayPath: string, index: number, item: any): void
@@ -253,7 +253,6 @@ export interface FieldSchema extends BaseSchema {
    * Allows direct component references
    */
   inputComponent?: string | ComponentPublicInstance
-
 }
 
 export interface SectionSchema extends BaseSchema {
@@ -299,27 +298,27 @@ export interface RepeatableSchema extends BaseSchema {
    * Default value for the field
    */
   defaultValue?: any
-  
+
   /**
    * Whether to allow adding new items
    */
   allowAdd?: boolean
-  
+
   /**
    * Whether to allow removing items
    */
   allowRemove?: boolean
-  
+
   /**
    * Whether to allow sorting items
    */
   allowSort?: boolean
-  
+
   /**
    * Whether to validate the field when a new item is added
    */
   validateOnAdd?: boolean
-  
+
   /**
    * Whether to validate the field when an item is removed
    */
@@ -356,27 +355,27 @@ export interface RepeatableTableSchema extends BaseSchema {
    * Default value for the field
    */
   defaultValue?: any
-  
+
   /**
    * Whether to allow adding new items
    */
   allowAdd?: boolean
-  
+
   /**
    * Whether to allow removing items
    */
   allowRemove?: boolean
-  
+
   /**
    * Whether to allow sorting items
    */
   allowSort?: boolean
-  
+
   /**
    * Whether to validate the field when a new item is added
    */
   validateOnAdd?: boolean
-  
+
   /**
    * Whether to validate the field when an item is removed
    */
@@ -384,7 +383,11 @@ export interface RepeatableTableSchema extends BaseSchema {
 }
 
 export interface FormSchema {
-  [key: string]: FieldSchema | SectionSchema | RepeatableSchema | RepeatableTableSchema
+  [key: string]:
+    | FieldSchema
+    | SectionSchema
+    | RepeatableSchema
+    | RepeatableTableSchema
 }
 
 export type { FieldController } from './headless/useForm'

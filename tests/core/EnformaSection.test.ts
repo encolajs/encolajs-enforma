@@ -1,7 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import EnformaSection from '../../src/core/EnformaSection.vue'
-import { formSchemaKey, formControllerKey, FormSchema, FieldSchema, SectionSchema } from '../../src/'
+import {
+  formSchemaKey,
+  formControllerKey,
+  FormSchema,
+  FieldSchema,
+  SectionSchema,
+} from '../../src/'
 import { useForm } from '../../src'
 import { mountTestComponent } from '../utils/testSetup'
 

@@ -3,7 +3,11 @@ import { mount, flushPromises } from '@vue/test-utils'
 import EnformaRepeatableTable from '../../src/core/EnformaRepeatableTable.vue'
 import { useForm } from '../../src/headless/useForm'
 import { useValidation } from '../../src/utils/useValidation'
-import { formControllerKey, formConfigKey, formSchemaKey } from '../../src/constants/symbols'
+import {
+  formControllerKey,
+  formConfigKey,
+  formSchemaKey,
+} from '../../src/constants/symbols'
 import { useConfig } from '../../src/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
@@ -253,15 +257,19 @@ describe('EnformaRepeatableTable', () => {
       )
       await flushPromises()
 
-      const moveUpButtons = wrapper.findAll('.enforma-repeatable-move-up-button')
+      const moveUpButtons = wrapper.findAll(
+        '.enforma-repeatable-move-up-button'
+      )
       expect(moveUpButtons[0].attributes()['disabled']).toBe('')
       expect(moveUpButtons[1].attributes()['disabled']).toBeUndefined()
 
-      const moveDownButtons = wrapper.findAll('.enforma-repeatable-move-down-button')
+      const moveDownButtons = wrapper.findAll(
+        '.enforma-repeatable-move-down-button'
+      )
       expect(moveDownButtons[1].attributes()['disabled']).toBeUndefined()
       expect(moveDownButtons[2].attributes()['disabled']).toBe('')
     })
-    
+
     it('honors allowAdd=false prop to hide add button', async () => {
       const formState = createFormState({ items: [{ name: 'Item 1' }] })
       const wrapper = createTestWrapper(

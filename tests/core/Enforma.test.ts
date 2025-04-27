@@ -7,7 +7,11 @@ import EnformaField from '@/core/EnformaField.vue'
 import HeadlessForm from '../../src/headless/HeadlessForm'
 import { setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
-import { formContextKey, formConfigKey, formSchemaKey } from '../../src/constants/symbols'
+import {
+  formContextKey,
+  formConfigKey,
+  formSchemaKey,
+} from '../../src/constants/symbols'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Stub components for testing
@@ -90,7 +94,7 @@ describe('Enforma', () => {
     expect(schemaComponent.exists()).toBe(true)
     expect(schemaComponent.props().schema).toEqual(schema)
   })
-  
+
   it('handles field visibility in schema with if property', async () => {
     // Create a simple form state schema with conditional fields
     const schema = {
@@ -103,9 +107,9 @@ describe('Enforma', () => {
         label: 'Hidden Field',
         type: 'field',
         if: false,
-      }
+      },
     }
-    
+
     // First setup the global config with all necessary components
     setGlobalConfig({
       components: {
@@ -113,38 +117,38 @@ describe('Enforma', () => {
         resetButton: 'button',
         field: EnformaField,
         section: EnformaSection,
-        schema: EnformaSchema
+        schema: EnformaSchema,
       },
       pt: {
         wrapper: { class: 'field-wrapper' },
-      }
+      },
     })
 
     // Use a stub for the EnformaField component to make testing easier
     const FieldStub = {
       name: 'EnformaField',
-      template: '<div :data-field-name="name" class="field-stub">{{ label }}</div>',
-      props: ['name', 'label', 'inputComponent']
+      template:
+        '<div :data-field-name="name" class="field-stub">{{ label }}</div>',
+      props: ['name', 'label', 'inputComponent'],
     }
-    
+
     // Mount the Enforma component with the schema
     const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
-        schema
+        schema,
       },
-      global: {
-      }
+      global: {},
     })
-    
+
     await wrapper.vm.$nextTick()
     await flushPromises() // Wait for all promises to resolve
-    
+
     // Check for the visible field
     const visibleFieldElement = wrapper.find('[name="visibleField"]')
     expect(visibleFieldElement.exists()).toBe(true)
-    
+
     // The hidden field should not be in the DOM
     const hiddenFieldElement = wrapper.find('[name="hiddenField"]')
     expect(hiddenFieldElement.exists()).toBe(false)

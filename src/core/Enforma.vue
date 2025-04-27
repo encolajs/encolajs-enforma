@@ -17,7 +17,11 @@
   >
     <template #default="formCtrl">
       <slot name="default" v-bind="formCtrl">
-        <component :is="schemaComponent" v-if="transformedSchema" :schema="transformedSchema" />
+        <component
+          :is="schemaComponent"
+          v-if="transformedSchema"
+          :schema="transformedSchema"
+        />
       </slot>
 
       <slot name="actions" v-bind="{ formCtrl, formConfig }">
@@ -113,23 +117,26 @@ const { getConfig } = useFormConfig(false)
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
 const transformedProps = computed(() => {
-  const formPropsTransformers = getConfig('transformers.form_props', []) as Function[]
-  
+  const formPropsTransformers = getConfig(
+    'transformers.form_props',
+    []
+  ) as Function[]
+
   if (formPropsTransformers.length === 0) {
     return {
       schema: props.schema,
       context: props.context || {},
-      config: formConfig
+      config: formConfig,
     }
   }
-  
+
   // Create a single props object containing schema, context and config
   const formProps = {
     schema: props.schema ? { ...props.schema } : null,
     context: props.context ? { ...props.context } : {},
-    config: { ...formConfig }
+    config: { ...formConfig },
   }
-  
+
   // Apply all transformers at once to the combined props
   return applyTransformers(
     formPropsTransformers,

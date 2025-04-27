@@ -1,6 +1,8 @@
 <template>
   <v-btn
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableMoveUpButton'))"
+    v-bind="
+      mergeProps($attrs, getConfig('pt.repeatable.repeatableMoveUpButton'))
+    "
     type="button"
     variant="text"
     density="comfortable"

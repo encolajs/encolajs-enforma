@@ -35,14 +35,14 @@ function deepClone(value: any): any {
   const clonedObj = {}
   for (const key in value) {
     if (Object.prototype.hasOwnProperty.call(value, key)) {
-      (clonedObj as Record<string, any>)[key] = deepClone(value[key])
+      ;(clonedObj as Record<string, any>)[key] = deepClone(value[key])
     }
   }
 
   // Also clone symbol-keyed properties
   const symbolKeys = Object.getOwnPropertySymbols(value)
   for (const sym of symbolKeys) {
-    (clonedObj as Record<symbol, any>)[sym] = deepClone(value[sym])
+    ;(clonedObj as Record<symbol, any>)[sym] = deepClone(value[sym])
   }
 
   return clonedObj

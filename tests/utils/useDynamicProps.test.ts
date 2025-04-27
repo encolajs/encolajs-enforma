@@ -1,10 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { useDynamicProps } from '../../src/'
-import {
-  formConfigKey,
-  formContextKey,
-  formControllerKey,
-} from '../../src/'
+import { formConfigKey, formContextKey, formControllerKey } from '../../src/'
 
 // Mock the Vue inject function
 vi.mock('vue', async () => {
@@ -109,7 +105,7 @@ describe('useDynamicProps', () => {
     // Verify that expressions are evaluated as computed refs
     expect(evaluatedProps.label.value).toBe('John')
     expect(evaluatedProps.placeholder.value).toBe(30)
-    
+
     // Non-expression values remain as is
     expect(evaluatedProps.type).toBe('text')
   })
@@ -126,11 +122,11 @@ describe('useDynamicProps', () => {
     expect(typeof context.form.errors).toBe('function')
     expect(context.form.values()).toEqual({ name: 'John', age: 30 })
     expect(context.form.errors()).toEqual({ name: ['Name is required'] })
-    
+
     // Context and config
     expect(context.context).toEqual({ theme: 'dark', locale: 'en' })
     expect(context.config).toEqual({ expressions: { allowComplex: true } })
-    
+
     // Local context still works
     expect(context.localValue).toBe('local')
   })

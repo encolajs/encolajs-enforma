@@ -7,11 +7,7 @@ import RepeatableMoveDownButton from './vuetify/RepeatableMoveDownButton.vue'
 import RepeatableMoveUpButton from './vuetify/RepeatableMoveUpButton.vue'
 import Field from '@/presets/vuetify/Field.vue'
 import { FieldControllerExport, FormController } from '@/types'
-import {
-  VTextField,
-  VSelect,
-  VSwitch,
-} from 'vuetify/components'
+import { VTextField, VSelect, VSwitch } from 'vuetify/components'
 import {
   DeepPartial,
   EnformaConfig,
@@ -38,9 +34,13 @@ function useVuetifyComponent(
   formState: FormController,
   config: any
 ) {
-  if (fieldProps.inputComponent && 'object' !== typeof fieldProps.inputComponent) {
+  if (
+    fieldProps.inputComponent &&
+    'object' !== typeof fieldProps.inputComponent
+  ) {
     // if the component is not already a Vue component
-    fieldProps.inputComponent = inputComponents[fieldProps.inputComponent] || VTextField
+    fieldProps.inputComponent =
+      inputComponents[fieldProps.inputComponent] || VTextField
   } else if (!fieldProps.inputComponent) {
     // default to InputText
     fieldProps.inputComponent = VTextField
@@ -60,19 +60,19 @@ function setVuetifySpecificProps(
 ) {
   // Setup Vuetify-specific props
   fieldProps.inputProps = fieldProps.inputProps || {}
-  
+
   // Ensure we have an id for the field
   fieldProps.inputProps.id = field.value.id
-  
+
   // Set modelValue for v-model binding
   fieldProps.inputProps.modelValue = field.value.value
-  
+
   // Handle error states
   if (field.value.errors && field.value.errors.length > 0) {
     fieldProps.inputProps.error = true
     fieldProps.inputProps.errorMessages = field.value.errors
   }
-  
+
   // Handle labels - Vuetify uses label prop
   if (fieldProps.label) {
     fieldProps.inputProps.label = fieldProps.label
@@ -96,13 +96,17 @@ function setVuetifySpecificProps(
  * This function modifies the global configuration
  * by merging the Vuetify preset with the existing global configuration
  */
-export default function useVuetifyPreset(components?: Record<string, Component>): void {
+export default function useVuetifyPreset(
+  components?: Record<string, Component>
+): void {
   /**
    * Because we don't know which Vuetify components are used in an app
    * the developer must provide the list of components after importing them
    */
   if (components) {
-    Object.keys(components ).map((key) => inputComponents[key] = components[key])
+    Object.keys(components).map(
+      (key) => (inputComponents[key] = components[key])
+    )
   }
 
   // Get the current global configuration
@@ -134,16 +138,13 @@ export default function useVuetifyPreset(components?: Record<string, Component>)
       repeatableRemoveButton: RepeatableRemoveButton,
       repeatableMoveUpButton: RepeatableMoveUpButton,
       repeatableMoveDownButton: RepeatableMoveDownButton,
-      field: Field
+      field: Field,
     },
     /**
      * Functions to transform props of Enforma components before rendering
      */
     transformers: {
-      field_props: [
-        useVuetifyComponent,
-        setVuetifySpecificProps,
-      ],
+      field_props: [useVuetifyComponent, setVuetifySpecificProps],
     },
   }
 

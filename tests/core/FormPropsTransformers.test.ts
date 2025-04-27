@@ -7,7 +7,7 @@ describe('Form Props Transformers', () => {
     // Define a transformer that modifies schema, context, and config together
     const formPropsTransformer = vi.fn((props) => {
       const result = { ...props }
-      
+
       // Modify schema
       if (result.schema) {
         Object.entries(result.schema).forEach(([key, item]) => {
@@ -19,21 +19,21 @@ describe('Form Props Transformers', () => {
           }
         })
       }
-      
+
       // Modify context
       result.context = {
         ...result.context,
         transformed: true,
         extraValue: 'added by transformer',
       }
-      
+
       // Modify config
       result.config = {
         ...result.config,
         transformed: true,
         customSetting: 'added by transformer',
       }
-      
+
       return result
     })
 
@@ -59,28 +59,28 @@ describe('Form Props Transformers', () => {
         components: {
           field: 'input',
         },
-      }
+      },
     }
 
     // Apply the transformer
     const transformedProps = applyTransformers(
-      [formPropsTransformer], 
+      [formPropsTransformer],
       testProps,
       null
     )
 
     // Check that the transformer was called
     expect(formPropsTransformer).toHaveBeenCalled()
-    
+
     // Check that schema was transformed
     expect(transformedProps.schema.name.required).toBe(true)
     expect(transformedProps.schema.email.required).toBe(true)
-    
+
     // Check that context was transformed
     expect(transformedProps.context.transformed).toBe(true)
     expect(transformedProps.context.extraValue).toBe('added by transformer')
     expect(transformedProps.context.originalValue).toBe('test')
-    
+
     // Check that config was transformed
     expect(transformedProps.config.transformed).toBe(true)
     expect(transformedProps.config.customSetting).toBe('added by transformer')
@@ -99,10 +99,10 @@ describe('Form Props Transformers', () => {
       // Only process if form controller is available
       if (formController && formController.values) {
         const values = formController.values()
-        
+
         // Create a copy of props to modify
         const result = { ...props }
-        
+
         // Modify schema based on form controller data
         if (result.schema) {
           result.schema = {
@@ -121,19 +121,19 @@ describe('Form Props Transformers', () => {
             },
           }
         }
-        
+
         // Modify context based on form controller state
         result.context = {
           ...result.context,
           formState: {
             isDirty: formController.$isDirty,
-            username: values.username
-          }
+            username: values.username,
+          },
         }
-        
+
         return result
       }
-      
+
       return props
     })
 
@@ -144,12 +144,12 @@ describe('Form Props Transformers', () => {
           type: 'field',
           label: 'Name',
           component: 'input',
-        }
+        },
       },
       context: {
-        originalValue: 'test'
+        originalValue: 'test',
       },
-      config: {}
+      config: {},
     }
 
     // Apply the transformer with form controller
@@ -164,13 +164,13 @@ describe('Form Props Transformers', () => {
       testProps,
       mockFormController
     )
-    
+
     // Check that schema was modified with dynamic fields
     expect(transformedProps.schema.dynamicField).toBeDefined()
     expect(transformedProps.schema.dynamicField.defaultValue).toBe('test')
     expect(transformedProps.schema.conditionalField).toBeDefined()
     expect(transformedProps.schema.conditionalField.if).toBe(true)
-    
+
     // Check that context was modified with form state
     expect(transformedProps.context.formState).toBeDefined()
     expect(transformedProps.context.formState.isDirty).toBe(true)
@@ -180,39 +180,44 @@ describe('Form Props Transformers', () => {
   it('maintains order of form props transformer execution', () => {
     // Define transformers that will execute in order
     const firstTransformer = vi.fn((props) => {
-      return { 
+      return {
         ...props,
-        schema: props.schema ? {
-          ...props.schema,
-          transformerField1: { 
-            type: 'field',
-            label: 'First Transformer Field',
-          }
-        } : props.schema,
+        schema: props.schema
+          ? {
+              ...props.schema,
+              transformerField1: {
+                type: 'field',
+                label: 'First Transformer Field',
+              },
+            }
+          : props.schema,
         context: {
           ...props.context,
-          firstTransformerApplied: true
-        }
+          firstTransformerApplied: true,
+        },
       }
     })
 
     const secondTransformer = vi.fn((props) => {
       // Only add second field if first one exists and first transformer was applied
       // This tests that transformers are applied in sequence
-      if (props.schema?.transformerField1 && props.context.firstTransformerApplied) {
-        return { 
+      if (
+        props.schema?.transformerField1 &&
+        props.context.firstTransformerApplied
+      ) {
+        return {
           ...props,
           schema: {
             ...props.schema,
-            transformerField2: { 
+            transformerField2: {
               type: 'field',
               label: 'Second Transformer Field',
-            }
+            },
           },
           context: {
             ...props.context,
-            secondTransformerApplied: true
-          }
+            secondTransformerApplied: true,
+          },
         }
       }
       return props
@@ -225,12 +230,12 @@ describe('Form Props Transformers', () => {
           type: 'field',
           label: 'Name',
           component: 'input',
-        }
+        },
       },
       context: {
-        originalValue: 'test'
+        originalValue: 'test',
       },
-      config: {}
+      config: {},
     }
 
     // Apply the transformers in order
@@ -243,11 +248,11 @@ describe('Form Props Transformers', () => {
     // Check that both transformers were called in sequence
     expect(firstTransformer).toHaveBeenCalledWith(testProps, null)
     expect(secondTransformer).toHaveBeenCalled()
-    
+
     // Check that both transformers modified the schema
     expect(transformedProps.schema.transformerField1).toBeDefined()
     expect(transformedProps.schema.transformerField2).toBeDefined()
-    
+
     // Check that both transformers modified the context
     expect(transformedProps.context.firstTransformerApplied).toBe(true)
     expect(transformedProps.context.secondTransformerApplied).toBe(true)

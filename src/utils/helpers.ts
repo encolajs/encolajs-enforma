@@ -23,7 +23,11 @@ export const pathUtils = {
   /**
    * Gets a value from an object by path
    */
-  get: <T = any>(obj: any, path: string, defaultValue?: T): T | null | undefined => {
+  get: <T = any>(
+    obj: any,
+    path: string,
+    defaultValue?: T
+  ): T | null | undefined => {
     if (obj == null || !path) {
       return defaultValue
     }

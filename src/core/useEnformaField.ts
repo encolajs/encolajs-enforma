@@ -5,7 +5,8 @@ import {
   mergeProps,
   onBeforeUnmount,
   ref,
-  ComponentPublicInstance, ComputedRef,
+  ComponentPublicInstance,
+  ComputedRef,
 } from 'vue'
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 import { FormController } from '@/types'
@@ -133,26 +134,34 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const { t } = useTranslation()
 
   // First, apply transformers to the field options
-  const transformedFieldOptions: ComputedRef<EnformaFieldProps> = computed(() => {
-    // Apply field props transformers if defined in config
-    const fieldPropsTransformers = getConfig('transformers.field_props', []) as Function[]
-    
-    if (fieldPropsTransformers.length === 0) {
-      return fieldOptions.value
+  const transformedFieldOptions: ComputedRef<EnformaFieldProps> = computed(
+    () => {
+      // Apply field props transformers if defined in config
+      const fieldPropsTransformers = getConfig(
+        'transformers.field_props',
+        []
+      ) as Function[]
+
+      if (fieldPropsTransformers.length === 0) {
+        return fieldOptions.value
+      }
+
+      return applyTransformers(
+        fieldPropsTransformers,
+        { ...fieldOptions.value },
+        field,
+        formState,
+        formConfig
+      )
     }
-    
-    return applyTransformers(
-      fieldPropsTransformers,
-      { ...fieldOptions.value },
-      field,
-      formState,
-      formConfig
-    )
-  })
+  )
 
   // Derive computed values
   const fieldController = computed(() => field.value)
-  const fieldId = computed(() => transformedFieldOptions.value.inputProps?.id || fieldController.value.id)
+  const fieldId = computed(
+    () =>
+      transformedFieldOptions.value.inputProps?.id || fieldController.value.id
+  )
   const errorMessage = computed(() => fieldController.value.error)
   const requiredIndicator = getConfig('pt.required.text', '*')
 
@@ -167,17 +176,18 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       result.requiredProps = getConfig('pt.required')
 
       // Component type and label visibility (don't change after initialization)
-      result.inputComponent = transformedFieldOptions.value.inputComponent ||
-                         'input'
+      result.inputComponent =
+        transformedFieldOptions.value.inputComponent || 'input'
       result.hideLabel = transformedFieldOptions.value.hideLabel
-      result.showLabelNextToInput = transformedFieldOptions.value.showLabelNextToInput
+      result.showLabelNextToInput =
+        transformedFieldOptions.value.showLabelNextToInput
 
       return result
     })()
 
     // Get a reference to the transformed input props to determine if an ID was already provided
     const transformedInputProps = transformedFieldOptions.value.inputProps || {}
-    
+
     // Create wrapper props separately - use transformedFieldOptions
     const wrapperProps = mergeProps(
       {
@@ -227,12 +237,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       name: transformedFieldOptions.value.name,
       invalid: !!errorMessage.value,
     }
-    
+
     // Only add id if not already provided by the transformer
     if (!transformedInputProps.id) {
       defaultInputProps.id = fieldId.value
     }
-    
+
     const inputProps = mergeProps(
       defaultInputProps,
       fieldController.value.attrs || {},

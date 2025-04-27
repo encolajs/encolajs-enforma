@@ -7,7 +7,8 @@ import { formContextKey, formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import {
   evaluateCondition,
-  evaluateObject, EvaluationOptions,
+  evaluateObject,
+  EvaluationOptions,
   ExpressionContext,
 } from './exprEvaluator'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -46,7 +47,10 @@ export function useDynamicProps(
   localContext: Record<string, any> = {}
 ): UseDynamicPropsReturn {
   // Inject dependencies
-  const formState = inject<FormController | undefined>(formControllerKey, undefined)
+  const formState = inject<FormController | undefined>(
+    formControllerKey,
+    undefined
+  )
   const formContext = inject<Record<string, any>>(formContextKey, {})
   const { formConfig, getConfig } = useFormConfig()
 
@@ -71,7 +75,9 @@ export function useDynamicProps(
    * Evaluates all expressions within props
    * Returns an object with computed refs for properties that contain expressions
    */
-  const evaluateProps = (props: DynamicProps): Record<string, ComputedRef<any> | any> => {
+  const evaluateProps = (
+    props: DynamicProps
+  ): Record<string, ComputedRef<any> | any> => {
     // Pass getExpressionContext as function to ensure reactivity
     return evaluateObject(props, getExpressionContext, formConfig)
   }
@@ -87,7 +93,9 @@ export function useDynamicProps(
     return evaluateCondition(
       condition,
       getExpressionContext,
-      getConfig('expressions', { delimiters: { start: '${', end: '}' } }) as EvaluationOptions
+      getConfig('expressions', {
+        delimiters: { start: '${', end: '}' },
+      }) as EvaluationOptions
     )
   }
 

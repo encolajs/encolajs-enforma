@@ -212,7 +212,9 @@ export function evaluateExpression(
         error instanceof ExpressionError
           ? error
           : new ExpressionError(
-              `Runtime error evaluating expression: ${(error as Error).message}`,
+              `Runtime error evaluating expression: ${
+                (error as Error).message
+              }`,
               expression,
               error as Error,
               currentContext
@@ -318,7 +320,11 @@ export function evaluateTemplateString(
       'Invalid configuration provided to evaluateTemplateString',
       String(template),
       undefined,
-      { template, context: typeof context === 'function' ? context() : context, config }
+      {
+        template,
+        context: typeof context === 'function' ? context() : context,
+        config,
+      }
     )
   }
 
@@ -371,7 +377,9 @@ export function evaluateTemplateString(
       const currentContext = typeof context === 'function' ? context() : context
       logExpressionError(
         new ExpressionError(
-          `Unexpected error in template evaluation: ${(error as Error).message}`,
+          `Unexpected error in template evaluation: ${
+            (error as Error).message
+          }`,
           template,
           error as Error
         ),
@@ -428,7 +436,8 @@ export function evaluateObject<T extends Record<string, any>>(
         else if (Array.isArray(value)) {
           // For arrays, we need to compute each element that contains expressions
           result[key] = computed(() => {
-            const currentContext = typeof context === 'function' ? context() : context
+            const currentContext =
+              typeof context === 'function' ? context() : context
             return value.map((item: any) => {
               try {
                 if (
@@ -436,21 +445,30 @@ export function evaluateObject<T extends Record<string, any>>(
                   containsExpression(item, config)
                 ) {
                   // Use the value of the computed ref
-                  const computedItem = evaluateTemplateString(item, currentContext, config)
+                  const computedItem = evaluateTemplateString(
+                    item,
+                    currentContext,
+                    config
+                  )
                   return computedItem.value
                 } else if (item && typeof item === 'object') {
                   // For objects in arrays, recursively evaluate
-                  const evaluatedObj = evaluateObject(item, currentContext, config)
-                  
+                  const evaluatedObj = evaluateObject(
+                    item,
+                    currentContext,
+                    config
+                  )
+
                   // Convert any computed refs to their values
                   const resolvedObj: Record<string, any> = {}
                   for (const objKey in evaluatedObj) {
                     const objValue = evaluatedObj[objKey]
-                    resolvedObj[objKey] = objValue && objValue.value !== undefined 
-                      ? objValue.value 
-                      : objValue
+                    resolvedObj[objKey] =
+                      objValue && objValue.value !== undefined
+                        ? objValue.value
+                        : objValue
                   }
-                  
+
                   return resolvedObj
                 }
                 return item
@@ -469,8 +487,7 @@ export function evaluateObject<T extends Record<string, any>>(
               }
             })
           })
-        }
-        else {
+        } else {
           // For non-expressions, just pass the value through
           result[key] = value
         }
