@@ -10,7 +10,6 @@ import {
 } from 'vue'
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 import { FormController } from '@/types'
-import { useTranslation } from '@/utils/useTranslation'
 import { useField } from '@/headless/useField'
 import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
@@ -26,6 +25,7 @@ export interface EnformaFieldProps {
   required?: boolean | string | undefined
   help?: string | null
   labelProps?: Record<string, any>
+  requiredProps?: Record<string, any>
   errorProps?: Record<string, any>
   helpProps?: Record<string, any>
   props?: Record<string, any>
@@ -63,6 +63,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       showLabelNextToInput: false,
       required: false,
       labelProps: {},
+      requiredProps: getConfig('pt.required'),
       errorProps: {},
       helpProps: {},
       props: {},
@@ -89,6 +90,10 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         required: fieldSchema.value.required ?? result.required,
         help: fieldSchema.value.help ?? null,
         labelProps: { ...result.labelProps, ...fieldSchema.value.labelProps },
+        requiredProps: {
+          ...result.requiredProps,
+          ...fieldSchema.value.requiredProps,
+        },
         errorProps: { ...result.errorProps, ...fieldSchema.value.errorProps },
         helpProps: { ...result.helpProps, ...fieldSchema.value.helpProps },
         props: { ...result.props, ...fieldSchema.value.props },
@@ -111,6 +116,10 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       required: originalProps.required ?? result.required,
       help: originalProps.help ?? result.help,
       labelProps: { ...result.labelProps, ...originalProps.labelProps },
+      requiredProps: {
+        ...result.requiredProps,
+        ...originalProps.requiredProps,
+      },
       errorProps: { ...result.errorProps, ...originalProps.errorProps },
       helpProps: { ...result.helpProps, ...originalProps.helpProps },
       props: { ...result.props, ...originalProps.props },
@@ -129,9 +138,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   onBeforeUnmount(() => {
     formState?.removeField(fieldOptions.value.name)
   })
-
-  // Get utilities
-  const { t } = useTranslation()
 
   // First, apply transformers to the field options
   const transformedFieldOptions: ComputedRef<EnformaFieldProps> = computed(
@@ -165,74 +171,58 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
   // Combine all props into a single computed property
   const props = computed(() => {
-    // Create static props that don't depend on dynamic state
-    const staticProps = (() => {
-      const result: Record<string, any> = {}
-
-      // Required indicator (doesn't change after initialization)
-      result.required = transformedFieldOptions.value.required
-      result.requiredProps = getConfig('pt.required')
-
-      // Component type and label visibility (don't change after initialization)
-      result.inputComponent =
-        transformedFieldOptions.value.inputComponent || 'input'
-      result.hideLabel = transformedFieldOptions.value.hideLabel
-      result.showLabelNextToInput =
-        transformedFieldOptions.value.showLabelNextToInput
-
-      return result
-    })()
+    // Get all the original props after transformation
+    const transformedProps = { ...transformedFieldOptions.value }
 
     // Get a reference to the transformed input props to determine if an ID was already provided
-    const transformedInputProps = transformedFieldOptions.value.inputProps || {}
+    const transformedInputProps = transformedProps.inputProps || {}
 
-    // Create wrapper props separately - use transformedFieldOptions
+    // Create wrapper props
     const wrapperProps = mergeProps(
       {
         id: `wrapper-${fieldId.value}`,
       },
-      transformedFieldOptions.value.props || {},
+      transformedProps.props || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
       fieldController.value.error
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
         : {},
-      transformedFieldOptions.value.required
+      transformedProps.required
         ? (getConfig('pt.wrapper__required', {}) as Record<string, unknown>)
         : {}
     )
 
-    // Compute label props - use transformedFieldOptions
+    // Compute label props
     const labelProps = mergeProps(
       {
         for: fieldId.value,
       },
-      transformedFieldOptions.value.labelProps || {},
+      transformedProps.labelProps || {},
       getConfig('pt.label', {}) as Record<string, unknown>
     )
 
-    // Help text props - use transformedFieldOptions
+    // Help text props
     const helpProps = mergeProps(
       {
         id: `help-${fieldId.value}`,
       },
-      transformedFieldOptions.value.helpProps || {},
+      transformedProps.helpProps || {},
       getConfig('pt.help', {}) as Record<string, unknown>
     )
 
-    // Error message props - use transformedFieldOptions
+    // Error message props
     const errorProps = mergeProps(
       {
         id: `error-${fieldId.value}`,
       },
-      transformedFieldOptions.value.errorProps || {},
+      transformedProps.errorProps || {},
       getConfig('pt.error', {}) as Record<string, unknown>
     )
 
-    // Input props (changes most frequently) - use transformedFieldOptions
-    // Only add id if it's not already present in transformedInputProps
+    // Input props
     const defaultInputProps: Record<string, any> = {
       value: fieldController.value.value,
-      name: transformedFieldOptions.value.name,
+      name: transformedProps.name,
       invalid: !!fieldController.value.error,
     }
 
@@ -248,18 +238,19 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       getConfig('pt.input', {}) as Record<string, unknown>
     )
 
+    // Return all combined props
     return {
-      ...staticProps,
-      wrapper: wrapperProps,
-      label: labelProps,
-      help: helpProps,
-      error: errorProps,
-      input: inputProps,
+      ...transformedProps, // All original props after transformation
+      inputComponent: transformedProps.inputComponent || 'input', // Ensure inputComponent is set
+      wrapperProps, // Props for the wrapper element
+      labelProps, // Props for the label element
+      helpProps, // Props for the help text
+      errorProps, // Props for the error message
+      inputProps, // Props for the input element
     }
   })
 
   return {
-    fieldOptions,
     fieldController,
     props,
   }

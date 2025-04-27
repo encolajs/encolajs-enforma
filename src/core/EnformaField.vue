@@ -1,12 +1,10 @@
 <template>
-  <div v-bind="props.wrapper">
+  <div v-bind="props.wrapperProps">
     <label
-      v-if="
-        !props.hideLabel && !props.showLabelNextToInput && fieldOptions.label
-      "
-      v-bind="props.label"
+      v-if="!props.hideLabel && !props.showLabelNextToInput && props.label"
+      v-bind="props.labelProps"
     >
-      {{ t(fieldOptions.label) }}
+      {{ t(props.label) }}
       <span v-if="props.required" v-bind="props.requiredProps">
         {{ requiredIndicator }}
       </span>
@@ -16,14 +14,14 @@
       <component
         :is="props.inputComponent"
         v-model="fieldController.value"
-        v-bind="props.input"
+        v-bind="props.inputProps"
         v-on="fieldController.events"
       />
       <label
-        v-if="props.showLabelNextToInput && fieldOptions.label"
-        v-bind="props.label"
+        v-if="props.showLabelNextToInput && props.label"
+        v-bind="props.labelProps"
       >
-        {{ t(fieldOptions.label) }}
+        {{ t(props.label) }}
         <span v-if="props.required" v-bind="props.requiredProps">
           {{ requiredIndicator }}
         </span>
@@ -31,16 +29,16 @@
     </div>
 
     <!-- Help text -->
-    <div
-      v-if="fieldOptions.help"
-      class="enforma-field-help"
-      v-bind="props.help"
-    >
-      {{ t(fieldOptions.help) }}
+    <div v-if="props.help" class="enforma-field-help" v-bind="props.helpProps">
+      {{ t(props.help) }}
     </div>
 
     <!-- Error message -->
-    <div v-if="fieldController.error" class="enforma-field-error" v-bind="props.error">
+    <div
+      v-if="fieldController.error"
+      class="enforma-field-error"
+      v-bind="props.errorProps"
+    >
       {{ fieldController.error }}
     </div>
   </div>
@@ -76,11 +74,7 @@ const originalProps = defineProps({
   position: { type: Number, default: null },
 }) as EnformaFieldProps
 // Use the extracted composable
-const {
-  fieldOptions,
-  fieldController,
-  props,
-} = useEnformaField(originalProps)
+const { fieldController, props } = useEnformaField(originalProps)
 // Import translation function directly
 const { t } = useTranslation()
 // Get the required indicator directly

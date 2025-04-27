@@ -1,16 +1,20 @@
 <template>
-  <div v-bind="props.wrapper" class="quasar-field">
+  <div v-bind="props.wrapperProps" class="quasar-field">
     <div class="enforma-field-input">
       <component
         :is="props.inputComponent"
         v-model="fieldController.value"
-        v-bind="props.input"
+        v-bind="props.inputProps"
         v-on="fieldController.events"
       />
     </div>
 
     <!-- Error message -->
-    <div v-if="fieldController.error" class="enforma-field-error" v-bind="props.error">
+    <div
+      v-if="fieldController.error"
+      class="enforma-field-error"
+      v-bind="props.errorProps"
+    >
       {{ fieldController.error }}
     </div>
   </div>
@@ -44,11 +48,7 @@ const originalProps = defineProps({
   position: { type: Number, default: null },
 })
 // Use the extracted composable
-const {
-  fieldOptions,
-  fieldController,
-  props,
-} = useEnformaField(originalProps)
+const { fieldController, props } = useEnformaField(originalProps)
 // Import translation function directly
 const { t } = useTranslation()
 // Get the required indicator directly

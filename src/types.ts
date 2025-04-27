@@ -234,6 +234,11 @@ export interface FieldSchema extends BaseSchema {
   labelProps?: Record<string, any>
 
   /**
+   * Props to apply to the required tag
+   */
+  requiredProps?: Record<string, any>
+
+  /**
    * Props to apply to the input component
    */
   inputProps?: Record<string, any>
