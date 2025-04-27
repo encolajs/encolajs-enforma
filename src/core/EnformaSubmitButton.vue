@@ -2,10 +2,10 @@
   <button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
     type="submit"
-    :disabled="isSubmitting"
+    :disabled="$isSubmitting"
   >
     <slot name="default">
-      {{ isSubmitting ? t('Submitting...') : t('Submit') }}
+      {{ $isSubmitting ? t('Submitting...') : t('Submit') }}
     </slot>
   </button>
 </template>
@@ -19,7 +19,7 @@ import { FormController } from '@/types'
 
 const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
-const { isSubmitting } = formState
+const { $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 </script>

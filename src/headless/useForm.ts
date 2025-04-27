@@ -374,6 +374,7 @@ export function useForm<T extends object>(
       reset(): void {
         // Reset the business object to initial state
         Object.keys(valuesRef.value).forEach((key) => {
+          console.log(key, valuesCopy[key])
           if (valuesCopy && key in valuesCopy) {
             ;(valuesRef.value as Record<string, any>)[key] = (
               valuesCopy as Record<string, any>
@@ -397,17 +398,12 @@ export function useForm<T extends object>(
             // Check if the path still exists in the business object
             const value = pathUtils.get(valuesRef.value, path)
 
-            if (value !== undefined) {
-              // Path still exists, reset the state but keep the field registered
-              fieldController.$errors.value = []
-              fieldController.$isDirty.value = false
-              fieldController.$isTouched.value = false
-              fieldController.$isValidating.value = false
-              // Preserve the ID
-            } else {
-              // Path no longer exists, remove the field state
-              fieldManager.delete(path)
-            }
+            // Path still exists, reset the state but keep the field registered
+            fieldController.$errors.value = []
+            fieldController.$isDirty.value = false
+            fieldController.$isTouched.value = false
+            fieldController.$isValidating.value = false
+            // Preserve the ID
           } catch (e) {
             // If path resolution throws an error, the path is no longer valid
             fieldManager.delete(path)

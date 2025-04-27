@@ -2,10 +2,10 @@
   <v-btn
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
     type="submit"
-    :loading="isSubmitting"
-    :disabled="isSubmitting"
+    :loading="$isSubmitting"
+    :disabled="$isSubmitting"
   >
-    {{ isSubmitting ? t('Submitting...') : t('Submit') }}
+    {{ $isSubmitting ? t('Submitting...') : t('Submit') }}
   </v-btn>
 </template>
 
@@ -19,7 +19,7 @@ import { VBtn } from 'vuetify/components'
 
 const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
-const { isSubmitting } = formState
+const { $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 </script>

@@ -3,7 +3,7 @@
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
     severity="secondary"
     type="reset"
-    :disabled="isSubmitting"
+    :disabled="$isSubmitting"
   >
     {{ t('Reset') }}
   </Button>
@@ -19,7 +19,7 @@ import { FormController } from '@/types'
 
 const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
-const { isSubmitting } = formState
+const { $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 </script>

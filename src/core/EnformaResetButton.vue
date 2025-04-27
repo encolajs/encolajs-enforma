@@ -2,7 +2,7 @@
   <button
     v-bind="mergeProps($attrs, getConfig('pt.repeatable.reset'))"
     type="reset"
-    :disabled="isSubmitting"
+    :disabled="$isSubmitting"
     @click.prevent="reset"
   >
     <slot name="default"> {{ t('Reset') }} </slot>
@@ -18,7 +18,7 @@ import { FormController } from '@/types'
 
 const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
-const { reset, isSubmitting } = formState
+const { reset, $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 </script>
