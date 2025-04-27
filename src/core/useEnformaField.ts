@@ -266,6 +266,5 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     errorMessage,
     requiredIndicator,
     props,
-    t,
   }
 }

@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { useEnformaField } from '../../core/useEnformaField'
 import { ComponentPublicInstance, PropType } from 'vue'
+import { useTranslation } from '@/utils/useTranslation'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -48,8 +49,9 @@ const {
   errorMessage,
   requiredIndicator,
   props,
-  t,
 } = useEnformaField(originalProps)
+// Import translation function directly
+const { t } = useTranslation()
 </script>
 
 <style>
