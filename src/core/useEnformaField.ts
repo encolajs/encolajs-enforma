@@ -132,7 +132,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   })
 
   // Initialize field with useField composable
-  const field = useField(fieldOptions.value.name, formState, {})
+  const fieldController = useField(fieldOptions.value.name, formState, {})
 
   // Set up cleanup
   onBeforeUnmount(() => {
@@ -155,7 +155,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       return applyTransformers(
         fieldPropsTransformers,
         { ...fieldOptions.value },
-        field,
+        fieldController,
         formState,
         formConfig
       )
@@ -163,7 +163,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   )
 
   // Derive computed values
-  const fieldController = computed(() => field.value)
   const fieldId = computed(
     () =>
       transformedFieldOptions.value.inputProps?.id || fieldController.value.id
