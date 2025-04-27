@@ -86,6 +86,7 @@ export interface FieldPassThroughConfig {
  */
 export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
+  cloneFn: (data: any) => any
 
   [key: string]: any
 }
@@ -121,8 +122,14 @@ export interface ComponentsConfig {
 /**
  * Transformer function type definitions
  */
-export type FormPropsTransformer = (props: Record<string, any>, formController?: any) => Record<string, any>
-export type FieldPropsTransformer = (props: Record<string, any>, ...args: any[]) => Record<string, any>
+export type FormPropsTransformer = (
+  props: Record<string, any>,
+  formController?: any
+) => Record<string, any>
+export type FieldPropsTransformer = (
+  props: Record<string, any>,
+  ...args: any[]
+) => Record<string, any>
 
 /**
  * Complete form kit configuration

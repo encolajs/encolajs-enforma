@@ -149,6 +149,7 @@ Controls how the form behaves during validation and interaction.
 | Option | Type | Description |
 |--------|------|-------------|
 | `validateOn` | `'input' \| 'change' \| 'blur' \| 'submit'` | When to trigger validation |
+| `cloneFn` | `(data: any) => any` | Custom function to clone initial form data for reset functionality. Useful for preserving Date objects or other complex data types that JSON.stringify/parse would not handle correctly |
 
 ### Expressions Configuration (`expressions`)
 

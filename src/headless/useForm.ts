@@ -2,6 +2,7 @@ import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import { computed, Ref, ref } from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
+import { useConfig } from '@/utils/useConfig'
 import { Emitter } from 'mitt'
 import {
   FormEvents,
@@ -170,12 +171,10 @@ export function useForm<T extends object>(
     ? globalFormEmitter
     : createFormEmitter()
 
-  const valuesCopy: object =
-    // @ts-expect-error Initial values can be a complex object with a clone() method
-    values.clone && typeof values?.clone === 'function'
-      ? // @ts-expect-error Initial values can be a complex object with a clone() method
-        values.clone()
-      : JSON.parse(JSON.stringify(values))
+  // Use form config to access the clone function
+  const config = useConfig()
+  const cloneFn = config.behavior.cloneFn
+  const valuesCopy: object = cloneFn(values)
   const fieldManager = new FieldManager()
   const formState = {
     $isValidating: false,
@@ -371,13 +370,13 @@ export function useForm<T extends object>(
         }
       },
 
+      // Reset the business object to initial state
       reset(): void {
-        // Reset the business object to initial state
+        const values = config.behavior.cloneFn(valuesCopy)
         Object.keys(valuesRef.value).forEach((key) => {
-          console.log(key, valuesCopy[key])
-          if (valuesCopy && key in valuesCopy) {
+          if (values && key in (values as Record<string, any>)) {
             ;(valuesRef.value as Record<string, any>)[key] = (
-              valuesCopy as Record<string, any>
+              values as Record<string, any>
             )[key]
           } else {
             // Reset to default empty values based on type

@@ -1,20 +1,9 @@
-import { type messageFormatter } from '@encolajs/validator'
 /**
  * Default configuration values for the form kit
  */
 
 import { EnformaConfig } from '@/utils/useConfig'
-import EnformaField from '@/core/EnformaField.vue'
-import EnformaSection from '@/core/EnformaSection.vue'
-import EnformaRepeatable from '@/core/EnformaRepeatable.vue'
-import EnformaRepeatableTable from '@/core/EnformaRepeatableTable.vue'
-import EnformaRepeatableAddButton from '@/core/EnformaRepeatableAddButton.vue'
-import EnformaRepeatableRemoveButton from '@/core/EnformaRepeatableRemoveButton.vue'
-import EnformaRepeatableMoveUpButton from '@/core/EnformaRepeatableMoveUpButton.vue'
-import EnformaRepeatableMoveDownButton from '@/core/EnformaRepeatableMoveDownButton.vue'
-import EnformaSubmitButton from '@/core/EnformaSubmitButton.vue'
-import EnformaResetButton from '@/core/EnformaResetButton.vue'
-import EnformaSchema from '@/core/EnformaSchema.vue'
+import cloneFn from '@/utils/cloneFn'
 
 /**
  * Minimal default configuration for the form kit
@@ -27,6 +16,7 @@ export const DEFAULT_CONFIG: EnformaConfig = {
    */
   behavior: {
     validateOn: 'blur',
+    cloneFn,
   },
 
   /**
