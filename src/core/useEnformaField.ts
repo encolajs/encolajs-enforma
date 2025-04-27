@@ -163,7 +163,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       transformedFieldOptions.value.inputProps?.id || fieldController.value.id
   )
   const errorMessage = computed(() => fieldController.value.error)
-  const requiredIndicator = getConfig('pt.required.text', '*')
 
   // Combine all props into a single computed property
   const props = computed(() => {
@@ -264,7 +263,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     fieldOptions,
     fieldController,
     errorMessage,
-    requiredIndicator,
     props,
   }
 }

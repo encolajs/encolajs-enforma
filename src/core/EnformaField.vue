@@ -50,6 +50,7 @@
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
 import { ComponentPublicInstance, PropType } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -79,9 +80,11 @@ const {
   fieldOptions,
   fieldController,
   errorMessage,
-  requiredIndicator,
   props,
 } = useEnformaField(originalProps)
 // Import translation function directly
 const { t } = useTranslation()
+// Get the required indicator directly
+const { getConfig } = useFormConfig()
+const requiredIndicator = getConfig('pt.required.text', '*')
 </script>
