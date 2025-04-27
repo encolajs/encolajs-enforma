@@ -8,7 +8,12 @@
     <VuetifyField name="name" label="Full Name" />
     <VuetifyField name="email" label="Email Address" help="Don't worrry, we don't SPAM" />
     <VuetifyField name="role" label="Role" input-component="select" :input-props="roleSelectProps" />
-    <VuetifyField name="active" label="Active" input-component="switch" />
+    <VuetifyField
+      name="active"
+      label="Active"
+      input-component="switch"
+      :input-props="{inset: true, falseValue: false, trueValue: true, color: 'primary'}"
+    />
   </Enforma>
 </template>
 

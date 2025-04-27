@@ -66,6 +66,7 @@ function setVuetifySpecificProps(
 
   // Set modelValue for v-model binding
   fieldProps.inputProps.modelValue = field.value.value
+  delete fieldProps.inputProps.value
 
   // Handle error states
   if (field.value.errors && field.value.errors.length > 0) {
