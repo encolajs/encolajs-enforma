@@ -178,7 +178,6 @@ export default defineConfig({
       ],
     },
     footer: {
-      message: 'MIT Licensed',
       copyright: 'Copyright © 2025-present EncolaJS & Contributors',
     },
   },
