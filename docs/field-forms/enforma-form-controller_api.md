@@ -6,7 +6,7 @@
 { label: 'FormController API', link: '/field-forms/enforma-form-controller_api' },
 ]" />
 
-The FormController is the object returned by the `useForm` composable, which is used by the [HeadlessForm component](/headless/form.md) and provides the following properties and methods:
+The FormController is the object returned by the `useForm` composable, which is used by the [HeadlessForm component](/headless-forms/form.md) and provides the following properties and methods:
 
 > :notebook_with_decorative_cover: Example manipulating the form from outside [here](/examples/fields.md), at the bottom of the form
 

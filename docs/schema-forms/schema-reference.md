@@ -45,7 +45,7 @@ All schema types share these base properties:
 | `if` | string | No | Conditional expression to determine if this part of the should be shown                                                         |
 
 > [!IMPORTANT] 
-> Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/integrating-custom-components.md) 
+> Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/custom-components.md) 
 
 ## Field Schema
 

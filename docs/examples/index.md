@@ -8,7 +8,6 @@ component).
 
 - [Form using headless fields](headless-components.md)
 - [Enforma form using fields](fields.md)
-- [Enforma form using fields and schema](fields-and-schema.md)
 - [Enforma form using only schema](schema-only.md)
 - [Enforma form using schema, fields and headless fields](mixed-form.md)
 

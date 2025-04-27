@@ -46,7 +46,7 @@ function submit(data) {
 This prop determines the type of component to be used for the input part of the field. This can be:
 - A basic HTML tag like `input` or `textarea`
 - A component globally registered within the Vue app (eg: 'InputText')
-- A component supported by a preset (see [the PrimeVue preset](/presets/primevue.md))
+- A component supported by a preset (see [the PrimeVue preset](/ui-library-integration/primevue-preset.md))
 - An actual input-type component imported in your Vue component:
 
 ```vue

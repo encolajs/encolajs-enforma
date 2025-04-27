@@ -76,4 +76,4 @@ usePrimeVuePreset()
 For more detailed information about configuring Enforma:
 
 - See [Configuration](/core-concepts/configuration.md) for a complete reference of all configuration options
-- Learn about [UI Presets](/presets/index.md) to integrate with various UI libraries
+- Learn about [UI Presets](/ui-library-integration/index.md) to integrate with various UI libraries

@@ -223,6 +223,9 @@ export default defineConfig({
     ],
   ],
   vite: {
+    ssr: {
+      noExternal: [/\.css$/, /^vuetify/]
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '../../src'),

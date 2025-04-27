@@ -38,7 +38,7 @@ This approach uses explicit component declarations for each form element:
 
 ## Schema-based Rendering
 
-> :notebook_with_decorative_cover: Complete working example [here](/examples/schema.md)
+> :notebook_with_decorative_cover: Complete working example [here](/examples/schema-only.md)
 
 ```vue
 <template>
@@ -64,7 +64,7 @@ const formSchema = {
 - Separation of form structure from presentation
 - Excellent for server-driven forms
 
-You can learn more about using schemas in the [EnformaSchema component section](/components/schema.md)
+You can learn more about using schemas in the [Schema Forms section](/schema-forms/)
 
 ## Headless Mode
 
