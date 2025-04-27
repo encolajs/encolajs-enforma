@@ -49,18 +49,3 @@
     }
 }
 
-.enforma-field-invalid {
-    .v-field__outline::after {
-        border-color: red;
-        transform: scaleX(1);
-    }
-}
-
-.vuetify-field {
-    margin-bottom: 16px;
-    .enforma-field-error {
-        padding-inline: 16px;
-    }
-}
-
-.vuetify-error

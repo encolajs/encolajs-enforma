@@ -51,3 +51,18 @@ const {
   t,
 } = useEnformaField(originalProps)
 </script>
+
+<style>
+.vuetify-field {
+  margin-bottom: 16px;
+  .enforma-field-error {
+    padding-inline: 16px;
+  }
+}
+.vuetify-field.enforma-field-invalid {
+  .v-field__outline::after {
+    border-color: red;
+    transform: scaleX(1);
+  }
+}
+</style>
