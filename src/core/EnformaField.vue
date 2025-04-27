@@ -47,14 +47,14 @@
 </template>
 
 <script setup lang="ts">
-import { useEnformaField } from './useEnformaField'
+import { EnformaFieldProps, useEnformaField } from './useEnformaField'
 import { ComponentPublicInstance, PropType } from 'vue'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
   inputComponent: {
-    type: [String, Object] as PropType<string | ComponentPublicInstance | null>,
+    type: [String, Object] as unknown as PropType<string | ComponentPublicInstance | null>,
     default: null,
   },
   hideLabel: { type: Boolean, default: false },
@@ -70,7 +70,7 @@ const originalProps = defineProps({
   // they are not actually used for rendering
   section: { type: String, default: null },
   position: { type: Number, default: null },
-})
+}) as EnformaFieldProps
 // Use the extracted composable
 const {
   fieldOptions,

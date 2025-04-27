@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.remove'))"
+    v-bind="mergeProps($attrs || {}, getConfig('pt.repeatable.remove') || {})"
     @click="$emit('click')"
   >
     {{ t('Remove') }}

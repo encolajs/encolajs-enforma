@@ -15,8 +15,8 @@
     @form-initialized="emit('form-initialized', $event)"
     @reset="emit('reset', $event)"
   >
-    <template #default="formCtrl">
-      <slot name="default" v-bind="formCtrl">
+    <template #default>
+      <slot name="default">
         <component
           :is="schemaComponent"
           v-if="transformedSchema"
@@ -24,8 +24,8 @@
         />
       </slot>
 
-      <slot name="actions" v-bind="{ formCtrl, formConfig }">
-        <div v-bind="getConfig('pt.actions')">
+      <slot name="actions">
+        <div v-bind="getConfig('pt.actions') || {}">
           <component :is="submitButton" />
           <component :is="resetButton" v-if="showResetButton" />
         </div>
@@ -42,15 +42,11 @@ import {
   formConfigKey,
   formSchemaKey,
 } from '@/constants/symbols'
-import { FieldSchema, FormSchema } from '@/types'
+import { FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
-
-export interface FormSchema {
-  [key: string]: FieldSchema
-}
 
 const props = defineProps({
   data: {
@@ -58,11 +54,11 @@ const props = defineProps({
     required: true,
   },
   schema: {
-    type: Object as PropType<FormSchema>,
+    type: Object as unknown as PropType<FormSchema>,
     default: null,
   },
   rules: {
-    type: Object as PropType<ValidationRules>,
+    type: Object as unknown as PropType<ValidationRules>,
     default: () => ({}),
   },
   context: {

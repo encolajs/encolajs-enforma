@@ -28,15 +28,8 @@ export interface RepeatableFieldProps {
   allowSort?: boolean // Whether to allow sorting items
 }
 
-export interface RepeatableFieldConfig extends RepeatableFieldProps {
-  validateOnAdd?: boolean
-  validateOnRemove?: boolean
-  if?: boolean
-  min?: number
-}
-
 export function useEnformaRepeatable(
-  originalFieldConfig: RepeatableFieldConfig
+  originalFieldConfig: RepeatableFieldProps
 ) {
   // Get form state from context
   const formState = inject<FormController>(formControllerKey) as FormController
