@@ -10,8 +10,8 @@
     </div>
 
     <!-- Error message -->
-    <div v-if="errorMessage" class="enforma-field-error" v-bind="props.error">
-      {{ errorMessage }}
+    <div v-if="fieldController.error" class="enforma-field-error" v-bind="props.error">
+      {{ fieldController.error }}
     </div>
   </div>
 </template>
@@ -47,7 +47,6 @@ const originalProps = defineProps({
 const {
   fieldOptions,
   fieldController,
-  errorMessage,
   props,
 } = useEnformaField(originalProps)
 // Import translation function directly

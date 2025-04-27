@@ -162,7 +162,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     () =>
       transformedFieldOptions.value.inputProps?.id || fieldController.value.id
   )
-  const errorMessage = computed(() => fieldController.value.error)
 
   // Combine all props into a single computed property
   const props = computed(() => {
@@ -194,7 +193,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       },
       transformedFieldOptions.value.props || {},
       getConfig('pt.wrapper', {}) as Record<string, unknown>,
-      errorMessage.value
+      fieldController.value.error
         ? (getConfig('pt.wrapper__invalid', {}) as Record<string, unknown>)
         : {},
       transformedFieldOptions.value.required
@@ -234,7 +233,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     const defaultInputProps: Record<string, any> = {
       value: fieldController.value.value,
       name: transformedFieldOptions.value.name,
-      invalid: !!errorMessage.value,
+      invalid: !!fieldController.value.error,
     }
 
     // Only add id if not already provided by the transformer
@@ -262,7 +261,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   return {
     fieldOptions,
     fieldController,
-    errorMessage,
     props,
   }
 }
