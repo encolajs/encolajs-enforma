@@ -10,6 +10,9 @@ export default defineConfig({
     coverage: {
       include: [
         'src/**'
+      ],
+      exclude: [
+        'src/presets/**'
       ]
     }
   },

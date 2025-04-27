@@ -22,7 +22,7 @@
         "dev": "rollup -c -w --bundleConfigAsCjs",
         "test": "vitest",
         "test:watch": "vitest --watch",
-        "test:coverage": "vitest --coverage --pool=forks",
+        "test:coverage": "vitest --coverage --run",
         "lint": "eslint 'src/**/*.{js,ts}'",
         "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
         "format": "prettier --write '{src,tests}/**/*.{js,ts,vue}'",

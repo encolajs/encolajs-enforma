@@ -5,7 +5,7 @@ import EnformaSchema from '@/core/EnformaSchema.vue'
 import EnformaSection from '@/core/EnformaSection.vue'
 import EnformaField from '@/core/EnformaField.vue'
 import HeadlessForm from '../../src/headless/HeadlessForm'
-import { setGlobalConfig } from '../../src/utils/useConfig'
+import { getGlobalConfig, setGlobalConfig } from '../../src/utils/useConfig'
 import { h, inject } from 'vue'
 import {
   formContextKey,
@@ -29,8 +29,10 @@ const ResetButtonStub = {
 
 describe('Enforma', () => {
   beforeEach(() => {
+    const currentConfig = getGlobalConfig()
     // Reset global config before each test
     setGlobalConfig({
+      ...currentConfig,
       components: {
         submitButton: 'SubmitButton',
         resetButton: 'ResetButton',
@@ -46,6 +48,7 @@ describe('Enforma', () => {
           class: 'required-indicator',
         },
       },
+      behavior: currentConfig.behavior
     })
   })
 
@@ -111,7 +114,9 @@ describe('Enforma', () => {
     }
 
     // First setup the global config with all necessary components
+    const currentConfig = getGlobalConfig()
     setGlobalConfig({
+      ...currentConfig,
       components: {
         submitButton: 'button',
         resetButton: 'button',
