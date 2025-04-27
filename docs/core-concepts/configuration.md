@@ -146,10 +146,10 @@ The pass-through configuration allows you to customize the props passed to vario
 
 Controls how the form behaves during validation and interaction.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `validateOn` | `'input' \| 'change' \| 'blur' \| 'submit'` | When to trigger validation |
-| `cloneFn` | `(data: any) => any` | Custom function to clone initial form data for reset functionality. Useful for preserving Date objects or other complex data types that JSON.stringify/parse would not handle correctly |
+| Option | Type | Description                                                                                                                                                                                                                            |
+|--------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `validateOn` | `'input' \| 'change' \| 'blur' \| 'submit'` | When to trigger validation                                                                                                                                                                                                             |
+| `cloneFn` | `(data: any) => any` | Custom function to clone initial form data for resetting the form. If the default implementation is not behaving as expected, you can try to use [lodash's deepCopy](https://lodash.com/docs/4.17.15#cloneDeep) or implement your own. |
 
 ### Expressions Configuration (`expressions`)
 

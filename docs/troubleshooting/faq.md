@@ -80,43 +80,37 @@ You can add validation at the form level:
 
 <script setup>
 const validators = {
-  username: ['required', 'min:3'],
-  email: ['required', 'email']
+  username: 'required|min:3',
+  email: 'required|email'
 };
 </script>
 ```
 
-Or at the field level:
-
-```vue
-<EnformaField 
-  name="username" 
-  label="Username" 
-  validators="required|min:3" 
-/>
-```
-
 ### How do I create conditional fields?
 
-Use the `if` prop with an expression:
+Use the `#default` template to access the formController and use `v-if` :
 
 ```vue
 <template>
   <Enforma :data="formData">
-    <EnformaField 
-      name="hasShipping" 
-      type="checkbox" 
-      label="This order requires shipping" 
-    />
-    
-    <EnformaField 
-      name="shippingAddress" 
-      label="Shipping Address" 
-      :if="$form.hasShipping" 
-    />
+    <template #default="formController">
+        <EnformaField 
+          name="has_shipping" 
+          type="checkbox" 
+          label="This order requires shipping" 
+        />
+        
+        <EnformaField 
+          name="shipping_address" 
+          label="Shipping Address" 
+          v-if="formController.getFieldValue('has_shipping')" 
+        />
+    </template>
   </Enforma>
 </template>
 ```
+
+For [schema forms](/schema-forms/) you should use the `if` attribute
 
 ### How do I handle form submission?
 
@@ -147,16 +141,15 @@ async function submit(data) {
 
 ### Why isn't my form validating?
 
-Check these common issues:
-
 1. Ensure validators are correctly defined
-2. Verify validation triggers (default is `['input', 'blur', 'submit']`)
-3. Check for typos in field names
+2. Check for typos in field names
 4. Ensure your validators are registered correctly
 
-### My dynamic field conditions aren't working
+### Form is not resetting to the initial values
 
-Common solutions:
+Most likely it's because [the default function that creates a clone of the values](/core-concepts/configuration.md#behavior-configuration-behavior) is not powerful enough for your use-case
+
+### My dynamic field conditions aren't working
 
 1. Make sure you're using the correct syntax: `$form.fieldName` or `$form['fieldName']`
 2. For nested properties, use optional chaining: `$form.address?.city`
@@ -165,32 +158,13 @@ Common solutions:
 
 ### How do I debug form state?
 
-Use the `useForm` composable to access form state:
-
-```vue
-<template>
-  <Enforma :data="formData" id="myForm">
-    <!-- Form fields -->
-  </Enforma>
-  
-  <pre>{{ formState }}</pre>
-</template>
-
-<script setup>
-import { useForm } from '@encolajs/enforma';
-
-const { formState } = useForm('myForm');
-</script>
-```
+In the Vue Dev Tools, locate the form component (`Enforma` or `HeadlessForm`) and see the exposed props and methods.
 
 ### Form values aren't updating correctly
 
-Check these issues:
-
-1. Ensure proper two-way binding with `v-model`
-2. Verify your component preset correctly maps events
-3. For custom components, make sure they emit the correct events
-4. Check for value transformation issues with complex data types
+1. Verify your component preset correctly maps events
+2. For custom components, make sure they emit the correct events
+3. Check for value transformation issues with complex data types
 
 ## Advanced Usage
 
@@ -207,7 +181,6 @@ Use the file field type:
       label="Profile Image" 
       accept="image/*" 
     />
-    <EnformaSubmitButton>Upload</EnformaSubmitButton>
   </Enforma>
 </template>
 
@@ -223,86 +196,11 @@ async function submit(data) {
 
 ### How do I create custom field components?
 
-Create a component that follows Enforma's component contract:
-
-```vue
-<!-- MyCustomField.vue -->
-<template>
-  <div class="custom-field">
-    <label v-if="label">{{ label }}</label>
-    <div class="field-input">
-      <!-- Your custom input implementation -->
-      <input 
-        :value="modelValue" 
-        @input="$emit('update:modelValue', $event.target.value)" 
-      />
-    </div>
-    <div v-if="error" class="error-message">{{ error }}</div>
-  </div>
-</template>
-
-<script setup>
-defineProps({
-  modelValue: [String, Number, Boolean, Object, Array],
-  label: String,
-  error: String
-});
-
-defineEmits(['update:modelValue']);
-</script>
-```
-
-Then register it:
-
-```js
-const formConfig = {
-  components: {
-    custom: MyCustomField
-  }
-};
-```
+Check out the guide on how to [create your own UI preset](/ui-library-integration/creating-your-own-ui-preset.md) and the source code of the Vuetify preset which does exactly that
 
 ### How do I handle async validation?
 
-Create an async validator:
-
-```js
-const asyncValidators = {
-  username: [
-    'required',
-    {
-      name: 'unique',
-      validate: async (value) => {
-        if (!value) return true;
-        
-        const response = await fetch(`/api/check-username?username=${value}`);
-        const data = await response.json();
-        return data.isAvailable;
-      },
-      message: 'This username is already taken'
-    }
-  ]
-};
-```
-
-## Performance
-
-### My form is slow with many fields. How can I optimize it?
-
-Try these optimizations:
-
-1. Use `v-if` instead of `:if` for static conditional rendering
-2. For repeatable sections with many items, use a virtualized list
-3. Delay validation for fields that trigger expensive validation
-4. Memoize computed values and event handlers
-5. Use the `shallowRef` for large form data objects
-
-### How can I improve validation performance?
-
-1. Use the `validateOn` prop to control when validation occurs
-2. For expensive validators, use debounced validation
-3. Consider validating only on blur for fields with many keystroke changes
-4. For large forms, validate sections individually rather than the whole form
+Check out the [async validation recipe](/recipes/async-validation.md)
 
 ## Integration
 
@@ -332,7 +230,3 @@ function updateUser(data) {
 }
 </script>
 ```
-
-### Can I use Enforma with SSR?
-
-Yes, Enforma works with SSR frameworks like Nuxt. Import components as needed and ensure your UI library is also SSR-compatible.
