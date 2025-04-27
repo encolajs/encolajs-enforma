@@ -54,7 +54,9 @@ const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
   inputComponent: {
-    type: [String, Object] as unknown as PropType<string | ComponentPublicInstance | null>,
+    type: [String, Object] as unknown as PropType<
+      string | ComponentPublicInstance | null
+    >,
     default: null,
   },
   hideLabel: { type: Boolean, default: false },

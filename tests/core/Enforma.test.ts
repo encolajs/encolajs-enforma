@@ -48,7 +48,7 @@ describe('Enforma', () => {
           class: 'required-indicator',
         },
       },
-      behavior: currentConfig.behavior
+      behavior: currentConfig.behavior,
     })
   })
 

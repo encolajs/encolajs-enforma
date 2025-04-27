@@ -1,7 +1,9 @@
 <template>
   <button
     type="button"
-    v-bind="mergeProps($attrs || {}, getConfig('pt.repeatable.add') || {}) || {}"
+    v-bind="
+      mergeProps($attrs || {}, getConfig('pt.repeatable.add') || {}) || {}
+    "
   >
     {{ t('Add') }}
   </button>
