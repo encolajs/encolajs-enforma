@@ -16,6 +16,8 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
     "vuetify": "^3.8.2",
+    "quasar": "^2.18.0",
+    "@quasar/extras": "^1.16.0",
     "markdown-it-container": "^4.0.0"
   }
 }

@@ -2,6 +2,16 @@
 
 Enforma is designed to be UI-library agnostic, allowing you to integrate with any Vue UI library. This guide explains how to connect Enforma with your preferred UI components.
 
+## Included Presets
+
+Enforma comes with several built-in presets for popular UI libraries:
+
+- [Vuetify Preset](vuetify-preset.md) - For integrating with Vuetify 3
+- [PrimeVue Preset](primevue-preset.md) - For integrating with PrimeVue
+- [Quasar Preset](quasar-preset.md) - For integrating with Quasar Framework
+
+## Custom Integration
+
 `<EnformaField>` is the most frequently used component and it is the entry point for introducing your UI input components (text, radio buttons, selects etc)
 
 This can be achieved by passing the input component you want as the `inputComponent` prop:

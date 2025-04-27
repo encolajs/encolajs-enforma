@@ -93,6 +93,8 @@
         "@primeuix/themes": "^1.0.0",
         "primeicons": "^7.0.0",
         "primevue": "^4.3.2",
+        "quasar": "^2.18.1",
+        "@quasar/extras": "^1.16.0",
         "vuetify": "^3.8.2"
     },
     "dependencies": {

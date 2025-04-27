@@ -87,6 +87,7 @@ export default defineConfig({
           items: [
             { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
             { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
+            { text: 'Quasar Preset', link: '/ui-library-integration/quasar-preset' },
             { text: 'Creating Your Own UI Preset', link: '/ui-library-integration/creating-your-own-ui-preset' },
           ],
         },
@@ -169,6 +170,7 @@ export default defineConfig({
               text: 'Presets',
               items: [
                 { text: 'Vuetify', link: '/examples/vuetify-preset' },
+                { text: 'Quasar', link: '/examples/quasar-preset' },
               ],
             },
           ],
