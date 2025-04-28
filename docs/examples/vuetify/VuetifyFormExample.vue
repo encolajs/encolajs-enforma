@@ -54,7 +54,6 @@ const roleSelectProps = {
 }
 
 const handleSubmit = (values) => {
-  console.log('Form submitted with values:', values)
-  alert('Form submitted successfully!')
+  alert('Form submitted with values: ' + JSON.stringify(values))
 }
 </script>

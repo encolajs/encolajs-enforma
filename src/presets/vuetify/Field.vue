@@ -28,7 +28,7 @@ import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const originalProps = defineProps({
