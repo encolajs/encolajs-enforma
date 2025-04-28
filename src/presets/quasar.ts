@@ -55,7 +55,7 @@ function useQuasarComponent(
 function setQuasarSpecificProps(
   fieldProps: any,
   field: FieldControllerExport,
-  formState: FormController,
+  formController: FormController,
   config: any
 ) {
   // Setup Quasar-specific props
@@ -63,6 +63,30 @@ function setQuasarSpecificProps(
 
   // Ensure we have an id for the field
   fieldProps.inputProps.id = field.value.id
+
+  // Set modelValue for v-model binding
+  fieldProps.inputProps.modelValue = field.value.value
+  delete fieldProps.inputProps.value
+
+  // Adjusting events passed to input: remove input/change, add update:modelValue
+  const onInput = fieldProps.inputEvents.input
+  fieldProps.inputEvents['update:modelValue'] = (value: any) => {
+    formController.setFieldValue(
+      fieldProps.name,
+      value,
+      formController.getField(fieldProps.name).$isDirty.value,
+      {
+        // we have to also mark the field as dirty to trigger the validation
+        // this is also the behavior of Vuetify validation functionality
+        // it would be better to start validation when the user stopped
+        // filling the field (on blur after changing the field, on input afterwards)
+        $isDirty: true,
+      }
+    )
+  }
+  // these have to be deleted because we use `update:modelValue`
+  delete fieldProps.inputEvents.input
+  delete fieldProps.inputEvents.change
 
   // Handle error states
   if (field.value.errors && field.value.errors.length > 0) {

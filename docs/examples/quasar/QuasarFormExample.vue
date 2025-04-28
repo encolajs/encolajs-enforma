@@ -45,8 +45,6 @@ import { QBtn, QCard } from 'quasar'
 // We have to use the QuasarField due to how Quasar implements labels and hints
 import QuasarField from '../../../src/presets/quasar/Field.vue'
 
-const submittedValues = ref(null)
-
 const formConfig = {
   validationRules: {
     name: ['required'],
@@ -84,8 +82,7 @@ const roleSelectProps = {
 }
 
 const handleSubmit = (values) => {
-  console.log('Form submitted with values:', values)
-  submittedValues.value = values
+  alert('Form submitted with values: ' + JSON.stringify(values))
 }
 </script>
 
