@@ -61,24 +61,30 @@ export function useField(
    * @param value - New field value
    * @param trigger - Event that triggered the change ('input', 'change', 'blur')
    */
-  function handleChange(
+  async function handleChange(
     value: any,
     trigger: 'input' | 'change' | 'blur' = 'input'
-  ): void {
+  ): Promise<void> {
     // Update the form directly through the proxy
-    form[name] = value
+    const stateChanges = {
+      $isTouched: true,
+    }
+    if (trigger === 'change') {
+      // @ts-expect-error
+      stateChanges.$isDirty = true
+    }
+
+    await form.setFieldValue(name, value, false, stateChanges)
 
     // Mark field as touched on change event
     if (trigger === 'change') {
-      form[`${name}.$isTouched`] = true
-
       if (options.validateOn === 'change') {
         debouncedValidate()
       }
     }
 
     // If field is touched and dirty, validate
-    if (form[`${name}.$isTouched`] && form[`${name}.$isDirty`].value) {
+    if (form[`${name}.$isTouched`].value && form[`${name}.$isDirty`].value) {
       debouncedValidate()
     }
   }
@@ -88,8 +94,6 @@ export function useField(
    */
   function handleBlur(): void {
     isFocused.value = false
-    form[`${name}.$isTouched`] = true
-
     // Notify the form about field blur
     if (form.setFieldBlurred) {
       form.setFieldBlurred(name)

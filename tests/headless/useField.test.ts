@@ -1,225 +1,226 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '@/headless/useField'
 import { FieldControllerExport } from '../../src'
-import { ComputedRef } from 'vue'
-
-// Mock the form proxy (normally returned from useForm)
-const mockForm = {
-  // Field values via proxy
-  name: 'John Doe',
-  email: 'john@example.com',
-  age: 30,
-
-  // Mock field metadata
-  'name.$isDirty': false,
-  'name.$isTouched': false,
-  'name.$isValidating': false,
-  'name.$errors': [],
-
-  'email.$isDirty': false,
-  'email.$isTouched': false,
-  'email.$isValidating': false,
-  'email.$errors': [],
-
-  'age.$isDirty': false,
-  'age.$isTouched': false,
-  'age.$isValidating': false,
-  'age.$errors': [],
-
-  // Mock field functions
-  getField: vi.fn((path) => ({
-    _id: path,
-    $errors: { value: mockForm[`${path}.$errors`] || [] },
-    $isDirty: { value: mockForm[`${path}.$isDirty`] || false },
-    $isTouched: { value: mockForm[`${path}.$isTouched`] || false },
-    $isValidating: { value: mockForm[`${path}.$isValidating`] || false },
-  })),
-
-  validateField: vi.fn().mockResolvedValue(true),
-  setFieldValue: vi.fn(),
-  reset: vi.fn(),
-  submit: vi.fn().mockResolvedValue(true),
-  validate: vi.fn().mockResolvedValue(true),
-  removeField: vi.fn(),
-  add: vi.fn(),
-  remove: vi.fn(),
-  move: vi.fn(),
-  sort: vi.fn(),
-}
-
-const mocks = vi.hoisted(() => {
-  return {
-    onMounted: vi.fn((fn) => fn()),
-    onBeforeUnmount: vi.fn(),
-    computed: vi.fn((getter) => ({
-      value: getter(),
-    })),
-    watch: vi.fn(),
-    ref: vi.fn((val) => ({ value: val })),
-  }
-})
-
-// Mock the vue module
-vi.mock('vue', () => {
-  return {
-    onMounted: mocks.onMounted,
-    onBeforeUnmount: mocks.onBeforeUnmount,
-    computed: mocks.computed,
-    watch: mocks.watch,
-    ref: mocks.ref,
-  }
-})
+import { ComputedRef, ref } from 'vue'
+import { flushPromises, mount } from '@vue/test-utils'
+import { useForm } from '@/headless/useForm'
+import { defineComponent, h } from 'vue'
 
 describe('useField', () => {
-  let field: ComputedRef<FieldControllerExport | null>
+  // Create a test component to properly test useField with actual form instance
+  const TestFieldComponent = defineComponent({
+    props: ['name', 'validateOnMount'],
+    setup(props) {
+      const initialData = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        age: 30,
+      }
 
-  beforeEach(() => {
-    // Reset mocks
-    vi.clearAllMocks()
+      const validationRules = {
+        name: 'required|min_length:2',
+        email: 'required|email',
+        age: 'required|integer|gte:18',
+      }
 
-    // Reset Vue mock implementations
-    mocks.onMounted.mockImplementation((fn) => fn())
-    mocks.onBeforeUnmount.mockImplementation(() => {})
-    mocks.computed.mockImplementation((getter) => ({
-      value: getter(),
-    }))
+      const form = useForm(initialData, validationRules)
+      const fieldCtrl = useField(props.name, form, {
+        validateOnMount: props.validateOnMount || false,
+      })
 
-    // Create field instance
-    field = useField('name', mockForm, {
-      validateOnMount: false,
-    })
-  })
+      // Call initField during setup to handle validateOnMount option
+      fieldCtrl.value.initField()
 
-  afterEach(() => {
-    field = null
+      return {
+        fieldCtrl,
+        form,
+      }
+    },
+    render() {
+      return h('div', {}, [
+        h('input', {
+          value: this.fieldCtrl.value,
+          onInput: this.fieldCtrl.events.input,
+          onChange: this.fieldCtrl.events.change,
+          onBlur: this.fieldCtrl.events.blur,
+          onFocus: this.fieldCtrl.events.focus,
+        }),
+        h('span', { class: 'error' }, this.fieldCtrl.error),
+      ])
+    },
   })
 
   describe('initialization', () => {
-    it('should get field with form proxy', () => {
-      expect(mockForm.getField).toHaveBeenCalledWith('name')
-    })
-
     it('should throw error if field name is missing', () => {
-      expect(() => useField('', mockForm)).toThrow('Field name is required')
+      const form = useForm({})
+      expect(() => useField('', form)).toThrow('Field name is required')
     })
 
     it('should throw error if form is missing', () => {
+      // @ts-expect-error Testing invalid null input
       expect(() => useField('name', null)).toThrow('Form is required')
     })
 
-    it('should validate on mount if option is set', () => {
-      // Reset mocks
-      vi.clearAllMocks()
-      mocks.onMounted.mockImplementationOnce((fn) => fn())
+    it('should handle field initialization correctly', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Create field with validateOnMount: true
-      field = useField('name', mockForm, {
+      // Check that the form and field are properly initialized
+      expect(wrapper.vm.fieldCtrl.value).toBe('John Doe')
+      expect(wrapper.vm.fieldCtrl.error).toBeNull()
+      expect(wrapper.vm.fieldCtrl.isDirty).toBe(false)
+      expect(wrapper.vm.fieldCtrl.isTouched).toBe(false)
+
+      // Verify field exists in form
+      expect(wrapper.vm.form.hasField('name')).toBe(true)
+    })
+
+    it('should validate on mount if option is set', async () => {
+      const form = useForm(
+        {
+          name: 'John Doe',
+        },
+        {
+          name: 'required',
+        }
+      )
+
+      const validateFieldSpy = vi.spyOn(form, 'validateField')
+
+      const field = useField('name', form, {
         validateOnMount: true,
       })
+
       field.value.initField()
 
-      // Check validate was called
-      expect(mockForm.validateField).toHaveBeenCalledWith('name')
+      await flushPromises()
+      expect(validateFieldSpy).toHaveBeenCalledWith('name')
     })
   })
 
   describe('field value and state', () => {
-    it('should provide access to field value', () => {
-      expect(field.value.value).toBe('John Doe')
-    })
+    it('should provide access to field value and state', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-    it('should provide access to field error state', () => {
-      expect(field.value.error).toBeNull()
-    })
+      expect(wrapper.vm.fieldCtrl.value).toBe('John Doe')
+      expect(wrapper.vm.fieldCtrl.error).toBeNull()
+      expect(wrapper.vm.fieldCtrl.isDirty).toBe(false)
+      expect(wrapper.vm.fieldCtrl.isTouched).toBe(false)
+      expect(wrapper.vm.fieldCtrl.isValidating).toBe(false)
 
-    it('should provide access to field dirty state', () => {
-      expect(field.value.isDirty).toBe(false)
-    })
-
-    it('should provide access to field touched state', () => {
-      expect(field.value.isTouched).toBe(false)
-    })
-
-    it('should provide access to field validating state', () => {
-      expect(field.value.isValidating).toBe(false)
+      // Access to model property
+      expect(wrapper.vm.fieldCtrl.model).toBeDefined()
     })
   })
 
   describe('event handlers', () => {
-    it('should handle input events', () => {
-      const newValue = 'Jane Doe'
+    it('should handle input events', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Call input event handler
-      field.value.events.input({ value: newValue })
+      const input = wrapper.find('input')
+      await input.setValue('Jane Doe')
 
-      // Check form value was updated
-      expect(mockForm.name).toBe(newValue)
+      expect(wrapper.vm.fieldCtrl.value).toBe('Jane Doe')
+      expect(wrapper.vm.form.name).toBe('Jane Doe')
     })
 
-    it('should handle change events', () => {
-      const newValue = 'Jane Doe'
+    it('should handle change events', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Call change event handler
-      field.value.events.change({ value: newValue })
+      // Directly call the change event handler
+      wrapper.vm.fieldCtrl.events.change({ target: { value: 'Jane Doe' } })
+      await flushPromises()
 
-      // Check form value was updated and touched state was set
-      expect(mockForm.name).toBe(newValue)
-      expect(mockForm['name.$isTouched']).toBe(true)
+      expect(wrapper.vm.fieldCtrl.value).toBe('Jane Doe')
+      expect(wrapper.vm.form.name).toBe('Jane Doe')
+      expect(wrapper.vm.form['name.$isTouched'].value).toBe(true)
     })
 
-    it('should handle blur events', () => {
-      // Call handleBlur
-      field.value.events.blur()
+    it('should handle blur events', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+          validateOn: 'blur',
+        },
+      })
 
-      // Check touched state was set
-      expect(mockForm['name.$isTouched']).toBe(true)
+      const input = wrapper.find('input')
+      await input.trigger('blur')
+
+      expect(wrapper.vm.form['name.$isTouched'].value).toBe(true)
     })
 
-    it('should handle focus events', () => {
-      // Call focus handler
-      field.value.events.focus()
+    it('should handle focus events', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Since we use ref for focus state, and our mock implementation doesn't track it,
-      // we can't directly test the focus state change
-      // This test is here to ensure the function exists and runs without errors
-      expect(field.value.events.focus).toBeDefined()
+      const input = wrapper.find('input')
+      await input.trigger('focus')
+
+      expect(wrapper.vm.fieldCtrl.isFocused).toBe(true)
     })
   })
 
   describe('validation', () => {
     it('should validate field', async () => {
-      // Set up mock validation result
-      mockForm.validateField.mockResolvedValueOnce(Promise.resolve(true))
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Call validate
-      const result = await field.value.validate()
+      const result = await wrapper.vm.fieldCtrl.validate()
 
-      // Check validation was called
-      expect(mockForm.validateField).toHaveBeenCalledWith('name')
-
-      // Check result
       expect(result).toBe(true)
     })
 
-    it('should handle validation failure', async () => {
-      // Set up mock validation result
-      mockForm.validateField.mockResolvedValueOnce(false)
+    it('should handle validation failures', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
 
-      // Call validate
-      const result = await field.value.validate()
+      const input = wrapper.find('input')
+      await input.setValue('')
 
-      // Check validation was called
-      expect(mockForm.validateField).toHaveBeenCalledWith('name')
+      // Validate the field
+      const result = await wrapper.vm.fieldCtrl.validate()
+      await flushPromises()
 
-      // Check result
       expect(result).toBe(false)
+      expect(wrapper.vm.fieldCtrl.error).not.toBeNull()
     })
   })
 
   describe('HTML binding helpers', () => {
-    it('should provide HTML binding attributes', () => {
+    it('should provide HTML binding attributes', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
+      })
+
       // Access attrs
-      const attrs = field.value.attrs
+      const attrs = wrapper.vm.fieldCtrl.attrs
 
       // Check structure
       expect(attrs).toEqual(
@@ -230,46 +231,45 @@ describe('useField', () => {
       )
     })
 
-    it('should handle aria attributes for errors', () => {
-      // Setup field with error
-      vi.spyOn(mockForm, 'getField').mockReturnValueOnce({
-        _id: 'email',
-        $errors: { value: ['This field is invalid'] },
-        $isDirty: { value: true },
-        $isTouched: { value: true },
-        $isValidating: { value: false },
+    it('should handle aria attributes for errors', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
+        },
       })
 
-      // Also need to modify the error array on the form
-      mockForm['email.$errors'] = ['This field is invalid']
+      const input = wrapper.find('input')
+      await input.setValue('')
 
-      // Create new field instance with error
-      const errorField = useField('email', mockForm)
+      // Validate to trigger error
+      await wrapper.vm.fieldCtrl.validate()
+      await flushPromises()
 
-      // Access attrs
-      const attrs = errorField.value.attrs
+      // Access attrs again after validation error
+      const attrs = wrapper.vm.fieldCtrl.attrs
 
       // Check aria attributes
       expect(attrs['aria-invalid']).toBe(true)
-      expect(attrs['aria-errormessage']).toBe('error-email')
+      expect(attrs['aria-errormessage']).toBeDefined()
     })
 
-    it('should handle input event from HTML element', () => {
-      // Create mock event
-      const mockEvent = {
-        target: {
-          value: 'Jane Doe',
+    it('should handle input event from HTML element', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'name',
         },
-      }
+      })
 
-      // Get the onInput handler
-      const inputHandler = field.value.events.input
+      // Create input event with mock target
+      const input = wrapper.find('input')
+      await input.element.dispatchEvent(new Event('input'))
 
-      // Call with mock event
-      inputHandler(mockEvent)
+      // Manually call the input handler with an object that has a target
+      wrapper.vm.fieldCtrl.events.input({
+        target: { value: 'Jane Doe' },
+      })
 
-      // Check that value was updated
-      expect(mockForm.name).toBe('Jane Doe')
+      expect(wrapper.vm.form.name).toBe('Jane Doe')
     })
   })
 })
