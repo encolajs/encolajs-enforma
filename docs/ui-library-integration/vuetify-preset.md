@@ -96,3 +96,12 @@ The preset also includes styled button components:
 > [!WARNING]
 > The Vuetify library is pretty comples so the provided preset may not fit all the edge-cases and we have little to none experience with Vuetify. 
 > If you might need to take the files provided in the preset provided and customize it. **PRs are welcome** :)
+
+## Known Issues
+
+Due to how Vuetify implements events, some of the components might not work with the `HeadlessField` component. 
+For example the `VSwitch` component does not trigger a `change` event that is "correct", meaning similar to a native browser's event and the changed value cannot be interpreted correctly. 
+
+> [!INFO] To fix this issue you have to use the `update:modelValue` to update the value in the form 
+
+> [!WARNING] This is a problem ONLY if you are using the headless components
