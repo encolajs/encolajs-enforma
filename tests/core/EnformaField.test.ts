@@ -167,4 +167,36 @@ describe('EnformaField', () => {
       'Custom placeholder'
     )
   })
+  
+  it('passes inputEvents properly to the input component', async () => {
+    // Setup a form with a field
+    const testForm = createFormState({ events_field: 'test' })
+    
+    // Mount the field component
+    const wrapper = mountTestComponent(
+      EnformaField,
+      {
+        name: 'events_field',
+        label: 'Events Field',
+      },
+      {
+        global: {
+          provide: {
+            [formControllerKey]: testForm,
+            [formSchemaKey]: schema,
+          },
+        },
+      }
+    )
+    
+    // Get the component instance to access internal properties
+    const vm = wrapper.vm as any
+    
+    // Verify that inputEvents are being passed to the component
+    expect(vm.props.inputEvents).toBeDefined()
+    expect(typeof vm.props.inputEvents.input).toBe('function')
+    expect(typeof vm.props.inputEvents.change).toBe('function')
+    expect(typeof vm.props.inputEvents.blur).toBe('function')
+    expect(typeof vm.props.inputEvents.focus).toBe('function')
+  })
 })

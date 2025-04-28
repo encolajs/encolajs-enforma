@@ -5,7 +5,7 @@
         :is="props.inputComponent"
         v-model="fieldController.value"
         v-bind="props.inputProps"
-        v-on="fieldController.events"
+        v-on="props.inputEvents"
       />
     </div>
 
@@ -25,6 +25,10 @@ import { useEnformaField } from '../../core/useEnformaField'
 import { ComponentPublicInstance, PropType } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
+
+defineOptions({
+  inheritAttrs: false
+})
 
 const originalProps = defineProps({
   name: { type: String, required: true },

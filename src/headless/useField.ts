@@ -76,15 +76,10 @@ export function useField(
 
     await form.setFieldValue(name, value, false, stateChanges)
 
-    // Mark field as touched on change event
-    if (trigger === 'change') {
-      if (options.validateOn === 'change') {
-        debouncedValidate()
-      }
-    }
-
-    // If field is touched and dirty, validate
-    if (form[`${name}.$isTouched`].value && form[`${name}.$isDirty`].value) {
+    if (trigger === 'change' && options.validateOn === 'change') {
+      debouncedValidate()
+      // if touched and dirty validate on each change (input or update:modelValue)
+    } else if (form[`${name}.$isTouched`].value && form[`${name}.$isDirty`].value) {
       debouncedValidate()
     }
   }
@@ -99,7 +94,7 @@ export function useField(
       form.setFieldBlurred(name)
     }
 
-    if (options.validateOn === 'blur') {
+    if (form[`${name}.$isTouched`].value && form[`${name}.$isDirty`].value) {
       debouncedValidate()
     }
   }

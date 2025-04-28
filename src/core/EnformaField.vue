@@ -15,7 +15,7 @@
         :is="props.inputComponent"
         v-model="fieldController.value"
         v-bind="props.inputProps"
-        v-on="fieldController.events"
+        v-on="props.inputEvents || {}"
       />
       <label
         v-if="props.showLabelNextToInput && props.label"

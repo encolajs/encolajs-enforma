@@ -120,6 +120,18 @@ const fieldPropsTransformer = (fieldOptions, field, formController) => {
         : ''
   };
   
+  // Customize input events
+  result.inputEvents = {
+    ...result.inputEvents,
+    // Add custom event handlers or modify existing ones
+    change: (e) => {
+      // Do something before the default handler
+      console.log('Field changed:', e);
+      // Call the original handler
+      result.inputEvents.change(e);
+    }
+  };
+  
   // Add accessibility attributes to label props
   result.labelProps = {
     ...result.labelProps,
@@ -136,6 +148,8 @@ const fieldPropsTransformer = (fieldOptions, field, formController) => {
 - Enhancing accessibility attributes
 - Customizing appearance based on field state
 - Implementing custom formatting or display logic
+- Modifying input event handlers for custom behavior
+- Adding event logging or analytics to input events
 
 ### Repeatable Props Transformers
 
