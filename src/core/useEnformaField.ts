@@ -151,7 +151,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       // Create inputEvents by copying the fieldController.events
       fieldOptions.value.inputEvents = { ...fieldController.value.events }
 
-
       if (fieldPropsTransformers.length === 0) {
         return fieldOptions.value
       }

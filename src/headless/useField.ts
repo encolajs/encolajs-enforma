@@ -79,7 +79,10 @@ export function useField(
     if (trigger === 'change' && options.validateOn === 'change') {
       debouncedValidate()
       // if touched and dirty validate on each change (input or update:modelValue)
-    } else if (form[`${name}.$isTouched`].value && form[`${name}.$isDirty`].value) {
+    } else if (
+      form[`${name}.$isTouched`].value &&
+      form[`${name}.$isDirty`].value
+    ) {
       debouncedValidate()
     }
   }
