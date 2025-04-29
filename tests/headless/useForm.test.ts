@@ -306,7 +306,7 @@ describe('useForm', () => {
       // Check that validation failed and error was logged
       expect(isValid).toBe(false)
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error validating field items.0.price',
+        '[Enforma] Error validating field items.0.price',
         expect.any(Error)
       )
 
@@ -466,7 +466,7 @@ describe('useForm', () => {
       // Check that validation failed and error was logged
       expect(isValid).toBe(false)
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error validating field items.0.price',
+        '[Enforma] Error validating field items.0.price',
         expect.any(Error)
       )
 

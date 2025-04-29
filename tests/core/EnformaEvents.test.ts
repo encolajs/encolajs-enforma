@@ -139,7 +139,7 @@ describe('Enforma Events', () => {
 
     // Check event was emitted
     expect(initHandler).toHaveBeenCalled()
-    expect(newWrapper.emitted('form-initialized')).toBeTruthy()
+    expect(newWrapper.emitted('form_initialized')).toBeTruthy()
   })
 
   it('emits form events during submission', async () => {

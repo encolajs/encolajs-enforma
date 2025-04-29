@@ -82,7 +82,7 @@ describe('useDynamicProps', () => {
 
     // Verify that console.error was called
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "[Enforma Expression Error] Failed to create evaluator function: Unexpected token '.'",
+      "[Enforma] Expression error: Failed to create evaluator function: Unexpected token '.'",
       expect.any(Object)
     )
 
