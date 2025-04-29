@@ -10,8 +10,9 @@
 
     <template v-for="field in sortedFields" :key="field.name">
       <component
-        :is="fieldComponent"
-        v-bind="field"
+        :is="getComponent(field)"
+        :name="field.name"
+        v-bind="field.props"
         v-if="shouldRenderField(field)"
       />
     </template>
@@ -20,6 +21,7 @@
       <component
         :is="sectionComponent"
         :name="subSection.name"
+        v-bind="subSection.props"
         v-if="shouldRenderSection(subSection)"
       />
     </template>
@@ -157,7 +159,7 @@ const { getConfig, formConfig } = useFormConfig()
 
 const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
-const sectionComponent = resolveComponent('EnformaSection')
+const sectionComponent = getConfig('components.section')
 
 // Get the section schema for this section
 const originalSectionSchema = computed(() => {
@@ -197,6 +199,19 @@ const sectionSchema = computed(() => {
   )
 })
 
+function getComponent(field: any): string | object {
+  if (field.component && typeof field.component === 'object') {
+    return field.component
+  }
+  const componentMap: Record<string, string> = {
+    field: 'field',
+    repeatable: 'repeatable',
+    repeatable_table: 'repeatableTable',
+  }
+  const component = componentMap[field.type || `field`] || field
+  return getConfig(`components.${component}`) as string
+}
+
 // Get fields for this section and sort them by position
 const sortedFields = computed(() => {
   const fields = Object.entries(getFields(schema, props.name)).map(
@@ -208,6 +223,7 @@ const sortedFields = computed(() => {
       return fieldWithPosition
     }
   )
+
   return sortByPosition(fields)
 })
 
