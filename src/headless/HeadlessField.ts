@@ -41,7 +41,7 @@ export default defineComponent({
 
     if (!form) {
       console.error(
-        `HeadlessField '${props.name}' must be used within an EncolaForm component`
+        `[Enforma] HeadlessField '${props.name}' must be used within an EncolaForm component`
       )
       return () => null // Return null instead of trying to render
     }

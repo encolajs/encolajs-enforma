@@ -38,7 +38,7 @@ export default defineComponent({
     const formState = inject<FormController>(formControllerKey)
 
     if (!formState) {
-      console.error('HeadlessRepeatable must be used within an EncolaForm')
+      console.error('[Enforma] HeadlessRepeatable must be used within an EncolaForm')
       return () => null
     }
 

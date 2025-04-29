@@ -37,7 +37,7 @@ export function useEnformaRepeatable(
 
   if (!formState) {
     console.error(
-      `EnformaRepeatable '${originalFieldConfig.name}' must be used within a Enforma form component`
+      `[Enforma] EnformaRepeatable '${originalFieldConfig.name}' must be used within a Enforma form component`
     )
   }
 

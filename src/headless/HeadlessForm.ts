@@ -147,7 +147,7 @@ export default defineComponent({
       try {
         await formCtrl.submit()
       } catch (error) {
-        console.error('Error submitting form', error)
+        console.error('[Enforma] Error submitting form', error)
         // Error already emitted via callback, but we catch it here to prevent it from propagating
       }
     }

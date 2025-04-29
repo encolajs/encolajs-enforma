@@ -212,7 +212,7 @@ export function useForm<T extends object>(
       }
       return true
     } catch (e: any) {
-      console.error(`Error validating field ${path}`, e)
+      console.error(`[Enforma] Error validating field ${path}`, e)
       return false
     } finally {
       fieldController.$isValidating.value = false
@@ -229,7 +229,7 @@ export function useForm<T extends object>(
       )
       return validationResults.every((result) => result)
     } catch (e) {
-      console.error('Error validating form', e)
+      console.error('[Enforma] Error validating form', e)
     } finally {
       formState.$isValidating = false
     }
@@ -356,7 +356,7 @@ export function useForm<T extends object>(
               // Emit submit error event
               formEmitter.emit('submit_error', { error, formController })
 
-              console.error('Error submitting form', error)
+              console.error('[Enforma] Error submitting form', error)
               return false
             }
           } else {

@@ -44,14 +44,14 @@ function logExpressionError(
 ): void {
   if (process.env.NODE_ENV !== 'production') {
     if (error instanceof ExpressionError) {
-      console.error(`[Enforma Expression Error] ${error.message}`, {
+      console.error(`[Enforma] Expression error: ${error.message}`, {
         expression: error.expression,
         originalError: error.originalError,
         context: error.context,
       })
     } else {
       console.error(
-        `[Enforma Expression Error] Error evaluating expression: ${expression}`,
+        `[Enforma] Expression evaluation error: ${expression}`,
         {
           error,
           expression,

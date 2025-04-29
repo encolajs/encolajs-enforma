@@ -44,7 +44,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Validate form context
   if (!formState) {
     console.error(
-      `EnformaField '${originalProps.name}' must be used within a Enforma form component`
+      `[Enforma] EnformaField '${originalProps.name}' must be used within a Enforma form component`
     )
   }
 
