@@ -4,7 +4,6 @@ import {
   inject,
   mergeProps,
   onBeforeUnmount,
-  ref,
   ComponentPublicInstance,
   ComputedRef,
 } from 'vue'
@@ -35,11 +34,102 @@ export interface EnformaFieldProps {
   position?: number | null
 }
 
+// retrieve the field props by combining:
+// defaults, props from schema and props from the EnformaField component
+function getFieldProps<T>(
+  schema: Record<string, FieldSchema> | null,
+  originalProps: EnformaFieldProps,
+  getConfig: <T = any>(path: string, defaultValue?: T) => T | null | undefined
+) {
+  // Get field schema if available
+  const fieldSchema = schema ? schema[originalProps.name] : null
+
+  const defaults: Record<string, any> = {
+    component: 'input',
+    inputComponent: null,
+    hideLabel: false,
+    showLabelNextToInput: false,
+    required: false,
+    useModelValue: false,
+    labelProps: {},
+    requiredProps: getConfig('pt.required'),
+    errorProps: {},
+    helpProps: {},
+    props: {},
+    inputProps: {},
+    label: null,
+    help: null,
+    section: null,
+    position: null,
+  }
+
+  // Start with defaults
+  let result = { ...defaults }
+
+  // Apply schema values if available
+  if (fieldSchema) {
+    result = {
+      ...result,
+      label: fieldSchema.label ?? null,
+      component: fieldSchema.component ?? result.component,
+      inputComponent: fieldSchema.inputComponent ?? result.component,
+      hideLabel: fieldSchema.hideLabel ?? result.hideLabel,
+      showLabelNextToInput:
+        fieldSchema.showLabelNextToInput ?? result.showLabelNextToInput,
+      required: fieldSchema.required ?? result.required,
+      useModelValue: fieldSchema.useModelValue ?? result.useModelValue,
+      help: fieldSchema.help ?? null,
+      labelProps: { ...result.labelProps, ...fieldSchema.labelProps },
+      requiredProps: {
+        ...result.requiredProps,
+        ...fieldSchema.requiredProps,
+      },
+      errorProps: { ...result.errorProps, ...fieldSchema.errorProps },
+      helpProps: { ...result.helpProps, ...fieldSchema.helpProps },
+      props: { ...result.props, ...fieldSchema.props },
+      inputProps: { ...result.inputProps, ...fieldSchema.inputProps },
+      section: fieldSchema.section ?? null,
+      position: fieldSchema.position ?? null,
+    }
+    console.log(result.inputProps)
+    console.log(fieldSchema)
+    console.log({ ...result.inputProps, ...fieldSchema.inputProps })
+  }
+
+  // Apply component props (these take precedence over schema and defaults)
+  result = {
+    ...result,
+    name: originalProps.name,
+    label: originalProps.label ?? result.label,
+    component: result.component, // Keep component from schema or defaults
+    inputComponent: originalProps.inputComponent ?? result.inputComponent,
+    hideLabel: originalProps.hideLabel ?? result.hideLabel,
+    showLabelNextToInput:
+      originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
+    required: originalProps.required ?? result.required,
+    useModelValue: originalProps.useModelValue ?? result.useModelValue,
+    help: originalProps.help ?? result.help,
+    labelProps: { ...result.labelProps, ...originalProps.labelProps },
+    requiredProps: {
+      ...result.requiredProps,
+      ...originalProps.requiredProps,
+    },
+    errorProps: { ...result.errorProps, ...originalProps.errorProps },
+    helpProps: { ...result.helpProps, ...originalProps.helpProps },
+    props: { ...result.props, ...originalProps.props },
+    inputProps: { ...result.inputProps, ...originalProps.inputProps },
+    section: originalProps.section ?? result.section,
+    position: originalProps.position ?? result.position,
+  }
+
+  return result
+}
+
+
+// return fieldController and props
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
   const formState = inject<FormController>(formControllerKey) as FormController
-  const { formConfig, getConfig } = useFormConfig()
-  const schema = inject<Record<string, FieldSchema> | null>(formSchemaKey, null)
 
   // Validate form context
   if (!formState) {
@@ -48,95 +138,11 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     )
   }
 
-  // Get field schema if available
-  const fieldSchema = computed((): FieldSchema | null => {
-    if (!schema) return null
-    return schema[originalProps.name]
-  })
-
-  // Merge props with schema and defaults
-  const fieldOptions = computed(() => {
-    // Default values that will be used if neither props nor schema provide a value
-    const defaults: Record<string, any> = {
-      component: 'input',
-      inputComponent: null,
-      hideLabel: false,
-      showLabelNextToInput: false,
-      required: false,
-      useModelValue: false,
-      labelProps: {},
-      requiredProps: getConfig('pt.required'),
-      errorProps: {},
-      helpProps: {},
-      props: {},
-      inputProps: {},
-      label: null,
-      help: null,
-      section: null,
-      position: null,
-    }
-
-    // Start with defaults
-    let result = { ...defaults }
-
-    // Apply schema values if available
-    if (fieldSchema.value) {
-      result = {
-        ...result,
-        label: fieldSchema.value.label ?? null,
-        component: fieldSchema.value.component ?? result.component,
-        inputComponent: fieldSchema.value.inputComponent ?? result.component,
-        hideLabel: fieldSchema.value.hideLabel ?? result.hideLabel,
-        showLabelNextToInput:
-          fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
-        required: fieldSchema.value.required ?? result.required,
-        useModelValue: fieldSchema.value.useModelValue ?? result.useModelValue,
-        help: fieldSchema.value.help ?? null,
-        labelProps: { ...result.labelProps, ...fieldSchema.value.labelProps },
-        requiredProps: {
-          ...result.requiredProps,
-          ...fieldSchema.value.requiredProps,
-        },
-        errorProps: { ...result.errorProps, ...fieldSchema.value.errorProps },
-        helpProps: { ...result.helpProps, ...fieldSchema.value.helpProps },
-        props: { ...result.props, ...fieldSchema.value.props },
-        inputProps: { ...result.inputProps, ...fieldSchema.value.inputProps },
-        section: fieldSchema.value.section ?? null,
-        position: fieldSchema.value.position ?? null,
-      }
-    }
-
-    // Apply component props (these take precedence over schema and defaults)
-    result = {
-      ...result,
-      name: originalProps.name,
-      label: originalProps.label ?? result.label,
-      component: result.component, // Keep component from schema or defaults
-      inputComponent: originalProps.inputComponent ?? result.inputComponent,
-      hideLabel: originalProps.hideLabel ?? result.hideLabel,
-      showLabelNextToInput:
-        originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
-      required: originalProps.required ?? result.required,
-      useModelValue: originalProps.useModelValue ?? result.useModelValue,
-      help: originalProps.help ?? result.help,
-      labelProps: { ...result.labelProps, ...originalProps.labelProps },
-      requiredProps: {
-        ...result.requiredProps,
-        ...originalProps.requiredProps,
-      },
-      errorProps: { ...result.errorProps, ...originalProps.errorProps },
-      helpProps: { ...result.helpProps, ...originalProps.helpProps },
-      props: { ...result.props, ...originalProps.props },
-      inputProps: { ...result.inputProps, ...originalProps.inputProps },
-      section: originalProps.section ?? result.section,
-      position: originalProps.position ?? result.position,
-    }
-
-    return result
-  })
+  const { formConfig, getConfig } = useFormConfig()
+  const schema = inject<Record<string, FieldSchema> | null>(formSchemaKey, null)
+  const options = getFieldProps(schema, originalProps, getConfig)
 
   // Initialize field with useField composable
-  const options = fieldOptions.value
   const fieldController = useField(options.name, formState, {})
 
   // Set up cleanup
@@ -277,7 +283,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       inputProps, // Props for the input element
     }
   })
-
+console.warn(props)
   return {
     fieldController,
     props,
