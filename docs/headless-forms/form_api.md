@@ -29,7 +29,7 @@ A form component that provides no UI, just the form state and logic.
 | `field_changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
 | `field_focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
 | `field_blurred` | `(path, fieldController, formController)` | Emitted when a field loses focus |
-| `form-initialized` | `(formController)` | Emitted when form is initialized |
+| `form_initialized` | `(formController)` | Emitted when form is initialized |
 
 ## Slots
 

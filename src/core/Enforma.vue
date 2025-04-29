@@ -12,7 +12,7 @@
     @field_change="emit('field_change', $event)"
     @field_focus="emit('field_focus', $event)"
     @field_blur="emit('field_blur', $event)"
-    @form-initialized="emit('form-initialized', $event)"
+    @form_initialized="emit('form_initialized', $event)"
     @reset="emit('reset', $event)"
   >
     <template #default>
@@ -100,7 +100,7 @@ const emit = defineEmits([
   'field_change',
   'field_focus',
   'field_blur',
-  'form-initialized',
+  'form_initialized',
 ])
 
 const form = ref()

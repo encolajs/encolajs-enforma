@@ -37,7 +37,7 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
     @field_changed="handleFieldChange"
     @field_focused="handleFieldFocus"
     @field_blurred="handleFieldBlur"
-    @form-initialized="handleInitialized"
+    @form_initialized="handleInitialized"
     @reset="handleReset"
   >
     <template v-slot="form">

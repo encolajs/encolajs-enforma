@@ -36,7 +36,7 @@ export default defineComponent({
     'field_change',
     'field_focus',
     'field_blur',
-    'form-initialized',
+    'form_initialized',
   ],
 
   setup(props, ctx) {
@@ -134,7 +134,7 @@ export default defineComponent({
     formCtrl.on(
       'form_initialized',
       ({ formController }: { formController: FormController }) => {
-        ctx.emit('form-initialized', formController)
+        ctx.emit('form_initialized', formController)
       }
     )
 
