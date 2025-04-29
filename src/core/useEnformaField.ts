@@ -24,6 +24,7 @@ export interface EnformaFieldProps {
   showLabelNextToInput?: boolean | undefined
   required?: boolean | string | undefined
   help?: string | null
+  useModelValue?: boolean | undefined
   labelProps?: Record<string, any>
   requiredProps?: Record<string, any>
   errorProps?: Record<string, any>
@@ -62,6 +63,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       hideLabel: false,
       showLabelNextToInput: false,
       required: false,
+      useModelValue: false,
       labelProps: {},
       requiredProps: getConfig('pt.required'),
       errorProps: {},
@@ -88,6 +90,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         showLabelNextToInput:
           fieldSchema.value.showLabelNextToInput ?? result.showLabelNextToInput,
         required: fieldSchema.value.required ?? result.required,
+        useModelValue: fieldSchema.value.useModelValue ?? result.useModelValue,
         help: fieldSchema.value.help ?? null,
         labelProps: { ...result.labelProps, ...fieldSchema.value.labelProps },
         requiredProps: {
@@ -114,6 +117,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       showLabelNextToInput:
         originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
       required: originalProps.required ?? result.required,
+      useModelValue: originalProps.useModelValue ?? result.useModelValue,
       help: originalProps.help ?? result.help,
       labelProps: { ...result.labelProps, ...originalProps.labelProps },
       requiredProps: {
@@ -132,11 +136,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   })
 
   // Initialize field with useField composable
-  const fieldController = useField(fieldOptions.value.name, formState, {})
+  const options = fieldOptions.value
+  const fieldController = useField(options.name, formState, {})
 
   // Set up cleanup
   onBeforeUnmount(() => {
-    formState?.removeField(fieldOptions.value.name)
+    formState?.removeField(options.name)
   })
 
   // First, apply transformers to the field options
@@ -149,15 +154,36 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       ) as Function[]
 
       // Create inputEvents by copying the fieldController.events
-      fieldOptions.value.inputEvents = { ...fieldController.value.events }
+      options.inputEvents = { ...fieldController.value.events }
+
+      // Handle useModelValue prop for components that only use update:modelValue
+      if (options.useModelValue) {
+        const fieldName = options.name
+
+        // Remove input and change events
+        delete options.inputEvents.input
+        delete options.inputEvents.change
+
+        // Add update:modelValue event handler
+        options.inputEvents['update:modelValue'] = (value: any) => {
+          formState.setFieldValue(
+            fieldName,
+            value,
+            formState.getField(fieldName).$isDirty.value,
+            {
+              $isDirty: true,
+            }
+          )
+        }
+      }
 
       if (fieldPropsTransformers.length === 0) {
-        return fieldOptions.value
+        return options
       }
 
       return applyTransformers(
         fieldPropsTransformers,
-        { ...fieldOptions.value },
+        { ...options },
         fieldController,
         formState,
         formConfig

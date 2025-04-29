@@ -224,6 +224,12 @@ export interface FieldSchema extends BaseSchema {
   required?: boolean | string
 
   /**
+   * Whether to use update:modelValue event instead of input/change events
+   * Some UI libraries only emit update:modelValue and don't emit input/change events
+   */
+  useModelValue?: boolean
+
+  /**
    * Props to apply to the entire field component (wrapper)
    */
   props?: Record<string, any>

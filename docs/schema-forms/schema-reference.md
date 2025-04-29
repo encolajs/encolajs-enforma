@@ -56,12 +56,15 @@ All schema types share these base properties:
 | `showLabelNextToInput` | boolean | No | For checkbox-like inputs |
 | `help` | string | No | Help text to display alongside the field |
 | `required` | boolean \| string | No | Whether the field is required (UI purposes only) |
+| `useModelValue` | boolean | No | Whether to use update:modelValue event instead of input/change events (default: false) |
 | `props` | object | No | Props to apply to the entire field component (wrapper) |
 | `labelProps` | object | No | Props to apply to the label component |
 | `inputProps` | object | No | Props to apply to the input component |
 | `helpProps` | object | No | Props to apply to the help text component |
 | `errorProps` | object | No | Props to apply to the error message component |
 | `inputComponent` | string \| component | No | Component to use for this field |
+
+<!--@include: ../_partials/use-model-value.md-->
 
 ## Repeatable Schema
 

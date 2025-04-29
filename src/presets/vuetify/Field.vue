@@ -42,6 +42,7 @@ const originalProps = defineProps({
   showLabelNextToInput: { type: Boolean, default: false },
   required: { type: [Boolean, String], default: undefined },
   help: { type: String, default: null },
+  useModelValue: { type: Boolean, default: true },
   labelProps: { type: Object, default: () => ({}) },
   errorProps: { type: Object, default: () => ({}) },
   helpProps: { type: Object, default: () => ({}) },

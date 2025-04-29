@@ -15,6 +15,7 @@
 | `hideLabel` | `Boolean` | Whether to hide the field label                                                        |
 | `showLabelNextToInput` | `Boolean` | Whether to show the label next to the input instead of above it                        |
 | `required` | `Boolean\|String` | Whether the field is required                                                          |
+| `useModelValue` | `Boolean` | Whether to use update:modelValue event instead of input/change events (default: false) |
 | `help` | `String` | Help text to display below the field                                                   |
 | `labelProps` | `Object` | Additional props to pass to the label element                                          |
 | `errorProps` | `Object` | Additional props to pass to the error message element                                  |
@@ -24,6 +25,8 @@
 | `inputEvents` | `Object` | Event handlers for the input component (input, change, blur, focus, update:modelValue) |
 | `section` | `String` | Name of the section this field belongs to (used in schema-based forms)                 |
 | `position` | `Number` | Position of the field within its section (used in schema-based forms)                  |
+
+<!--@include: ../_partials/use-model-value.md-->
 
 ## Slots
 

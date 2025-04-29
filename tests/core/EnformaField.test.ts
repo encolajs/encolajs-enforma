@@ -199,4 +199,45 @@ describe('EnformaField', () => {
     expect(typeof vm.props.inputEvents.blur).toBe('function')
     expect(typeof vm.props.inputEvents.focus).toBe('function')
   })
+
+  it('uses update:modelValue event when useModelValue is true', async () => {
+    // Setup a form with a field
+    const testForm = createFormState({ model_value_field: 'test' })
+
+    // Mount the field component with useModelValue set to true
+    const wrapper = mountTestComponent(
+      EnformaField,
+      {
+        name: 'model_value_field',
+        label: 'Model Value Field',
+        useModelValue: true,
+      },
+      {
+        global: {
+          provide: {
+            [formControllerKey]: testForm,
+            [formSchemaKey]: schema,
+          },
+        },
+      }
+    )
+
+    // Get the component instance to access internal properties
+    const vm = wrapper.vm as any
+
+    // Verify the inputEvents structure when useModelValue is true
+    expect(vm.props.inputEvents).toBeDefined()
+    expect(vm.props.inputEvents.input).toBeUndefined() // input should be removed
+    expect(vm.props.inputEvents.change).toBeUndefined() // change should be removed
+    expect(typeof vm.props.inputEvents['update:modelValue']).toBe('function') // update:modelValue should be added
+    expect(typeof vm.props.inputEvents.blur).toBe('function') // blur should still be there
+    expect(typeof vm.props.inputEvents.focus).toBe('function') // focus should still be there
+
+    // Test that update:modelValue handler updates the field value
+    const newValue = 'updated value'
+    vm.props.inputEvents['update:modelValue'](newValue)
+
+    // Verify the field value was updated
+    expect(testForm.getFieldValue('model_value_field')).toBe(newValue)
+  })
 })
