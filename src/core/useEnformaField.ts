@@ -125,7 +125,6 @@ function getFieldProps<T>(
   return result
 }
 
-
 // return fieldController and props
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
@@ -283,7 +282,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       inputProps, // Props for the input element
     }
   })
-console.warn(props)
+
   return {
     fieldController,
     props,
