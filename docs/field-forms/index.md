@@ -2,6 +2,8 @@
 
 EncolaJS Enforma provides a set of base components for building forms. These components work together to create flexible forms that use fields, schema or a mix of schema and fields.
 
+> :notebook_with_decorative_cover: For a complete working example check out the [field-based form example](/examples/fields.md)
+
 ## Base Components
 
 - [Enforma](./enforma-form) - Root component for form state and submission

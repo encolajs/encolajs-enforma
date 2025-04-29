@@ -2,6 +2,8 @@
 
 Schema-based forms in Enforma allow you to define your entire form structure using a JSON schema, enabling dynamic form generation with minimal code. This approach is particularly useful for complex forms, admin interfaces, and applications where form structures need to be defined at runtime.
 
+> :notebook_with_decorative_cover: For a complete working example check out the [schema form example](/examples/schema-only.md)
+
 ### Key Benefits
 
 - **Declarative Approach** - Define your entire form using simple JSON
