@@ -431,58 +431,57 @@ export function evaluateObject<T extends Record<string, any>>(
         }
         // Handle arrays
         else if (Array.isArray(value)) {
+          const currentContext =
+            typeof context === 'function' ? context() : context
+
           // For arrays, we need to compute each element that contains expressions
-          result[key] = computed(() => {
-            const currentContext =
-              typeof context === 'function' ? context() : context
-            return value.map((item: any) => {
-              try {
-                if (
-                  typeof item === 'string' &&
-                  containsExpression(item, config)
-                ) {
-                  // Use the value of the computed ref
-                  const computedItem = evaluateTemplateString(
-                    item,
-                    currentContext,
-                    config
-                  )
-                  return computedItem.value
-                } else if (item && typeof item === 'object') {
-                  // For objects in arrays, recursively evaluate
-                  const evaluatedObj = evaluateObject(
-                    item,
-                    currentContext,
-                    config
-                  )
-
-                  // Convert any computed refs to their values
-                  const resolvedObj: Record<string, any> = {}
-                  for (const objKey in evaluatedObj) {
-                    const objValue = evaluatedObj[objKey]
-                    resolvedObj[objKey] =
-                      objValue && objValue.value !== undefined
-                        ? objValue.value
-                        : objValue
-                  }
-
-                  return resolvedObj
-                }
-                return item
-              } catch (itemError) {
-                // Collect error but don't interrupt processing
-                errors.push(
-                  new ExpressionError(
-                    `Error evaluating array item: ${
-                      (itemError as Error).message
-                    }`,
-                    String(item),
-                    itemError as Error
-                  )
+          result[key] = value.map((item: any) => {
+            try {
+              if (
+                typeof item === 'string' &&
+                containsExpression(item, config)
+              ) {
+                // Use the value of the computed ref
+                const computedItem = evaluateTemplateString(
+                  item,
+                  currentContext,
+                  config
                 )
-                return item // Return original on error
+                return computedItem.value
+              } else if (item && typeof item === 'object') {
+                // For objects in arrays, recursively evaluate
+                const evaluatedObj = evaluateObject(
+                  item,
+                  currentContext,
+                  config
+                )
+
+                // Convert any computed refs to their values
+                const resolvedObj: Record<string, any> = {}
+                for (const objKey in evaluatedObj) {
+                  const objValue = evaluatedObj[objKey]
+                  resolvedObj[objKey] =
+                    objValue && objValue.value !== undefined
+                      ? objValue.value
+                      : objValue
+                }
+
+                return resolvedObj
               }
-            })
+              return item
+            } catch (itemError) {
+              // Collect error but don't interrupt processing
+              errors.push(
+                new ExpressionError(
+                  `Error evaluating array item: ${
+                    (itemError as Error).message
+                  }`,
+                  String(item),
+                  itemError as Error
+                )
+              )
+              return item // Return original on error
+            }
           })
         } else {
           // For non-expressions, just pass the value through
