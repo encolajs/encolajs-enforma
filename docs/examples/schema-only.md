@@ -4,7 +4,7 @@ import FormExample from './enforma/SchemaFormExample.vue'
 
 # Form Using Schema
 
-> [!INFO] This example is using the PrimeVue preset
+> :information_source: This example is using the PrimeVue preset
 
 <ClientOnly>
     <LiveDemo :component="FormExample"></LiveDemo>

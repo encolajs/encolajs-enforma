@@ -62,6 +62,7 @@ export default defineConfig({
               link: '/schema-forms/',
               items: [
                 { text: 'Schema Reference', link: '/schema-forms/schema-reference' },
+                { text: 'Field Slots', link: '/schema-forms/field-slots' },
                 { text: 'Dynamic Props', link: '/schema-forms/dynamic-props' },
                 { text: 'Transformers', link: '/schema-forms/transformers' },
                 { text: 'Mixed Forms', link: '/schema-forms/mixed-forms' },
@@ -153,7 +154,7 @@ export default defineConfig({
                   text: 'Form with Schema Only',
                   link: '/examples/schema-only',
                 },
-                { text: 'Mixed Form', link: '/examples/mixed-forms' },
+                { text: 'Mixed Form', link: '/examples/mixed-form' },
                 {
                   text: 'Form with Headless Components',
                   link: '/examples/headless-components',

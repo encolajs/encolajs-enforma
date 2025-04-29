@@ -6,11 +6,17 @@
     :submit-handler="submitHandler"
     :schema="schema"
   >
+    <template #field(name)>
+      <EnformaField name="name" label="Your name" :inputProps="{placeholder: 'What\'s your name?', class: 'w-full'}" />
+      <div class="col-start-1 col-end-3 text-purple-5 text-bold">
+        [!!!] This field is in the schema but we customize it here
+      </div>
+    </template>
   </Enforma>
 </template>
 
 <script setup>
-import { Enforma } from '@'
+import { Enforma, EnformaField } from '@'
 import SalaryField from './SalaryField.vue'
 import EndDateField from './EndDateField.vue'
 import formConfig from '../headless/formConfig'

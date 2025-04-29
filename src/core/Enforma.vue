@@ -35,12 +35,21 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, onMounted, PropType, reactive, computed } from 'vue'
+import {
+  provide,
+  ref,
+  onMounted,
+  PropType,
+  reactive,
+  computed,
+  useSlots,
+} from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import {
   formContextKey,
   formConfigKey,
   formSchemaKey,
+  formFieldSlotsKey,
 } from '@/constants/symbols'
 import { FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
@@ -149,6 +158,10 @@ const transformedFormConfig = computed(() => transformedProps.value.config)
 provide(formContextKey, transformedContext.value)
 provide(formSchemaKey, transformedSchema.value)
 provide(formConfigKey, transformedFormConfig.value)
+
+// Get slots and provide them for field customization
+const $slots = useSlots()
+provide(formFieldSlotsKey, $slots)
 
 const submitButton = getConfig('components.submitButton')
 const resetButton = getConfig('components.resetButton')

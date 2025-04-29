@@ -50,14 +50,11 @@ function logExpressionError(
         context: error.context,
       })
     } else {
-      console.error(
-        `[Enforma] Expression evaluation error: ${expression}`,
-        {
-          error,
-          expression,
-          context,
-        }
-      )
+      console.error(`[Enforma] Expression evaluation error: ${expression}`, {
+        error,
+        expression,
+        context,
+      })
     }
   } else {
     // In production, use simpler logging

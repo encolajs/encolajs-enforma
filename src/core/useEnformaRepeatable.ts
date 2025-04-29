@@ -1,7 +1,6 @@
 // src/core/useEnformaRepeatable.ts
-import { computed, inject, onBeforeUnmount, ComputedRef } from 'vue'
+import { computed, inject, onBeforeUnmount } from 'vue'
 import { formControllerKey } from '@/constants/symbols'
-import { useDynamicProps } from '@/utils/useDynamicProps'
 import { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'
@@ -40,8 +39,6 @@ export function useEnformaRepeatable(
       `[Enforma] EnformaRepeatable '${originalFieldConfig.name}' must be used within a Enforma form component`
     )
   }
-
-  const { evaluateCondition } = useDynamicProps()
 
   // First, apply transformers to the repeatable field options
   const transformedFieldConfig = computed(() => {

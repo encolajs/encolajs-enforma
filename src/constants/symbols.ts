@@ -24,3 +24,8 @@ export const formContextKey = Symbol('formContext')
  * Symbol for providing/injecting the form context
  */
 export const formSchemaKey = Symbol('formSchema')
+
+/**
+ * Symbol for providing/injecting custom field slots
+ */
+export const formFieldSlotsKey = Symbol('formFieldSlots')

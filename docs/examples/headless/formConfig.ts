@@ -1,10 +1,11 @@
 const data = {
-  name: '',
+  name: "",
   email: '',
   address: {
-    country: null,
-    city: null,
+    country: '',
+    city: '',
   },
+  available_date: null,
   willing_to_relocate: false,
   skills: [],
   experience: [],
@@ -29,7 +30,7 @@ const rules = {
   email: 'required|email',
   'salary.min': 'number',
   'salary.max': 'number',
-  'start_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
+  'available_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
   'address.city': 'required',
   'address.country': 'required',
   'linkedin_profile': 'required|url',
@@ -47,14 +48,15 @@ const messages = {
   'name.required': 'You gotta have a name'
 }
 
-const submitHandler = async (formData) => {
+const submitHandler = (formData) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      alert('Form set to server')
+      alert('Data sent to server: ' + JSON.stringify(formData))
       resolve(true)
     }, 2000)
   })
 }
+
 export default {
   data: {...data},
   rules: {...rules},

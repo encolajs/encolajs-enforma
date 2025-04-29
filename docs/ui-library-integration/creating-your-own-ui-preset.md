@@ -161,6 +161,6 @@ app.mount('#app')
 
 ## PrimeVue Preset Source Code
 
-Below is the exact code from the PrimeVue preset with comments to guide you in making your own presets
+The best way to learn how to write a preset is to look at one of the presents inside the library. Below is the exact code from the PrimeVue preset with comments to guide you in making your own presets
 
 <<< ../../src/presets/primevue.ts

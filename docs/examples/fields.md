@@ -4,7 +4,7 @@ import FormExample from './enforma/FieldsFormExample.vue'
 
 # Form Using Field Components
 
-> [!INFO] This example is using the PrimeVue preset
+> :information_source: This example is using the PrimeVue preset
 
 <ClientOnly>
     <LiveDemo :component="FormExample"></LiveDemo>

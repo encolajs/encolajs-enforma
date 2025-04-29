@@ -9,12 +9,22 @@
     </component>
 
     <template v-for="field in sortedFields" :key="field.name">
-      <component
-        :is="getComponent(field)"
-        :name="field.name"
-        v-bind="field.props"
-        v-if="shouldRenderField(field)"
-      />
+      <template v-if="shouldRenderField(field)">
+        <!-- Use parentSlots directly -->
+        <component
+          v-if="hasFieldSlot(field.name)"
+          :is="parentSlots[`field(${field.name})`]"
+          :field="field"
+          :formController="formState"
+          :config="formConfig"
+        />
+        <component
+          v-else
+          :is="getComponent(field)"
+          :name="field.name"
+          v-bind="field.props"
+        />
+      </template>
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
@@ -35,8 +45,13 @@ import {
   resolveComponent,
   mergeProps,
   ComputedRef,
+  useSlots,
 } from 'vue'
-import { formSchemaKey, formControllerKey } from '@/constants/symbols'
+import {
+  formSchemaKey,
+  formControllerKey,
+  formFieldSlotsKey,
+} from '@/constants/symbols'
 import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
@@ -160,6 +175,16 @@ const { getConfig, formConfig } = useFormConfig()
 const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
 const sectionComponent = getConfig('components.section')
+
+// Access parent slots injected from Enforma
+const parentSlots = inject(formFieldSlotsKey, null)
+
+// Check if a specific field slot exists
+function hasFieldSlot(fieldName: string): boolean {
+  if (!parentSlots) return false
+  const slotName = `field(${fieldName})`
+  return slotName in parentSlots
+}
 
 // Get the section schema for this section
 const originalSectionSchema = computed(() => {

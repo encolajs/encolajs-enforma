@@ -35,4 +35,5 @@ To take advantage of the schema-based forms, you have to learn these concepts:
 
 1. **[Schema Reference](/schema-forms/schema-reference.md)** - Full reference for schema structure and options
 2. **[Dynamic Props](/schema-forms/dynamic-props.md)** - Use expressions to create reactive field properties
-3. **[Transformers](/schema-forms/transformers.md)** - Transform schemas, context, and configuration at runtime
+3. **[Field Slots](field-slots.md)** - Customize individual fields using slots
+4. **[Transformers](/schema-forms/transformers.md)** - Transform schemas, context, and configuration at runtime

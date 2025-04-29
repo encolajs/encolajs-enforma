@@ -46,15 +46,15 @@
         class="col-start-1 col-end-2"
         name="salary"
         label="Salary"
-        :component="SalaryField"
+        :input-component="SalaryField"
         :input-props="{class: 'w-full'}"
       />
       <EnformaField
         class="col-start-2 col-end-3"
         name="available_date"
         label="Available date"
-        component="datepicker"
-        :input-props="{class: 'w-full'}"
+        inputComponent="datepicker"
+        :input-props="{class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true}"
       />
       <EnformaField
         name="linkedin_profile"
@@ -170,4 +170,5 @@ const experienceFields = {
     },
   },
 }
+
 </script>
