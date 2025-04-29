@@ -1,15 +1,22 @@
-# Dynamic Props
+<script setup>
+import DynamicPropsExample from './features/DynamicPropsExample.vue'
+</script>
 
-<!-- 
-This page should provide:
-1. Complete working examples of an Enforma form using a schema
-2. Fields are rendered individually, receiving the props from the schema
-3. One of the fields has dynamic props are dynamic 
-4. This means they respond to the other fields changing
-6. Show validation errors
-7. Submit handling (alert a message on valid form)
+# Form with Dynamic Props
 
+> Dynamic props allow you to change schema field properties based on the values of other fields in your form, creating a responsive and interactive form experience.
 
-Page should provide not just code but a working example. 
-Component file will be in ./components/DynamicPropsExample.vue
--->
+This example demonstrates how to use dynamic props in a schema-based form to create fields that adapt based on the form state:
+
+1. **Conditional Field Visibility**: Email and phone fields appear/disappear based on the selected contact preference using the `if` special prop
+2. **Dynamic Input Types**: The experience field changes its input component based on the position selected
+3. **Dynamic Labels and Placeholders**: Labels and placeholders adapt dynamically to the context
+4. **Dynamic Required Status**: Relocation preference is only required when remote work is not selected
+
+<ClientOnly>
+    <LiveDemo :component="DynamicPropsExample"></LiveDemo>
+</ClientOnly>
+
+::: code-group
+<<< @/examples/features/DynamicPropsExample.vue
+:::
