@@ -46,6 +46,7 @@ import {
   mergeProps,
   ComputedRef,
   useSlots,
+  ref,
 } from 'vue'
 import {
   formSchemaKey,
@@ -89,7 +90,6 @@ function getFields(
       return field.section === sectionName
     })
     .map(([key, field]) => [key, field as FieldSchema])
-  console.warn(schema, entries)
 
   return Object.fromEntries(entries)
 }
@@ -155,7 +155,7 @@ function shouldRenderSection(
 }
 
 // Inject dependencies
-const schema = inject<FormSchema>(formSchemaKey)
+const schema = inject<ComputedRef<FormSchema>>(formSchemaKey, computed(() => ({})))
 const formState = inject<FormController>(formControllerKey)
 
 // Get the configuration
@@ -177,8 +177,8 @@ function hasFieldSlot(fieldName: string): boolean {
 
 // Get the section schema for this section
 const originalSectionSchema = computed(() => {
-  if (!schema) return null
-  const item = schema[props.name]
+  if (!schema?.value) return null
+  const item = schema.value[props.name]
   if (isSectionSchema(item)) {
     return item
   }
@@ -228,7 +228,7 @@ function getComponent(field: any): string | object {
 
 // Get fields for this section and sort them by position
 const sortedFields = computed(() => {
-  const fields = Object.entries(getFields(schema, props.name)).map(
+  const fields = Object.entries(getFields(schema?.value, props.name)).map(
     ([name, field]) => {
       const fieldWithPosition: FieldWithPosition = {
         ...field,
@@ -243,7 +243,7 @@ const sortedFields = computed(() => {
 
 // Get nested sections and sort them by position
 const sortedSubsections = computed(() => {
-  const sections = getSubSections(schema, props.name).map(
+  const sections = getSubSections(schema?.value, props.name).map(
     ([name, section]) => ({ ...section, name } as SectionWithPosition)
   )
   return sortByPosition(sections)

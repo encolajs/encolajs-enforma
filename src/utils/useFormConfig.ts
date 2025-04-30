@@ -2,7 +2,7 @@
  * Utility for accessing form configuration in components
  */
 
-import { inject } from 'vue'
+import { inject, ComputedRef } from 'vue'
 import { formConfigKey } from '@/constants/symbols'
 import { EnformaConfig, useConfig } from './useConfig'
 import { pathUtils } from '@/utils/helpers'
@@ -20,7 +20,8 @@ export function useFormConfig(injectFormConfig = true) {
   // Inject the form configuration from the parent Enforma component
   // If not available, fallback to the base config
   if (injectFormConfig) {
-    formConfig = inject<EnformaConfig>(formConfigKey)
+    const injectedConfig = inject<ComputedRef<EnformaConfig>>(formConfigKey)
+    formConfig = injectedConfig?.value
   }
 
   if (!formConfig) {

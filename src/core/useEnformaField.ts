@@ -6,6 +6,7 @@ import {
   onBeforeUnmount,
   ComponentPublicInstance,
   ComputedRef,
+  ref,
 } from 'vue'
 import { formControllerKey, formSchemaKey } from '@/constants/symbols'
 import { FormController } from '@/types'
@@ -37,12 +38,14 @@ export interface EnformaFieldProps {
 // retrieve the field props by combining:
 // defaults, props from schema and props from the EnformaField component
 function getFieldProps<T>(
-  schema: Record<string, FieldSchema> | null,
   originalProps: EnformaFieldProps,
+  schema: Record<string, FieldSchema> | null,
+  formCtrl: FormController,
   getConfig: <T = any>(path: string, defaultValue?: T) => T | null | undefined
 ) {
   // Get field schema if available
   const fieldSchema = schema ? schema[originalProps.name] : null
+  formCtrl.getFieldValue(originalProps.name)
 
   const defaults: Record<string, any> = {
     component: 'input',
@@ -125,25 +128,25 @@ function getFieldProps<T>(
 // return fieldController and props
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
-  const formState = inject<FormController>(formControllerKey) as FormController
+  const formCtrl = inject<FormController>(formControllerKey) as FormController
 
   // Validate form context
-  if (!formState) {
+  if (!formCtrl) {
     console.error(
       `[Enforma] EnformaField '${originalProps.name}' must be used within a Enforma form component`
     )
   }
 
   const { formConfig, getConfig } = useFormConfig()
-  const schema = inject<Record<string, FieldSchema> | null>(formSchemaKey, null)
-  const options = getFieldProps(schema, originalProps, getConfig)
+  const schema = inject<ComputedRef<Record<string, FieldSchema> | null>>(formSchemaKey, computed(() => null))
+  const options = getFieldProps(originalProps, schema?.value || null, formCtrl, getConfig)
 
   // Initialize field with useField composable
-  const fieldController = useField(options.name, formState, {})
+  const fieldController = useField(options.name, formCtrl, {})
 
   // Set up cleanup
   onBeforeUnmount(() => {
-    formState?.removeField(options.name)
+    formCtrl?.removeField(options.name)
   })
 
   // First, apply transformers to the field options
@@ -168,10 +171,10 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
         // Add update:modelValue event handler
         options.inputEvents['update:modelValue'] = (value: any) => {
-          formState.setFieldValue(
+          formCtrl.setFieldValue(
             fieldName,
             value,
-            formState.getField(fieldName).$isDirty.value,
+            formCtrl.getField(fieldName).$isDirty.value,
             {
               $isDirty: true,
             }
@@ -187,7 +190,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
         fieldPropsTransformers,
         { ...options },
         fieldController,
-        formState,
+        formCtrl,
         formConfig
       )
     }

@@ -121,7 +121,7 @@ const schema = {
   phone: {
     type: 'field',
     class: 'col-start-1 col-end-3',
-    label: 'Phone Number',
+    label: '${form.getFieldValue("contactPreference")}',
     required: true,
     inputProps: { class: 'w-full' },
     if: '${form.getFieldValue("contactPreference") === "phone" || form.getFieldValue("contactPreference") === "both"}',
@@ -137,35 +137,29 @@ const schema = {
       options: '${context.positions}'
     },
   },
-  // experienceDetails: {
-  //   type: 'field',
-  //   props: {
-  //     class: 'col-start-1 col-end-3',
-  //     label: '${context.getExperienceLabel(form.getFieldValue("position"))}',
-  //     required: true,
-  //     inputComponent: '${context.getExperienceComponent(form.getFieldValue("position"))}',
-  //     inputProps: '${context.getExperienceProps(form.getFieldValue("position"))}',
-  //   },
-  // },
-  // availableDate: {
-  //   type: 'field',
-  //   props: {
-  //     class: 'col-start-1 col-end-3',
-  //     label: 'Date Available',
-  //     required: true,
-  //     inputComponent: 'datepicker',
-  //     inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
-  //   },
-  // },
-  // remoteWork: {
-  //   type: 'field',
-  //   props: {
-  //     class: 'col-start-1 col-end-3 toggle-field',
-  //     label: 'Interested in remote work',
-  //     showLabelNextToInput: true,
-  //     inputComponent: 'toggle',
-  //   },
-  // },
+  experienceDetails: {
+    type: 'field',
+    class: 'col-start-1 col-end-3',
+    label: '${context.getExperienceLabel(form.getFieldValue("position"))}',
+    required: true,
+    inputComponent: '${context.getExperienceComponent(form.getFieldValue("position"))}',
+    inputProps: '${context.getExperienceProps(form.getFieldValue("position"))}',
+  },
+  availableDate: {
+    type: 'field',
+    class: 'col-start-1 col-end-3',
+    label: 'Date Available',
+    required: true,
+    inputComponent: 'datepicker',
+    inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
+  },
+  remoteWork: {
+    type: 'field',
+    class: 'col-start-1 col-end-3 toggle-field',
+    label: 'Interested in remote work',
+    showLabelNextToInput: true,
+    inputComponent: 'toggle',
+  },
   // relocationPreference: {
   //   type: 'field',
   //   props: {

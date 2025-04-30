@@ -181,6 +181,7 @@ export function evaluateExpression(
   context: ExpressionContext | (() => ExpressionContext),
   options: EvaluationOptions = {}
 ): any {
+
   // Input validation
   if (!expression) {
     return expression
@@ -221,66 +222,6 @@ export function evaluateExpression(
     // Return a safe fallback value
     return undefined
   }
-}
-
-/**
- * Evaluates a conditional expression (used for if/show properties)
- * These are special expressions that return a boolean
- * Returns a computed ref that will automatically update when the context changes
- */
-export function evaluateCondition(
-  condition: string | boolean | undefined,
-  context: ExpressionContext | (() => ExpressionContext),
-  options: EvaluationOptions = {}
-): ComputedRef<boolean> {
-  // Handle special cases
-  if (condition === undefined || condition === null) {
-    return computed(() => true)
-  }
-
-  if (typeof condition === 'boolean') {
-    return computed(() => condition)
-  }
-
-  if (typeof condition === 'number') {
-    return computed(() => condition !== 0)
-  }
-
-  if (condition === '') {
-    return computed(() => false)
-  }
-
-  // For string conditions, evaluate as expression
-  return computed(() => {
-    try {
-      const currentContext = typeof context === 'function' ? context() : context
-      // Since evaluateExpression now returns a computed ref, we need to get the value
-      const exprRef = evaluateExpression(condition, currentContext, options)
-      return Boolean(exprRef.value)
-    } catch (error) {
-      // Specific error for conditions to distinguish from regular expressions
-      const currentContext = typeof context === 'function' ? context() : context
-      const conditionError =
-        error instanceof ExpressionError
-          ? new ExpressionError(
-              `Error evaluating condition: ${error.message}`,
-              condition,
-              error.originalError,
-              currentContext
-            )
-          : new ExpressionError(
-              `Error evaluating condition: ${(error as Error).message}`,
-              condition,
-              error as Error,
-              currentContext
-            )
-
-      logExpressionError(conditionError, condition, currentContext)
-
-      // Conditions fail closed (return false) for security
-      return false
-    }
-  })
 }
 
 /**
@@ -335,14 +276,13 @@ export function evaluateTemplateString(
       )
 
       try {
-        // Since evaluateExpression returns computed ref now, we need to get its value
-        const exprRef = evaluateExpression(
+        const result = evaluateExpression(
           expressionStr,
           currentContext,
           config.expressions
         )
 
-        return exprRef
+        return result
       } catch (error) {
         const templateError = new ExpressionError(
           `Error evaluating template expression: ${(error as Error).message}`,

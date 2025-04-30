@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
+import { computed } from 'vue'
 import EnformaSection from '../../src/core/EnformaSection.vue'
 import {
   formSchemaKey,
@@ -53,7 +54,7 @@ describe('EnformaSection', () => {
       {
         global: {
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -105,7 +106,7 @@ describe('EnformaSection', () => {
       {
         global: {
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -168,7 +169,7 @@ describe('EnformaSection', () => {
             EnformaField: EnformaFieldStub,
           },
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -227,7 +228,7 @@ describe('EnformaSection', () => {
       {
         global: {
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -280,7 +281,7 @@ describe('EnformaSection', () => {
             EnformaField: EnformaFieldStub,
           },
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -336,7 +337,7 @@ describe('EnformaSection', () => {
             EnformaField: EnformaFieldStub,
           },
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -370,7 +371,7 @@ describe('EnformaSection', () => {
       {
         global: {
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -405,7 +406,7 @@ describe('EnformaSection', () => {
             EnformaField: EnformaFieldStub,
           },
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },
@@ -460,7 +461,7 @@ describe('EnformaSection', () => {
       {
         global: {
           provide: {
-            [formSchemaKey]: schema,
+            [formSchemaKey]: computed(() => schema),
             [formControllerKey]: formState,
           },
         },

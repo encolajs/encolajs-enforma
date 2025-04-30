@@ -40,8 +40,8 @@ describe('evaluateSchema', () => {
     expect(result.lastName.if).toBe(false)
 
     // Verify expression are evaluated
-    expect(result.age.if.value).toBe(true)
-    expect(result.country.if.value).toBe(false)
+    expect(result.age.if).toBe(true)
+    expect(result.country.if).toBe(false)
   })
 
   test('should evaluate expressions in schema attributes', () => {
@@ -65,13 +65,13 @@ describe('evaluateSchema', () => {
     )
 
     // Check that string expressions are evaluated
-    expect(result.fullName.label.value).toBe('John')
+    expect(result.fullName.label).toBe('John')
 
     // Check that static text remains unchanged
     expect(result.fullName.description).toBe('Static text')
 
     // Check that nested object expressions are evaluated
-    expect(result.fullName.validation.minLength.value).toBe(3)
+    expect(result.fullName.validation.minLength).toBe(3)
   })
 
   test('should handle empty or invalid schema', () => {
@@ -106,6 +106,6 @@ describe('evaluateSchema', () => {
     const result = evaluateSchema(schema, undefined, mockContext, mockConfig)
 
     // Should still work with context even if form controller is missing
-    expect(result.test.label.value).toBe('dark')
+    expect(result.test.label).toBe('dark')
   })
 })
