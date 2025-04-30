@@ -91,9 +91,6 @@ function getFieldProps<T>(
       section: fieldSchema.section ?? null,
       position: fieldSchema.position ?? null,
     }
-    console.log(result.inputProps)
-    console.log(fieldSchema)
-    console.log({ ...result.inputProps, ...fieldSchema.inputProps })
   }
 
   // Apply component props (these take precedence over schema and defaults)

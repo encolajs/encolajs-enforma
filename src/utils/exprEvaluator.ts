@@ -6,6 +6,7 @@
  */
 import { computed, ComputedRef } from 'vue'
 import { EnformaConfig } from '@/utils/useConfig'
+import { de } from 'vuetify/locale'
 
 /**
  * Custom error class for expression evaluation errors
@@ -154,7 +155,7 @@ function createEvaluator(expression: string): (ctx: any) => any {
           return ${expression};
         } catch (error) {
           // Capture and rethrow with more context
-          throw new Error('Runtime error evaluating expression: ' + error.message);
+          throw new Error(error.message);
         }
       }
     `
@@ -180,50 +181,47 @@ export function evaluateExpression(
   expression: string,
   context: ExpressionContext | (() => ExpressionContext),
   options: EvaluationOptions = {}
-): ComputedRef<any> {
+): any {
   // Input validation
   if (!expression) {
-    return computed(() => undefined)
+    return expression
   }
 
-  return computed(() => {
-    // Get context (either from function or use directly)
-    let currentContext = typeof context === 'function' ? context() : context
+  // Get context (either from function or use directly)
+  let currentContext = typeof context === 'function' ? context() : context
 
-    if (!currentContext || typeof currentContext !== 'object') {
-      currentContext = { form: {}, context: {} } as ExpressionContext
-    }
+  if (!currentContext || typeof currentContext !== 'object') {
+    currentContext = { form: {}, context: {} } as ExpressionContext
+  }
 
-    try {
-      // Get or create the evaluation function (memoized)
-      const evaluator = memoizedCreateEvaluator(expression)
+  try {
+    // Get or create the evaluation function (memoized)
+    const evaluator = memoizedCreateEvaluator(expression)
 
-      // Create a safe context copy to prevent modifications to the original
-      const safeContext = { ...currentContext }
+    // Create a safe context copy to prevent modifications to the original
+    const safeContext = { ...currentContext }
+    // Evaluate the expression synchronously
+    return evaluator(safeContext)
+  } catch (error) {
+    // Handle the error and provide helpful debugging information
+    const expressionError =
+      error instanceof ExpressionError
+        ? error
+        : new ExpressionError(
+          `Runtime error evaluating expression: ${
+            (error as Error).message
+          }`,
+          expression,
+          error as Error,
+          currentContext
+        )
 
-      // Evaluate the expression synchronously
-      return evaluator(safeContext)
-    } catch (error) {
-      // Handle the error and provide helpful debugging information
-      const expressionError =
-        error instanceof ExpressionError
-          ? error
-          : new ExpressionError(
-              `Runtime error evaluating expression: ${
-                (error as Error).message
-              }`,
-              expression,
-              error as Error,
-              currentContext
-            )
+    // Log the error with appropriate level of detail
+    logExpressionError(expressionError, expression, currentContext)
 
-      // Log the error with appropriate level of detail
-      logExpressionError(expressionError, expression, currentContext)
-
-      // Return a safe fallback value
-      return undefined
-    }
-  })
+    // Return a safe fallback value
+    return undefined
+  }
 }
 
 /**
@@ -306,10 +304,10 @@ export function evaluateTemplateString(
   template: string,
   context: ExpressionContext | (() => ExpressionContext),
   config: EnformaConfig
-): ComputedRef<any> {
+): any {
   // Input validation
   if (!template || typeof template !== 'string') {
-    return computed(() => String(template || ''))
+    return template as unknown as ComputedRef<any>
   }
 
   if (!config || typeof config !== 'object') {
@@ -325,66 +323,58 @@ export function evaluateTemplateString(
     )
   }
 
-  return computed(() => {
-    try {
-      const currentContext = typeof context === 'function' ? context() : context
-      const { start, end } =
-        config.expressions?.delimiters ?? DEFAULT_OPTIONS.delimiters
+  try {
+    const currentContext = typeof context === 'function' ? context() : context
+    const { start, end } =
+    config.expressions?.delimiters ?? DEFAULT_OPTIONS.delimiters
 
-      // Check if the entire string is an expression
-      if (template.startsWith(start) && template.endsWith(end)) {
-        const expressionStr = template.substring(
-          start.length,
-          template.length - end.length
+    // Check if the entire string is an expression
+    if (template.startsWith(start) && template.endsWith(end)) {
+      const expressionStr = template.substring(
+        start.length,
+        template.length - end.length
+      )
+
+      try {
+        // Since evaluateExpression returns computed ref now, we need to get its value
+        const exprRef = evaluateExpression(
+          expressionStr,
+          currentContext,
+          config.expressions
         )
 
-        try {
-          // Since evaluateExpression returns computed ref now, we need to get its value
-          const exprRef = evaluateExpression(
-            expressionStr,
-            currentContext,
-            config.expressions
-          )
-          const result = exprRef.value
+        return exprRef
+      } catch (error) {
+        const templateError = new ExpressionError(
+          `Error evaluating template expression: ${(error as Error).message}`,
+          expressionStr,
+          error as Error,
+          currentContext
+        )
+        logExpressionError(templateError, expressionStr, currentContext)
 
-          // Handle different result types appropriately
-          if (result === undefined || result === null) {
-            return ''
-          }
-
-          return result
-        } catch (error) {
-          const templateError = new ExpressionError(
-            `Error evaluating template expression: ${(error as Error).message}`,
-            expressionStr,
-            error as Error,
-            currentContext
-          )
-          logExpressionError(templateError, expressionStr, currentContext)
-
-          // Return original template on error as a fallback
-          return template
-        }
+        // Return original template on error as a fallback
+        return template
       }
-
-      // If not a complete expression, return as is
-      return template
-    } catch (error) {
-      // Handle unexpected errors
-      const currentContext = typeof context === 'function' ? context() : context
-      logExpressionError(
-        new ExpressionError(
-          `Unexpected error in template evaluation: ${
-            (error as Error).message
-          }`,
-          template,
-          error as Error
-        ),
-        template
-      )
-      return template
     }
-  })
+
+    // If not a complete expression, return as is
+    return template
+  } catch (error) {
+    // Handle unexpected errors
+    const currentContext = typeof context === 'function' ? context() : context
+    logExpressionError(
+      new ExpressionError(
+        `Unexpected error in template evaluation: ${
+          (error as Error).message
+        }`,
+        template,
+        error as Error
+      ),
+      template
+    )
+    return template
+  }
 }
 
 /**
@@ -398,6 +388,10 @@ export function evaluateObject<T extends Record<string, any>>(
 ): Record<string, ComputedRef<any> | any> {
   // Input validation
   if (obj == null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (obj.dep) {
     return obj
   }
 
@@ -447,7 +441,7 @@ export function evaluateObject<T extends Record<string, any>>(
                   currentContext,
                   config
                 )
-                return computedItem.value
+                return computedItem?.value || computedItem
               } else if (item && typeof item === 'object') {
                 // For objects in arrays, recursively evaluate
                 const evaluatedObj = evaluateObject(
@@ -503,10 +497,10 @@ export function evaluateObject<T extends Record<string, any>>(
 
     // Log any errors that occurred during evaluation
     if (errors.length > 0 && process.env.NODE_ENV !== 'production') {
-      console.warn(
-        `[Enforma] ${errors.length} expression errors occurred during object evaluation:`,
-        errors.map((e) => e.message)
-      )
+      errors.map((e) => {
+        console.warn(
+          `[Enforma] Expression error occurred during object evaluation:`, e.message)
+      })
     }
 
     return result

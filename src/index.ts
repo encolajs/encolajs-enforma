@@ -9,7 +9,7 @@ export { useForm } from './headless/useForm'
 export { useConfig } from './utils/useConfig'
 export { useFormConfig } from './utils/useFormConfig'
 export { useTranslation } from './utils/useTranslation'
-export { useDynamicProps } from './utils/useDynamicProps'
+export { evaluateSchema } from './utils/evaluateSchema'
 
 // Utilities
 export { mergeConfigs, deepMerge } from './utils/configUtils'

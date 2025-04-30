@@ -89,6 +89,7 @@ function getFields(
       return field.section === sectionName
     })
     .map(([key, field]) => [key, field as FieldSchema])
+  console.warn(schema, entries)
 
   return Object.fromEntries(entries)
 }
@@ -140,13 +141,7 @@ function shouldRenderField(field: FieldSchema & { name: string }): boolean {
   // If no 'if' property, always render
   if (field['if'] === undefined) return true
 
-  // If 'if' is a boolean, use it directly
-  if (typeof field['if'] === 'boolean') return field['if']
-
-  // If 'if' is a string in a schema it will be converted to a computed ref
-  // via the dynamic props
-  // @ts-expect-error at this point the field.if is an evaluted dynamic prop
-  return (field['if'] as ComputedRef<boolean>).value
+  return field['if'] as boolean
 }
 
 // Helper function to determine if a section should be rendered based on its 'if' property
@@ -156,13 +151,7 @@ function shouldRenderSection(
   // If no 'if' property, always render
   if (section['if'] === undefined) return true
 
-  // If 'if' is a boolean, use it directly
-  if (typeof section['if'] === 'boolean') return section.if
-
-  // If 'if' is a string in a schema it will be converted to a computed ref
-  // via the dynamic props
-  // @ts-expect-error at this point the field.if is an evaluted dynamic prop
-  return (section['if'] as ComputedRef<boolean>).value
+  return section['if'] as boolean
 }
 
 // Inject dependencies

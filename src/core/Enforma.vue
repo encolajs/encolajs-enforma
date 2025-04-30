@@ -56,6 +56,8 @@ import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
+import { evaluateSchema } from '@/utils/evaluateSchema'
+import { de } from 'vuetify/locale'
 
 const props = defineProps({
   data: {
@@ -127,9 +129,11 @@ const transformedProps = computed(() => {
     []
   ) as Function[]
 
+  const schema = evaluateSchema(props.schema, form.value || {}, props.context, formConfig)
+
   if (formPropsTransformers.length === 0) {
     return {
-      schema: props.schema,
+      schema: schema,
       context: props.context || {},
       config: formConfig,
     }
@@ -137,7 +141,7 @@ const transformedProps = computed(() => {
 
   // Create a single props object containing schema, context and config
   const formProps = {
-    schema: props.schema ? { ...props.schema } : null,
+    schema: schema ? { ...schema } : null,
     context: props.context ? { ...props.context } : {},
     config: { ...formConfig },
   }
