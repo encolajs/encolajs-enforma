@@ -18,7 +18,7 @@ describe('Dynamic Props', () => {
       phone: '',
       position: '',
       experienceDetails: '',
-      ...initialData
+      ...initialData,
     })
 
     // Context for dynamic props expressions
@@ -27,7 +27,7 @@ describe('Dynamic Props', () => {
       getExperienceLabel(position) {
         if (!position) return 'Experience Details'
         position = position.toLowerCase()
-        
+
         if (position.includes('developer')) {
           return 'Technical Experience'
         } else if (position.includes('manager')) {
@@ -37,7 +37,7 @@ describe('Dynamic Props', () => {
         } else {
           return 'Experience Details'
         }
-      }
+      },
     }
 
     // Define schema with dynamic props
@@ -60,12 +60,12 @@ describe('Dynamic Props', () => {
       position: {
         type: 'field',
         label: 'Position Applied For',
-        inputComponent: 'input'
+        inputComponent: 'input',
       },
       experienceDetails: {
         type: 'field',
         label: '${context.getExperienceLabel(form.getFieldValue("position"))}',
-      }
+      },
     }
 
     // Validation rules
@@ -74,7 +74,7 @@ describe('Dynamic Props', () => {
       email: 'required|email',
       phone: 'required',
       position: 'required',
-      experienceDetails: 'required'
+      experienceDetails: 'required',
     }
 
     // Submit handler
@@ -95,58 +95,58 @@ describe('Dynamic Props', () => {
 
   it('should show/hide fields based on dynamic "if" conditions', async () => {
     const wrapper = createWrapper()
-    
+
     const form = wrapper.vm.form
-    
+
     // Get the label for the phone field when contactPreference changes
-    
+
     // Change contactPreference to 'phone'
     form.setFieldValue('contactPreference', 'phone')
     await nextTick()
     await nextTick() // Sometimes multiple ticks are needed for reactivity
-    
+
     // Get the label text of the phone field after changing to 'phone'
-    const phoneLabels = wrapper.findAll('label').filter(
-      label => label.text().includes('phone')
-    )
+    const phoneLabels = wrapper
+      .findAll('label')
+      .filter((label) => label.text().includes('phone'))
     expect(phoneLabels.length).toBeGreaterThan(0)
-    
+
     // Change contactPreference to 'both'
     form.setFieldValue('contactPreference', 'both')
     await nextTick()
     await nextTick()
-    
+
     // Get the label of the phone field after changing to 'both'
-    const updatedPhoneLabels = wrapper.findAll('label').filter(
-      label => label.text().includes('phone') 
-    )
+    const updatedPhoneLabels = wrapper
+      .findAll('label')
+      .filter((label) => label.text().includes('phone'))
     expect(updatedPhoneLabels.length).toBe(0)
   })
 
   it('should update field label based on dynamic expressions', async () => {
     const wrapper = createWrapper()
     const form = wrapper.vm.form
-    
+
     // Set position to 'Developer'
     form.setFieldValue('position', 'Developer')
     await nextTick()
     await nextTick()
-    
+
     // Look for the Technical Experience label
-    const techExpLabels = wrapper.findAll('label').filter(
-      label => label.text().includes('Technical Experience')
-    )
+    const techExpLabels = wrapper
+      .findAll('label')
+      .filter((label) => label.text().includes('Technical Experience'))
     expect(techExpLabels.length).toBeGreaterThan(0)
-    
+
     // Change position to 'Manager'
     form.setFieldValue('position', 'Manager')
     await nextTick()
     await nextTick()
-    
+
     // Look for the Management Experience label
-    const mgmtExpLabels = wrapper.findAll('label').filter(
-      label => label.text().includes('Management Experience')
-    )
+    const mgmtExpLabels = wrapper
+      .findAll('label')
+      .filter((label) => label.text().includes('Management Experience'))
     expect(mgmtExpLabels.length).toBe(1)
   })
 })

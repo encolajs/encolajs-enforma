@@ -1,9 +1,17 @@
 /**
  * Function for evaluating schemas with expression evaluation
  */
-import { FormController, FormSchema } from '@/types'
+import {
+  FieldSchema,
+  FormController,
+  FormSchema,
+  RepeatableSchema,
+  RepeatableTableSchema,
+  SectionSchema,
+} from '@/types'
 import {
   evaluateObject,
+  evaluateTemplateString,
   ExpressionContext,
 } from './exprEvaluator'
 import { EnformaConfig } from './useConfig'
@@ -14,29 +22,28 @@ export type DynamicProps = Record<string, any>
 /**
  * Evaluates a schema by processing each item and evaluating expressions
  */
-export function evaluateSchema(
-  schema: FormSchema,
+export function evaluateSchema<T>(
+  schema: T,
   formController: FormController | undefined,
   context: Record<string, any>,
   config: EnformaConfig
-): FormSchema {
+): T {
   if (typeof schema !== 'object' || Array.isArray(schema)) {
     return schema
   }
-  /**
-   * Create the context for expression evaluation
-   */
-  const getExpressionContext = (): ExpressionContext => {
-    // Create context object with the three main keys
-    return {
-      // Form controller (not just values)
-      form: formController ?? {},
-      // External context
-      context: { ...context },
-      // Form configuration
-      config,
-    }
+
+  const expressionContext = {
+    // Form controller (not just values)
+    form: formController ?? {},
+    // External context
+    context: { ...context },
+    // Form configuration
+    config,
   }
 
-  return evaluateObject(schema, getExpressionContext, config)
+  return evaluateObject(
+    schema as Record<string, any>,
+    expressionContext,
+    config
+  ) as T
 }

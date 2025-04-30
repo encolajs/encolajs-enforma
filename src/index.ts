@@ -9,12 +9,13 @@ export { useForm } from './headless/useForm'
 export { useConfig } from './utils/useConfig'
 export { useFormConfig } from './utils/useFormConfig'
 export { useTranslation } from './utils/useTranslation'
-export { evaluateSchema } from './utils/evaluateSchema'
 
 // Utilities
 export { mergeConfigs, deepMerge } from './utils/configUtils'
 export { default as applyTransformers } from './utils/applyTransformers'
 export { debounce } from './utils/debounce'
+export { evaluateSchema } from './utils/evaluateSchema'
+export { evaluateCondition } from './utils/evaluateCondition'
 export * from './utils/helpers'
 export {
   createFormEmitter,
@@ -43,6 +44,7 @@ export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
 // export { default as useDefaultPreset } from './presets/default'
 // export { default as usePrimeVuePreset } from './presets/primevue'
 // export { default as useVuetifyPreset } from './presets/vuetify'
+// export { default as useQuasarPreset } from './presets/quasar'
 
 // Type exports
 export type {

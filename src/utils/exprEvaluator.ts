@@ -181,7 +181,6 @@ export function evaluateExpression(
   context: ExpressionContext | (() => ExpressionContext),
   options: EvaluationOptions = {}
 ): any {
-
   // Input validation
   if (!expression) {
     return expression
@@ -208,13 +207,11 @@ export function evaluateExpression(
       error instanceof ExpressionError
         ? error
         : new ExpressionError(
-          `Runtime error evaluating expression: ${
-            (error as Error).message
-          }`,
-          expression,
-          error as Error,
-          currentContext
-        )
+            `Runtime error evaluating expression: ${(error as Error).message}`,
+            expression,
+            error as Error,
+            currentContext
+          )
 
     // Log the error with appropriate level of detail
     logExpressionError(expressionError, expression, currentContext)
@@ -266,7 +263,7 @@ export function evaluateTemplateString(
   try {
     const currentContext = typeof context === 'function' ? context() : context
     const { start, end } =
-    config.expressions?.delimiters ?? DEFAULT_OPTIONS.delimiters
+      config.expressions?.delimiters ?? DEFAULT_OPTIONS.delimiters
 
     // Check if the entire string is an expression
     if (template.startsWith(start) && template.endsWith(end)) {
@@ -304,9 +301,7 @@ export function evaluateTemplateString(
     const currentContext = typeof context === 'function' ? context() : context
     logExpressionError(
       new ExpressionError(
-        `Unexpected error in template evaluation: ${
-          (error as Error).message
-        }`,
+        `Unexpected error in template evaluation: ${(error as Error).message}`,
         template,
         error as Error
       ),
@@ -438,7 +433,9 @@ export function evaluateObject<T extends Record<string, any>>(
     if (errors.length > 0 && process.env.NODE_ENV !== 'production') {
       errors.map((e) => {
         console.warn(
-          `[Enforma] Expression error occurred during object evaluation:`, e.message)
+          `[Enforma] Expression error occurred during object evaluation:`,
+          e.message
+        )
       })
     }
 

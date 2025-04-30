@@ -94,14 +94,18 @@ const context = {
 const schema = {
   name: {
     type: 'field',
-    class: 'col-start-1 col-end-3',
+    props: {
+      class: 'col-start-1 col-end-3',
+    },
     label: 'Name',
     required: true,
     inputProps: { class: 'w-full' },
   },
   contactPreference: {
     type: 'field',
-    class: 'col-start-1 col-end-3',
+    props: {
+      class: 'col-start-1 col-end-3',
+    },
     label: 'Preferred Contact Method',
     required: true,
     inputComponent: 'select',
@@ -112,7 +116,9 @@ const schema = {
   },
   email: {
     type: 'field',
-    class: 'col-start-1 col-end-3',
+    props: {
+      class: 'col-start-1 col-end-2',
+    },
     label: 'Email Address',
     required: true,
     inputProps: { class: 'w-full' },
@@ -120,9 +126,11 @@ const schema = {
   },
   phone: {
     type: 'field',
-    class: 'col-start-1 col-end-3',
-    label: '${form.getFieldValue("contactPreference")}',
-    required: true,
+    props: {
+      class: 'col-start-2 col-end-3',
+    },
+    label: '${form.getFieldValue("contactPreference") === "phone" ? "Phone" : "Phone(optional)"}',
+    required: '${form.getFieldValue("contactPreference") === "phone"}',
     inputProps: { class: 'w-full' },
     if: '${form.getFieldValue("contactPreference") === "phone" || form.getFieldValue("contactPreference") === "both"}',
   },
@@ -147,46 +155,60 @@ const schema = {
   },
   availableDate: {
     type: 'field',
-    class: 'col-start-1 col-end-3',
+    props: {
+      class: 'col-start-1 col-end-2',
+    },
     label: 'Date Available',
     required: true,
     inputComponent: 'datepicker',
-    inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
+    useModelValue: true,
+    inputProps: {
+      class: 'w-full',
+      dateFormat: 'yy-mm-dd',
+      fluid: true
+    },
   },
   remoteWork: {
     type: 'field',
-    class: 'col-start-1 col-end-3 toggle-field',
+    props: {
+      class: 'col-start-2 col-end-3 toggle-field',
+    },
     label: 'Interested in remote work',
     showLabelNextToInput: true,
     inputComponent: 'toggle',
+    useModelValue: true,
+    inputProps: {
+      trueValue: true,
+      falseValue: false,
+    }
   },
-  // relocationPreference: {
-  //   type: 'field',
-  //   props: {
-  //     class: 'col-start-1 col-end-3',
-  //     label: 'Willing to relocate',
-  //     required: '${!form.getFieldValue("remoteWork")}',
-  //     inputComponent: 'select',
-  //     inputProps: {
-  //       class: 'w-full',
-  //       options: ['Yes', 'No', 'Maybe']
-  //     },
-  //     if: '${!form.getFieldValue("remoteWork")}',
-  //   },
-  // },
-  // additionalDetails: {
-  //   type: 'field',
-  //   props: {
-  //     class: 'col-start-1 col-end-3',
-  //     label: '${form.getFieldValue("remoteWork") ? "Remote Work Setup" : "Relocation Preferences"}',
-  //     inputComponent: 'textarea',
-  //     inputProps: {
-  //       class: 'w-full',
-  //       rows: 3,
-  //       placeholder: '${form.getFieldValue("remoteWork") ? "Describe your home office setup" : "Describe your relocation preferences"}'
-  //     },
-  //   },
-  // }
+  relocationPreference: {
+    type: 'field',
+    props: {
+      class: 'col-start-1 col-end-2',
+    },
+    label: 'Willing to relocate',
+    required: '${!form.getFieldValue("remoteWork")}',
+    inputComponent: 'select',
+    inputProps: {
+      class: 'w-full',
+      options: ['Yes', 'No', 'Maybe']
+    },
+    if: '${!form.getFieldValue("remoteWork")}',
+  },
+  additionalDetails: {
+    type: 'field',
+    props: {
+      class: '${form.getFieldValue("remoteWork") ? "col-start-1 col-end-3" : "cols-start-2 col-end-3"}',
+    },
+    label: '${form.getFieldValue("remoteWork") ? "Remote Work Setup" : "Relocation Preferences"}',
+    inputComponent: 'textarea',
+    inputProps: {
+      class: 'w-full',
+      rows: 3,
+      placeholder: '${form.getFieldValue("remoteWork") ? "Describe your home office setup" : "Describe your relocation preferences"}'
+    },
+  }
 }
 
 // Validation rules

@@ -15,23 +15,17 @@
           v-if="hasFieldSlot(field.name)"
           :is="parentSlots[`field(${field.name})`]"
           :field="field"
-          :formController="formState"
+          :formController="formCtrl"
           :config="formConfig"
         />
-        <component
-          v-else
-          :is="getComponent(field)"
-          :name="field.name"
-          v-bind="field.props"
-        />
+        <component v-else :is="getComponent(field)" v-bind="field" />
       </template>
     </template>
 
     <template v-for="subSection in sortedSubsections" :key="subSection.name">
       <component
         :is="sectionComponent"
-        :name="subSection.name"
-        v-bind="subSection.props"
+        v-bind="subSection"
         v-if="shouldRenderSection(subSection)"
       />
     </template>
@@ -52,10 +46,13 @@ import {
   formSchemaKey,
   formControllerKey,
   formFieldSlotsKey,
+  formContextKey,
 } from '@/constants/symbols'
 import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
+import { evaluateCondition } from '@/utils/evaluateCondition'
+import { de } from 'vuetify/locale'
 
 interface FieldWithPosition extends FieldSchema {
   position?: number
@@ -134,14 +131,21 @@ defineOptions({ name: 'EnformaSection' })
 
 const props = defineProps<{
   name: string
+  title: string
+  titleComponent: string | object
+  titleProps: object | null
+  section: string | null
+  position: number | null
+  type: string | null
 }>()
 
 // Helper function to determine if a field should be rendered based on its 'if' property
 function shouldRenderField(field: FieldSchema & { name: string }): boolean {
   // If no 'if' property, always render
   if (field['if'] === undefined) return true
+  if (typeof field['if'] !== 'string') return field['if']
 
-  return field['if'] as boolean
+  return evaluateCondition(field['if'], formCtrl, formContext, formConfig)
 }
 
 // Helper function to determine if a section should be rendered based on its 'if' property
@@ -150,13 +154,15 @@ function shouldRenderSection(
 ): boolean {
   // If no 'if' property, always render
   if (section['if'] === undefined) return true
+  if (typeof section['if'] !== 'string') return section['if']
 
-  return section['if'] as boolean
+  return evaluateCondition(section['if'], formCtrl, formContext, formConfig)
 }
 
 // Inject dependencies
-const schema = inject<ComputedRef<FormSchema>>(formSchemaKey, computed(() => ({})))
-const formState = inject<FormController>(formControllerKey)
+const schema = inject<FormSchema>(formSchemaKey, {})
+const formCtrl = inject<FormController>(formControllerKey)
+const formContext = inject<any>(formContextKey, null)
 
 // Get the configuration
 const { getConfig, formConfig } = useFormConfig()
@@ -177,8 +183,8 @@ function hasFieldSlot(fieldName: string): boolean {
 
 // Get the section schema for this section
 const originalSectionSchema = computed(() => {
-  if (!schema?.value) return null
-  const item = schema.value[props.name]
+  if (!schema) return null
+  const item = schema[props.name]
   if (isSectionSchema(item)) {
     return item
   }
@@ -187,7 +193,13 @@ const originalSectionSchema = computed(() => {
 
 // Apply section props transformers
 const sectionSchema = computed(() => {
-  if (!originalSectionSchema.value) return null
+  // Create a copy with name property for the transformer to use
+  const mergedProps = {
+    ...(originalSectionSchema.value || {}),
+  }
+  Object.entries(props).forEach(
+    ([k, v]) => v !== undefined && (mergedProps[k] = v)
+  )
 
   // Apply section props transformers if defined in config
   const sectionPropsTransformers = getConfig(
@@ -196,19 +208,13 @@ const sectionSchema = computed(() => {
   ) as Function[]
 
   if (sectionPropsTransformers.length === 0) {
-    return originalSectionSchema.value
-  }
-
-  // Create a copy with name property for the transformer to use
-  const sectionWithName = {
-    ...originalSectionSchema.value,
-    name: props.name,
+    return mergedProps
   }
 
   return applyTransformers(
     sectionPropsTransformers,
-    sectionWithName,
-    formState,
+    mergedProps,
+    formCtrl,
     formConfig
   )
 })
@@ -228,7 +234,7 @@ function getComponent(field: any): string | object {
 
 // Get fields for this section and sort them by position
 const sortedFields = computed(() => {
-  const fields = Object.entries(getFields(schema?.value, props.name)).map(
+  const fields = Object.entries(getFields(schema, props.name)).map(
     ([name, field]) => {
       const fieldWithPosition: FieldWithPosition = {
         ...field,
@@ -243,7 +249,7 @@ const sortedFields = computed(() => {
 
 // Get nested sections and sort them by position
 const sortedSubsections = computed(() => {
-  const sections = getSubSections(schema?.value, props.name).map(
+  const sections = getSubSections(schema, props.name).map(
     ([name, section]) => ({ ...section, name } as SectionWithPosition)
   )
   return sortByPosition(sections)

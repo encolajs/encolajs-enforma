@@ -8,12 +8,17 @@ import {
   ComputedRef,
   ref,
 } from 'vue'
-import { formControllerKey, formSchemaKey } from '@/constants/symbols'
-import { FormController } from '@/types'
+import {
+  formContextKey,
+  formControllerKey,
+  formSchemaKey,
+} from '@/constants/symbols'
+import { FormController, FormSchema } from '@/types'
 import { useField } from '@/headless/useField'
 import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
+import { evaluateSchema } from '@/utils/evaluateSchema'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -39,12 +44,14 @@ export interface EnformaFieldProps {
 // defaults, props from schema and props from the EnformaField component
 function getFieldProps<T>(
   originalProps: EnformaFieldProps,
-  schema: Record<string, FieldSchema> | null,
+  schema: FormSchema | null,
   formCtrl: FormController,
   getConfig: <T = any>(path: string, defaultValue?: T) => T | null | undefined
 ) {
   // Get field schema if available
-  const fieldSchema = schema ? schema[originalProps.name] : null
+  const fieldSchema = (
+    schema ? schema[originalProps.name] : null
+  ) as FieldSchema
   formCtrl.getFieldValue(originalProps.name)
 
   const defaults: Record<string, any> = {
@@ -73,53 +80,14 @@ function getFieldProps<T>(
   if (fieldSchema) {
     result = {
       ...result,
-      label: fieldSchema.label ?? null,
-      component: fieldSchema.component ?? result.component,
-      inputComponent: fieldSchema.inputComponent ?? result.component,
-      hideLabel: fieldSchema.hideLabel ?? result.hideLabel,
-      showLabelNextToInput:
-        fieldSchema.showLabelNextToInput ?? result.showLabelNextToInput,
-      required: fieldSchema.required ?? result.required,
-      useModelValue: fieldSchema.useModelValue ?? result.useModelValue,
-      help: fieldSchema.help ?? null,
-      labelProps: { ...result.labelProps, ...fieldSchema.labelProps },
-      requiredProps: {
-        ...result.requiredProps,
-        ...fieldSchema.requiredProps,
-      },
-      errorProps: { ...result.errorProps, ...fieldSchema.errorProps },
-      helpProps: { ...result.helpProps, ...fieldSchema.helpProps },
-      props: { ...result.props, ...fieldSchema.props },
-      inputProps: { ...result.inputProps, ...fieldSchema.inputProps },
-      section: fieldSchema.section ?? null,
-      position: fieldSchema.position ?? null,
+      ...fieldSchema,
     }
   }
 
   // Apply component props (these take precedence over schema and defaults)
   result = {
     ...result,
-    name: originalProps.name,
-    label: originalProps.label ?? result.label,
-    component: result.component, // Keep component from schema or defaults
-    inputComponent: originalProps.inputComponent ?? result.inputComponent,
-    hideLabel: originalProps.hideLabel ?? result.hideLabel,
-    showLabelNextToInput:
-      originalProps.showLabelNextToInput ?? result.showLabelNextToInput,
-    required: originalProps.required ?? result.required,
-    useModelValue: originalProps.useModelValue ?? result.useModelValue,
-    help: originalProps.help ?? result.help,
-    labelProps: { ...result.labelProps, ...originalProps.labelProps },
-    requiredProps: {
-      ...result.requiredProps,
-      ...originalProps.requiredProps,
-    },
-    errorProps: { ...result.errorProps, ...originalProps.errorProps },
-    helpProps: { ...result.helpProps, ...originalProps.helpProps },
-    props: { ...result.props, ...originalProps.props },
-    inputProps: { ...result.inputProps, ...originalProps.inputProps },
-    section: originalProps.section ?? result.section,
-    position: originalProps.position ?? result.position,
+    ...originalProps,
   }
 
   return result
@@ -129,6 +97,9 @@ function getFieldProps<T>(
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
   const formCtrl = inject<FormController>(formControllerKey) as FormController
+  const schema = inject<FormSchema>(formSchemaKey, {})
+  const formContext = inject<any>(formContextKey)
+  const { formConfig, getConfig } = useFormConfig()
 
   // Validate form context
   if (!formCtrl) {
@@ -137,75 +108,84 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     )
   }
 
-  const { formConfig, getConfig } = useFormConfig()
-  const schema = inject<ComputedRef<Record<string, FieldSchema> | null>>(formSchemaKey, computed(() => null))
-  const options = getFieldProps(originalProps, schema?.value || null, formCtrl, getConfig)
+  const internalState = ref(0)
+
+  formCtrl.on('field_changed', () => internalState.value++)
+
+  const fieldProps = computed(() => {
+    return evaluateSchema(
+      getFieldProps(originalProps, schema, formCtrl, getConfig),
+      formCtrl,
+      formContext,
+      formConfig
+    )
+  })
 
   // Initialize field with useField composable
-  const fieldController = useField(options.name, formCtrl, {})
+  const fieldController = useField(fieldProps.value.name, formCtrl, {})
 
   // Set up cleanup
   onBeforeUnmount(() => {
-    formCtrl?.removeField(options.name)
+    formCtrl?.removeField(fieldProps.value.name)
   })
 
   // First, apply transformers to the field options
-  const transformedFieldOptions: ComputedRef<EnformaFieldProps> = computed(
-    () => {
-      // Apply field props transformers if defined in config
-      const fieldPropsTransformers = getConfig(
-        'transformers.field_props',
-        []
-      ) as Function[]
+  const transformedFieldProps: ComputedRef<EnformaFieldProps> = computed(() => {
+    // Apply field props transformers if defined in config
+    const fieldPropsTransformers = getConfig(
+      'transformers.field_props',
+      []
+    ) as Function[]
 
-      // Create inputEvents by copying the fieldController.events
-      options.inputEvents = { ...fieldController.value.events }
+    const props = fieldProps.value
 
-      // Handle useModelValue prop for components that only use update:modelValue
-      if (options.useModelValue) {
-        const fieldName = options.name
+    // Create inputEvents by copying the fieldController.events
+    props.inputEvents = { ...fieldController.value.events }
 
-        // Remove input and change events
-        delete options.inputEvents.input
-        delete options.inputEvents.change
+    // Handle useModelValue prop for components that only use update:modelValue
+    if (props.useModelValue) {
+      const fieldName = props.name
 
-        // Add update:modelValue event handler
-        options.inputEvents['update:modelValue'] = (value: any) => {
-          formCtrl.setFieldValue(
-            fieldName,
-            value,
-            formCtrl.getField(fieldName).$isDirty.value,
-            {
-              $isDirty: true,
-            }
-          )
-        }
+      // Remove input and change events
+      delete props.inputEvents.input
+      delete props.inputEvents.change
+
+      // Add update:modelValue event handler
+      props.inputEvents['update:modelValue'] = (value: any) => {
+        formCtrl.setFieldValue(
+          fieldName,
+          value,
+          formCtrl.getField(fieldName).$isDirty.value,
+          {
+            $isDirty: true,
+          }
+        )
       }
-
-      if (fieldPropsTransformers.length === 0) {
-        return options
-      }
-
-      return applyTransformers(
-        fieldPropsTransformers,
-        { ...options },
-        fieldController,
-        formCtrl,
-        formConfig
-      )
     }
-  )
+
+    if (fieldPropsTransformers.length === 0) {
+      return props
+    }
+
+    return applyTransformers(
+      fieldPropsTransformers,
+      { ...props },
+      fieldController,
+      formCtrl,
+      formConfig
+    )
+  })
 
   // Derive computed values
   const fieldId = computed(
-    () =>
-      transformedFieldOptions.value.inputProps?.id || fieldController.value.id
+    () => transformedFieldProps.value.inputProps?.id || fieldController.value.id
   )
 
   // Combine all props into a single computed property
   const props = computed(() => {
+    const state = internalState.value // to trigger update
     // Get all the original props after transformation
-    const transformedProps = { ...transformedFieldOptions.value }
+    const transformedProps = { ...transformedFieldProps.value }
 
     // Get a reference to the transformed input props to determine if an ID was already provided
     const transformedInputProps = transformedProps.inputProps || {}

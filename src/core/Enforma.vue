@@ -42,7 +42,10 @@ import {
   PropType,
   reactive,
   computed,
-  useSlots, toRaw, watch, nextTick,
+  useSlots,
+  toRaw,
+  watch,
+  nextTick,
 } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import {
@@ -56,7 +59,6 @@ import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
-import { evaluateSchema } from '@/utils/evaluateSchema'
 
 const props = defineProps({
   data: {
@@ -115,28 +117,11 @@ defineExpose(exposedController)
 onMounted(() => {
   if (form.value) {
     Object.assign(exposedController, form.value)
-    
-    // Listen for field change events to re-evaluate schema immediately
-    form.value.on('field_changed', updateEvaluatedSchema)
   }
 })
 
 const formConfig = useConfig(props.config)
 const { getConfig } = useFormConfig(false)
-
-const evaluatedSchema = ref({ })
-function updateEvaluatedSchema() {
-  evaluatedSchema.value = evaluateSchema(props.schema, form.value || {}, props.context, formConfig)
-}
-
-// Watch schema, context and config for changes
-watch(() => props.schema, updateEvaluatedSchema)
-watch(() => props.context, updateEvaluatedSchema)
-watch(() => props.config, updateEvaluatedSchema)
-watch(() => form.value, updateEvaluatedSchema)
-
-// Watch form values with deep:true to detect nested object changes
-watch(() => form.value?.values(), updateEvaluatedSchema, { deep: true })
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
 const transformedProps = computed(() => {
@@ -147,7 +132,7 @@ const transformedProps = computed(() => {
 
   if (formPropsTransformers.length === 0) {
     return {
-      schema: evaluatedSchema.value,
+      schema: props.schema,
       context: props.context || {},
       config: formConfig,
     }
@@ -155,7 +140,7 @@ const transformedProps = computed(() => {
 
   // Create a single props object containing schema, context and config
   const formProps = {
-    schema: evaluatedSchema.value ? { ...evaluatedSchema.value } : null,
+    schema: props.schema ? { ...props.schema } : null,
     context: props.context ? { ...props.context } : {},
     config: { ...formConfig },
   }
@@ -173,9 +158,9 @@ const transformedSchema = computed(() => transformedProps.value.schema)
 const transformedContext = computed(() => transformedProps.value.context)
 const transformedFormConfig = computed(() => transformedProps.value.config)
 
-provide(formContextKey, transformedContext)
-provide(formSchemaKey, transformedSchema)
-provide(formConfigKey, transformedFormConfig)
+provide(formContextKey, transformedContext.value)
+provide(formSchemaKey, transformedSchema.value)
+provide(formConfigKey, transformedFormConfig.value)
 
 // Get slots and provide them for field customization
 const $slots = useSlots()
