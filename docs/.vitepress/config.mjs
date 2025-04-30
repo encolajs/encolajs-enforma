@@ -124,7 +124,7 @@ export default defineConfig({
           text: 'Components',
           items: [
             { text: 'Multi-input Fields', link: '/recipes/multi-input-field' },
-            { text: 'Address Picker', link: '/recipes/address-select-with-add' },
+            { text: 'Address Picker', link: '/recipes/address-picker' },
           ],
         },
         {
@@ -136,8 +136,7 @@ export default defineConfig({
         {
           text: 'Other',
           items: [
-            { text: 'Conditional Forms', link: '/recipes/conditional-forms' },
-            { text: 'Forms in Modals', link: '/recipes/forms-in-modals' },
+            { text: 'Form in Modal', link: '/recipes/form-in-modal' },
           ],
         },
       ],
