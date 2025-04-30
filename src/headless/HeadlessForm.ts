@@ -33,7 +33,7 @@ export default defineComponent({
     'submit_error',
     'validation_error',
     'reset',
-    'field_change',
+    'field_changed',
     'field_focus',
     'field_blur',
     'form_initialized',
@@ -97,7 +97,7 @@ export default defineComponent({
         fieldController: FieldController
         formController: FormController
       }) => {
-        ctx.emit('field_change', path, value, fieldController, formController)
+        ctx.emit('field_changed', path, value, fieldController, formController)
       }
     )
 

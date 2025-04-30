@@ -6,7 +6,6 @@
  */
 import { computed, ComputedRef } from 'vue'
 import { EnformaConfig } from '@/utils/useConfig'
-import { de } from 'vuetify/locale'
 
 /**
  * Custom error class for expression evaluation errors

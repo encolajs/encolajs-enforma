@@ -106,7 +106,7 @@ describe('Enforma Events', () => {
 
     // Check that the Vue event was emitted
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted('field_change')).toBeTruthy()
+    expect(wrapper.emitted('field_changed')).toBeTruthy()
 
     // Focus and blur fields
     formRef.setFieldFocused('email')

@@ -64,7 +64,7 @@ function warnUnlicensed(domain) {
   console.warn(`
   ╭────────────────────────────────────────────╮
   │                                            │
-  │   ---- EncolaJS License Not Detected ⚠️----  │
+  │   ---- EncolaJS License Not Detected ----  │
   │                                            │
   │   This domain (${domain}) does not appear  │
   │   to have a commercial license.            │

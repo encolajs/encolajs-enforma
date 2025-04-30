@@ -9,7 +9,7 @@
     @submit_success="emit('submit_success', $event)"
     @submit_error="emit('submit_error', $event)"
     @validation_error="emit('validation_error', $event)"
-    @field_change="emit('field_change', $event)"
+    @field_changed="emit('field_changed', $event)"
     @field_focus="emit('field_focus', $event)"
     @field_blur="emit('field_blur', $event)"
     @form_initialized="emit('form_initialized', $event)"
@@ -99,7 +99,7 @@ const emit = defineEmits([
   'submit_error',
   'validation_error',
   'reset',
-  'field_change',
+  'field_changed',
   'field_focus',
   'field_blur',
   'form_initialized',
