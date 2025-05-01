@@ -8,14 +8,16 @@
 
 ## Props
 
-| Prop            | Type       | Description                                     |
-|-----------------|------------|-------------------------------------------------|
-| `data`          | `Object`   | The form data object                            |
-| `schema`        | `Object`   | Optional form schema for schema-based rendering |
-| `rules`         | `Object`   | Validation rules for form fields                |
-| `messages`      | `Object`   | Custom validation messages                      |
-| `submitHandler` | `Function` | Function to be called on submit                  |
-| `config`        | `Object`   | Form configuration options                      |
+| Prop               | Type        | Description                                                                                                        |
+|--------------------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| `data`             | `Object`    | The form data object                                                                                               |
+| `schema`           | `Object`    | Optional form schema for schema-based rendering                                                                    |
+| `rules`            | `Object`    | Validation rules for form fields                                                                                   |
+| `messages`         | `Object`    | Custom validation messages                                                                                         |
+| `submitHandler`    | `Function`  | Function to be called on submit                                                                                    |
+| `config`           | `Object`    | Form configuration options                                                                                         |
+| `showResetButton`  | `Boolean` | To show the reset button (default `true`)                                                                          |
+| `showSubmitButton` | `Boolean` | To show the submit button (default `true`). This is useful if you want to place the submit button outside the form |
 
 ## Events
 

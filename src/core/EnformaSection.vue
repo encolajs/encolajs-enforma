@@ -131,12 +131,11 @@ defineOptions({ name: 'EnformaSection' })
 
 const props = defineProps<{
   name: string
-  title: string
-  titleComponent: string | object
-  titleProps: object | null
-  section: string | null
-  position: number | null
-  type: string | null
+  title?: string
+  titleComponent?: string | object
+  titleProps?: object | null
+  section?: string | null
+  position?: number | null
 }>()
 
 // Helper function to determine if a field should be rendered based on its 'if' property

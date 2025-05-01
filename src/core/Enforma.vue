@@ -25,7 +25,7 @@
       </slot>
 
       <slot name="actions">
-        <div v-bind="getConfig('pt.actions') || {}">
+        <div v-if="showSubmitButton" v-bind="getConfig('pt.actions') || {}">
           <component :is="submitButton" />
           <component :is="resetButton" v-if="showResetButton" />
         </div>
@@ -88,6 +88,10 @@ const props = defineProps({
   submitHandler: {
     type: Function as PropType<(data: any) => Promise<any>>,
     required: true,
+  },
+  showSubmitButton: {
+    type: Boolean,
+    default: true,
   },
   showResetButton: {
     type: Boolean,
