@@ -143,15 +143,14 @@ Use your preset when creating the Enforma instance:
 ```js
 // main.js
 import { createApp } from 'vue'
-import { createEnforma } from '@encolajs/enforma'
+import { EnformaPlugin } from '@encolajs/enforma'
 import { useMyUiPreset } from './presets/my-ui-preset'
 import App from './App.vue'
 
 const app = createApp(App);
 
 // Configure Enforma with your preset
-const enforma = createEnforma()
-app.use(Enforma)
+app.use(EnformaPlugin, {})
 
 // Use the preset
 useMyUiPreset()

@@ -8,7 +8,7 @@
 import 'primeicons/primeicons.css'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { createApp, h } from 'vue'
-import { createEnforma } from '../../../src'
+import { EnformaPlugin } from '../../../src'
 import usePrimeVuePreset from '../../../src/presets/primevue.ts'
 import useVuetifyPreset from '../../../src/presets/vuetify.ts'
 import useQuasarPreset from '../../../src/presets/quasar.ts'
@@ -43,7 +43,7 @@ onMounted(() => {
   })
 
   // configure Enforma
-  app.use(createEnforma({}))
+  app.use(EnformaPlugin)
 
   if (props.preset === 'primevue') {
     // configure PrimeVue

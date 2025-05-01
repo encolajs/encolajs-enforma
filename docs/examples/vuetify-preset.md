@@ -2,7 +2,7 @@
 import VuetifyFormExample from './vuetify/VuetifyFormExample.vue'
 </script>
 
-# Form with Vuetify Preset
+# Form Using the Vuetify Preset
 
 <ClientOnly>
     <LiveDemo preset="vuetify" :component="VuetifyFormExample"></LiveDemo>

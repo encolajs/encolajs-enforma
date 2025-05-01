@@ -87,4 +87,4 @@ export {
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'
 
-export { createEnforma } from './createEnforma'
+export { EnformaPlugin } from './EnformaPlugin'

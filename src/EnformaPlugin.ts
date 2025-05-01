@@ -30,25 +30,23 @@ function configureValidation(options: DeepPartial<EnformaConfig>) {
 }
 
 // Export a factory function for easier instantiation
-export function createEnforma(options: EnformaConfig): Plugin {
-  return {
-    install(app: App): void {
-      // Set global configuration by merging defaults with provided config
-      const mergedConfig = deepMerge(DEFAULT_CONFIG, options || {})
-      mergedConfig.translator =
-        app.config.globalProperties.$t || fallbackTranslate
-      setGlobalConfig(mergedConfig)
+export const EnformaPlugin: Plugin = {
+  install(app: App, options: EnformaConfig = {} as EnformaConfig): void {
+    // Set global configuration by merging defaults with provided config
+    const mergedConfig = deepMerge(DEFAULT_CONFIG, options || {})
+    mergedConfig.translator =
+      app.config.globalProperties.$t || fallbackTranslate
+    setGlobalConfig(mergedConfig)
 
-      // Apply default preset. Although not necessary, the overhead is minimal
-      useDefaultPreset()
+    // Apply default preset. Although not necessary, the overhead is minimal
+    useDefaultPreset()
 
-      // Configure validation
-      configureValidation(options)
+    // Configure validation
+    configureValidation(options || {})
 
-      // inject the translator
-      if (!app.config.globalProperties.$t) {
-        app.config.globalProperties.$t = fallbackTranslate
-      }
-    },
-  }
+    // inject the translator
+    if (!app.config.globalProperties.$t) {
+      app.config.globalProperties.$t = fallbackTranslate
+    }
+  },
 }

@@ -2,7 +2,7 @@
 import QuasarFormExample from './quasar/QuasarFormExample.vue'
 </script>
 
-# Form with Quasar Preset
+# Form Using the Quasar Preset
 
 <ClientOnly>
     <LiveDemo preset="quasar" :component="QuasarFormExample"></LiveDemo>

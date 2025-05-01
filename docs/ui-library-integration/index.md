@@ -85,9 +85,9 @@ When initializing the Enforma plugin:
 
 ```js
 import inputComponentPropTransformer from 'src/inputComponentPropTransformer.js'
-import { createEnforma } from '@encolajs/enforma'
+import { EnformaPlugin } from '@encolajs/enforma'
 
-app.use(createEnforma({
+app.use(EnformaPlugin, {
   transformers: {
     field_props: [inputComponentPropTransformer]
   }

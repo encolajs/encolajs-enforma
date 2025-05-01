@@ -262,12 +262,12 @@ const sectionPropsTransformer = (sectionOptions, formController) => {
 Transformers are registered in the Enforma configuration:
 
 ```js
-import { createEnforma } from 'encolajs-enforma';
+import { EnformaPlugin } from 'encolajs-enforma';
 
 const app = createApp(App);
 
 // Create Enforma instance with transformers
-const enforma = createEnforma({
+app.use(EnformaPlugin, {
   transformers: {
     form_props: [userRolePropsTransformer, responsivePropsTransformer],
     field_props: [validationClassTransformer, ui5Transformer],
@@ -276,8 +276,6 @@ const enforma = createEnforma({
     section_props: [conditionalSectionsTransformer],
   }
 });
-
-app.use(enforma);
 ```
 
 Or locally at the form level:

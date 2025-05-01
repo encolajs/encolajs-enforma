@@ -120,6 +120,7 @@ export default defineConfig({
         },
       ],
       '/recipes/': [
+        { text: 'Recipes', link: '/recipes/' },
         {
           text: 'Components',
           items: [
@@ -141,38 +142,33 @@ export default defineConfig({
         },
       ],
       '/examples/': [
+        { text: 'Examples', link: '/examples/' },
         {
-          text: 'Examples',
+          text: 'Forms',
           items: [
-            { text: 'Overview', link: '/examples/' },
+            { text: 'Form with Fields', link: '/examples/fields' },
             {
-              text: 'Forms',
-              items: [
-                { text: 'Form with Fields', link: '/examples/fields' },
-                {
-                  text: 'Form with Schema Only',
-                  link: '/examples/schema-only',
-                },
-                { text: 'Mixed Form', link: '/examples/mixed-form' },
-                {
-                  text: 'Form with Headless Components',
-                  link: '/examples/headless-components',
-                },
-              ],
+              text: 'Form with Schema Only',
+              link: '/examples/schema-only',
             },
+            { text: 'Mixed Form', link: '/examples/mixed-form' },
             {
-              text: 'Features',
-              items: [
-                { text: 'Dynamic Props', link: '/examples/dynamic-props' },
-              ],
+              text: 'Form with Headless Components',
+              link: '/examples/headless-components',
             },
-            {
-              text: 'Presets',
-              items: [
-                { text: 'Vuetify', link: '/examples/vuetify-preset' },
-                { text: 'Quasar', link: '/examples/quasar-preset' },
-              ],
-            },
+          ],
+        },
+        {
+          text: 'Features',
+          items: [
+            { text: 'Dynamic Props', link: '/examples/dynamic-props' },
+          ],
+        },
+        {
+          text: 'Presets',
+          items: [
+            { text: 'Vuetify', link: '/examples/vuetify-preset' },
+            { text: 'Quasar', link: '/examples/quasar-preset' },
           ],
         },
       ],

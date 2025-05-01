@@ -23,7 +23,8 @@ Import and use the Quasar preset:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createEnforma, useQuasarPreset } from '@encolajs/enforma';
+import { EnformaPlugin } from '@encolajs/enforma';
+import { useQuasarPreset } from '@encolajs/enforma/presets/quasar'
 import { Quasar } from 'quasar';
 import App from './App.vue';
 
@@ -41,8 +42,7 @@ app.use(Quasar, {
 });
 
 // Configure Enforma
-const enforma = createEnforma();
-app.use(enforma);
+app.use(EnformaPlugin);
 
 // Apply Quasar preset
 useQuasarPreset();

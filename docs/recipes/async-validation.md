@@ -39,18 +39,18 @@ export default async function(
 
 ### Add the ValidationRule to Enforma's configuration
 ```js
-import { createEnforma } from '@encolajs/enforma'
+import { EnformaPlugin } from '@encolajs/enforma'
 import uniqueUsername from '@/validators/uniqueUsername'
 
 // VueJS app intialization goes here
-app.use(createEnforma({
+app.use(EnformaPlugin, {
   rules: {
     unique_username: uniqueUsername
   },
   messages: {
     unique_username: 'This username is already taken'
   }
-}))
+})
 ```
 
 ### Using Async Validators

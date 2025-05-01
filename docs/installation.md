@@ -28,9 +28,10 @@ pnpm add @encolajs/enforma
 
 ```js
 import { createApp } from 'vue'
-import { createEnforma } from '@encolajs/enforma'
+import { EnformaPlugin } from '@encolajs/enforma'
 
-const enforma = createEnforma({
+// Register Enforma with Vue
+app.use(EnformaPlugin, {
   // Global configuration options
   pt: {
     // Pass-through props for styling components
@@ -48,9 +49,6 @@ const enforma = createEnforma({
     },
   },
 })
-
-// Register Enforma with Vue
-app.use(enforma)
 ```
 
 ## Adding a Preset

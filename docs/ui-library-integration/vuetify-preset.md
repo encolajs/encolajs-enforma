@@ -19,8 +19,8 @@ Import and use the Vuetify preset:
 ```js
 // main.js
 import { createApp } from 'vue';
-import { createEnforma } from '@encolajs/enforma';
-import { vuetifyPreset } from '@encolajs/enforma/presets/vuetify';
+import { EnformaPlugin } from '@encolajs/enforma';
+import { useVuetifyPreset } from '@encolajs/enforma/presets/vuetify';
 import { createVuetify } from 'vuetify';
 import App from './App.vue';
 
@@ -30,14 +30,12 @@ const vuetify = createVuetify();
 // Create the app
 const app = createApp(App);
 
-// Configure Enforma with Vuetify preset
-const enforma = createEnforma({
-  preset: vuetifyPreset
-});
-
 // Add plugins
 app.use(vuetify);
-app.use(enforma);
+app.use(EnformaPlugin);
+
+// Add the Vuetify preset
+useVuetifyPreset()
 
 app.mount('#app');
 ```
