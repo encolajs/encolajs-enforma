@@ -3,8 +3,7 @@
 ## Prerequisites
 
 - Vue.js 3.x
-- NPM or Yarn package manager
-- Optional: A UI framework like PrimeVue if you want to use presets
+- Optional: A UI framework like PrimeVue, Vuetify or Quasar if you want to use one of the presets
 
 ## Installation
 

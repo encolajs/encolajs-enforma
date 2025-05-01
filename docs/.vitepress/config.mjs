@@ -45,7 +45,6 @@ export default defineConfig({
         },
         {
           text: 'Enforma Forms',
-          collapsed: false,
           items: [
             {
               text: 'Forms with Fields',
@@ -84,7 +83,6 @@ export default defineConfig({
         {
           text: 'UI Library Integration',
           link: '/ui-library-integration/',
-          collapsed: false,
           items: [
             { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
             { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
@@ -94,7 +92,6 @@ export default defineConfig({
         },
         {
           text: 'Extensibility',
-          collapsed: true,
           link: '/extensibility/',
           items: [
             { text: 'Using Custom Components', link: '/extensibility/custom-components' },
@@ -102,22 +99,8 @@ export default defineConfig({
             { text: 'Using Dynamic Props', link: '/extensibility/dynamic-props' },
           ],
         },
-        {
-          text: 'Troubleshooting',
-          collapsed: true,
-          items: [
-            { text: 'Debugging', link: '/troubleshooting/debugging' },
-            { text: 'FAQ', link: '/troubleshooting/faq' },
-          ],
-        },
-        {
-          text: 'Community',
-          collapsed: false,
-          items: [
-            { text: 'Contribution Guide', link: '/community/contribution-guide' },
-            { text: 'Discord Community', link: '/community/discord-community' },
-          ],
-        },
+        { text: 'F.A.Q.', link: '/faq' },
+        { text: 'Contribution Guide', link: '/contribution-guide' },
       ],
       '/recipes/': [
         { text: 'Recipes', link: '/recipes/' },

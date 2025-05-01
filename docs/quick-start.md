@@ -4,7 +4,7 @@ EncolaJS Enforma is a Vue 3 form library that combines flexibility and simplicit
 
 ## Your First Form
 
-Let's start with a simple form that collects a user's name and email address:
+Once you finish the [installation](installation.md) you can start with a simple form that collects a user's name and email address:
 
 ```vue
 <template>
@@ -22,8 +22,6 @@ Let's start with a simple form that collects a user's name and email address:
       inputComponent="email" 
       required
     />
-    
-    <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
 
@@ -65,24 +63,12 @@ That's it! With just a few lines of code, you have a complete form with:
 
 EncolaJS Enforma offers multiple ways to build your forms, allowing you to choose the approach that best fits your needs:
 
-1. **Field-based Rendering**: As shown in the example above, you explicitly declare each field component, giving you precise control over layout and field placement.
+1. **[Field-based Rendering](/examples/fields.md)**: As shown in the example above, you explicitly declare each field component, giving you precise control over layout and field placement.
+2. **[Schema-based Rendering](/examples/schema-only.md)**: Define your form structure as a JavaScript object, which is great for dynamic forms or when you want to separate form structure from presentation.
+3. **[Mixed Mode](examples/mixed-form.md)**: Combine different approaches as needed, such as using schema-defined fields alongside explicit field components.
+4. **[Headless Mode](/examples/headless-components.md)**: For complete UI control, use the headless components that provide behavior without enforcing any specific design.
 
-2. **Schema-based Rendering**: Define your form structure as a JavaScript object, which is great for dynamic forms or when you want to separate form structure from presentation.
-
-3. **Headless Mode**: For complete UI control, use the headless components that provide behavior without enforcing any specific design.
-
-4. **Mixed Mode**: Combine different approaches as needed, such as using schema-defined fields alongside explicit field components.
-
-## Live Demo Examples
-
-To see these different rendering modes in action, check out our examples:
-
-- [Field-based Form Example](/examples/fields.md) - Forms built with explicit field components
-- [Schema-based Form Example](/examples/schema-only.md) - Forms defined entirely by a schema object
-- [Headless Components Example](/examples/headless-components.md) - Forms with complete UI freedom
-- [Mixed Form Example](/examples/mixed-form.md) - Combining different rendering approaches
-
-Each example includes source code, explanations, and a live demo to help you understand how to implement these patterns in your own applications.
+Each example includes source code with explanations, and a live demo.
 
 ### Next Steps
 
