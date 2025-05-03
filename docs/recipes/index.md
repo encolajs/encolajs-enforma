@@ -8,7 +8,6 @@ In this section you can find recipes to solve some form related issues:
 - **Validation**
   - [Async validation rule](async-validation.md) - checking if an email is already in use
 - **Other Scenarios**
-  - [Conditional forms](conditional-form.md) - using schema with dynamic props to show/hide parts of the form
   - [Forms in modals](form-in-modal.md) - displaying a form inside a modal
 
 > [!WARNING] The solutions implemented here are minimal and should be used as inspiration only
