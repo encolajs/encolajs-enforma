@@ -25,7 +25,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd docs
           npm ci
 
       - name: Build Documentation
