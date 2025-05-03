@@ -12,7 +12,7 @@ import { EnformaPlugin } from '../../../src'
 import usePrimeVuePreset from '../../../src/presets/primevue.ts'
 import useVuetifyPreset from '../../../src/presets/vuetify.ts'
 import useQuasarPreset from '../../../src/presets/quasar.ts'
-import { InputText } from 'primevue'
+import { InputText, Select, ToggleSwitch, Button } from 'primevue'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 
@@ -60,6 +60,9 @@ onMounted(() => {
     usePrimeVuePreset({
       input: InputText,
       text: InputText,
+      select: Select,
+      toggle: ToggleSwitch,
+      button: Button
     })
   } else if (props.preset === 'vuetify') {
     // Configure Vuetify
