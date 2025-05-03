@@ -3,7 +3,7 @@ name: Deploy Documentation
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'docs/**'
       - '.github/workflows/docs-deploy.yml'
@@ -25,7 +25,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm ci
           cd docs
           npm ci
 
