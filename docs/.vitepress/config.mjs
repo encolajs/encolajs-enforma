@@ -14,6 +14,7 @@ export default defineConfig({
       pattern:
         'https://github.com/encolajs/encolajs-enforma/tree/main/docs/:path',
     },
+    logo: '/logo.png',
     socialLinks: [
       { icon: 'github', link: 'https://github.com/encolajs/encolajs-enforma' },
     ],
@@ -199,6 +200,7 @@ export default defineConfig({
         defer: true
       }
     ],
+    ['link', { rel: 'icon', href: '/enforma/favicon.ico' }]
   ],
   vite: {
     ssr: {
