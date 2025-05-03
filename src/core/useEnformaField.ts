@@ -19,6 +19,7 @@ import { FieldSchema } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
+import isNonEmptyObject from '@/utils/isNonEmptyObject'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -55,7 +56,6 @@ function getFieldProps<T>(
   formCtrl.getFieldValue(originalProps.name)
 
   const defaults: Record<string, any> = {
-    component: 'input',
     inputComponent: null,
     hideLabel: false,
     showLabelNextToInput: false,
@@ -69,8 +69,6 @@ function getFieldProps<T>(
     inputProps: {},
     label: null,
     help: null,
-    section: null,
-    position: null,
   }
 
   // Start with defaults
@@ -82,13 +80,21 @@ function getFieldProps<T>(
       ...result,
       ...fieldSchema,
     }
+    // not needed at this point
+    delete result.section
+    delete result.type
+    delete result.position
   }
 
   // Apply component props (these take precedence over schema and defaults)
-  result = {
-    ...result,
-    ...originalProps,
-  }
+  Object.entries(originalProps)
+    .forEach(([key, value]) => {
+      if (value !== null
+      && value !== undefined
+      && (typeof value !== 'object' || isNonEmptyObject(value))) {
+        result[key] = value
+      }
+    })
 
   return result
 }

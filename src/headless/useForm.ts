@@ -9,6 +9,7 @@ import {
   createFormEmitter,
   globalFormEmitter,
 } from '@/utils/events'
+import moveArrayItem from '@/utils/moveArrayItem'
 
 export interface FieldController {
   $errors: Ref<string[]>
@@ -551,8 +552,7 @@ export function useForm<T extends object>(
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
         const array = getArrayByPath(valuesRef.value, arrayPath)
-        const [item] = array.splice(fromIndex, 1)
-        array.splice(toIndex, 0, item)
+        moveArrayItem(array as [any], fromIndex, toIndex)
         fieldManager.move(arrayPath, fromIndex, toIndex)
         // With reactive refs, we no longer need to increment version
       },

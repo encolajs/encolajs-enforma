@@ -21,95 +21,75 @@ const {data, rules, messages, submitHandler} = formConfig
 const schema = {
   section_top: {
     type: 'section',
-    props: {
-      class: 'grid grid-cols-2 gap-4',
-    },
+    class: 'grid grid-cols-2 gap-4',
   },
   name: {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-1 col-end-3',
-      label: 'Name',
-      required: true,
-      inputProps: { class: 'w-full' },
-    },
+    class: 'col-start-1 col-end-3',
+    label: 'Name',
+    required: true,
+    inputProps: { class: 'w-full' },
   },
   email: {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-1 col-end-3',
-      label: 'Email',
-      required: true,
-      inputProps: { class: 'w-full' },
-    },
+    class: 'col-start-1 col-end-3',
+    label: 'Email',
+    required: true,
+    inputProps: { class: 'w-full' },
   },
   'address.country': {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-1 col-end-2',
-      label: 'Country',
-      required: true,
-      inputProps: { class: 'w-full' },
-    },
+    class: 'col-start-1 col-end-2',
+    label: 'Country',
+    required: true,
+    inputProps: { class: 'w-full' },
   },
   'address.city': {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-2 col-end-3',
-      label: 'City',
-      required: true,
-      inputProps: { class: 'w-full' },
-    },
+    class: 'col-start-2 col-end-3',
+    label: 'City',
+    required: true,
+    inputProps: { class: 'w-full' },
   },
   willing_to_relocate: {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-1 col-end-3 toggle-field',
-      label: 'Willing to relocate',
-      showLabelNextToInput: true,
-      inputComponent: 'toggle',
-    },
+    class: 'col-start-1 col-end-3 toggle-field',
+    label: 'Willing to relocate',
+    showLabelNextToInput: true,
+    inputComponent: 'toggle',
   },
   salary: {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-1 col-end-2',
-      label: 'Salary',
-      inputComponent: SalaryField,
-      inputProps: { class: 'w-full' },
-    },
+    class: 'col-start-1 col-end-2',
+    label: 'Salary',
+    inputComponent: SalaryField,
+    inputProps: { class: 'w-full' },
   },
   available_date: {
     type: 'field',
     section: 'section_top',
-    props: {
-      class: 'col-start-2 col-end-3',
-      label: 'Available date',
-      inputComponent: 'datepicker',
-      inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
-    },
+    class: 'col-start-2 col-end-3',
+    label: 'Available date',
+    inputComponent: 'datepicker',
+    inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
   },
   linkedin_profile: {
     type: 'field',
     section: 'section_top',
-    props: {
-      label: 'Linkedin Profile',
-      inputProps: { class: 'w-full' },
-    },
+    label: 'Linkedin Profile',
+    inputProps: { class: 'w-full' },
   },
   personal_site: {
     type: 'field',
     section: 'section_top',
-    props: {
-      label: 'Personal site',
-      inputProps: { class: 'w-full' },
-    },
+    label: 'Personal site',
+    inputProps: { class: 'w-full' },
   },
   skills_section: {
     type: 'section',
@@ -120,21 +100,19 @@ const schema = {
   skills: {
     type: 'repeatable_table',
     section: 'skills_section',
-    props: {
-      class: 'mb-4',
-      subfields: {
-        name: {
-          label: 'Skill',
-          inputComponent: 'input',
-          inputProps: { fluid: true },
-        },
-        level: {
-          label: 'Level',
-          inputComponent: 'select',
-          inputProps: {
-            fluid: true,
-            options: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
-          },
+    class: 'mb-4',
+    subfields: {
+      name: {
+        label: 'Skill',
+        inputComponent: 'input',
+        inputProps: { fluid: true },
+      },
+      level: {
+        label: 'Level',
+        inputComponent: 'select',
+        inputProps: {
+          fluid: true,
+          options: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
         },
       },
     },
@@ -148,32 +126,30 @@ const schema = {
   experience: {
     type: 'repeatable',
     section: 'experience_section',
-    props: {
-      class: 'mb-4 form-repeatable-experience',
-      subfields: {
-        company: {
-          label: 'Company',
-          wrapperProps: { class: 'col-start-1 col-end-2' },
-          inputProps: { fluid: true },
+    class: 'mb-4 form-repeatable-experience',
+    subfields: {
+      company: {
+        label: 'Company',
+        wrapperProps: { class: 'col-start-1 col-end-2' },
+        inputProps: { fluid: true },
+      },
+      position: {
+        label: 'Position',
+        wrapperProps: { class: 'col-start-2 col-end-3' },
+        inputProps: { fluid: true },
+      },
+      start: {
+        label: 'Start',
+        inputComponent: 'datepicker',
+        inputProps: {
+          dateFormat: 'yy-mm-dd',
+          fluid: true,
         },
-        position: {
-          label: 'Position',
-          wrapperProps: { class: 'col-start-2 col-end-3' },
-          inputProps: { fluid: true },
-        },
-        start: {
-          label: 'Start',
-          inputComponent: 'datepicker',
-          inputProps: {
-            dateFormat: 'yy-mm-dd',
-            fluid: true,
-          },
-        },
-        end: {
-          label: 'End',
-          inputComponent: EndDateField,
-          inputProps: { fluid: true },
-        },
+      },
+      end: {
+        label: 'End',
+        inputComponent: EndDateField,
+        inputProps: { fluid: true },
       },
     },
   }
