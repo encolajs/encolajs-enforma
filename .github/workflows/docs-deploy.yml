@@ -29,6 +29,7 @@ jobs:
 
       - name: Build Documentation
         run: |
+          npm ci
           cd docs
           npm run docs:build
 
