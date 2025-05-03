@@ -26,10 +26,11 @@ jobs:
       - name: Install Dependencies
         run: |
           npm ci
+          cd docs
+          npm ci
 
       - name: Build Documentation
         run: |
-          npm ci
           cd docs
           npm run docs:build
 
