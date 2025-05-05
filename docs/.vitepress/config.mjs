@@ -158,6 +158,7 @@ export default defineConfig({
       ],
     },
     footer: {
+      message: 'Enforma is free for personal and development use. A <a href="https://encolajs.com/">commercial license</a> is required for production or business use',
       copyright: 'Copyright © 2025-present EncolaJS & Contributors',
     },
   },
