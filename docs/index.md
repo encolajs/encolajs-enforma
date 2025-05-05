@@ -3,7 +3,7 @@ layout: home
 sidebar: true
 
 title: EncolaJS Enforma
-titleTemplate: Schema-driven form builder for Vue applications
+titleTemplate: Complete form solution for VueJS applications
 
 hero:
   name: EncolaJS Enforma

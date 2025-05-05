@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   title: 'EncolaJS Enforma',
-  description: 'Documentation for EncolaJS Enforma',
+  description: 'Enforma - Complete form solution for VueJS apps',
   base: '/enforma/',
   themeConfig: {
     search: {
