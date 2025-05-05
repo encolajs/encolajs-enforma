@@ -87,14 +87,15 @@ function getFieldProps<T>(
   }
 
   // Apply component props (these take precedence over schema and defaults)
-  Object.entries(originalProps)
-    .forEach(([key, value]) => {
-      if (value !== null
-      && value !== undefined
-      && (typeof value !== 'object' || isNonEmptyObject(value))) {
-        result[key] = value
-      }
-    })
+  Object.entries(originalProps).forEach(([key, value]) => {
+    if (
+      value !== null &&
+      value !== undefined &&
+      (typeof value !== 'object' || isNonEmptyObject(value))
+    ) {
+      result[key] = value
+    }
+  })
 
   return result
 }

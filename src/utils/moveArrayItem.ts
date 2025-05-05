@@ -1,11 +1,11 @@
-export default function(array: [any], fromIndex: number, toIndex: number) {
+export default function (array: [any], fromIndex: number, toIndex: number) {
   // --- Validation ---
   if (!Array.isArray(array)) {
-    console.error("Error: Provided argument is not an array.");
-    return undefined; // Or throw new Error(...)
+    console.error('Error: Provided argument is not an array.')
+    return undefined // Or throw new Error(...)
   }
 
-  const len = array.length;
+  const len = array.length
   if (fromIndex < 0 || fromIndex >= len) {
     return array
   }
@@ -20,13 +20,13 @@ export default function(array: [any], fromIndex: number, toIndex: number) {
 
   // If indices are the same, no move needed
   if (fromIndex === toIndex) {
-    return array;
+    return array
   }
 
   // --- Move Logic ---
 
   // 1. Store the element to move
-  const elementToMove = array[fromIndex];
+  const elementToMove = array[fromIndex]
 
   // 2. Shift elements
   if (fromIndex < toIndex) {
@@ -36,21 +36,22 @@ export default function(array: [any], fromIndex: number, toIndex: number) {
     // Shift C (index 2) to index 1
     // Shift D (index 3) to index 2
     for (let i = fromIndex; i < toIndex; i++) {
-      array[i] = array[i + 1];
+      array[i] = array[i + 1]
     }
-  } else { // fromIndex > toIndex
+  } else {
+    // fromIndex > toIndex
     // Moving UP (towards the beginning): Shift elements RIGHT
     // Example: Move index 3 to 1 in [A, B, C, D, E]
     // Target: [A, D, B, C, E]
     // Shift C (index 2) to index 3
     // Shift B (index 1) to index 2
     for (let i = fromIndex; i > toIndex; i--) {
-      array[i] = array[i - 1];
+      array[i] = array[i - 1]
     }
   }
 
   // 3. Place the element at the target index
-  array[toIndex] = elementToMove;
+  array[toIndex] = elementToMove
 
-  return array;
+  return array
 }
