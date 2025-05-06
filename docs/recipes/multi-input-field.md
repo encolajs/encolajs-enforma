@@ -22,9 +22,9 @@ In the form you can do
    inputProp="NumberRange" />
 ```
 
-## Proper Implementation
+## Alternative Implementation
 
-A proper, more robust, implementation would look like this:
+Another option for implementing this would look like this:
 1. You build a proper input component that works independently
    - The input component does not rely on the `HeadlessField` to interact with the form
    - The input component emits `onInput`, `onChange` or `update:modelValue` to communicate with the outside world
@@ -33,3 +33,6 @@ A proper, more robust, implementation would look like this:
    - `has_min` - checks if the range has a `min` component that is a number and returns a "Start of the range is missing" type of message
    - `has_max` - checks if the range has a `max` component that is a number and returns a "End of the range is missing" type of message
    - `is_range` - checks if the `max` value is greater than the `min` value and returns a "End of range must be greater than the start" type of message
+
+There are trade-offs between these options. In the second option you will have to consider the following questions: If the user fills out the `min` when do you show the message that the `max` has to be filled? Most likely when the `max` component 
+is blurred, right? But if the component only passes one value to the form component how could you do that? 
