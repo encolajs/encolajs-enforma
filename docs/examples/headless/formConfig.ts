@@ -29,7 +29,7 @@ const rules = {
   name: 'required',
   email: 'required|email',
   'salary.min': 'number',
-  'salary.max': 'number',
+  'salary.max': 'number|gt:@salary.min',
   'available_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
   'address.city': 'required',
   'address.country': 'required',
@@ -45,7 +45,8 @@ const rules = {
 }
 
 const messages = {
-  'name.required': 'You gotta have a name'
+  'name:required': 'You gotta have a name',
+  'salary.max:gt': 'The max should be greater than the min'
 }
 
 const submitHandler = (formData) => {
