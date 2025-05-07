@@ -128,7 +128,7 @@ export default defineConfig({
       '/examples/': [
         { text: 'Examples', link: '/examples/' },
         {
-          text: 'Forms',
+          text: 'Render Mode',
           items: [
             { text: 'Form with Fields', link: '/examples/fields' },
             {
@@ -153,6 +153,12 @@ export default defineConfig({
           items: [
             { text: 'Vuetify', link: '/examples/vuetify-preset' },
             { text: 'Quasar', link: '/examples/quasar-preset' },
+          ],
+        },
+        {
+          text: 'Other',
+          items: [
+            { text: 'Integration with EncolaJS Hydrator', link: '/examples/hydrator' },
           ],
         },
       ],
