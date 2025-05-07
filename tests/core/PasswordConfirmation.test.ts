@@ -13,23 +13,23 @@ describe('Password Confirmation Validation', () => {
     password: {
       label: 'Password',
       type: 'field',
-      inputProps: { type: 'password' }
+      inputProps: { type: 'password' },
     },
     password_confirmation: {
       label: 'Confirm Password',
       type: 'field',
-      inputProps: { type: 'password' }
-    }
+      inputProps: { type: 'password' },
+    },
   }
 
   // Set up validation rules
   const rules = {
     password: 'required',
-    password_confirmation: 'required|same_as:@password'
+    password_confirmation: 'required|same_as:@password',
   }
 
   const customMessages = {
-    'password_confirmation:same_as': 'Passwords must match'
+    'password_confirmation:same_as': 'Passwords must match',
   }
 
   beforeEach(() => {
@@ -50,8 +50,8 @@ describe('Password Confirmation Validation', () => {
         input: { class: 'enforma-input' },
         error: { class: 'enforma-field-error' },
         help: { class: 'enforma-help' },
-        wrapper: { class: 'enforma-wrapper' }
-      }
+        wrapper: { class: 'enforma-wrapper' },
+      },
     })
   })
 
@@ -63,7 +63,7 @@ describe('Password Confirmation Validation', () => {
         schema,
         rules,
         customMessages,
-        submitHandler
+        submitHandler,
       },
     })
 
@@ -72,13 +72,13 @@ describe('Password Confirmation Validation', () => {
     // Find form inputs
     const inputs = wrapper.findAll('input')
     expect(inputs.length).toBe(2)
-    
+
     // Set password value
     await inputs[0].setValue('secure123')
     await inputs[0].trigger('change')
     await inputs[0].trigger('blur')
     await flushPromises()
-    
+
     // Set different confirmation value
     await inputs[1].setValue('different123')
     await inputs[1].trigger('change')
@@ -88,11 +88,11 @@ describe('Password Confirmation Validation', () => {
     vi.runAllTimers()
 
     await flushPromises()
-    
+
     // Check for error message
     const errorElement = wrapper.find('.enforma-field-error')
     expect(errorElement.exists()).toBe(true)
-    
+
     // Verify submit handler was not called due to validation error
     expect(submitHandler).not.toHaveBeenCalled()
   })
@@ -103,22 +103,22 @@ describe('Password Confirmation Validation', () => {
         data: { password: '', password_confirmation: '' },
         schema,
         rules,
-        submitHandler
+        submitHandler,
       },
     })
 
     await flushPromises()
-    
+
     // Find inputs
     const inputs = wrapper.findAll('input')
     expect(inputs.length).toBe(2)
-    
+
     // Set initial password value
     await inputs[0].setValue('secure123')
     await inputs[0].trigger('change')
     await inputs[0].trigger('blur')
     await flushPromises()
-    
+
     // Set different confirmation value
     await inputs[1].setValue('different123')
     await inputs[1].trigger('change')
@@ -131,7 +131,7 @@ describe('Password Confirmation Validation', () => {
     // Check that error appears
     let errorElement = wrapper.find('.enforma-field-error')
     expect(errorElement.exists()).toBe(true)
-    
+
     // Now change password to match confirmation
     await inputs[0].setValue('different123')
     await inputs[0].trigger('change')
@@ -151,32 +151,32 @@ describe('Password Confirmation Validation', () => {
         data: { password: '', password_confirmation: '' },
         schema,
         rules,
-        submitHandler
+        submitHandler,
       },
     })
 
     await flushPromises()
-    
+
     // Find inputs
     const inputs = wrapper.findAll('input')
     expect(inputs.length).toBe(2)
-    
+
     // Set initial values with mismatch
     await inputs[0].setValue('secure123')
     await inputs[0].trigger('change')
     await flushPromises()
-    
+
     await inputs[1].setValue('different123')
     await inputs[1].trigger('change')
     await flushPromises()
 
     vi.runAllTimers()
     await flushPromises()
-    
+
     // Check that error appears
     let errorElement = wrapper.find('.enforma-field-error')
     expect(errorElement.exists()).toBe(true)
-    
+
     // Now change confirmation to match password
     await inputs[1].setValue('secure123')
     await inputs[1].trigger('change')
@@ -184,7 +184,7 @@ describe('Password Confirmation Validation', () => {
 
     vi.runAllTimers()
     await flushPromises()
-    
+
     // Error should be gone
     errorElement = wrapper.find('.enforma-field-error')
     expect(errorElement.exists()).toBe(false)
@@ -194,7 +194,7 @@ describe('Password Confirmation Validation', () => {
     // Configure validation to happen on input
     const currentConfig = getGlobalConfig()
     setGlobalConfig({
-      ...currentConfig
+      ...currentConfig,
     })
 
     const wrapper = mount(Enforma, {
@@ -202,22 +202,22 @@ describe('Password Confirmation Validation', () => {
         data: { password: '', password_confirmation: '' },
         schema,
         rules,
-        submitHandler
+        submitHandler,
       },
     })
 
     await flushPromises()
-    
+
     // Find inputs
     const inputs = wrapper.findAll('input')
     expect(inputs.length).toBe(2)
-    
+
     // Set initial values with mismatch
     await inputs[0].setValue('secure123')
     await inputs[0].trigger('input')
     await inputs[0].trigger('blur')
     await flushPromises()
-    
+
     await inputs[1].setValue('different123')
     await inputs[1].trigger('input')
     await inputs[1].trigger('blur')
@@ -229,7 +229,7 @@ describe('Password Confirmation Validation', () => {
     // Check that error exists
     let errorElement = wrapper.find('.enforma-field-error')
     expect(errorElement.exists()).toBe(true)
-    
+
     // Change password to match confirmation - with input validation, this should update immediately
     await inputs[0].setValue('different123')
     await inputs[0].trigger('input')

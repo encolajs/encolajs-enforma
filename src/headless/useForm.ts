@@ -203,12 +203,14 @@ export function useForm<T extends object>(
       fieldController.$isDirty.value = true
 
       const isValid = await validator.validatePath(path, valuesRef.value)
-      await Promise.all(validator.getDependentFields(path).map((dependant) => {
-        const depCtrl = fieldManager.get(dependant)
-        if (depCtrl.$isDirty.value && !depCtrl.$isValidating.value) {
-          validateField(dependant, depCtrl)
-        }
-      }))
+      await Promise.all(
+        validator.getDependentFields(path).map((dependant) => {
+          const depCtrl = fieldManager.get(dependant)
+          if (depCtrl.$isDirty.value && !depCtrl.$isValidating.value) {
+            validateField(dependant, depCtrl)
+          }
+        })
+      )
       if (!isValid) {
         fieldController.$errors.value = validator.getErrorsForPath(path)
         return false
