@@ -207,7 +207,19 @@ export default defineConfig({
         defer: true
       }
     ],
-    ['link', { rel: 'icon', href: '/enforma/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/enforma/favicon.ico' }],
+    [
+      'script',
+      {
+        async: true,
+        src: 'https://www.googletagmanager.com/gtag/js?id=G-4CP1E3Z3Q0',
+      },
+    ],
+    [
+      'script',
+      {},
+      "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);};gtag('js', new Date());gtag('config', 'G-4CP1E3Z3Q0');",
+    ],
   ],
   vite: {
     ssr: {
