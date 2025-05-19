@@ -2,8 +2,8 @@
   <HeadlessForm
     ref="form"
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :rules="effectiveRules"
+    :custom-messages="effectiveMessages"
     :submit-handler="submitHandler"
     :validate-on="config.validateOn"
     @submit_success="emit('submit_success', $event)"
@@ -59,6 +59,11 @@ import { ValidationRules } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
+import {
+  extractRulesFromSchema,
+  extractMessagesFromSchema,
+} from '@/utils/extractRulesFromSchema'
+import isNonEmptyObject from '@/utils/isNonEmptyObject'
 
 const props = defineProps({
   data: {
@@ -126,6 +131,22 @@ onMounted(() => {
 
 const formConfig = useConfig(props.config)
 const { getConfig } = useFormConfig(false)
+
+const effectiveRules = computed(() => {
+  if (props.rules && Object.keys(props.rules).length > 0) {
+    return props.rules
+  }
+  return extractRulesFromSchema(props.schema || {})
+})
+
+// Use either schema messages or provided messages
+const effectiveMessages = computed(() => {
+  // If customMessages prop is provided, use it exclusively
+  if (props.messages && Object.keys(props.messages).length > 0) {
+    return props.messages
+  }
+  return extractMessagesFromSchema(props.schema || {})
+})
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
 const transformedProps = computed(() => {

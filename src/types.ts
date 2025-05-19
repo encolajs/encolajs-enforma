@@ -264,6 +264,18 @@ export interface FieldSchema extends BaseSchema {
    * Allows direct component references
    */
   inputComponent?: string | ComponentPublicInstance
+
+  /**
+   * Validation rules for this field in string format
+   * E.g., "required|email|min_length:6|max_length:25"
+   */
+  rules?: string
+
+  /**
+   * Custom validation messages for this field
+   * E.g., { "required": "Email is required", "email": "Please enter a valid email" }
+   */
+  messages?: Record<string, string>
 }
 
 export interface SectionSchema extends BaseSchema {

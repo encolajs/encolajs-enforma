@@ -63,6 +63,8 @@ All schema types share these base properties:
 | `helpProps` | object | No | Props to apply to the help text component |
 | `errorProps` | object | No | Props to apply to the error message component |
 | `inputComponent` | string \| component | No | Component to use for this field |
+| `rules` | string | No | Validation rules for this field in string format (e.g., "required\|email\|min_length:6") |
+| `messages` | object | No | Custom validation messages for this field (e.g., `{ required: "Email is required", email: "Invalid email format" }`) |
 
 <!--@include: ../_partials/use-model-value.md-->
 
@@ -110,3 +112,165 @@ Sections can contain both fields and sections.
 > The fields are rendered before the sub-sections. 
 > If you want to render fields last, you must assign them to a sub-section in the last position. 
 > If you want to alternate fields with sub-sections you have to use only sub-sections
+
+## Validation Rules in Schema
+
+As an alternative to providing validation rules through the `rules` prop, Enforma allows you to embed validation rules directly within your schema definition. This approach keeps validation logic close to field definitions and simplifies form configuration.
+
+### Defining Rules in Schema
+
+Each field in your schema can include a `rules` property with validation rules in string format:
+
+```js
+const schema = {
+  email: {
+    type: 'field',
+    label: 'Email Address',
+    rules: 'required|email',
+  },
+  password: {
+    type: 'field',
+    label: 'Password',
+    rules: 'required|min_length:8|password',
+  },
+  age: {
+    type: 'field',
+    label: 'Age',
+    rules: 'required|integer|gte:18|lte:120',
+  }
+}
+
+// No need to define rules separately
+const formProps = {
+  data: {
+    email: '',
+    password: '',
+    age: null
+  },
+  schema,
+  // rules prop is not needed when using schema-based validation
+  customMessages: {
+    'age.gte': 'Must be at least 18 years old'
+  }
+}
+```
+
+### Rules in Repeatable Fields
+
+For repeatable and repeatable-table fields, validation rules can be added to the subfield definitions:
+
+```js
+const schema = {
+  experiences: {
+    type: 'repeatable',
+    subfields: {
+      title: {
+        type: 'field',
+        label: 'Job Title',
+        rules: 'required|min_length:3'
+      },
+      years: {
+        type: 'field',
+        label: 'Years of Experience',
+        rules: 'required|numeric|gte:0'
+      }
+    }
+  },
+  skills: {
+    type: 'repeatable_table',
+    subfields: {
+      name: {
+        type: 'field',
+        label: 'Skill',
+        rules: 'required'
+      },
+      level: {
+        type: 'field',
+        label: 'Proficiency Level',
+        rules: 'required|in_list:beginner,intermediate,advanced,expert'
+      }
+    }
+  }
+}
+```
+
+### Caveats
+
+> [!WARNING] Form's `rules` prop takes precedence
+> Validation rules passed to the form via the `rules` prop take precedence over the validation rules passed through schema. You have to choose beforehand to use one OR the other
+
+> [!WARNING] Multi-input fields require special attention
+> Fields will multiple inputs require defining special validation rules. <br>
+> In the [schema form example](/examples/schema-only.md) we have only the field `salary` for inputs `salary.min` and `salary.max`. <br>
+> The example shows the rules are specified for the individual components. If you were to try to use the `rules` attribute of the schema you would need to create a custom validation rule, probably something like `rules: "required|numeric_rage"`
+
+## Custom Messages in Schema
+
+In addition to validation rules, you can define custom error messages directly in your schema. This keeps error messages close to field definitions and makes forms more maintainable.
+
+### Defining Messages in Field Schema
+
+Each field can include a `messages` object that maps rule names to custom error messages:
+
+```js
+const schema = {
+  email: {
+    type: 'field',
+    label: 'Email',
+    rules: 'required|email',
+    messages: {
+      required: 'Email address is required',
+      email: 'Please enter a valid email format'
+    }
+  },
+  age: {
+    type: 'field',
+    label: 'Age',
+    rules: 'required|integer|gte:18',
+    messages: {
+      required: 'Age is required',
+      integer: 'Age must be a whole number',
+      gte: 'You must be at least 18 years old'
+    }
+  }
+}
+```
+
+### Messages in Repeatable Fields
+
+For repeatable and repeatable-table fields, messages can be defined in the subfield definitions:
+
+```js
+const schema = {
+  languages: {
+    type: 'repeatable',
+    subfields: {
+      name: {
+        type: 'field',
+        label: 'Language',
+        rules: 'required',
+        messages: {
+          required: 'Language name is required'
+        }
+      },
+      proficiency: {
+        type: 'field',
+        label: 'Level',
+        rules: 'required|in_list:beginner,intermediate,advanced',
+        messages: {
+          required: 'Please select a proficiency level',
+          in_list: 'Invalid proficiency level'
+        }
+      }
+    }
+  }
+}
+```
+
+
+### Caveats
+
+> [!WARNING] Form's `customMessages` prop takes precedence
+> Custom error messages passed to the form via the `customMessages` prop take precedence over the custom error messages passed through schema. You have to choose beforehand to use one OR the other
+
+ 

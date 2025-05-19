@@ -1,7 +1,7 @@
 {
-  "name": "encolajs-validator-docs",
+  "name": "encolajs-enforma-docs",
   "version": "1.0.0",
-  "description": "Documentation for EncolaJS Validator",
+  "description": "Documentation for EncolaJS Enforma",
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress dev",

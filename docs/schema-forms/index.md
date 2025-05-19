@@ -9,6 +9,7 @@ Schema-based forms in Enforma allow you to define your entire form structure usi
 - **Declarative Approach** - Define your entire form using simple JSON
 - **Reduced Boilerplate** - Eliminate repetitive component definitions
 - **Server-driven UIs** - Forms can be defined on the server and rendered by the client
+- **Embedded Validation** - Define validation rules directly in the schema alongside field definitions
 
 ## The Schema Component
 
@@ -37,3 +38,4 @@ To take advantage of the schema-based forms, you have to learn these concepts:
 2. **[Dynamic Props](/schema-forms/dynamic-props.md)** - Use expressions to create reactive field properties
 3. **[Field Slots](field-slots.md)** - Customize individual fields using slots
 4. **[Transformers](/schema-forms/transformers.md)** - Transform schemas, context, and configuration at runtime
+5. **[Schema-Based Validation](/core-concepts/validation#schema-based-validation)** - Define validation rules directly in the schema
