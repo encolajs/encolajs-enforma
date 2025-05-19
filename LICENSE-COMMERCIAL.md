@@ -31,8 +31,7 @@ This license does **not** permit:
 All commercial licenses include:
 
 - Priority bug fixes
-- Access to official updates and patches
-- Optional integration support (depending on license tier)
+- Optional integration support
 
 ## 5. Termination
 

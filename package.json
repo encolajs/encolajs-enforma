@@ -42,12 +42,17 @@
         "typescript",
         "form",
         "forms",
+        "vue3",
+        "vue-form-builder",
+        "headless-forms",
+        "dynamic-forms",
+        "schema-forms",
         "validation",
         "ui",
         "json"
     ],
     "author": "Adrian <adrian@encolajs.com>",
-    "license": "MIT",
+    "license": "see LICENSE.md and LICENCE-COMMERCIAL.md",
     "bugs": {
         "url": "https://github.com/encolajs/encolajs-enforma/issues"
     },
