@@ -1,10 +1,10 @@
-# @encolajs/formkit
+# @encolajs/enforma
 
 🚀 A powerful, flexible validation library that makes complex validation scenarios a breeze! Built with TypeScript and designed with developer experience in mind.
 
-![CI](https://github.com/encolajs/encolajs-validator/workflows/CI/badge.svg)
-[![npm version](https://badge.fury.io/js/@encolajs%2Fvalidator.svg)](https://badge.fury.io/js/@encolajs%2Fvalidator)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CI](https://github.com/encolajs/encolajs-enforma/workflows/CI/badge.svg)
+[![npm version](https://badge.fury.io/js/@encolajs%2Fenforma.svg)](https://badge.fury.io/js/@encolajs%2Fvalidator)
+[![License: MIT](https://img.shields.io/badge/License-DUAL-red.svg)](https://github.com/encolajs/encolajs-enforma/blob/master/LICENSE-COMMERCIAL.md)
 
 ## Why Another Validation Library?
 

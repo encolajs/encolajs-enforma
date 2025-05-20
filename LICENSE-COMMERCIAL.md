@@ -23,7 +23,7 @@ This license does **not** permit:
 
 ## 3. License Types & Pricing
 
-**Contact**: [license@encolajs.com]  
+**Contact**: [support@encolajs.com]  
 **Purchase**: [www.encolajs.com](https://encolajs.com/)
 
 ## 4. Support & Updates
