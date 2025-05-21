@@ -54,6 +54,7 @@
         name="available_date"
         label="Available date"
         inputComponent="datepicker"
+        useModelValue
         :input-props="{class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true}"
       />
       <EnformaField
@@ -156,6 +157,7 @@ const experienceFields = {
   },
   start: {
     label: "Start",
+    useModelValue: true,
     inputComponent: 'datepicker',
     inputProps:  {
       dateFormat: "yy-mm-dd",
@@ -164,6 +166,7 @@ const experienceFields = {
   },
   end: {
     label: "End",
+    useModelValue: true,
     inputComponent: EndDateField,
     inputProps:  {
       fluid: true

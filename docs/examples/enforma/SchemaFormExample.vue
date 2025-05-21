@@ -76,6 +76,7 @@ const schema = {
     section: 'section_top',
     class: 'col-start-2 col-end-3',
     label: 'Available date',
+    useModelValue: true,
     inputComponent: 'datepicker',
     inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
   },
@@ -140,6 +141,7 @@ const schema = {
       },
       start: {
         label: 'Start',
+        useModelValue: true,
         inputComponent: 'datepicker',
         inputProps: {
           dateFormat: 'yy-mm-dd',
@@ -148,6 +150,7 @@ const schema = {
       },
       end: {
         label: 'End',
+        useModelValue: true,
         inputComponent: EndDateField,
         inputProps: { fluid: true },
       },
