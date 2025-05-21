@@ -178,10 +178,10 @@ export function useForm<T extends object>(
   const valuesCopy: object = cloneFn(values)
   const fieldManager = new FieldManager()
   const formState = {
-    $isValidating: false,
-    $isSubmitting: false,
-    $isDirty: false,
-    $isTouched: false,
+    $isValidating: ref(false),
+    $isSubmitting: ref(false),
+    $isDirty: ref(false),
+    $isTouched: ref(false),
   }
   // Create a form-specific state version counter
   const valuesRef = ref(values)
@@ -229,7 +229,7 @@ export function useForm<T extends object>(
   }
 
   async function validateForm(): Promise<boolean> {
-    formState.$isValidating = true
+    formState.$isValidating.value = true
     try {
       const validationResults = await Promise.all(
         Array.from(fieldManager.all().entries()).map(([path, state]) => {
@@ -240,7 +240,7 @@ export function useForm<T extends object>(
     } catch (e) {
       console.error('[Enforma] Error validating form', e)
     } finally {
-      formState.$isValidating = false
+      formState.$isValidating.value = false
     }
 
     return false
@@ -265,7 +265,7 @@ export function useForm<T extends object>(
       const stateKey = key as keyof FieldController
       ;(state[stateKey] as any).value = val
       if (key === '$isDirty' && val === true) {
-        formState.$isDirty = true
+        formState.$isDirty.value = true
       }
     })
   }
@@ -320,7 +320,7 @@ export function useForm<T extends object>(
       },
 
       submit: async function () {
-        formState.$isSubmitting = true
+        formState.$isSubmitting.value = true
 
         try {
           // Mark all fields as touched before validation
@@ -375,7 +375,7 @@ export function useForm<T extends object>(
 
           return true
         } finally {
-          formState.$isSubmitting = false
+          formState.$isSubmitting.value = false
         }
       },
 
@@ -419,10 +419,10 @@ export function useForm<T extends object>(
         })
 
         // Reset form-level state
-        formState.$isDirty = false
-        formState.$isTouched = false
-        formState.$isValidating = false
-        formState.$isSubmitting = false
+        formState.$isDirty.value = false
+        formState.$isTouched.value = false
+        formState.$isValidating.value = false
+        formState.$isSubmitting.value = false
 
         // Field values are now refs, no need for explicit version updates
 
@@ -641,7 +641,7 @@ export function useForm<T extends object>(
             }
             if (['isDirty', 'isTouched'].includes(metaProp) && value === true) {
               // @ts-expect-error formState has $isDirty and $isTouched properties
-              formState[`$${metaProp}`] = true
+              formState[`$${metaProp}`].value = true
             }
           } else {
             // Set the value immediately

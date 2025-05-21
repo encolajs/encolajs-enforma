@@ -119,39 +119,39 @@ describe('useForm', () => {
     test('should track validation state', async () => {
       form['items.0.price'] = 5
       const submitPromise = form.submit()
-      expect(form.$isValidating).toBe(true)
+      expect(form.$isValidating.value).toBe(true)
       await submitPromise
-      expect(form.$isValidating).toBe(false)
+      expect(form.$isValidating.value).toBe(false)
     })
 
     test('should track submit state', async () => {
       const submitPromise = form.submit()
 
-      expect(form.$isSubmitting).toBe(true)
+      expect(form.$isSubmitting.value).toBe(true)
       await submitPromise
-      expect(form.$isSubmitting).toBe(false)
+      expect(form.$isSubmitting.value).toBe(false)
     })
 
     test('should track dirty state', async () => {
-      expect(form.$isDirty).toBe(false)
+      expect(form.$isDirty.value).toBe(false)
 
       form['items.0.price'] = 150
       await flushPromises()
 
-      expect(form.$isDirty).toBe(true)
+      expect(form.$isDirty.value).toBe(true)
 
       form.reset()
-      expect(form.$isDirty).toBe(false)
+      expect(form.$isDirty.value).toBe(false)
     })
 
     test('should track touched state', () => {
-      expect(form.$isTouched).toBe(false)
+      expect(form.$isTouched.value).toBe(false)
 
       form['items.0.price.$isTouched'] = true
-      expect(form.$isTouched).toBe(true)
+      expect(form.$isTouched.value).toBe(true)
 
       form.reset()
-      expect(form.$isTouched).toBe(false)
+      expect(form.$isTouched.value).toBe(false)
     })
   })
 

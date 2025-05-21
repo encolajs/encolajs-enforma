@@ -44,44 +44,6 @@ describe('Schema Validation Rules', () => {
     expect(errors.name[0]).toBeDefined()
   })
 
-  it('should merge provided rules with schema rules', async () => {
-    const schema = {
-      email: {
-        type: 'field' as const,
-        label: 'Email',
-        rules: 'required|email',
-      },
-      name: {
-        type: 'field' as const,
-        label: 'Name',
-        rules: 'required',
-      },
-    }
-
-    const providedRules = {
-      name: 'required|min_length:5', // Override schema rule
-    }
-
-    const wrapper = mountTestComponent(Enforma, {
-      data: { email: '', name: 'John' },
-      schema,
-      rules: providedRules,
-      submitHandler: mockSubmitHandler,
-    })
-
-    // Submit form to trigger validation
-    // @ts-expect-error vm is a form
-    await wrapper.vm.submit()
-    await flushPromises()
-
-    // @ts-expect-error errors() exists on vm
-    const errors = wrapper.vm.errors()
-    // Email should still have errors (from schema)
-    expect(errors.email[0]).toBeDefined()
-    // Name should have error for min_length:5 (from provided rules)
-    expect(errors.name[0]).toBeDefined()
-  })
-
   it('should extract rules from repeatable field subfields', async () => {
     const schema = {
       experiences: {

@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentPublicInstance, Ref } from 'vue'
 import {
   CustomMessagesConfig,
   ValidationRule,
@@ -87,10 +87,10 @@ export interface FieldControllerExport {
 
 export interface FormController {
   // Form state properties
-  $isValidating: boolean
-  $isSubmitting: boolean
-  $isDirty: boolean
-  $isTouched: boolean
+  $isValidating: Ref<boolean>
+  $isSubmitting: Ref<boolean>
+  $isDirty: Ref<boolean>
+  $isTouched: Ref<boolean>
 
   reset(): void
 
