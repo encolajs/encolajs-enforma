@@ -82,7 +82,12 @@ const roleSelectProps = {
 }
 
 const handleSubmit = (values) => {
-  alert('Form submitted with values: ' + JSON.stringify(values))
+  return new Promise((resolve) => {
+    window.setTimeout(() => {
+      alert('Form submitted with values: ' + JSON.stringify(values))
+      resolve(true)
+    }, 2000)
+  })
 }
 </script>
 
