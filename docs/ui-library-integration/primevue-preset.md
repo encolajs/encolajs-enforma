@@ -54,7 +54,7 @@ Now use Enforma components with PrimeVue styling:
   <Enforma :data="formData" :submitHandler="submit">
     <EnformaField name="name" label="Name" />
     <EnformaField name="email" label="Email" />
-    <EnformaField name="country" inputComponent="select" label="Country" :options="countries" />
+    <EnformaField name="country" inputComponent="select" label="Country" :inputProps="{options: countries}" />
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>

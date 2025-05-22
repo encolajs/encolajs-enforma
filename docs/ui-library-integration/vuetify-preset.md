@@ -48,7 +48,7 @@ Now use Enforma components with Vuetify styling:
     <Enforma :data="formData" :submitHandler="submit">
       <VuetifyField name="name" label="Name" />
       <VuetifyField name="email" label="Email" />
-      <VuetifyField name="country" type="select" label="Country" :options="countries" />
+      <VuetifyField name="country" type="select" label="Country" :inputProps="{options: countries}" />
     </Enforma>
   </v-container>
 </template>
@@ -56,8 +56,9 @@ Now use Enforma components with Vuetify styling:
 <script setup>
 import { ref } from 'vue';
 import { Enforma, EnformaField, EnformaSubmitButton } from '@encolajs/enforma';
-// creating a custom field component wass needed 
-// due to how Vuetify is rendering labels and hints/messages 
+// creating a custom field component was needed 
+// due to how Vuetify is rendering labels and hints/messages
+// developers with more Vuetify experience might have a better solution
 import VuetifyField from '@encolajs/enforma/presets/vuetify/Field';
 
 const formData = ref({

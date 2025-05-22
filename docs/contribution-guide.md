@@ -20,9 +20,9 @@ Enforma is an open-source project, and we welcome contributions from the communi
    ```bash
    npm run dev
    ```
-5. **Run tests** to make sure everything is working
+5. **Run CI scripts** to make sure everything is in order (code is formatted, tests pass etc)
    ```bash
-   npm test
+   npm ci
    ```
 
 ### Code Organization
@@ -69,8 +69,7 @@ The project structure follows this organization:
 6. Update documentation if needed
 7. Run linting and tests
    ```bash
-   npm run lint
-   npm test
+   npm run ci
    ```
 8. Commit your changes with a descriptive message
 9. Push your branch and create a pull request
@@ -91,7 +90,7 @@ The project structure follows this organization:
 - Use ESLint and Prettier for formatting
 - Run linting before submitting PRs
   ```bash
-  npm run lint
+  npm run ci
   ```
 
 ### TypeScript
@@ -130,7 +129,7 @@ Our documentation uses Markdown with VitePress:
 5. Preview your changes with:
    ```bash
    cd docs
-   npm run dev
+   npm run docs:dev
    ```
 
 ### Creating Examples
@@ -147,7 +146,6 @@ Good examples are crucial for documentation:
 ### Communication Channels
 
 - GitHub Issues: For bug reports and feature requests
-- Discord: For real-time discussion
 - Pull Requests: For code contributions
 
 ### Code of Conduct
@@ -162,15 +160,14 @@ All contributors will be recognized in the project. Major contributors may be in
 
 ### Branching Strategy
 
-- `main` - Stable release branch
-- `dev` - Development branch for next release
+- `master` - Development branch
 - `feature/*` - Feature branches
 - `bugfix/*` - Bug fix branches
 
 ### Release Process
 
-1. Features and fixes are merged into `dev`
-2. When ready for release, `dev` is merged into `main`
+1. Features and fixes are merged into `master`
+2. When ready for release, the commit is tagged with the new release number
 3. Version number is updated following semver
 4. Release notes are prepared
 5. New npm package is published
@@ -182,7 +179,6 @@ All contributors will be recognized in the project. Major contributors may be in
 - `bug` - Something isn't working
 - `enhancement` - New feature or improvement
 - `documentation` - Documentation changes
-- `good first issue` - Good for newcomers
 - `help wanted` - Extra attention needed
 
 ### Issue Workflow

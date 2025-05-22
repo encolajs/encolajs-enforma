@@ -61,17 +61,9 @@ Now use Enforma components with Quasar styling:
       <QuasarField 
         name="country" 
         label="Country" 
-        input-component="select" 
-        :input-props="{ options: countries, 'emit-value': true, 'map-options': true }" 
+        inputComponent="select" 
+        :inputProps="{ options: countries, 'emit-value': true, 'map-options': true }" 
       />
-      <div class="row q-mt-md">
-        <div class="col-12">
-          <div class="flex justify-end q-gutter-md">
-            <q-btn outline color="grey" label="Reset" type="reset" />
-            <q-btn color="primary" label="Submit" type="submit" />
-          </div>
-        </div>
-      </div>
     </Enforma>
   </q-card>
 </template>
