@@ -13,9 +13,9 @@
 import { Enforma } from '@'
 import SalaryField from './SalaryField.vue'
 import EndDateField from './EndDateField.vue'
-import formConfig from '../headless/formConfig'
+import useFormConfig from '../headless/useFormConfig'
 
-const {data, rules, messages, submitHandler} = formConfig
+const {data, rules, messages, submitHandler} = useFormConfig()
 
 // Define the entire form structure using schema
 const schema = {

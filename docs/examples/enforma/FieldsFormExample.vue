@@ -108,7 +108,7 @@
 
 <script setup>
 import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from '@'
-import formConfig from '../headless/formConfig'
+import useFormConfig from '../headless/useFormConfig'
 import EndDateField from './EndDateField.vue'
 import SalaryField from './SalaryField.vue'
 import { Button } from 'primevue'
@@ -117,7 +117,7 @@ import { ref } from 'vue'
 // for accessing the FormController
 const formRef = ref()
 
-const {data, rules, messages, submitHandler} = formConfig
+const {data, rules, messages, submitHandler} = useFormConfig()
 
 const skillFields = {
   name: {

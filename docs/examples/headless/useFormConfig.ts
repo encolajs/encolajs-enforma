@@ -1,28 +1,31 @@
-const data = {
-  name: "",
-  email: '',
-  address: {
-    country: '',
-    city: '',
-  },
-  available_date: null,
-  willing_to_relocate: false,
-  skills: [],
-  experience: [],
-}
-for (let i = 0; i < 3; i++) {
-  const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
-  data.skills.push({ name: `Skill ${i + 1}`, level })
-}
-for (let i = 0; i < 2; i++) {
-  const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
-  data.experience.push({
-    company: `Company ${i + 1}`,
-    position: `Job title ${i + 1}`,
-    start: new Date(`202${5 - i}-01-01`),
-    end: i === 0 ? null : new Date(`202${5 - 1}-12-31`),
-    current: i === 0
-  })
+function getData() {
+  const data = {
+    name: "",
+    email: '',
+    address: {
+      country: '',
+      city: '',
+    },
+    available_date: null,
+    willing_to_relocate: false,
+    skills: [],
+    experience: [],
+  }
+  for (let i = 0; i < 3; i++) {
+    const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
+    data.skills.push({ name: `Skill ${i + 1}`, level })
+  }
+  for (let i = 0; i < 2; i++) {
+    const level = ['Beginner', 'Intermediate', 'Advanced', 'Expert'].sort(() => Math.random() - 0.5)[0]
+    data.experience.push({
+      company: `Company ${i + 1}`,
+      position: `Job title ${i + 1}`,
+      start: new Date(`202${5 - i}-01-01`),
+      end: i === 0 ? null : new Date(`202${5 - 1}-12-31`),
+      current: i === 0
+    })
+  }
+  return data
 }
 
 const rules = {
@@ -58,9 +61,11 @@ const submitHandler = (formData) => {
   })
 }
 
-export default {
-  data: {...data},
-  rules: {...rules},
-  messages: {...messages},
-  submitHandler
+export default function () {
+  return {
+    data: getData(),
+      rules: {...rules},
+    messages: {...messages},
+    submitHandler
+  }
 }

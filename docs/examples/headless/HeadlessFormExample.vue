@@ -362,9 +362,9 @@ import { InputText, Select, Button, ToggleSwitch, DatePicker} from 'primevue'
 import { ref } from 'vue'
 import AppFormField from './AppFormField.vue'
 import ExperienceEndDateField from './ExperienceEndDateField.vue'
-import formConfig from './formConfig'
+import useFormConfig from './useFormConfig'
 
-const {data, rules, messages, submitHandler} = formConfig
+const {data, rules, messages, submitHandler} = useFormConfig()
 
 const $form = ref(null)
 </script>
