@@ -6,3 +6,4 @@ tmp/coverage/*
 coverage
 temp
 docs/.vitepress/cache/
+.claude/settings.local.json
