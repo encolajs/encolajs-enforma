@@ -341,16 +341,17 @@
       <div class="col-start-1 col-end-4 flex gap-2">
         <Button
           severity="primary"
-          :loading="formCtrl.$isSubmitting"
-          :label="formCtrl.$isSubmitting ? 'Submitting...' : 'Submit'"
+          :loading="formCtrl.$isSubmitting.value"
+          :label="formCtrl.$isSubmitting.value ? 'Submitting...' : 'Submit'"
           type="submit"
         />
         <Button
           severity="secondary"
-          :loading="formCtrl.$isSubmitting"
+          :loading="formCtrl.$isSubmitting.value"
           :label="'Reset'"
           type="reset"
         />
+        {{formCtrl.$isSubmitting}}
       </div>
     </template>
   </HeadlessForm>
