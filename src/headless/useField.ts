@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, watch } from 'vue'
+import { computed, ComputedRef, ref, shallowRef, watch } from 'vue'
 import { FieldController, FieldControllerExport, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
 
@@ -34,14 +34,29 @@ export function useField(
   // Create a reference to track focus state
   const isFocused = ref(false)
 
-  // Create a ref for the model value
-  const modelValue = ref(form[name])
+  // Get initial value
+  const initialValue = form[name]
+  
+  // Use shallowRef for complex objects, ref for primitives
+  const isComplex = typeof initialValue === 'object' && 
+                   initialValue !== null && 
+                   (Array.isArray(initialValue) || Object.keys(initialValue).length > 10)
+  
+  const modelValue = isComplex 
+    ? shallowRef(initialValue)
+    : ref(initialValue)
 
   // Watch for changes to the form value and update the model ref
   watch(
     () => form[name],
     (newValue) => {
-      modelValue.value = newValue
+      if (isComplex) {
+        // For complex objects, replace entire reference
+        modelValue.value = newValue
+      } else {
+        // For simple values, direct assignment
+        modelValue.value = newValue
+      }
     }
   )
 

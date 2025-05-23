@@ -61,13 +61,29 @@ export function useRepeatable(
 
   // Access array value through form proxy
   const value = computed(() => {
+    // Explicitly depend on formVersion to ensure reactivity
+    const _ = form.$formVersion
     const val = form[name]
     return Array.isArray(val) ? val : val ? [val] : []
   })
 
-  const count = computed(() => value.value.length)
-  const canAdd = computed(() => count.value < max)
-  const canRemove = computed(() => count.value > min)
+  const count = computed(() => {
+    // Explicitly depend on formVersion to ensure reactivity
+    const _ = form.$formVersion
+    return value.value.length
+  })
+  
+  const canAdd = computed(() => {
+    // Explicitly depend on formVersion to ensure reactivity
+    const _ = form.$formVersion
+    return count.value < max
+  })
+  
+  const canRemove = computed(() => {
+    // Explicitly depend on formVersion to ensure reactivity
+    const _ = form.$formVersion
+    return count.value > min
+  })
 
   const add = async (
     itemValue: any = defaultValue,

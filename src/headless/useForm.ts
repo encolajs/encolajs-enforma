@@ -1,6 +1,6 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
-import { computed, Ref, ref } from 'vue'
+import { computed, Ref, ref, shallowRef } from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
 import { useConfig } from '@/utils/useConfig'
 import { Emitter } from 'mitt'
@@ -183,8 +183,9 @@ export function useForm<T extends object>(
     $isDirty: ref(false),
     $isTouched: ref(false),
   }
-  // Create a form-specific state version counter
-  const valuesRef = ref(values)
+  // Use shallowRef for performance with large/complex data
+  const valuesRef = shallowRef(values)
+  const formVersion = ref(0) // Manual reactivity trigger
 
   const validationFactory = options.validatorFactory || useValidation().factory
   const validator = validationFactory.make(rules, {
@@ -250,6 +251,11 @@ export function useForm<T extends object>(
     return pathUtils.get(obj, arrayPath) as any[]
   }
 
+  // Helper to trigger reactivity when needed
+  const triggerUpdate = () => {
+    formVersion.value++
+  }
+
   async function _handleSetValue(
     path: string,
     value: any,
@@ -258,6 +264,10 @@ export function useForm<T extends object>(
   ): Promise<void> {
     const state = fieldManager.get(path)
     pathUtils.set(valuesRef.value, path, value)
+    
+    // Manually trigger reactivity since we're using shallowRef
+    triggerUpdate()
+    
     if (validate) {
       await validateField(path, state)
     }
@@ -381,11 +391,13 @@ export function useForm<T extends object>(
 
       // Reset the business object to initial state
       reset(): void {
-        const values = config.behavior.cloneFn(valuesCopy)
+        const resetValues = config.behavior.cloneFn(valuesCopy)
+        
+        // Handle new keys that weren't in the original data
         Object.keys(valuesRef.value).forEach((key) => {
-          if (values && key in (values as Record<string, any>)) {
+          if (resetValues && key in (resetValues as Record<string, any>)) {
             ;(valuesRef.value as Record<string, any>)[key] = (
-              values as Record<string, any>
+              resetValues as Record<string, any>
             )[key]
           } else {
             // Reset to default empty values based on type
@@ -394,11 +406,13 @@ export function useForm<T extends object>(
             )
               ? []
               : typeof (valuesRef.value as Record<string, any>)[key] ===
-                'object'
+                'object' && (valuesRef.value as Record<string, any>)[key] !== null
               ? {}
               : null
           }
         })
+        
+        triggerUpdate() // Manual reactivity trigger
 
         // Clear all field states
         fieldManager.all().forEach((fieldController, path) => {
@@ -423,8 +437,6 @@ export function useForm<T extends object>(
         formState.$isTouched.value = false
         formState.$isValidating.value = false
         formState.$isSubmitting.value = false
-
-        // Field values are now refs, no need for explicit version updates
 
         // Emit form reset event
         formEmitter.emit('form_reset', { formController: this })
@@ -535,7 +547,7 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
         array.splice(index, 0, item)
         fieldManager.shift(arrayPath, index, 1)
-        // With reactive refs, we no longer need to increment version
+        triggerUpdate() // Manual reactivity trigger
       },
 
       remove(arrayPath: string, index: number): void {
@@ -555,14 +567,14 @@ export function useForm<T extends object>(
 
         // Reindex remaining field states
         reindexArrayFieldControllers(arrayPath, index)
-        // With reactive refs, we no longer need to increment version
+        triggerUpdate() // Manual reactivity trigger
       },
 
       move(arrayPath: string, fromIndex: number, toIndex: number): void {
         const array = getArrayByPath(valuesRef.value, arrayPath)
         moveArrayItem(array as [any], fromIndex, toIndex)
         fieldManager.move(arrayPath, fromIndex, toIndex)
-        // With reactive refs, we no longer need to increment version
+        triggerUpdate() // Manual reactivity trigger
       },
 
       sort(arrayPath: string, callback: (a: any, b: any) => number): void {
@@ -575,7 +587,7 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
-        // With reactive refs, we no longer need to increment version
+        triggerUpdate() // Manual reactivity trigger
       },
     } as FormController,
     {
@@ -591,6 +603,12 @@ export function useForm<T extends object>(
           }
 
           if (prop.startsWith('$')) {
+            // Handle special case for formVersion
+            // This is needed by repeatable fields
+            // @see references to `form.$formVersion`
+            if (prop === '$formVersion') {
+              return formVersion.value
+            }
             // @ts-expect-error Form state properties are the only ones we want to expose
             return formState[prop]
           }
@@ -615,7 +633,10 @@ export function useForm<T extends object>(
             }
           } else {
             fieldManager.get(prop) // to ensure the field exists
-            return pathUtils.get(valuesRef.value, prop)
+            // Add formVersion as dependency to computed properties
+            const _ = formVersion.value // Add dependency
+            const result = pathUtils.get(valuesRef.value, prop)
+            return result
           }
         }
 
@@ -646,6 +667,7 @@ export function useForm<T extends object>(
           } else {
             // Set the value immediately
             pathUtils.set(valuesRef.value, prop, value)
+            triggerUpdate() // Manual reactivity trigger
             const fiel = fieldManager.get(prop)
             fiel.$isDirty.value = true
 
