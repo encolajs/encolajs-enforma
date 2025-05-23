@@ -230,6 +230,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     const labelProps = mergeProps(
       {
         for: fieldId.value,
+        id: `label-${fieldId.value}`,
       },
       transformedProps.labelProps || {},
       getConfig('pt.label', {}) as Record<string, unknown>
@@ -269,6 +270,11 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       defaultInputProps,
       fieldController.value.attrs || {},
       transformedInputProps,
+      {
+        'aria-required': !!originalProps.required,
+        'aria-readonly': !!transformedInputProps.readonly,
+        'aria-disabled': !!transformedInputProps.disabled,
+      },
       getConfig('pt.input', {}) as Record<string, unknown>
     )
 

@@ -20,6 +20,8 @@ export interface RepeatableController {
   move: (fromIndex: number, toIndex: number) => Promise<boolean>
   moveUp: (index: number) => Promise<boolean>
   moveDown: (index: number) => Promise<boolean>
+  repeatableAttrs: Record<string, any>
+  getItemAttrs: (index: number) => Record<string, any>
 }
 
 export function useRepeatable(
@@ -58,6 +60,43 @@ export function useRepeatable(
 
   // Call initialization immediately
   initializeFields()
+
+  // Function to announce changes to screen readers
+  const announceArrayChange = (
+    action: 'added' | 'removed' | 'moved',
+    index: number
+  ) => {
+    const announcement = {
+      added: `Item added at position ${index + 1}`,
+      removed: `Item removed from position ${index + 1}`,
+      moved: `Item moved to position ${index + 1}`,
+    }[action]
+
+    announceToScreenReader(announcement)
+  }
+
+  const announceToScreenReader = (message: string) => {
+    if (typeof document === 'undefined') return // SSR safety
+
+    const liveRegion = document.createElement('div')
+    liveRegion.setAttribute('aria-live', 'polite')
+    liveRegion.setAttribute('aria-atomic', 'true')
+    liveRegion.style.position = 'absolute'
+    liveRegion.style.left = '-10000px'
+    liveRegion.style.width = '1px'
+    liveRegion.style.height = '1px'
+    liveRegion.style.overflow = 'hidden'
+    liveRegion.textContent = message
+
+    document.body.appendChild(liveRegion)
+    setTimeout(() => {
+      try {
+        document.body.removeChild(liveRegion)
+      } catch {
+        // Element might already be removed
+      }
+    }, 1000)
+  }
 
   // Access array value through form proxy
   const value = computed(() => {
@@ -102,7 +141,11 @@ export function useRepeatable(
     }
 
     // Update array in form
-    form.add(name, index ?? currentValue.length - 1, effectiveValue)
+    const addIndex = index ?? currentValue.length - 1
+    form.add(name, addIndex, effectiveValue)
+
+    // Announce the change
+    announceArrayChange('added', addIndex)
 
     // Validate if needed
     if (validateOnAdd) {
@@ -119,6 +162,9 @@ export function useRepeatable(
 
     // Remove item from form
     form.remove(name, index)
+
+    // Announce the change
+    announceArrayChange('removed', index)
 
     // Validate if needed
     if (validateOnRemove) {
@@ -142,6 +188,9 @@ export function useRepeatable(
     // Move item in form
     form.move(name, fromIndex, toIndex)
 
+    // Announce the change
+    announceArrayChange('moved', toIndex)
+
     return true
   }
 
@@ -155,6 +204,28 @@ export function useRepeatable(
     return move(index, index + 1)
   }
 
+  // ARIA attributes for the repeatable container
+  const repeatableAttrs = computed(() => {
+    const _ = form.$formVersion // Depend on form version for reactivity
+    return {
+      'aria-live': 'polite',
+      'aria-label': `${count.value} items`,
+      role: 'group',
+    }
+  })
+
+  // Function to get ARIA attributes for individual array items
+  const getItemAttrs = (index: number) => {
+    const _ = form.$formVersion // Depend on form version for reactivity
+    return {
+      'aria-setsize': count.value,
+      'aria-posinset': index + 1,
+      'aria-describedby': `item-help-${name}-${index}`,
+      role: 'group',
+      'aria-label': `Item ${index + 1} of ${count.value}`,
+    }
+  }
+
   return computed(() => ({
     value: value.value,
     count: count.value,
@@ -165,5 +236,7 @@ export function useRepeatable(
     move,
     moveUp,
     moveDown,
+    repeatableAttrs: repeatableAttrs.value,
+    getItemAttrs,
   }))
 }

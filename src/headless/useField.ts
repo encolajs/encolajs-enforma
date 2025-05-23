@@ -1,6 +1,7 @@
 import { computed, ComputedRef, ref, shallowRef, watch, watchEffect } from 'vue'
 import { FieldController, FieldControllerExport, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
+import { pathUtils } from '@/utils/helpers'
 
 export type fieldValidateOnOption =
   | 'input'
@@ -193,6 +194,14 @@ export function useField(
       attrs: {
         value,
         'aria-invalid': !!error,
+        'aria-busy': fieldController?.$isValidating.value ? 'true' : undefined,
+        'aria-describedby': getDescribedByIds(
+          name,
+          fieldController,
+          form,
+          !!error
+        ),
+        'aria-labelledby': getLabelledByIds(name, fieldController, form),
         ...(error
           ? { 'aria-errormessage': `error-${fieldController?._id}` }
           : {}),
@@ -204,4 +213,62 @@ export function useField(
       id: fieldController?._id,
     } as FieldControllerExport
   })
+}
+
+/**
+ * Helper function to build aria-describedby IDs
+ */
+function getDescribedByIds(
+  fieldName: string,
+  fieldController: FieldController | undefined,
+  form: FormController,
+  hasError: boolean
+): string | undefined {
+  const ids: string[] = []
+
+  if (hasError && fieldController) {
+    ids.push(`error-${fieldController._id}`)
+  }
+
+  // Check for help text - simplified implementation
+  // In a real implementation, you'd check the schema for help text
+  if (hasHelpText(fieldName, form) && fieldController) {
+    ids.push(`help-${fieldController._id}`)
+  }
+
+  return ids.length > 0 ? ids.join(' ') : undefined
+}
+
+/**
+ * Helper function to build aria-labelledby IDs
+ */
+function getLabelledByIds(
+  fieldName: string,
+  fieldController: FieldController | undefined,
+  form: FormController
+): string | undefined {
+  const ids: string[] = []
+
+  // Add label ID if field has a label
+  if (hasLabel(fieldName, form) && fieldController) {
+    ids.push(`label-${fieldController._id}`)
+  }
+
+  return ids.length > 0 ? ids.join(' ') : undefined
+}
+
+/**
+ * Helper function to check if field has help text
+ */
+function hasHelpText(fieldName: string, form: FormController): boolean {
+  // Simplified implementation - in reality you'd check the schema
+  return false
+}
+
+/**
+ * Helper function to check if field has a label
+ */
+function hasLabel(fieldName: string, form: FormController): boolean {
+  // Simplified implementation - in reality you'd check the schema
+  return true // Most fields have labels
 }

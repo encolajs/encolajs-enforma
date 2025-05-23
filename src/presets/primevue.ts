@@ -64,7 +64,7 @@ function setPrimeVueSpecificProps(
   formState: FormController,
   config: any
 ) {
-  fieldProps.inputProps.labelId = field.value.id
+  fieldProps.inputProps.labelId = `label-${field.value.id}`
   fieldProps.inputProps.modelValue = field.value.value
   return fieldProps
 }

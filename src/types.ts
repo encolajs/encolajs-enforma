@@ -92,6 +92,9 @@ export interface FormController {
   $isDirty: Ref<boolean>
   $isTouched: Ref<boolean>
 
+  // Form ARIA attributes
+  readonly $formAttrs: Record<string, any>
+
   reset(): void
 
   values(): object

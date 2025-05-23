@@ -173,6 +173,7 @@ export default defineComponent({
       h(
         'form',
         {
+          ...formCtrl.$formAttrs,
           onSubmit: handleSubmit,
           onReset: handleReset,
           novalidate: true,

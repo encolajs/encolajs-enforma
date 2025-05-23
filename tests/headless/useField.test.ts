@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useField } from '@/headless/useField'
-import { FieldControllerExport } from '../../src'
-import { ComputedRef, ref } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { useForm } from '@/headless/useForm'
 import { defineComponent, h } from 'vue'
@@ -117,6 +115,99 @@ describe('useField', () => {
 
       // Access to model property
       expect(wrapper.vm.fieldCtrl.model).toBeDefined()
+    })
+
+    it('should provide basic ARIA attributes', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'email',
+        },
+      })
+
+      const attrs = wrapper.vm.fieldCtrl.attrs
+
+      // Should have basic ARIA attributes
+      expect(attrs['aria-invalid']).toBe(false)
+      expect(attrs['aria-busy']).toBeUndefined() // Not validating initially
+      expect(attrs['aria-describedby']).toBeUndefined()
+      expect(attrs['aria-labelledby']).toBeDefined()
+    })
+
+    it('should set aria-invalid when field has errors', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'email',
+        },
+      })
+
+      // Set invalid email to trigger validation error
+      wrapper.vm.fieldCtrl.events.change({ target: { value: 'invalid-email' } })
+      await wrapper.vm.fieldCtrl.validate()
+      await flushPromises()
+
+      const attrs = wrapper.vm.fieldCtrl.attrs
+      expect(attrs['aria-invalid']).toBe(true)
+      expect(attrs['aria-errormessage']).toContain('error-')
+    })
+
+    it('should set aria-busy during validation', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'email',
+        },
+      })
+
+      // Mock validation to be async
+      const form = wrapper.vm.form
+      const originalValidate = form.validateField
+      form.validateField = vi.fn().mockImplementation(async (path) => {
+        const field = form.getField(path)
+        field.$isValidating.value = true
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        field.$isValidating.value = false
+        return true
+      })
+
+      // Start validation
+      const validationPromise = wrapper.vm.fieldCtrl.validate()
+
+      // Check aria-busy is set during validation
+      expect(wrapper.vm.fieldCtrl.attrs['aria-busy']).toBe('true')
+
+      await validationPromise
+
+      // Check aria-busy is cleared after validation
+      expect(wrapper.vm.fieldCtrl.attrs['aria-busy']).toBeUndefined()
+    })
+
+    it('should provide ARIA element IDs for UI components', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'email',
+        },
+      })
+
+      // Should match the IDs referenced in aria attributes
+      const attrs = wrapper.vm.fieldCtrl.attrs
+      expect(attrs['aria-labelledby']).toBeDefined()
+      expect(attrs['aria-errormessage']).toBeUndefined() // No error initially
+    })
+
+    it('should include error ID in aria-errormessage when field has errors', async () => {
+      const wrapper = mount(TestFieldComponent, {
+        props: {
+          name: 'email',
+        },
+      })
+
+      // Set invalid email to trigger validation error
+      wrapper.vm.fieldCtrl.events.change({ target: { value: 'invalid-email' } })
+      await wrapper.vm.fieldCtrl.validate()
+      await flushPromises()
+
+      const attrs = wrapper.vm.fieldCtrl.attrs
+
+      expect(attrs['aria-errormessage']).toBeDefined()
     })
   })
 

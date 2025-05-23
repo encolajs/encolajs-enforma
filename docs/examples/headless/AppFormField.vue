@@ -10,7 +10,13 @@ this is the first thing to do in your app
   <div v-bind="$attrs">
     <HeadlessField :name="name">
       <template #default="{ model, value, attrs, error, events, id }">
-        <label v-if="label" class="block" :for="id">{{ label }}</label>
+        <label
+          v-if="label"
+          :id="attrs['aria-labelledby']"
+          :for="id"
+          class="block" >
+          {{ label }}
+        </label>
         <slot
           :value="value"
           :attrs="attrs"

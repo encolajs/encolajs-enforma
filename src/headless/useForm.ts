@@ -560,15 +560,15 @@ export function useForm<T extends object>(
 
       // field related methods.
       // these refer to items in the field manager, not the UI
-      getField(path): FieldController {
+      getField(path: string): FieldController {
         return fieldManager.get(path)
       },
 
-      removeField(path): void {
+      removeField(path: string): void {
         return fieldManager.delete(path)
       },
 
-      hasField(path): boolean {
+      hasField(path: string): boolean {
         return fieldManager.has(path)
       },
 
@@ -649,7 +649,19 @@ export function useForm<T extends object>(
         // Clean up all form and field effects
         formScope.stop()
       },
-    } as FormController,
+
+      // Form-level ARIA attributes
+      get $formAttrs() {
+        const hasFormErrors = Array.from(fieldManager.all().values()).some(
+          (field) => field.$errors.value.length > 0
+        )
+
+        return {
+          'aria-busy': formState.$isSubmitting.value ? 'true' : undefined,
+          'aria-invalid': hasFormErrors ? 'true' : undefined,
+        }
+      },
+    } as unknown as FormController,
     {
       get(target: FormController, prop: string | symbol): any {
         if (typeof target[prop as keyof FormController] === 'function') {
@@ -668,6 +680,10 @@ export function useForm<T extends object>(
             // @see references to `form.$formVersion`
             if (prop === '$formVersion') {
               return formVersion.value
+            }
+            // Handle formAttrs
+            if (prop === '$formAttrs') {
+              return target.$formAttrs
             }
             return formState[prop as keyof typeof formState]
           }

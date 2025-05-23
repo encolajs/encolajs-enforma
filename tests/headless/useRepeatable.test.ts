@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 // @ts-ignore
 import { useRepeatable } from '@/headless/useRepeatable'
 // @ts-ignore
@@ -293,6 +293,104 @@ describe('useRepeatable', () => {
       await nextTick()
 
       expect(form.items[0]).toEqual({ name: '', status: 'new' })
+    })
+  })
+
+  describe('ARIA attributes', () => {
+    it('should provide repeatable container ARIA attributes', async () => {
+      const form = useForm({ items: ['item1', 'item2'] })
+      const repeatable = useRepeatable('items', form)
+      await nextTick()
+
+      const attrs = repeatable.value.repeatableAttrs
+
+      expect(attrs['aria-live']).toBe('polite')
+      expect(attrs['aria-label']).toBe('2 items')
+      expect(attrs['role']).toBe('group')
+    })
+
+    it('should update aria-label when count changes', async () => {
+      const form = useForm({ items: ['item1'] })
+      const repeatable = useRepeatable('items', form)
+      await nextTick()
+
+      expect(repeatable.value.repeatableAttrs['aria-label']).toBe('1 items')
+
+      await repeatable.value.add('new item')
+      await nextTick()
+
+      expect(repeatable.value.repeatableAttrs['aria-label']).toBe('2 items')
+    })
+
+    it('should provide item-specific ARIA attributes', async () => {
+      const form = useForm({ items: ['item1', 'item2', 'item3'] })
+      const repeatable = useRepeatable('items', form)
+      await nextTick()
+
+      // Test item at index 1 (second item)
+      const itemAttrs = repeatable.value.getItemAttrs(1)
+
+      expect(itemAttrs['aria-setsize']).toBe(3)
+      expect(itemAttrs['aria-posinset']).toBe(2)
+      expect(itemAttrs['aria-describedby']).toBe('item-help-items-1')
+      expect(itemAttrs['role']).toBe('group')
+      expect(itemAttrs['aria-label']).toBe('Item 2 of 3')
+    })
+
+    it('should update item ARIA attributes when array changes', async () => {
+      const form = useForm({ items: ['item1', 'item2'] })
+      const repeatable = useRepeatable('items', form)
+      await nextTick()
+
+      // Initially 2 items
+      let itemAttrs = repeatable.value.getItemAttrs(0)
+      expect(itemAttrs['aria-setsize']).toBe(2)
+      expect(itemAttrs['aria-label']).toBe('Item 1 of 2')
+
+      // Add an item
+      await repeatable.value.add('item3')
+      await nextTick()
+
+      // Now 3 items
+      itemAttrs = repeatable.value.getItemAttrs(0)
+      expect(itemAttrs['aria-setsize']).toBe(3)
+      expect(itemAttrs['aria-label']).toBe('Item 1 of 3')
+    })
+
+    it('should announce array changes to screen readers', async () => {
+      // Mock document for announcements
+      const mockDiv = {
+        setAttribute: vi.fn(),
+        style: {},
+        textContent: '',
+      }
+      const createElementSpy = vi
+        .spyOn(document, 'createElement')
+        .mockReturnValue(mockDiv as any)
+      const appendChildSpy = vi
+        .spyOn(document.body, 'appendChild')
+        .mockImplementation(() => {})
+      const removeChildSpy = vi
+        .spyOn(document.body, 'removeChild')
+        .mockImplementation(() => {})
+
+      const form = useForm({ items: ['item1'] })
+      const repeatable = useRepeatable('items', form)
+      await nextTick()
+
+      // Add item
+      await repeatable.value.add('item2')
+      await flushPromises()
+
+      expect(createElementSpy).toHaveBeenCalledWith('div')
+      expect(mockDiv.setAttribute).toHaveBeenCalledWith('aria-live', 'polite')
+      expect(mockDiv.setAttribute).toHaveBeenCalledWith('aria-atomic', 'true')
+      expect(appendChildSpy).toHaveBeenCalled()
+
+      // Clean up mocks
+      createElementSpy.mockRestore()
+      appendChildSpy.mockRestore()
+      removeChildSpy.mockRestore()
     })
   })
 })

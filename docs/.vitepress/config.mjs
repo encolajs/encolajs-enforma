@@ -42,6 +42,7 @@ export default defineConfig({
             { text: 'Configuration', link: '/core-concepts/configuration' },
             { text: 'Validation System', link: '/core-concepts/validation' },
             { text: 'Rendering Modes', link: '/core-concepts/rendering-modes' },
+            { text: 'Accessibility', link: '/core-concepts/accessibility' },
           ],
         },
         {

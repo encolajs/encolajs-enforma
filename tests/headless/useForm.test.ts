@@ -612,4 +612,46 @@ describe('useForm', () => {
       expect(form['tags']).toEqual(['developer', 'vue'])
     })
   })
+
+  describe('form ARIA attributes', () => {
+    test('should provide form-level ARIA attributes', () => {
+      const attrs = form.$formAttrs
+
+      // Should have basic ARIA attributes
+      expect(attrs['aria-busy']).toBeUndefined() // Not submitting initially
+      expect(attrs['aria-invalid']).toBeUndefined() // No errors initially
+      expect(attrs['aria-describedby']).toBeUndefined() // No description initially
+      expect(attrs['aria-labelledby']).toBeUndefined() // No label initially
+    })
+
+    test('should set aria-busy during form submission', async () => {
+      const submitPromise = form.submit()
+
+      // Check aria-busy is set during submission
+      expect(form.$formAttrs['aria-busy']).toBe('true')
+
+      await submitPromise
+
+      // Check aria-busy is cleared after submission
+      expect(form.$formAttrs['aria-busy']).toBeUndefined()
+    })
+
+    test('should set aria-invalid when form has errors', async () => {
+      // Set invalid value to trigger validation error
+      await form.setFieldValue('items.0.price', 5) // Less than gt:10 requirement
+
+      const attrs = form.$formAttrs
+      expect(attrs['aria-invalid']).toBe('true')
+    })
+
+    test('should clear aria-invalid when form errors are resolved', async () => {
+      // Set invalid value first
+      await form.setFieldValue('items.0.price', 5)
+      expect(form.$formAttrs['aria-invalid']).toBe('true')
+
+      // Fix the error
+      await form.setFieldValue('items.0.price', 150)
+      expect(form.$formAttrs['aria-invalid']).toBeUndefined()
+    })
+  })
 })

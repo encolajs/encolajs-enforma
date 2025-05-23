@@ -48,7 +48,7 @@ This is the most common scenario when the `<HeadlessField>` component renders on
 </HeadlessField>
 ```
 
-You can read more about what the "field controller" does in the [`useField`](/advanced/usefield)  section
+You can read more about what the "field controller" does in the [`field API`](/headless-forms/field_api.md)  section
 
 ## Multiple inputs example
 
