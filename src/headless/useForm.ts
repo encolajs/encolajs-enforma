@@ -1,6 +1,14 @@
 import { FormController, FormOptions, ValidationRules } from '@/types'
 import { useValidation } from '@/utils/useValidation'
-import { computed, Ref, ref, shallowRef } from 'vue'
+import {
+  computed,
+  Ref,
+  ref,
+  shallowRef,
+  effectScope,
+  EffectScope,
+  watchEffect,
+} from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
 import { useConfig } from '@/utils/useConfig'
 import { Emitter } from 'mitt'
@@ -28,9 +36,11 @@ export interface StateChanges {
 
 class FieldManager {
   private _fields: Map<string, FieldController>
+  private _fieldScopes: Map<string, EffectScope>
 
   constructor() {
     this._fields = new Map<string, FieldController>()
+    this._fieldScopes = new Map<string, EffectScope>()
   }
 
   all(): Map<string, FieldController> {
@@ -38,6 +48,12 @@ class FieldManager {
   }
 
   delete(path: string): void {
+    // Clean up field-specific effects
+    const fieldScope = this._fieldScopes.get(path)
+    if (fieldScope) {
+      fieldScope.stop()
+      this._fieldScopes.delete(path)
+    }
     this._fields.delete(path)
   }
 
@@ -47,14 +63,25 @@ class FieldManager {
 
   get(path: string): FieldController {
     if (!this._fields.has(path)) {
-      this._fields.set(path, {
-        $errors: ref([]),
-        $isDirty: ref(false),
-        $isTouched: ref(false),
-        $isValidating: ref(false),
-        _id: generateId('field', path),
+      // Create dedicated scope for this field
+      const fieldScope = effectScope()
+      this._fieldScopes.set(path, fieldScope)
+
+      let fieldController: FieldController
+      fieldScope.run(() => {
+        fieldController = {
+          $errors: ref([]),
+          $isDirty: ref(false),
+          $isTouched: ref(false),
+          $isValidating: ref(false),
+          _id: generateId('field', path),
+        }
+
+        // Field-specific reactive effects can be added here in the future
+        // For example, cross-field validation watchers
       })
-      // No need to signal state change here as we'll do it when getting the field
+
+      this._fields.set(path, fieldController!)
     }
     return this._fields.get(path)!
   }
@@ -167,25 +194,51 @@ export function useForm<T extends object>(
   rules: ValidationRules = {},
   options: FormOptions = {}
 ): T & FormController {
-  // Create form-specific event emitter
-  const formEmitter: Emitter<FormEvents> = options.useGlobalEvents
-    ? globalFormEmitter
-    : createFormEmitter()
+  // Create main form scope for form-level effects
+  const formScope = effectScope()
 
-  // Use form config to access the clone function
-  const config = useConfig()
-  const cloneFn = config.behavior.cloneFn
-  const valuesCopy: object = cloneFn(values)
-  const fieldManager = new FieldManager()
-  const formState = {
-    $isValidating: ref(false),
-    $isSubmitting: ref(false),
-    $isDirty: ref(false),
-    $isTouched: ref(false),
-  }
-  // Use shallowRef for performance with large/complex data
-  const valuesRef = shallowRef(values)
-  const formVersion = ref(0) // Manual reactivity trigger
+  let formEmitter: Emitter<FormEvents>
+  let config: any
+  let cloneFn: any
+  let valuesCopy: object
+  let fieldManager: FieldManager
+  let formState: any
+  let valuesRef: any
+  let formVersion: any
+
+  formScope.run(() => {
+    // Create form-specific event emitter
+    formEmitter = options.useGlobalEvents
+      ? globalFormEmitter
+      : createFormEmitter()
+
+    // Use form config to access the clone function
+    config = useConfig()
+    cloneFn = config.behavior.cloneFn
+    valuesCopy = cloneFn(values)
+    fieldManager = new FieldManager()
+    formState = {
+      $isValidating: ref(false),
+      $isSubmitting: ref(false),
+      $isDirty: ref(false),
+      $isTouched: ref(false),
+    }
+    // Use shallowRef for performance with large/complex data
+    valuesRef = shallowRef(values)
+    formVersion = ref(0) // Manual reactivity trigger
+
+    // Form-level reactive effects using watchEffect for automatic dependency tracking
+    watchEffect(() => {
+      // Track form-level state changes automatically
+      const isValidating = formState.$isValidating.value
+      const isSubmitting = formState.$isSubmitting.value
+      const isDirty = formState.$isDirty.value
+      const isTouched = formState.$isTouched.value
+
+      // This effect will re-run when any form state changes
+      // Can be used for global form state monitoring or side effects
+    })
+  })
 
   const validationFactory = options.validatorFactory || useValidation().factory
   const validator = validationFactory.make(rules, {
@@ -264,10 +317,10 @@ export function useForm<T extends object>(
   ): Promise<void> {
     const state = fieldManager.get(path)
     pathUtils.set(valuesRef.value, path, value)
-    
+
     // Manually trigger reactivity since we're using shallowRef
     triggerUpdate()
-    
+
     if (validate) {
       await validateField(path, state)
     }
@@ -392,7 +445,7 @@ export function useForm<T extends object>(
       // Reset the business object to initial state
       reset(): void {
         const resetValues = config.behavior.cloneFn(valuesCopy)
-        
+
         // Handle new keys that weren't in the original data
         Object.keys(valuesRef.value).forEach((key) => {
           if (resetValues && key in (resetValues as Record<string, any>)) {
@@ -406,12 +459,13 @@ export function useForm<T extends object>(
             )
               ? []
               : typeof (valuesRef.value as Record<string, any>)[key] ===
-                'object' && (valuesRef.value as Record<string, any>)[key] !== null
+                  'object' &&
+                (valuesRef.value as Record<string, any>)[key] !== null
               ? {}
               : null
           }
         })
-        
+
         triggerUpdate() // Manual reactivity trigger
 
         // Clear all field states
@@ -589,6 +643,12 @@ export function useForm<T extends object>(
         fieldManager.reorder(arrayPath, newPositions)
         triggerUpdate() // Manual reactivity trigger
       },
+
+      // Enhanced cleanup with effectScope
+      destroy(): void {
+        // Clean up all form and field effects
+        formScope.stop()
+      },
     } as FormController,
     {
       get(target: FormController, prop: string | symbol): any {
@@ -609,8 +669,7 @@ export function useForm<T extends object>(
             if (prop === '$formVersion') {
               return formVersion.value
             }
-            // @ts-expect-error Form state properties are the only ones we want to expose
-            return formState[prop]
+            return formState[prop as keyof typeof formState]
           }
           const isMetaProp = prop.includes('.$')
           if (isMetaProp) {
@@ -661,8 +720,7 @@ export function useForm<T extends object>(
               }
             }
             if (['isDirty', 'isTouched'].includes(metaProp) && value === true) {
-              // @ts-expect-error formState has $isDirty and $isTouched properties
-              formState[`$${metaProp}`].value = true
+              ;(formState as any)[`$${metaProp}`].value = true
             }
           } else {
             // Set the value immediately

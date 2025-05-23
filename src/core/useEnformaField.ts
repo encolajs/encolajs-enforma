@@ -7,6 +7,7 @@ import {
   ComponentPublicInstance,
   ComputedRef,
   ref,
+  watchEffect,
 } from 'vue'
 import {
   formContextKey,
@@ -117,7 +118,20 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
   const internalState = ref(0)
 
-  formCtrl.on('field_changed', () => internalState.value++)
+  // Replace event listener with watchEffect for automatic dependency tracking
+  watchEffect(() => {
+    // Automatically track relevant form state changes
+    const fieldValue = formCtrl[originalProps.name]
+    const fieldErrors = formCtrl[`${originalProps.name}.$errors`]
+    const fieldState = {
+      isDirty: formCtrl[`${originalProps.name}.$isDirty`]?.value,
+      isTouched: formCtrl[`${originalProps.name}.$isTouched`]?.value,
+      isValidating: formCtrl[`${originalProps.name}.$isValidating`]?.value,
+    }
+
+    // Increment state to trigger re-computation when any tracked property changes
+    internalState.value++
+  })
 
   const fieldProps = computed(() => {
     return evaluateSchema(

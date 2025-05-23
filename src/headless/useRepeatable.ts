@@ -72,13 +72,13 @@ export function useRepeatable(
     const _ = form.$formVersion
     return value.value.length
   })
-  
+
   const canAdd = computed(() => {
     // Explicitly depend on formVersion to ensure reactivity
     const _ = form.$formVersion
     return count.value < max
   })
-  
+
   const canRemove = computed(() => {
     // Explicitly depend on formVersion to ensure reactivity
     const _ = form.$formVersion

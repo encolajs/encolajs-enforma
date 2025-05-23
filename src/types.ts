@@ -155,6 +155,9 @@ export interface FormController {
 
   sort(arrayPath: string, callback: (a: any, b: any) => number): void
 
+  // Enhanced cleanup with effectScope
+  destroy(): void
+
   [key: string]: any
 }
 

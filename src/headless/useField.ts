@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, shallowRef, watch } from 'vue'
+import { computed, ComputedRef, ref, shallowRef, watch, watchEffect } from 'vue'
 import { FieldController, FieldControllerExport, FormController } from '@/types'
 import { debounce } from '@/utils/debounce'
 
@@ -36,38 +36,42 @@ export function useField(
 
   // Get initial value
   const initialValue = form[name]
-  
-  // Use shallowRef for complex objects, ref for primitives
-  const isComplex = typeof initialValue === 'object' && 
-                   initialValue !== null && 
-                   (Array.isArray(initialValue) || Object.keys(initialValue).length > 10)
-  
-  const modelValue = isComplex 
-    ? shallowRef(initialValue)
-    : ref(initialValue)
 
-  // Watch for changes to the form value and update the model ref
-  watch(
-    () => form[name],
-    (newValue) => {
+  // Use shallowRef for complex objects, ref for primitives
+  const isComplex =
+    typeof initialValue === 'object' &&
+    initialValue !== null &&
+    (Array.isArray(initialValue) || Object.keys(initialValue).length > 10)
+
+  const modelValue = isComplex ? shallowRef(initialValue) : ref(initialValue)
+
+  // Use watchEffect for automatic dependency tracking of form value changes
+  watchEffect(() => {
+    const formValue = form[name]
+    if (modelValue.value !== formValue) {
       if (isComplex) {
         // For complex objects, replace entire reference
-        modelValue.value = newValue
+        modelValue.value = formValue
       } else {
         // For simple values, direct assignment
-        modelValue.value = newValue
+        modelValue.value = formValue
       }
     }
-  )
+  })
 
-  // Watch for changes to the model ref and update the form
-  watch(modelValue, (newValue) => {
-    // Only trigger validation if the field is dirty
-    if (form[`${name}.$isDirty`].value) {
-      handleChange(newValue, 'input')
-    } else {
-      // Just update the value without validation
-      form.setFieldValue(name, newValue, false)
+  // Use watchEffect for automatic dependency tracking of model value changes
+  watchEffect(() => {
+    const currentValue = modelValue.value
+    const isDirty = form[`${name}.$isDirty`]?.value
+
+    // Only update form if the value has actually changed
+    if (form[name] !== currentValue) {
+      if (isDirty) {
+        handleChange(currentValue, 'input')
+      } else {
+        // Just update the value without validation
+        form.setFieldValue(name, currentValue, false)
+      }
     }
   })
 

@@ -7,6 +7,8 @@ import {
   computed,
   ComputedRef,
   onMounted,
+  effectScope,
+  watchEffect,
 } from 'vue'
 import { useField } from './useField'
 import {
@@ -46,34 +48,41 @@ export default defineComponent({
       return () => null // Return null instead of trying to render
     }
 
-    // Create a trigger ref to force re-rendering when the data changes
-    const renderTrigger = ref(0)
-    const unwatchers: Function[] = []
+    // Create effectScope for automatic cleanup management
+    const componentScope = effectScope()
+
+    let renderTrigger: any
+    let fieldCtrl: ComputedRef<FieldControllerExport>
+
+    componentScope.run(() => {
+      // Create a trigger ref to force re-rendering when the data changes
+      renderTrigger = ref(0)
+
+      fieldCtrl = useField(props.name, form, {
+        validateOn: props.validateOn,
+      } as FieldOptions)
+
+      // Use watchEffect for selective tracking instead of deep watching
+      watchEffect(() => {
+        // Only track specific properties that affect rendering
+        const value = fieldCtrl.value.value
+        const error = fieldCtrl.value.error
+        const isDirty = fieldCtrl.value.isDirty
+        const isTouched = fieldCtrl.value.isTouched
+        const isValidating = fieldCtrl.value.isValidating
+
+        // Trigger re-render when these specific properties change
+        renderTrigger.value++
+      })
+    })
+
+    onMounted(() => fieldCtrl.value.initField?.())
 
     onBeforeUnmount(() => {
       form.removeField(props.name)
-      unwatchers.forEach((unwatch) => unwatch())
+      // Single call cleans up all effects created within the scope
+      componentScope.stop()
     })
-
-    const fieldCtrl: ComputedRef<FieldControllerExport> = useField(
-      props.name,
-      form,
-      {
-        validateOn: props.validateOn,
-      } as FieldOptions
-    )
-
-    onMounted(fieldCtrl.value.initField)
-
-    unwatchers.push(
-      watch(
-        () => fieldCtrl.value,
-        () => {
-          renderTrigger.value++
-        },
-        { deep: true }
-      )
-    )
 
     return () => {
       // Include renderTrigger in the render function to ensure it re-evaluates
