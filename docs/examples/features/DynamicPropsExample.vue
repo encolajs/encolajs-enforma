@@ -12,7 +12,7 @@
   </Enforma>
 
   <h5 class="mt-8 mb-4">Form Data Preview</h5>
-  <pre class="bg-gray-100 p-4 rounded text-sm">{{ JSON.stringify(data, null, 2) }}</pre>
+  <pre class="bg-gray-100 text-gray-800 p-4 rounded text-sm">{{ JSON.stringify(data, null, 2) }}</pre>
 </template>
 
 <script setup>
