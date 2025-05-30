@@ -38,13 +38,14 @@ export const EnformaPlugin: Plugin = {
       app.config.globalProperties.$t || fallbackTranslate
     setGlobalConfig(mergedConfig)
 
-    // Apply default preset. Although not necessary, the overhead is minimal
+    // Not necessary when using another UI preset
+    // The overhead is minimal and it ensures the library works
     useDefaultPreset()
 
     // Configure validation
     configureValidation(options || {})
 
-    // inject the translator
+    // Inject the translator
     if (!app.config.globalProperties.$t) {
       app.config.globalProperties.$t = fallbackTranslate
     }
