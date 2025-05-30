@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="props.wrapperProps">
+  <div v-bind="{ ...filteredAttrs, ...props.wrapperProps }">
     <label
       v-if="!props.hideLabel && !props.showLabelNextToInput && props.label"
       v-bind="props.labelProps"
@@ -46,9 +46,25 @@
 
 <script setup lang="ts">
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
-import { ComponentPublicInstance, PropType } from 'vue'
+import { ComponentPublicInstance, PropType, useAttrs, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
+
+defineOptions({
+  inheritAttrs: false,
+})
+
+const attrs = useAttrs()
+
+const excludedAttrs = ['type', 'rules', 'messages']
+const filteredAttrs = computed(() => {
+  return Object.keys(attrs)
+    .filter((k) => !excludedAttrs.includes(k))
+    .reduce((acc, k) => {
+      acc[k] = attrs[k]
+      return acc
+    }, {})
+})
 
 const originalProps = defineProps({
   name: { type: String, required: true },
