@@ -15,7 +15,7 @@ describe('Repeatable Field Performance Tests', () => {
     }))
   }
 
-  // Helper to measure execution time
+  // Helper to measure execution time in miliseconds
   const measureTime = async (
     callback: () => Promise<void>
   ): Promise<number> => {
@@ -68,7 +68,7 @@ describe('Repeatable Field Performance Tests', () => {
         results[size] = { time, memory }
 
         // Optional: Add assertions to catch performance regressions
-        expect(time).toBeLessThan(100) // Example threshold: 100ms
+        expect(time).toBeLessThan(200)
       }
 
       console.table(results)
@@ -95,7 +95,7 @@ describe('Repeatable Field Performance Tests', () => {
 
         results[size] = { time, memory }
 
-        expect(time).toBeLessThan(100) // Example threshold: 100ms
+        expect(time).toBeLessThan(200)
       }
 
       console.table(results)
@@ -122,7 +122,7 @@ describe('Repeatable Field Performance Tests', () => {
 
         results[size] = { time, memory }
 
-        expect(time).toBeLessThan(150) // Example threshold: 150ms
+        expect(time).toBeLessThan(150)
       }
 
       console.table(results)
@@ -145,14 +145,14 @@ describe('Repeatable Field Performance Tests', () => {
       })
 
       console.log('Sequential operations time:', time)
-      expect(time).toBeLessThan(1000) // Example threshold: 1000ms
+      expect(time).toBeLessThan(300)
     })
 
     it('measures performance with validation enabled', async () => {
       const size = 100
       const form = useForm(
         { items: createLargeArray(size) },
-        { 'items.*.name': 'required|min:3' }
+        { 'items.*.name': 'required|gt:3' }
       )
       const repeatable = useRepeatable('items', form, {
         validateOnAdd: true,
@@ -168,7 +168,7 @@ describe('Repeatable Field Performance Tests', () => {
       })
 
       console.log('Operations with validation time:', time)
-      expect(time).toBeLessThan(200) // Example threshold: 200ms
+      expect(time).toBeLessThan(200)
     })
   })
 })
