@@ -96,6 +96,14 @@ export const DEFAULT_CONFIG: EnformaConfig = {
      * props to be passed to schema components
      */
     schema: {},
+    /**
+     * props to be passed to submit button components
+     */
+    submit: {},
+    /**
+     * props to be passed to reset button components
+     */
+    reset: {},
   },
 
   /**

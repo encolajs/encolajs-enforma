@@ -1,11 +1,11 @@
 <template>
-  <button
-    type="button"
+  <component
+    :is="effectiveComponent"
     v-bind="mergeProps($attrs || {}, getConfig('pt.repeatable.remove') || {})"
     @click="$emit('click')"
   >
-    <span v-html="t(effectiveContent)"></span>
-  </button>
+    <span v-if="effectiveContent" v-html="t(effectiveContent)"></span>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -15,10 +15,12 @@ import { useTranslation } from '@/utils/useTranslation'
 
 interface Props {
   content?: string
+  as?: string | object
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: 'Remove',
+  as: 'button',
 })
 
 defineEmits<{
@@ -28,7 +30,7 @@ defineEmits<{
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 
-const effectiveContent = computed(() => {
-  return getConfig('pt.repeatable.remove.content') || props.content
-})
+const effectiveComponent = getConfig('pt.repeatable.remove.as') || props.as
+
+const effectiveContent = getConfig('pt.repeatable.remove.content')
 </script>

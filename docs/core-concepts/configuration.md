@@ -114,6 +114,8 @@ The pass-through configuration allows you to customize the props passed to vario
 | `help` | `ComponentProps` | Props for the help/instructions element |
 | `section` | `ComponentProps` | Props for section components |
 | `schema` | `ComponentProps` | Props for schema components |
+| `submit` | `ComponentProps` | Props for submit button components |
+| `reset` | `ComponentProps` | Props for reset button components |
 | `repeatable` | `Object` | Configuration for repeatable components |
 | `repeatable_table` | `Object` | Configuration for repeatable table components |
 
@@ -203,6 +205,62 @@ Functions that transform form and field properties.
 | `transformers.section_props` | `Function[]` | Transformers for section properties |
 | `[key: string]` | `Function[]` | Other custom transformers |
 
-### Custom Configuration
+## Button Configuration
 
-You can add any additional configuration options specific to your application. These will be available through the configuration system but are not used by the core library.
+As of the latest version, Enforma includes enhanced button customization capabilities that eliminate the need for custom button component files in most cases. All button components support dynamic configuration through props and pass-through configuration.
+
+### Button Props
+
+All button components (`EnformaSubmitButton`, `EnformaResetButton`, and repeatable buttons) accept these standard props:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `content` | `string` | Button text or HTML content (supports translation keys) |
+| `loadingContent` | `string` | Content to show when loading (submit button only) |
+| `as` | `string \| Component` | Component to render as (overrides configuration) |
+
+### Pass-Through Button Configuration
+
+You can configure button appearance and behavior through the pass-through configuration system:
+
+```js
+// Global configuration
+const config = {
+  pt: {
+    submit: {
+      as: MyButton,           // Component to use
+      content: 'Save Changes', // Button text
+      loadingContent: 'Saving...', // Loading text
+      class: 'btn btn-primary',
+      disabled: false
+    },
+    reset: {
+      as: MyButton,
+      content: 'Clear Form',
+      class: 'btn btn-secondary'
+    },
+    repeatable: {
+      add: {
+        as: MyButton,
+        content: '<i class="icon-plus"></i> Add Item',
+        class: 'btn btn-success'
+      },
+      remove: {
+        as: MyButton, 
+        content: '×',
+        class: 'btn btn-danger'
+      },
+      moveUp: {
+        as: MyButton,
+        content: '↑',
+        class: 'btn btn-info'
+      },
+      moveDown: {
+        as: MyButton,
+        content: '↓', 
+        class: 'btn btn-info'
+      }
+    }
+  }
+}
+```

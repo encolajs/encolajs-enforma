@@ -1,16 +1,12 @@
 import { Component } from 'vue'
-import SubmitButton from './primevue/SubmitButton.vue'
-import ResetButton from './primevue/ResetButton.vue'
-import RepeatableRemoveButton from './primevue/RepeatableRemoveButton.vue'
 import RepeatableAddButton from './primevue/RepeatableAddButton.vue'
-import RepeatableMoveDownButton from './primevue/RepeatableMoveDownButton.vue'
-import RepeatableMoveUpButton from './primevue/RepeatableMoveUpButton.vue'
 import {
   InputText,
   Select,
   AutoComplete,
   DatePicker,
   ToggleSwitch,
+  Button,
 } from 'primevue'
 import { FieldController, FieldControllerExport, FormController } from '@/types'
 import {
@@ -19,6 +15,7 @@ import {
   setGlobalConfig,
   getGlobalConfig,
 } from '@/utils/useConfig'
+import { deepMerge } from '@/utils/configUtils'
 
 const inputComponents: Record<string, Component> = {
   input: InputText,
@@ -90,6 +87,11 @@ export default function usePrimeVuePreset(
   const currentConfig = getGlobalConfig()
 
   const primeVuePreset: DeepPartial<EnformaConfig> = {
+    components: {
+      // we're using the `pass-through` for most of the customization
+      // this component is needed because of PrimeVue uses `label` for the prop
+      repeatableAddButton: RepeatableAddButton,
+    },
     /**
      * Pass-Through configuration
      * Props to be passed added to various components
@@ -101,19 +103,48 @@ export default function usePrimeVuePreset(
       error: {
         class: 'text-red-500',
       },
-    },
-    /**
-     * Default components to be used inside Enforma forms
-     */
-    components: {
-      // this will be the default form submit button
-      submitButton: SubmitButton,
-      resetButton: ResetButton,
-      // this will be the default for the add button on repeatable components
-      repeatableAddButton: RepeatableAddButton,
-      repeatableRemoveButton: RepeatableRemoveButton,
-      repeatableMoveUpButton: RepeatableMoveUpButton,
-      repeatableMoveDownButton: RepeatableMoveDownButton,
+      submit: {
+        as: Button,
+      },
+      reset: {
+        as: Button,
+        severity: 'secondary',
+      },
+      repeatable: {
+        wrapper: {},
+        items: {},
+        item: {},
+        actions: {},
+        itemActions: {},
+        add: {
+          as: Button,
+          severity: 'secondary',
+          icon: 'pi pi-plus',
+          content: 'Add', // this is passed as `label` inside the component
+          type: 'button',
+        },
+        remove: {
+          as: Button,
+          severity: 'danger',
+          icon: 'pi pi-trash',
+          content: null,
+          type: 'button',
+        },
+        moveUp: {
+          as: Button,
+          severity: 'secondary',
+          icon: 'pi pi-arrow-up',
+          content: null,
+          type: 'button',
+        },
+        moveDown: {
+          as: Button,
+          severity: 'secondary',
+          icon: 'pi pi-arrow-down',
+          content: null,
+          type: 'button',
+        },
+      },
     },
     /**
      * Functions to change the props of Enforma components before rendering
@@ -126,10 +157,9 @@ export default function usePrimeVuePreset(
   // Merge the current config with the PrimeVue preset
   const mergedConfig = {
     ...currentConfig,
-    pt: {
-      ...currentConfig.pt,
-      ...primeVuePreset.pt,
-    },
+    // we are using deep merge to preserve values from the default preset
+    // this would not be necessary if the primeVuePreset.pt would be complete
+    pt: deepMerge(currentConfig.pt, primeVuePreset.pt),
     components: {
       ...currentConfig.components,
       ...primeVuePreset.components,

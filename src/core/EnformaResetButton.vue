@@ -1,6 +1,7 @@
 <template>
-  <button
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.reset'))"
+  <component
+    :is="effectiveComponent"
+    v-bind="mergeProps($attrs, getConfig('pt.reset'))"
     type="reset"
     :disabled="$isSubmitting"
     @click.prevent="reset"
@@ -8,7 +9,7 @@
     <slot name="default">
       <span v-html="t(effectiveContent)"></span>
     </slot>
-  </button>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -20,10 +21,12 @@ import { FormController } from '@/types'
 
 interface Props {
   content?: string
+  as?: string | object
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: 'Reset',
+  as: 'button',
 })
 
 const $attrs = useAttrs()
@@ -32,7 +35,7 @@ const { reset, $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 
-const effectiveContent = computed(() => {
-  return getConfig('pt.repeatable.reset.content') || props.content
-})
+const effectiveComponent = getConfig('pt.reset.as') || props.as
+
+const effectiveContent = getConfig('pt.reset.content')
 </script>

@@ -1,19 +1,14 @@
 import { Component } from 'vue'
-import SubmitButton from './vuetify/SubmitButton.vue'
-import ResetButton from './vuetify/ResetButton.vue'
-import RepeatableRemoveButton from './vuetify/RepeatableRemoveButton.vue'
-import RepeatableAddButton from './vuetify/RepeatableAddButton.vue'
-import RepeatableMoveDownButton from './vuetify/RepeatableMoveDownButton.vue'
-import RepeatableMoveUpButton from './vuetify/RepeatableMoveUpButton.vue'
 import Field from '@/presets/vuetify/Field.vue'
 import { FieldControllerExport, FormController } from '@/types'
-import { VTextField, VSelect, VSwitch } from 'vuetify/components'
+import { VTextField, VSelect, VSwitch, VBtn } from 'vuetify/components'
 import {
   DeepPartial,
   EnformaConfig,
   setGlobalConfig,
   getGlobalConfig,
 } from '@/utils/useConfig'
+import { deepMerge } from '@/utils/configUtils'
 
 // Define default component mapping to Vuetify components
 // These will be dynamically imported from 'vuetify/components'
@@ -126,19 +121,50 @@ export default function useVuetifyPreset(
       error: {
         class: 'text-error text-caption',
       },
+      submit: {
+        as: VBtn,
+        color: 'primary',
+      },
+      reset: {
+        as: VBtn,
+        variant: 'outlined',
+        color: 'secondary',
+      },
+      repeatable: {
+        wrapper: {},
+        items: {},
+        item: {},
+        actions: {},
+        itemActions: {},
+        add: {
+          as: VBtn,
+          icon: 'mdi-plus',
+          color: 'success',
+        },
+        remove: {
+          as: VBtn,
+          icon: 'mdi-delete',
+          size: 'small',
+          color: 'error',
+        },
+        moveUp: {
+          as: VBtn,
+          icon: 'mdi-arrow-up',
+          size: 'small',
+          color: 'info',
+        },
+        moveDown: {
+          as: VBtn,
+          icon: 'mdi-arrow-down',
+          size: 'small',
+          color: 'info',
+        },
+      },
     },
     /**
      * Default components to be used inside Enforma forms
      */
     components: {
-      // Default form action buttons
-      submitButton: SubmitButton,
-      resetButton: ResetButton,
-      // Repeatable field controls
-      repeatableAddButton: RepeatableAddButton,
-      repeatableRemoveButton: RepeatableRemoveButton,
-      repeatableMoveUpButton: RepeatableMoveUpButton,
-      repeatableMoveDownButton: RepeatableMoveDownButton,
       field: Field,
     },
     /**
@@ -152,10 +178,7 @@ export default function useVuetifyPreset(
   // Merge the current config with the Vuetify preset
   const mergedConfig = {
     ...currentConfig,
-    pt: {
-      ...(currentConfig.pt || {}),
-      ...(vuetifyPreset.pt || {}),
-    },
+    pt: deepMerge(currentConfig.pt, vuetifyPreset.pt),
     components: {
       ...(currentConfig.components || {}),
       ...(vuetifyPreset.components || {}),

@@ -1,22 +1,33 @@
 <template>
-  <Button
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.repeatableAddButton'))"
+  <component
+    :is="effectiveComponent"
     type="button"
-    severity="secondary"
-    icon="pi pi-plus"
-    :label="t('Add')"
+    v-bind="
+      mergeProps($attrs || {}, getConfig('pt.repeatable.add') || {}) || {}
+    "
+    :label="t(effectiveContent)"
   />
 </template>
 
 <script setup lang="ts">
-import { Button } from 'primevue'
 import { useFormConfig } from '@/utils/useFormConfig'
-import { inject, mergeProps, useAttrs } from 'vue'
+import { mergeProps, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-import { formControllerKey } from '@/constants/symbols'
-import { FormController } from '@/types'
 
-const $attrs = useAttrs()
+interface Props {
+  content?: string
+  as?: string | object
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  content: 'Add',
+  as: 'button',
+})
+
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
+
+const effectiveComponent = getConfig('pt.repeatable.add.as') || props.as
+
+const effectiveContent = getConfig('pt.repeatable.add.content')
 </script>

@@ -1,19 +1,14 @@
 import { Component } from 'vue'
-import SubmitButton from './quasar/SubmitButton.vue'
-import ResetButton from './quasar/ResetButton.vue'
-import RepeatableRemoveButton from './quasar/RepeatableRemoveButton.vue'
-import RepeatableAddButton from './quasar/RepeatableAddButton.vue'
-import RepeatableMoveDownButton from './quasar/RepeatableMoveDownButton.vue'
-import RepeatableMoveUpButton from './quasar/RepeatableMoveUpButton.vue'
 import Field from '@/presets/quasar/Field.vue'
 import { FieldControllerExport, FormController } from '@/types'
-import { QInput, QSelect, QToggle } from 'quasar'
+import { QInput, QSelect, QToggle, QBtn } from 'quasar'
 import {
   DeepPartial,
   EnformaConfig,
   setGlobalConfig,
   getGlobalConfig,
 } from '@/utils/useConfig'
+import { deepMerge } from '@/utils/configUtils'
 
 // Define default component mapping to Quasar components
 // These will be dynamically imported from 'quasar'
@@ -124,19 +119,55 @@ export default function useQuasarPreset(
       error: {
         class: 'text-negative text-caption',
       },
+      submit: {
+        as: QBtn,
+        color: 'primary',
+      },
+      reset: {
+        as: QBtn,
+        outline: true,
+        color: 'secondary',
+      },
+      repeatable: {
+        wrapper: {},
+        items: {},
+        item: {},
+        actions: {},
+        itemActions: {},
+        add: {
+          as: QBtn,
+          round: true,
+          size: 'sm',
+          icon: 'add',
+          color: 'positive',
+        },
+        remove: {
+          as: QBtn,
+          round: true,
+          size: 'sm',
+          icon: 'delete',
+          color: 'negative',
+        },
+        moveUp: {
+          as: QBtn,
+          round: true,
+          size: 'sm',
+          icon: 'arrow_upward',
+          color: 'info',
+        },
+        moveDown: {
+          as: QBtn,
+          round: true,
+          size: 'sm',
+          icon: 'arrow_downward',
+          color: 'info',
+        },
+      },
     },
     /**
      * Default components to be used inside Enforma forms
      */
     components: {
-      // Default form action buttons
-      submitButton: SubmitButton,
-      resetButton: ResetButton,
-      // Repeatable field controls
-      repeatableAddButton: RepeatableAddButton,
-      repeatableRemoveButton: RepeatableRemoveButton,
-      repeatableMoveUpButton: RepeatableMoveUpButton,
-      repeatableMoveDownButton: RepeatableMoveDownButton,
       field: Field,
     },
     /**
@@ -150,10 +181,7 @@ export default function useQuasarPreset(
   // Merge the current config with the Quasar preset
   const mergedConfig = {
     ...currentConfig,
-    pt: {
-      ...(currentConfig.pt || {}),
-      ...(quasarPreset.pt || {}),
-    },
+    pt: deepMerge(currentConfig.pt, quasarPreset.pt),
     components: {
       ...(currentConfig.components || {}),
       ...(quasarPreset.components || {}),

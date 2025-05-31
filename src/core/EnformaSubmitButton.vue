@@ -1,8 +1,10 @@
 <template>
-  <button
-    v-bind="mergeProps($attrs, getConfig('pt.repeatable.submit'))"
+  <component
+    :is="effectiveComponent"
+    v-bind="mergeProps($attrs, getConfig('pt.submit'))"
     type="submit"
     :disabled="$isSubmitting"
+    :loading="$isSubmitting"
   >
     <slot name="default">
       <span
@@ -11,7 +13,7 @@
         "
       ></span>
     </slot>
-  </button>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -24,11 +26,13 @@ import { FormController } from '@/types'
 interface Props {
   content?: string
   loadingContent?: string
+  as?: string | object
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: 'Submit',
   loadingContent: 'Submitting...',
+  as: 'button',
 })
 
 const $attrs = useAttrs()
@@ -37,13 +41,9 @@ const { $isSubmitting } = formState
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
 
-const effectiveContent = computed(() => {
-  return getConfig('pt.repeatable.submit.content') || props.content
-})
+const effectiveComponent = getConfig('pt.submit.as') || props.as
 
-const effectiveLoadingContent = computed(() => {
-  return (
-    getConfig('pt.repeatable.submit.loadingContent') || props.loadingContent
-  )
-})
+const effectiveContent = getConfig('pt.submit.content')
+
+const effectiveLoadingContent = getConfig('pt.submit.loadingContent')
 </script>

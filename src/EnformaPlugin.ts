@@ -38,8 +38,7 @@ export const EnformaPlugin: Plugin = {
       app.config.globalProperties.$t || fallbackTranslate
     setGlobalConfig(mergedConfig)
 
-    // Not necessary when using another UI preset
-    // The overhead is minimal and it ensures the library works
+    // This is necessary as it provides defaults that can be overwritten by custom presets
     useDefaultPreset()
 
     // Configure validation

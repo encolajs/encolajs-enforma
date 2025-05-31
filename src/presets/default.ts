@@ -15,6 +15,7 @@ import EnformaRepeatableMoveDownButton from '@/core/EnformaRepeatableMoveDownBut
 import EnformaSubmitButton from '@/core/EnformaSubmitButton.vue'
 import EnformaResetButton from '@/core/EnformaResetButton.vue'
 import EnformaSchema from '@/core/EnformaSchema.vue'
+import { deepMerge } from '@/utils/configUtils'
 
 /**
  * Default preset configuration options
@@ -109,6 +110,13 @@ export default function useDefaultPreset(
       section: {
         class: 'enforma-section',
       },
+      submit: {
+        content: 'Submit',
+        loadingContent: 'Submitting...',
+      },
+      reset: {
+        content: 'Reset',
+      },
       ...options.pt,
     },
     components: {
@@ -130,10 +138,7 @@ export default function useDefaultPreset(
   // Merge the current config with the default preset
   const mergedConfig = {
     ...currentConfig,
-    pt: {
-      ...currentConfig.pt,
-      ...defaultPreset.pt,
-    },
+    pt: deepMerge(currentConfig.pt, defaultPreset.pt),
     components: {
       ...currentConfig.components,
       ...defaultPreset.components,

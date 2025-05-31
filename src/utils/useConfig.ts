@@ -57,8 +57,6 @@ export interface FieldPassThroughConfig {
     moveDown: ComponentProps
     actions: ComponentProps
     itemActions: ComponentProps
-    submit: ComponentProps
-    reset: ComponentProps
   }
 
   // for EnformaRepeatableTable
@@ -75,10 +73,12 @@ export interface FieldPassThroughConfig {
     moveUp?: ComponentProps // inherits from repeatable
     moveDown?: ComponentProps // inherits from repeatable
   }
-
   // this is for other components
   section: ComponentProps
   schema: ComponentProps
+
+  submit: ComponentProps
+  reset: ComponentProps
 
   // options for custom components
   [key: string]: any

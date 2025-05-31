@@ -20,8 +20,7 @@ src/
   presets/
     my-ui-preset.js
     components/
-      MyFormButton.vue
-      MyCustomField.vue
+      MyCustomField.vue  // Only needed for custom field components
 ```
 
 ### 2. Create an Input Map
@@ -41,8 +40,7 @@ import {
   MyButton
 } from 'my-ui-library';
 
-// Import any custom wrapper components
-import MyFormButton from './components/MyFormButton.vue';
+// Import any custom wrapper components (only if needed)
 import MyCustomField from './components/MyCustomField.vue';
 
 const myUiInputs = {
@@ -57,14 +55,6 @@ const myUiInputs = {
     textarea: MyTextarea,
     date: MyDatePicker,
     custom: MyCustomField,
-    
-    // Button components
-    submitButton: MyFormButton,
-    resetButton: MyFormButton,
-    repeatableAddButton: MyFormButton,
-    repeatableRemoveButton: MyFormButton,
-    repeatableMoveUpButton: MyFormButton,
-    repeatableMoveDownButton: MyFormButton
 }
 
 function setInputComponentOnFields(
@@ -83,7 +73,7 @@ function setInputComponentOnFields(
 
 ### 3. Set Configuration Options
 
-Add custom configuration options:
+Add custom configuration options including button customization:
 
 ```js
 const myUiPresetConfig = {
@@ -95,9 +85,49 @@ const myUiPresetConfig = {
     label: {
       class: 'form-label',
     },
-  },
-  
-  // Rest of the config...
+    
+    // Button configuration (no custom components needed!)
+    submit: {
+      as: MyButton,           // Use your UI library's button
+      class: 'btn btn-primary',
+      content: 'Submit Form'   // Custom content
+    },
+    reset: {
+      as: MyButton,
+      class: 'btn btn-secondary',
+      content: 'Reset Form'
+    },
+    
+    // Repeatable button configuration
+    repeatable: {
+      wrapper: { class: 'repeatable-wrapper' },
+      items: { class: 'repeatable-items' },
+      item: { class: 'repeatable-item' },
+      actions: { class: 'repeatable-actions' },
+      itemActions: { class: 'repeatable-item-actions' },
+      
+      add: {
+        as: MyButton,
+        class: 'btn btn-success',
+        content: '<i class="icon-plus"></i> Add Item'
+      },
+      remove: {
+        as: MyButton,
+        class: 'btn btn-danger btn-sm',
+        content: '<i class="icon-trash"></i>'
+      },
+      moveUp: {
+        as: MyButton,
+        class: 'btn btn-info btn-sm',
+        content: '↑'
+      },
+      moveDown: {
+        as: MyButton,
+        class: 'btn btn-info btn-sm', 
+        content: '↓'
+      }
+    }
+  }
 }
 ```
 
