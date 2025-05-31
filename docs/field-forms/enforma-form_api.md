@@ -21,15 +21,15 @@
 
 ## Events
 
-| Event                | Payload                                            | Description                                             |
-|----------------------|----------------------------------------------------|---------------------------------------------------------|
-| `submit_error`       | `formData`                                         | Emitted when there's an error while submitting the form |
-| `submit_success`     | `formData`                                         | Emitted when the form is successfully submited          |
-| `validation_error`   | `{ formController }`                               | Emitted when there's an error during validation         |
-| `validation_success` | `formData`                                         | Emitted when validation passes                          |
-| `field_change`       | `{ path, value, fieldController, formController }` | Emitted when any field value changes                    |
-| `field_blur`         | `{ name, fieldController, formController }`        | Emitted when a field is blurred                         |
-| `field_focus`        | `{ name, fieldController, formController }`        | Emitted when a field is focused                         |
+| Event                | Payload                                            | Description                                                                                                     |
+|----------------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `submit_error`       | `formData`                                         | Emitted when there's an error while submitting the form                                                         |
+| `submit_success`     | `formData`                                         | Emitted when the form is successfully submited                                                                  |
+| `validation_fail`   | `{ formController }`                               | Emitted when validation fails. This is where you add notifications/toasts or scroll the form to the first field |
+| `validation_success` | `formData`                                         | Emitted when validation passes                                                                                  |
+| `field_change`       | `{ path, value, fieldController, formController }` | Emitted when any field value changes                                                                            |
+| `field_blur`         | `{ name, fieldController, formController }`        | Emitted when a field is blurred                                                                                 |
+| `field_focus`        | `{ name, fieldController, formController }`        | Emitted when a field is focused                                                                                 |
 
 ## Slots
 

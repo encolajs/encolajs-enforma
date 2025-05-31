@@ -402,7 +402,7 @@ export function useForm<T extends object>(
             }
 
             // Emit validation error event
-            formEmitter.emit('validation_error', { formController })
+            formEmitter.emit('validation_fail', { formController })
 
             return false
           }

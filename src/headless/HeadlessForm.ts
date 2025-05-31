@@ -31,7 +31,7 @@ export default defineComponent({
   emits: [
     'submit_success',
     'submit_error',
-    'validation_error',
+    'validation_fail',
     'reset',
     'field_changed',
     'field_focus',
@@ -46,7 +46,7 @@ export default defineComponent({
       submitHandler: props.submitHandler,
       useGlobalEvents: true, // Use global event emitter for component integration
       onValidationError: (form) => {
-        ctx.emit('validation_error', form)
+        ctx.emit('validation_fail', form)
       },
       onSubmitSuccess: (data) => {
         ctx.emit('submit_success', data)
@@ -78,9 +78,9 @@ export default defineComponent({
     )
 
     formCtrl.on(
-      'validation_error',
+      'validation_fail',
       ({ formController }: { formController: FormController }) => {
-        ctx.emit('validation_error', formController)
+        ctx.emit('validation_fail', formController)
       }
     )
 

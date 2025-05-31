@@ -238,7 +238,7 @@ describe('HeadlessForm', () => {
       expect(wrapper.emitted('submit_success')).toBeTruthy()
     })
 
-    it('emits validation_error when validation fails', async () => {
+    it('emits validation_fail when validation fails', async () => {
       // Create a form with invalid data that will fail validation
       const invalidData = {
         name: '', // Empty name will fail required validation
@@ -275,8 +275,8 @@ describe('HeadlessForm', () => {
       await wrapper.find('form').trigger('submit')
       await flushPromises()
 
-      // Check that validation_error was emitted
-      expect(wrapper.emitted('validation_error')).toBeTruthy()
+      // Check that validation_fail was emitted
+      expect(wrapper.emitted('validation_fail')).toBeTruthy()
     })
 
     it('handles submit errors', async () => {

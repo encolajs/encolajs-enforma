@@ -33,7 +33,7 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
     :submit-handler="handleSubmit"
     @submit_success="handleSuccess"
     @submit_error="handleError"
-    @validation_error="handleValidationError"
+    @validation_fail="handleValidationError"
     @field_changed="handleFieldChange"
     @field_focused="handleFieldFocus"
     @field_blurred="handleFieldBlur"

@@ -101,14 +101,14 @@ describe('useForm events', () => {
     expect(eventData.formController).toBeDefined()
   })
 
-  test('should emit validation_error event when validation fails', async () => {
+  test('should emit validation_fail event when validation fails', async () => {
     const handler = vi.fn()
 
     const form = useForm(data, {
       email: 'required|email',
     })
 
-    form.on('validation_error', handler)
+    form.on('validation_fail', handler)
 
     // Set an invalid email
     form['email'] = 'not-an-email'

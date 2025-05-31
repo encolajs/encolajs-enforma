@@ -8,7 +8,7 @@
     :validate-on="config.validateOn"
     @submit_success="emit('submit_success', $event)"
     @submit_error="emit('submit_error', $event)"
-    @validation_error="emit('validation_error', $event)"
+    @validation_fail="emit('validation_fail', $event)"
     @field_changed="emit('field_changed', $event)"
     @field_focus="emit('field_focus', $event)"
     @field_blur="emit('field_blur', $event)"
@@ -107,7 +107,7 @@ const props = defineProps({
 const emit = defineEmits([
   'submit_success',
   'submit_error',
-  'validation_error',
+  'validation_fail',
   'reset',
   'field_changed',
   'field_focus',

@@ -34,7 +34,7 @@ The main form component that manages form state, validation, and submission.
 |-------|------------|-------------|
 | `submit_success` | `(data, formController)` | Emitted when form submits successfully |
 | `submit_error` | `(error, formController)` | Emitted when submission fails |
-| `validation_error` | `(formController)` | Emitted when validation fails |
+| `validation_fail` | `(formController)` | Emitted when validation fails |
 | `reset` | `(formController)` | Emitted when form is reset |
 | `field_changed` | `(path, value, fieldController, formController)` | Emitted when any field value changes |
 | `field_focused` | `(path, fieldController, formController)` | Emitted when a field receives focus |
@@ -259,7 +259,7 @@ interface StateChanges {
 type FormEventType = 
   | 'submit_success'
   | 'submit_error'
-  | 'validation_error'
+  | 'validation_fail'
   | 'field_changed'
   | 'field_focused'
   | 'field_blurred'
@@ -269,7 +269,7 @@ type FormEventType =
 type FormEvents = {
   submit_success: { formController: FormController };
   submit_error: { error: any; formController: FormController };
-  validation_error: { formController: FormController };
+  validation_fail: { formController: FormController };
   field_changed: {
     path: string;
     value: any;

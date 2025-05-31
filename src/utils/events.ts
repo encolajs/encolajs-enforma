@@ -7,7 +7,7 @@ import { FormController, FieldController } from '@/types'
 export type FormEventType =
   | 'submit_success'
   | 'submit_error'
-  | 'validation_error'
+  | 'validation_fail'
   | 'field_changed'
   | 'field_focused'
   | 'field_blurred'
@@ -25,7 +25,7 @@ export type FormEvents = {
     error: any
     formController: FormController
   }
-  validation_error: {
+  validation_fail: {
     formController: FormController
   }
   field_changed: {
