@@ -46,24 +46,12 @@
 
 <script setup lang="ts">
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
-import { ComponentPublicInstance, PropType, useAttrs, computed } from 'vue'
+import { ComponentPublicInstance, PropType } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
 
 defineOptions({
   inheritAttrs: false,
-})
-
-const attrs = useAttrs()
-
-const excludedAttrs = ['type', 'rules', 'messages']
-const filteredAttrs = computed(() => {
-  return Object.keys(attrs)
-    .filter((k) => !excludedAttrs.includes(k))
-    .reduce((acc, k) => {
-      acc[k] = attrs[k]
-      return acc
-    }, {})
 })
 
 const originalProps = defineProps({
@@ -86,9 +74,12 @@ const originalProps = defineProps({
   props: { type: Object, default: () => ({}) },
   inputProps: { type: Object, default: () => ({}) },
   // these are here only because they might be passed from the schema
-  // they are not actually used for rendering
+  // and this will exclude them being added as attributes to the wrapper
   section: { type: String, default: null },
   position: { type: Number, default: null },
+  type: { type: String, default: null },
+  rules: { type: String, default: null },
+  messages: { type: Object, default: null },
 }) as EnformaFieldProps
 // Use the extracted composable
 const { fieldController, props } = useEnformaField(originalProps)
