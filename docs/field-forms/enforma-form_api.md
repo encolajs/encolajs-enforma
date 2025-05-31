@@ -33,6 +33,7 @@
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | None | The main slot for form content |
+| Slot      | Props | Description                                                        |
+|-----------|-------|--------------------------------------------------------------------|
+| `default` | None | The main slot for form content where the fields are being rendered |
+| `actions` | None | The place where the submit and reset buttons are being rendered    |
