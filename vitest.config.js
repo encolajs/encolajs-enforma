@@ -12,7 +12,8 @@ export default defineConfig({
         'src/**'
       ],
       exclude: [
-        'src/presets/**'
+        'src/presets/**',
+        'src/utils/license.js'
       ]
     }
   },
