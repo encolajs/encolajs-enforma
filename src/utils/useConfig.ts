@@ -57,6 +57,8 @@ export interface FieldPassThroughConfig {
     moveDown: ComponentProps
     actions: ComponentProps
     itemActions: ComponentProps
+    submit: ComponentProps
+    reset: ComponentProps
   }
 
   // for EnformaRepeatableTable

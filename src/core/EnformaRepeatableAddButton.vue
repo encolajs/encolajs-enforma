@@ -5,16 +5,27 @@
       mergeProps($attrs || {}, getConfig('pt.repeatable.add') || {}) || {}
     "
   >
-    {{ t('Add') }}
+    <span v-html="t(effectiveContent)"></span>
   </button>
 </template>
 
 <script setup lang="ts">
 import { useFormConfig } from '@/utils/useFormConfig'
-import { mergeProps } from 'vue'
+import { mergeProps, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-useFormConfig()
+
+interface Props {
+  content?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  content: 'Add',
+})
 
 const { t } = useTranslation()
 const { getConfig } = useFormConfig()
+
+const effectiveContent = computed(() => {
+  return getConfig('pt.repeatable.add.content') || props.content
+})
 </script>
