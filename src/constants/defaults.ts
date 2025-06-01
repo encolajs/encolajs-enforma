@@ -73,9 +73,11 @@ export const DEFAULT_CONFIG: EnformaConfig = {
      */
     label: {},
     /**
-     * props to be passed to the "required" element of the label (<span>*</span>)
+     * props to be passed to the required indicator component
      */
-    required: {},
+    required: {
+      content: '*',
+    },
     /**
      * props to be passed to the input field
      */

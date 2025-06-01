@@ -33,7 +33,6 @@ export interface EnformaFieldProps {
   help?: string | null
   useModelValue?: boolean | undefined
   labelProps?: Record<string, any>
-  requiredProps?: Record<string, any>
   errorProps?: Record<string, any>
   helpProps?: Record<string, any>
   props?: Record<string, any>
@@ -63,7 +62,6 @@ function getFieldProps<T>(
     required: false,
     useModelValue: false,
     labelProps: {},
-    requiredProps: getConfig('pt.required'),
     errorProps: {},
     helpProps: {},
     props: {},

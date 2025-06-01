@@ -108,7 +108,7 @@ The pass-through configuration allows you to customize the props passed to vario
 | `wrapper__invalid` | `ComponentProps` | Props added to the wrapper when the field is invalid |
 | `wrapper__required` | `ComponentProps` | Props added to the wrapper when the field is required |
 | `label` | `ComponentProps` | Props for the label element |
-| `required` | `ComponentProps` | Props for the required indicator element |
+| `required` | `ComponentProps` | Props for the required indicator component |
 | `input` | `ComponentProps` | Props for the input element |
 | `error` | `ComponentProps` | Props for the error message element |
 | `help` | `ComponentProps` | Props for the help/instructions element |
@@ -264,3 +264,9 @@ const config = {
   }
 }
 ```
+
+## Required Field Indicator Configuration
+
+The required field indicator (*) is a dedicated component that can be customized through configuration.
+
+Read more on the [required indicator](/field-forms/enforma-required-indicator_api.md)

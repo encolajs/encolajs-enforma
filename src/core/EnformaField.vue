@@ -1,13 +1,11 @@
 <template>
-  <div v-bind="{ ...filteredAttrs, ...props.wrapperProps }">
+  <div v-bind="props.wrapperProps">
     <label
       v-if="!props.hideLabel && !props.showLabelNextToInput && props.label"
       v-bind="props.labelProps"
     >
       {{ t(props.label) }}
-      <span v-if="props.required" v-bind="props.requiredProps">
-        {{ requiredIndicator }}
-      </span>
+      <EnformaRequiredIndicator v-if="props.required" />
     </label>
 
     <div class="enforma-field-input">
@@ -22,9 +20,7 @@
         v-bind="props.labelProps"
       >
         {{ t(props.label) }}
-        <span v-if="props.required" v-bind="props.requiredProps">
-          {{ requiredIndicator }}
-        </span>
+        <EnformaRequiredIndicator v-if="props.required" />
       </label>
     </div>
 
@@ -46,13 +42,9 @@
 
 <script setup lang="ts">
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
-import { ComponentPublicInstance, PropType } from 'vue'
+import { ComponentPublicInstance, PropType, useAttrs, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-import { useFormConfig } from '@/utils/useFormConfig'
-
-defineOptions({
-  inheritAttrs: false,
-})
+import EnformaRequiredIndicator from './EnformaRequiredIndicator.vue'
 
 const originalProps = defineProps({
   name: { type: String, required: true },
@@ -85,7 +77,4 @@ const originalProps = defineProps({
 const { fieldController, props } = useEnformaField(originalProps)
 // Import translation function directly
 const { t } = useTranslation()
-// Get the required indicator directly
-const { getConfig } = useFormConfig()
-const requiredIndicator = getConfig('pt.required.text', '*')
 </script>

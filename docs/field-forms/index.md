@@ -11,6 +11,7 @@ EncolaJS Enforma provides a set of base components for building forms. These com
 - [EnformaSection](./enforma-section) - Renders sections (groups of fields and sections). 
 - [EnformaRepeatable](./enforma-repeatable) - Handles repeatable field groups
 - [EnformaRepeatableTable](./enforma-repeatable-table) - Table-based repeatable fields
+- [EnformaRequiredIndicator](./enforma-required-indicator_api) - Renders the required field indicator
 
 ## Other Components
 

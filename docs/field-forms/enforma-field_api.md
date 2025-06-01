@@ -42,7 +42,7 @@ The component uses the following props from the configuration:
 - `pt.wrapper__invalid` - Additional props applied to the wrapper when the field is invalid
 - `pt.wrapper__required` - Additional props applied to the wrapper when the field is required
 - `pt.label` - The label element
-- `pt.required` - The required indicator element (typically an asterisk)
+- `pt.required` - The required indicator component (see [EnformaRequiredIndicator](/field-forms/enforma-required-indicator_api))
 - `pt.input` - The input element
 - `pt.error` - The error message element
 - `pt.help` - The help text element

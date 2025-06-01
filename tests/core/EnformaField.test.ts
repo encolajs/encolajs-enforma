@@ -74,7 +74,12 @@ describe('EnformaField', () => {
       }
     )
 
-    expect(wrapper.find('.enforma-label-required').exists()).toBe(true)
+    // Check that the required indicator component is rendered
+    expect(
+      wrapper.findComponent({ name: 'EnformaRequiredIndicator' }).exists()
+    ).toBe(true)
+    // Check that the default asterisk content is present
+    expect(wrapper.html()).toContain('*')
   })
 
   it('displays error messages when field has errors', async () => {

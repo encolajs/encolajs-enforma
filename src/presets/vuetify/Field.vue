@@ -24,8 +24,6 @@
 <script setup lang="ts">
 import { useEnformaField } from '../../core/useEnformaField'
 import { ComponentPublicInstance, PropType } from 'vue'
-import { useTranslation } from '@/utils/useTranslation'
-import { useFormConfig } from '@/utils/useFormConfig'
 
 defineOptions({
   inheritAttrs: false,
@@ -55,11 +53,6 @@ const originalProps = defineProps({
 })
 // Use the extracted composable
 const { fieldController, props } = useEnformaField(originalProps)
-// Import translation function directly
-const { t } = useTranslation()
-// Get the required indicator directly
-const { getConfig } = useFormConfig()
-const requiredIndicator = getConfig('pt.required.text', '*')
 </script>
 
 <style>

@@ -39,6 +39,7 @@ export { default as EnformaRepeatableMoveDownButton } from './core/EnformaRepeat
 export { default as EnformaRepeatableTable } from './core/EnformaRepeatableTable.vue'
 export { default as EnformaSubmitButton } from './core/EnformaSubmitButton.vue'
 export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
+export { default as EnformaRequiredIndicator } from './core/EnformaRequiredIndicator.vue'
 
 // Presets will be imported directly by the users
 // export { default as useDefaultPreset } from './presets/default'
