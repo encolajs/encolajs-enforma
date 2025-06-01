@@ -40,7 +40,7 @@ const Order = builder.newModelClass(
   {
     _get_total: function () {
       try {
-        return this.items.sum('total')
+        return Math.round(this.items.sum('total') * 100) / 100
       } catch (e) {
         return null
       }
