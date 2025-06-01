@@ -599,7 +599,9 @@ export function useForm<T extends object>(
       // array-related methods
       add(arrayPath: string, index: number, item: any): void {
         const array = getArrayByPath(valuesRef.value, arrayPath) || []
-        array.splice(index, 0, item)
+        const len = array.length
+        array.push(item)
+        this.move(arrayPath, len, index)
         fieldManager.shift(arrayPath, index, 1)
         triggerUpdate() // Manual reactivity trigger
       },
