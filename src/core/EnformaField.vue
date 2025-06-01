@@ -26,7 +26,8 @@
 
     <!-- Help text -->
     <div v-if="props.help" class="enforma-field-help" v-bind="props.helpProps">
-      {{ t(props.help) }}
+      <span v-if="helpAsHtml" v-html="t(props.help)"></span>
+      <span v-else>{{ t(props.help) }}</span>
     </div>
 
     <!-- Error message -->
@@ -35,7 +36,8 @@
       class="enforma-field-error"
       v-bind="props.errorProps"
     >
-      {{ fieldController.error }}
+      <span v-if="errorAsHtml" v-html="fieldController.error"></span>
+      <span v-else>{{ fieldController.error }}</span>
     </div>
   </div>
 </template>
@@ -44,6 +46,7 @@
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
 import { ComponentPublicInstance, PropType, useAttrs, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
+import { useFormConfig } from '@/utils/useFormConfig'
 import EnformaRequiredIndicator from './EnformaRequiredIndicator.vue'
 
 const originalProps = defineProps({
@@ -77,4 +80,10 @@ const originalProps = defineProps({
 const { fieldController, props } = useEnformaField(originalProps)
 // Import translation function directly
 const { t } = useTranslation()
+// Import form config for HTML rendering options
+const { getConfig } = useFormConfig()
+
+// Determine whether to render help and error messages as HTML
+const helpAsHtml = computed(() => getConfig('pt.help.renderAsHtml', false))
+const errorAsHtml = computed(() => getConfig('pt.error.renderAsHtml', false))
 </script>

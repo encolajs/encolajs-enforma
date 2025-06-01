@@ -270,3 +270,99 @@ const config = {
 The required field indicator (*) is a dedicated component that can be customized through configuration.
 
 Read more on the [required indicator](/field-forms/enforma-required-indicator_api.md)
+
+## HTML Content Support
+
+Error and help messages can be rendered as HTML content when enabled through configuration.
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `pt.error.renderAsHtml` | `boolean` | `false` | Render error messages as HTML |
+| `pt.help.renderAsHtml` | `boolean` | `false` | Render help text as HTML |
+
+### Usage Examples
+
+#### Global HTML Support
+
+Enable HTML rendering globally for all forms:
+
+```js
+const config = {
+  pt: {
+    error: {
+      renderAsHtml: true
+    },
+    help: {
+      renderAsHtml: true
+    }
+  }
+}
+```
+
+#### Form-Level HTML Support
+
+Enable HTML rendering for specific forms:
+
+```vue
+<template>
+  <Enforma 
+    :data="formData" 
+    :config="formConfig"
+  >
+    <EnformaField 
+      name="email" 
+      label="Email" 
+      help="Enter a <strong>valid</strong> email address"
+    />
+  </Enforma>
+</template>
+
+<script setup>
+const formConfig = {
+  pt: {
+    help: {
+      renderAsHtml: true
+    },
+    error: {
+      renderAsHtml: true
+    }
+  }
+}
+</script>
+```
+
+#### HTML Error Messages
+
+With HTML rendering enabled, validation errors can include HTML:
+
+```js
+// Custom error messages with HTML
+const validationMessages = {
+  'required': 'This field is <strong>required</strong>',
+  'email': 'Please enter a <em>valid</em> email address',
+  'min': 'Value must be at least <code>{min}</code>'
+}
+```
+
+#### HTML Help Text
+
+Help text can include formatting, links, and other HTML elements:
+
+```vue
+<EnformaField 
+  name="password" 
+  label="Password"
+  help='Password must contain:
+    <ul>
+      <li>At least 8 characters</li>
+      <li>One <strong>uppercase</strong> letter</li>
+      <li>One <strong>lowercase</strong> letter</li>
+      <li>One number</li>
+    </ul>'
+/>
+```
+
+
+> [!WARNING] ⚠️ HTML rendering uses `v-html` which can be vulnerable to XSS attacks. 

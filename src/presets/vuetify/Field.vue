@@ -16,14 +16,16 @@
       class="enforma-field-error"
       v-bind="props.errorProps"
     >
-      {{ fieldController.error }}
+      <span v-if="errorAsHtml" v-html="fieldController.error"></span>
+      <span v-else>{{ fieldController.error }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useEnformaField } from '../../core/useEnformaField'
-import { ComponentPublicInstance, PropType } from 'vue'
+import { ComponentPublicInstance, PropType, computed } from 'vue'
+import { useFormConfig } from '@/utils/useFormConfig'
 
 defineOptions({
   inheritAttrs: false,
@@ -53,6 +55,11 @@ const originalProps = defineProps({
 })
 // Use the extracted composable
 const { fieldController, props } = useEnformaField(originalProps)
+// Import form config for HTML rendering options
+const { getConfig } = useFormConfig()
+
+// Determine whether to render error messages as HTML
+const errorAsHtml = computed(() => getConfig('pt.error.renderAsHtml', false))
 </script>
 
 <style>

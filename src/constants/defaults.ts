@@ -85,11 +85,15 @@ export const DEFAULT_CONFIG: EnformaConfig = {
     /**
      * props to be passed to the error message div
      */
-    error: {},
+    error: {
+      renderAsHtml: false,
+    },
     /**
      * props to be passed to the help/instructions div
      */
-    help: {},
+    help: {
+      renderAsHtml: false,
+    },
     /**
      * props to be passed to section components
      */

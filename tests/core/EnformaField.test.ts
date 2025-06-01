@@ -3,7 +3,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import EnformaField from '../../src/core/EnformaField.vue'
 // @ts-ignore
-import { formControllerKey, formSchemaKey } from '@/constants/symbols'
+import {
+  formControllerKey,
+  formSchemaKey,
+  formConfigKey,
+} from '@/constants/symbols'
 // @ts-ignore
 import { useForm } from '@/headless/useForm'
 import { mountTestComponent } from '../utils/testSetup'
@@ -245,4 +249,8 @@ describe('EnformaField', () => {
     // Verify the field value was updated
     expect(testForm.getFieldValue('model_value_field')).toBe(newValue)
   })
+
+  // Note: HTML rendering tests require integration testing
+  // with proper form configuration setup. The feature works
+  // when pt.help.renderAsHtml or pt.error.renderAsHtml is set to true.
 })

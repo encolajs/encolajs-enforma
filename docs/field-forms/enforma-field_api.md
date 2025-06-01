@@ -44,5 +44,5 @@ The component uses the following props from the configuration:
 - `pt.label` - The label element
 - `pt.required` - The required indicator component (see [EnformaRequiredIndicator](/field-forms/enforma-required-indicator_api))
 - `pt.input` - The input element
-- `pt.error` - The error message element
-- `pt.help` - The help text element
+- `pt.error` - The error message element (supports HTML rendering when `pt.error.renderAsHtml` is true)
+- `pt.help` - The help text element (supports HTML rendering when `pt.help.renderAsHtml` is true)
