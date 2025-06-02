@@ -43,24 +43,6 @@ features:
     details: Complete control over your UI with headless components and composables.
 ---
 
-<script setup>
-import MailerLiteForm from '.vitepress/components/MailerLiteForm.vue'
-</script>
-
-<div class="text-center">
-<h3>Launching Soon!</h3>
-
-<p>Enforma is still under development but we plan to launch by the end of June 2025.<br>Don't miss out! Subscribe to our mailing list for the official launch announcement of Enforma library.</p>
-
-<!-- MailerLite Universal -->
-<ClientOnly>
-    <MailerLiteForm />
-</ClientOnly>
-<!-- End MailerLite Universal -->
-
-
-</div>
-
 <style>
 .VPHero .image {
   max-width: 100%;
