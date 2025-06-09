@@ -7,6 +7,7 @@ import {
   formControllerKey,
   formSchemaKey,
   formConfigKey,
+  fieldRulesCollectorKey,
 } from '@/constants/symbols'
 // @ts-ignore
 import { useForm } from '@/headless/useForm'
@@ -248,6 +249,92 @@ describe('EnformaField', () => {
 
     // Verify the field value was updated
     expect(testForm.getFieldValue('model_value_field')).toBe(newValue)
+  })
+
+  it('registers field rules and messages with the parent form', async () => {
+    // Create a mock field rules collector
+    const mockFieldRulesCollector = {
+      registerField: vi.fn(),
+      unregisterField: vi.fn(),
+    }
+
+    // Mount the field component with rules and messages
+    const wrapper = mountTestComponent(
+      EnformaField,
+      {
+        name: 'validation_field',
+        label: 'Validation Field',
+        rules: 'required|email',
+        messages: {
+          required: 'This field is required',
+          email: 'Please enter a valid email',
+        },
+      },
+      {
+        global: {
+          provide: {
+            [formControllerKey]: formState,
+            [formSchemaKey]: schema,
+            [fieldRulesCollectorKey]: mockFieldRulesCollector,
+          },
+        },
+      }
+    )
+
+    // Verify that registerField was called with the correct parameters
+    expect(mockFieldRulesCollector.registerField).toHaveBeenCalledWith(
+      'validation_field',
+      'required|email',
+      {
+        required: 'This field is required',
+        email: 'Please enter a valid email',
+      }
+    )
+
+    // Unmount to test cleanup
+    wrapper.unmount()
+
+    // Verify that unregisterField was called during cleanup
+    expect(mockFieldRulesCollector.unregisterField).toHaveBeenCalledWith(
+      'validation_field'
+    )
+  })
+
+  it('does not register with parent form when no rules or messages are provided', async () => {
+    // Create a mock field rules collector
+    const mockFieldRulesCollector = {
+      registerField: vi.fn(),
+      unregisterField: vi.fn(),
+    }
+
+    // Mount the field component without rules and messages
+    const wrapper = mountTestComponent(
+      EnformaField,
+      {
+        name: 'no_validation_field',
+        label: 'No Validation Field',
+      },
+      {
+        global: {
+          provide: {
+            [formControllerKey]: formState,
+            [formSchemaKey]: schema,
+            [fieldRulesCollectorKey]: mockFieldRulesCollector,
+          },
+        },
+      }
+    )
+
+    // Verify that registerField was not called
+    expect(mockFieldRulesCollector.registerField).not.toHaveBeenCalled()
+
+    // Unmount
+    wrapper.unmount()
+
+    // Verify that unregisterField was still called during cleanup (even without registration)
+    expect(mockFieldRulesCollector.unregisterField).toHaveBeenCalledWith(
+      'no_validation_field'
+    )
   })
 
   // Note: HTML rendering tests require integration testing

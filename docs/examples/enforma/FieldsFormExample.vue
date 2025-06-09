@@ -14,12 +14,19 @@
         label="Name"
         :input-props="{class: 'w-full'}"
       />
+      <!--
+      validation rules and custom error messages
+      can be passed at field level as well using the
+      `rules` and `messages` props like below
+      -->
       <EnformaField
         class="col-start-1 col-end-3"
         name="email"
         required
         label="Email"
         :input-props="{class: 'w-full'}"
+        :rules="rules.email"
+        :messages="messages.email"
       />
       <EnformaField
         class="col-start-1 col-end-2"

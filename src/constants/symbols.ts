@@ -29,3 +29,8 @@ export const formSchemaKey = Symbol('formSchema')
  * Symbol for providing/injecting custom field slots
  */
 export const formFieldSlotsKey = Symbol('formFieldSlots')
+
+/**
+ * Symbol for providing/injecting field rules collector
+ */
+export const fieldRulesCollectorKey = Symbol('fieldRulesCollector')

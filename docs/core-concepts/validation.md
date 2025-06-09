@@ -11,6 +11,14 @@ Enforma's validation approach focuses on:
 
 ## Form Validation
 
+Enforma supports validation at multiple levels:
+
+1. **Form-level validation** - Rules and messages passed to the `<Enforma>` component
+2. **Field-level validation** - Rules and messages specified on individual `<EnformaField>` components  
+3. **Schema-level validation** - Rules and messages defined in form schemas
+
+### Form-Level Validation
+
 Forms receive 2 key props related to validation:
 
 - `rules` - Validation rules using the pipe notation
@@ -44,6 +52,48 @@ const formProps = {
 };
 </script>
 ```
+
+### Field-Level Validation
+
+You can specify validation rules and custom error messages directly on individual `<EnformaField>` components using the `rules` and `messages` props:
+
+```vue
+<template>
+  <Enforma :data="formData" :submitHandler="submit">
+    <EnformaField 
+      name="email"
+      label="Email"
+      inputComponent="input"
+      rules="required|email"
+      :messages="{
+        required: 'Email is required',
+        email: 'Please enter a valid email address'
+      }"
+    />
+    <EnformaField 
+      name="phone"
+      label="Phone"
+      inputComponent="input"
+      rules="required|phone"
+      :messages="{
+        required: 'Phone number is required',
+        phone: 'Please enter a valid phone number'
+      }"
+    />
+  </Enforma>
+</template>
+```
+
+### Validation Precedence
+
+When validation rules and messages are specified at multiple levels, they are merged with the following precedence (highest to lowest):
+
+1. **Form-level** - Rules and messages passed to the `<Enforma>` component via `rules` and `messages` props
+2. **Field-level** - Rules and messages specified on individual `<EnformaField>` components
+
+This flexibility allows you to define base validation in schemas or field components while overriding specific rules or messages at the form level when needed.
+
+> [!WARNING] Rules and messages defined in the form schema should not be overwritten at form level
 
 ## Built-in Validators
 

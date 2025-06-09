@@ -53,6 +53,7 @@ import {
   formConfigKey,
   formSchemaKey,
   formFieldSlotsKey,
+  fieldRulesCollectorKey,
 } from '@/constants/symbols'
 import { FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
@@ -132,20 +133,72 @@ onMounted(() => {
 const formConfig = useConfig(props.config)
 const { getConfig } = useFormConfig(false)
 
+// Field rules and messages collector
+const fieldRules = reactive<ValidationRules>({})
+const fieldMessages = reactive<Record<string, any>>({})
+
+const fieldRulesCollector = {
+  registerField(
+    fieldName: string,
+    rules?: string,
+    messages?: Record<string, any>
+  ) {
+    if (rules) {
+      // Parse rules string format like "required|email"
+      fieldRules[fieldName] = rules
+    }
+    if (messages && Object.keys(messages).length > 0) {
+      // Convert nested format to flat format
+      Object.keys(messages).forEach((ruleName) => {
+        const flatKey = `${fieldName}:${ruleName}`
+        fieldMessages[flatKey] = messages[ruleName]
+      })
+    }
+  },
+  unregisterField(fieldName: string) {
+    delete fieldRules[fieldName]
+    // Remove all messages for this field
+    Object.keys(fieldMessages).forEach((key) => {
+      if (key.startsWith(`${fieldName}:`)) {
+        delete fieldMessages[key]
+      }
+    })
+  },
+}
+
 const effectiveRules = computed(() => {
-  if (props.rules && Object.keys(props.rules).length > 0) {
-    return props.rules
+  const schemaRules = extractRulesFromSchema(props.schema || {})
+  if (Object.keys(schemaRules).length > 0) {
+    return schemaRules
   }
-  return extractRulesFromSchema(props.schema || {})
+
+  // Merge field-level rules
+  const mergedRules = { ...fieldRules }
+
+  // Props rules take highest precedence
+  if (props.rules && Object.keys(props.rules).length > 0) {
+    return { ...mergedRules, ...props.rules }
+  }
+
+  return mergedRules
 })
 
 // Use either schema messages or provided messages
 const effectiveMessages = computed(() => {
-  // If customMessages prop is provided, use it exclusively
-  if (props.messages && Object.keys(props.messages).length > 0) {
-    return props.messages
+  const schemaMessages = extractMessagesFromSchema(props.schema || {})
+  if (Object.keys(schemaMessages).length > 0) {
+    return schemaMessages
   }
-  return extractMessagesFromSchema(props.schema || {})
+
+  // Merge field-level messages (already in flat format)
+  const mergedMessages = { ...fieldMessages }
+
+  // Props messages take highest precedence
+  if (props.messages && Object.keys(props.messages).length > 0) {
+    return { ...mergedMessages, ...props.messages }
+  }
+
+  return mergedMessages
 })
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
@@ -186,6 +239,7 @@ const transformedFormConfig = computed(() => transformedProps.value.config)
 provide(formContextKey, transformedContext.value)
 provide(formSchemaKey, transformedSchema.value)
 provide(formConfigKey, transformedFormConfig.value)
+provide(fieldRulesCollectorKey, fieldRulesCollector)
 
 // Get slots and provide them for field customization
 const $slots = useSlots()

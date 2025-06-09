@@ -71,6 +71,58 @@ import { InputText } from 'your-ui-library-of-choice'
 The `EnformaField` component is generic and, while it has opinions on the layout of the field, it requires you to "bring your own" input fields. More about this in the [UI Library Integration](/ui-library-integration/) section.
 
 
+## Field-Level Validation
+
+`EnformaField` supports specifying validation rules and error messages directly on the field component using the `rules` and `messages` props:
+
+```vue
+<template>
+  <Enforma :data="formData" :submitHandler="submit">
+    <EnformaField 
+      name="email"
+      label="Email Address"
+      inputComponent="input"
+      rules="required|email"
+      :messages="{
+        required: 'Email is required',
+        email: 'Please enter a valid email address'
+      }"
+    />
+    <EnformaField 
+      name="password"
+      label="Password"
+      inputComponent="input"
+      rules="required|min:8"
+      :messages="{
+        required: 'Password is required',
+        min: 'Password must be at least 8 characters long'
+      }"
+    />
+    <EnformaSubmitButton>Submit</EnformaSubmitButton>
+  </Enforma>
+</template>
+
+<script setup>
+const formData = ref({
+  email: '',
+  password: ''
+})
+
+function submit(data) {
+  console.log('Form submitted:', data)
+}
+</script>
+```
+
+### Validation Precedence
+
+When validation rules and messages are specified at multiple levels, they are merged with the following precedence (highest to lowest):
+
+1. **Form-level** - Rules and messages passed to the `<Enforma>` component via `rules` and `messages` props
+2. **Field-level** - Rules and messages specified on individual `<EnformaField>` components
+
+This allows you to define base validation in schemas or field components while overriding specific rules or messages at the form level when needed.
+
 ## Conditional Rendering
 
 ### Component-based forms

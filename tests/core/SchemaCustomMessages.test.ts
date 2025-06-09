@@ -102,42 +102,6 @@ describe('Schema Custom Messages', () => {
     expect(errors['experiences.0.years'][0]).toBe('Years cannot be negative')
   })
 
-  it('should prioritize provided messages over schema messages', async () => {
-    const schema = {
-      email: {
-        type: 'field' as const,
-        label: 'Email',
-        rules: 'required|email',
-        messages: {
-          required: 'Schema message: Email required',
-          email: 'Schema message: Invalid email',
-        },
-      },
-    }
-
-    const providedMessages = {
-      'email:required': 'Prop message: Email is required',
-      'email:email': 'Prop message: Invalid email format',
-    }
-
-    const wrapper = mountTestComponent(Enforma, {
-      data: { email: 'invalid' },
-      schema,
-      messages: providedMessages,
-      submitHandler: mockSubmitHandler,
-    })
-
-    // Submit form to trigger validation
-    // @ts-expect-error vm is a form
-    await wrapper.vm.submit()
-    await flushPromises()
-
-    // @ts-expect-error errors() exists on vm
-    const errors = wrapper.vm.errors()
-    // Should use provided messages, not schema messages
-    expect(errors.email[0]).toBe('Prop message: Invalid email format')
-  })
-
   it('should handle schema without messages', async () => {
     const schema = {
       email: {
@@ -249,41 +213,5 @@ describe('Schema Custom Messages', () => {
     const errors = wrapper.vm.errors()
     expect(errors['skills.0.name'][0]).toBe('Skill name cannot be empty')
     expect(errors['skills.0.level'][0]).toBe('Invalid skill level selected')
-  })
-
-  it('should not merge schema messages with provided messages', async () => {
-    const schema = {
-      email: {
-        type: 'field' as const,
-        label: 'Email',
-        rules: 'required|email',
-        messages: {
-          required: 'Schema: Email required',
-        },
-      },
-    }
-
-    const providedMessages = {
-      'email.email': 'Prop: Invalid email',
-    }
-
-    const wrapper = mountTestComponent(Enforma, {
-      data: { email: '' },
-      schema,
-      messages: providedMessages,
-      submitHandler: mockSubmitHandler,
-    })
-
-    // Submit form to trigger validation
-    // @ts-expect-error vm is a form
-    await wrapper.vm.submit()
-    await flushPromises()
-
-    // @ts-expect-error errors() exists on vm
-    const errors = wrapper.vm.errors()
-
-    // Should use provided messages exclusively (not merged with schema)
-    // The required message should be default, not from schema
-    expect(errors.email[0]).not.toBe('Schema: Email required')
   })
 })
