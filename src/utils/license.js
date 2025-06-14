@@ -1,6 +1,6 @@
 const LICENSE_CHECK_URL = 'https://lsck.encolajs.com/'
 const INITIAL_DELAY = 5 * 60 * 1000 // 5 minutes
-const MAX_RETRY_DELAY = 60 * 60 * 1000 // 1 hour
+const MAX_RETRY_DELAY = 10 * 60 * 1000 // 10 minutes
 const UNLICENSED_NOTICE_HTML = `
   <div id="encola-license-notice" style="position:fixed;bottom:10px;right:10px;padding:10px 15px;background:#fff;border:1px solid #ccc;border-radius:6px;font-family:sans-serif;font-size:14px;z-index:99999;">
     Forms on this page are generated using <a href="https://encolajs.com/" target="_blank">EncolaJS</a>.
@@ -43,7 +43,7 @@ function checkLicense(domain, key = null) {
       if (result === 1) return // Licensed
       if (result === 0) {
         injectNotice()
-        warnUnlicensed()
+        warnUnlicensed(domain)
       }
       scheduleRetry(() => checkLicense(domain, key))
     })
