@@ -93,11 +93,11 @@
         "primeicons": "^7.0.0",
         "primevue": "^4.3.2",
         "quasar": "^2.18.1",
-        "vuetify": "^3.8.2"
+        "vuetify": "^3.8.2",
+        "vue": "^3.0.0"
     },
     "dependencies": {
         "@encolajs/validator": "^1.0.0",
-        "mitt": "^3.0.1",
-        "vue": "^3.5.13"
+        "mitt": "^3.0.1"
     }
 }
