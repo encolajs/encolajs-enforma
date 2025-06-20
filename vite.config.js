@@ -16,7 +16,12 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'Enforma',
       formats: ['es', 'cjs', 'umd'],
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => {
+        if (format === 'es') return 'index.js'    // expected by "module"
+        if (format === 'cjs') return 'index.cjs.js' // expected by "main"
+        if (format === 'umd') return 'index.umd.js'
+        return `index.${format}.js`
+      },
     },
     rollupOptions: {
       external: ['vue'],
