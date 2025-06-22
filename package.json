@@ -9,6 +9,18 @@
         ".": {
             "import": "./dist/index.js",
             "require": "./dist/index.cjs.js"
+        },
+        "./presets/primevue": {
+            "import": "./dist/presets/primevue.js",
+            "require": "./dist/presets/primevue.cjs.js"
+        },
+        "./presets/vuetify": {
+            "import": "./dist/presets/vuetify.js",
+            "require": "./dist/presets/vuetify.cjs.js"
+        },
+        "./presets/quasar": {
+            "import": "./dist/presets/quasar.js",
+            "require": "./dist/presets/quasar.cjs.js"
         }
     },
     "types": "dist/index.d.ts",

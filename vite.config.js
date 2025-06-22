@@ -13,14 +13,20 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        default: path.resolve(__dirname, 'src/presets/default.ts'),
+        primevue: path.resolve(__dirname, 'src/presets/primevue.ts'),
+        vuetify: path.resolve(__dirname, 'src/presets/vuetify.ts'),
+        quasar: path.resolve(__dirname, 'src/presets/quasar.ts'),
+      },
       name: 'Enforma',
-      formats: ['es', 'cjs', 'umd'],
-      fileName: (format) => {
-        if (format === 'es') return 'index.js'    // expected by "module"
-        if (format === 'cjs') return 'index.cjs.js' // expected by "main"
-        if (format === 'umd') return 'index.umd.js'
-        return `index.${format}.js`
+      formats: ['es', 'cjs'],
+      fileName: (format, entryName) => {
+        if (entryName === 'index') {
+          return `index${format === 'cjs' ? '.cjs' : ''}.js`
+        }
+        return `presets/${entryName}${format === 'cjs' ? '.cjs' : ''}.js`
       },
     },
     rollupOptions: {
