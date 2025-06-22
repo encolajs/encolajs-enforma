@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enforma Example</title>
+    <style>
+        .enforma-repeatable-table-actions {
+            text-wrap: nowrap;
+        }
+
+        .enforma-repeatable-table {
+            width: 100%;
+            display: table !important;
+            thead, tbody {
+                width: 100%;
+            }
+            th, td {
+                border-left: 0;
+                border-right: 0;
+            }
+            td {
+                padding: 0.5rem;
+            }
+            div.enforma-repeatable-item-actions {
+                width: 100%;
+                justify-content: end;
+                text-align: right;
+                display: flex;
+                gap: 0.5rem;
+            }
+        }
+
+        .enforma-repeatable {
+            .enforma-repeatable-item {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            .enforma-repeatable-item-actions {
+                text-align: right;
+                grid-column-start: 1;
+                grid-column-end: 3;
+                justify-content: end;
+                display: flex;
+                gap: 0.5rem;
+            }
+        }
+
+        .toggle-field {
+            .enforma-field-input {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

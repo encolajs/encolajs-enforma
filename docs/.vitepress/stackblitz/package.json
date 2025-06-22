@@ -1,0 +1,24 @@
+{
+    "name": "enforma-fields-example",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "vue": "^3.4.0",
+        "@encolajs/enforma": "^1.0.0",
+        "primevue": "^4.3.3",
+        "primeicons": "^7.0.0",
+        "@primeuix/themes": "^1.0.3"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.0.0",
+        "vite-plugin-dts": "^4.5.3",
+        "vue-tsc": "^0.2.2",
+        "vite": "^5.0.0",
+        "typescript": "^4.9.5"
+    }
+}

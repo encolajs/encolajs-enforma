@@ -1,10 +1,13 @@
 <script setup>
 import FormExample from './enforma/FieldsFormExample.vue'
+import StackBlitzButton from '../.vitepress/components/StackBlitzButton.vue'
 </script>
 
 # Form Using Field Components
 
-> :information_source: This example is using the PrimeVue preset
+This example is using the PrimeVue preset
+
+<StackBlitzButton />
 
 <ClientOnly>
     <LiveDemo :component="FormExample"></LiveDemo>

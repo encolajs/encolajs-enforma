@@ -15,6 +15,7 @@
     "@encolajs/hydrator": "^1.0.0",
     "@primeuix/themes": "^1.0.3",
     "@quasar/extras": "^1.16.0",
+    "@stackblitz/sdk": "^1.11.0",
     "markdown-it-container": "^4.0.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
