@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Enforma Fields Example</h1>
+    <h1 class="text-2xl font-bold mb-4">{{title}}</h1>
     <FieldsFormExample />
   </div>
 </template>

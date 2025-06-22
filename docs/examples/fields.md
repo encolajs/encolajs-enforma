@@ -7,7 +7,10 @@ import StackBlitzButton from '../.vitepress/components/StackBlitzButton.vue'
 
 This example is using the PrimeVue preset
 
-<StackBlitzButton />
+<StackBlitzButton 
+  title="Enforma Fields Example"
+  open-file="src/components/FieldsFormExample.vue"
+/>
 
 <ClientOnly>
     <LiveDemo :component="FormExample"></LiveDemo>
