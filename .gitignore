@@ -7,3 +7,4 @@ coverage
 temp
 docs/.vitepress/cache/
 .claude/settings.local.json
+docs/.claude/settings.local.json
