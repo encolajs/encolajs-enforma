@@ -24,5 +24,5 @@ usePrimeVuePreset({
   toggle: ToggleSwitch,
   button: Button,
 });
-
+app.component('Button', Button)
 app.mount('#app');

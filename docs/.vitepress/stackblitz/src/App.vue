@@ -2,11 +2,13 @@
   <div class="p-4">
     <h1 class="text-2xl font-bold mb-4">{{title}}</h1>
     <FieldsFormExample />
+    <Button v-show="false" />
   </div>
 </template>
 
 <script setup>
 import FieldsFormExample from './components/FieldsFormExample.vue';
+import { Button } from 'primevue' // this is needed for Stackblitz to work
 </script>
 
 <style>

@@ -84,7 +84,8 @@ const openStackBlitz = async () => {
       template: 'node',
       files,
     }, {
-      openFile: props.openFile
+      openFile: props.openFile,
+      width: 800,
     })
   } catch (error) {
     console.error('Failed to open StackBlitz:', error)
