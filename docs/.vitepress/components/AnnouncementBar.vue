@@ -2,7 +2,7 @@
   <div class="announcement-bar">
     <div class="announcement-content">
       <div class="announcement-text">
-        <strong>Enforma launches June 20th, 2025!</strong> Subscribe to get a chance to win one of the <strong>20 free licenses</strong>
+        🔥 New feature coming soon: <strong>Schema Builder</strong>. Subscribe to stay up to date!
       </div>
       <div class="subscribe-form">
         <div class="ml-embedded" data-form="l5m56H"></div>
