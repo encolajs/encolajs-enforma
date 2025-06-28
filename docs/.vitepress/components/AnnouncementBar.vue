@@ -56,7 +56,7 @@ onMounted(checkMl)
   padding: 12px 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 100;
