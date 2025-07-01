@@ -1,129 +1,160 @@
 # @encolajs/enforma
 
-🚀 A powerful, flexible validation library that makes complex validation scenarios a breeze! Built with TypeScript and designed with developer experience in mind.
+🚀 A powerful Vue 3 form library that renders dynamic forms from JSON schemas! Build complex forms with ease using headless components, field validation, and UI framework presets.
 
 ![CI](https://github.com/encolajs/encolajs-enforma/workflows/CI/badge.svg)
-[![npm version](https://badge.fury.io/js/@encolajs%2Fenforma.svg)](https://badge.fury.io/js/@encolajs%2Fvalidator)
+[![npm version](https://badge.fury.io/js/@encolajs%2Fenforma.svg)](https://badge.fury.io/js/@encolajs%2Fenforma)
 [![License: MIT](https://img.shields.io/badge/License-DUAL-red.svg)](https://github.com/encolajs/encolajs-enforma/blob/master/LICENSE-COMMERCIAL.md)
 
-## Why Another Validation Library?
+## Why Another Form Library?
 
-Most validation libraries work great with simple data structures, but real-world applications are messy! We built this library to handle the tough scenarios:
+Building dynamic forms shouldn't be complicated! We built this library to handle real-world form scenarios with Vue 3:
 
-- ✨ **Progressive Form Validation**: Handle temporary invalid states gracefully
-- 🎯 **Type-Safe**: Full TypeScript support, works great with strongly-typed models
-- 🌳 **Deep Object Validation**: Validate nested objects and arrays with ease
-- 🔄 **Cross-Field Validation**: Reference other field values in your rules
-- 🛠 **Extensible**: Create custom rules with minimal boilerplate
-- 🌍 **i18n Ready**: Easily integrate your translation service
-- 🪶 **Light**: 20Kb minified, 5Kb gzipped
-- 🎨 **Framework Agnostic**: Use it with any UI framework
+- 🎨 **UI Agnostic**: Use it with your preferred UI library. Comes with ready-to-use presets for PrimeVue, Vuetify, and Quasar
+- ✨ **Schema-Driven**: Define forms using JSON schemas, no template code needed
+- 🎯 **Type-Safe**: Full TypeScript support with auto-completion
+- 🧩 **Headless Components**: Maximum flexibility with unstyled, accessible components
+- 🔄 **Reactive Validation**: Built-in integration with @encolajs/validator
+- 🌍 **i18n Ready**: Internationalization support out of the box
+- 🪶 **Lightweight**: Optimized bundle size with tree-shaking support
 
 ## Quick Start
 
 ```bash
 # Using npm
-npm install @encolajs/validator
+npm install @encolajs/enforma
 
 # Using yarn
-yarn add @encolajs/validator
+yarn add @encolajs/enforma
 
 # Using pnpm
-pnpm add @encolajs/validator
+pnpm add @encolajs/enforma
 ```
 
 ## Simple Example
 
-```typescript
-import { ValidatorFactory } from '@encolajs/validator'
+```vue
+<template>
+  <HeadlessForm :schema="schema" v-model="formData">
+    <HeadlessField name="email" #default="{ field, error }">
+      <input v-bind="field" placeholder="Email" />
+      <span v-if="error">{{ error }}</span>
+    </HeadlessField>
+    
+    <HeadlessField name="name" #default="{ field, error }">
+      <input v-bind="field" placeholder="Full Name" />
+      <span v-if="error">{{ error }}</span>
+    </HeadlessField>
+    
+    <button @click="submit">Submit</button>
+  </HeadlessForm>
+</template>
 
-const factory = new ValidatorFactory()
+<script setup>
+import { ref } from 'vue'
+import { HeadlessForm, HeadlessField } from '@encolajs/enforma'
 
-// Define validation rules
-const validator = factory.make({
-  'email': 'required|email',
-  'password': 'required|password:8,32',
-  'profile.name': 'required|min_length:2',
-  'items[*].quantity': 'required|integer|min:1'
-})
+const formData = ref({})
 
-// Validate data
-const data = {
-  email: 'user@example.com',
-  password: 'SecurePass123!',
-  profile: {
-    name: 'John'
-  },
-  items: [
-    { quantity: 2 },
-    { quantity: 3 }
-  ]
+const schema = {
+  fields: {
+    email: {
+      type: 'email',
+      validation: 'required|email',
+      label: 'Email Address'
+    },
+    name: {
+      type: 'text',
+      validation: 'required|min_length:2',
+      label: 'Full Name'
+    }
+  }
 }
 
-const isValid = await validator.validate(data)
+const submit = () => {
+  console.log('Form data:', formData.value)
+}
+</script>
 ```
 
 ## Amazing Features
 
-### Progressive Form Validation
+### UI Framework Presets
 
-Handle form validation like a pro! Our `TentativeValuesDataSource` lets you validate data as users type, even when it's temporarily invalid:
+Skip the styling and use our pre-built components for popular UI frameworks:
 
-```typescript
-const dataSource = new TentativeValuesDataSource(userModel, {})
+```vue
+<!-- PrimeVue Preset -->
+<script setup>
+import { EnformaPlugin } from '@encolajs/enforma'
+import { primevuePreset } from '@encolajs/enforma/presets/primevue'
 
-// Store temporary value while user types
-dataSource.setValue('email', 'john@exa')
-
-// Validate when ready
-if (await validator.validatePath('email', dataSource)) {
-  dataSource.commit('email')
-}
-```
-
-### Powerful Rule Chain
-
-Chain rules together for complex validation scenarios:
-
-```typescript
-const rules = {
-  'card_type': 'required|in_list:visa,mastercard',
-  'card_number': 'required_if:card_type,visa|matches:^4\\d{15}$',
-  'expiry_date': 'required|date_format:MM/YY|date_after:now',
-  'items[*].price': 'required|number|min:0.01',
-  'total': 'required|number|gte:@subtotal'
-}
-```
-
-### Easy i18n Integration
-
-Translate validation messages with ease:
-
-```typescript
-const validator = factory.make(rules, {
-  messageFormatter: (ruleName, value, path, rule) => {
-    const message = factory._ruleRegistry.getDefaultMessage(ruleName)
-    return i18n.translate(message, { value, path })
-  }
+app.use(EnformaPlugin, { 
+  preset: primevuePreset 
 })
+</script>
+
+<!-- Vuetify Preset -->
+<script setup>
+import { vuetifyPreset } from '@encolajs/enforma/presets/vuetify'
+
+app.use(EnformaPlugin, { 
+  preset: vuetifyPreset 
+})
+</script>
+```
+
+### Dynamic Schema Building
+
+Create complex forms with nested objects and arrays:
+
+```typescript
+const schema = {
+  fields: {
+    user: {
+      type: 'object',
+      fields: {
+        name: { type: 'text', validation: 'required' },
+        email: { type: 'email', validation: 'required|email' }
+      }
+    },
+    hobbies: {
+      type: 'repeatable',
+      itemSchema: {
+        type: 'text',
+        validation: 'required'
+      }
+    }
+  }
+}
+```
+
+### Composable Architecture
+
+Use our composables for maximum flexibility:
+
+```typescript
+import { useEnformaField, useEnformaSchema } from '@encolajs/enforma'
+
+const { field, error, validate } = useEnformaField('email', {
+  validation: 'required|email'
+})
+
+const { schema, formData, isValid } = useEnformaSchema(mySchema)
 ```
 
 ## Documentation
 
-- [Guide](./docs/guide.md) - Core concepts and usage patterns
-- [Validation Rules](./docs/validation-rules.md) - Complete list of built-in rules
-- [Advanced Usage](./docs/advanced-usage.md) - Advanced patterns and features
-- [Form Validation](./docs/form-validation.md) - Form-specific features
+- [Official Documentation](https://encolajs.com/enforma/) - Complete guide and API reference
+- [Examples](https://encolajs.com/enforma/examples/) - Real-world examples and demos
 
 ## Contributing
 
-We'd love your help improving @encolajs/validator! Check out our [Contributing Guide](./CONTRIBUTING.md) to get started.
+We'd love your help improving @encolajs/enforma! Check out our [Contributing Guide](./CONTRIBUTING.md) to get started.
 
-Found a bug? [Open an issue](https://github.com/encolajs/validator/issues/new?template=bug_report.md)
+Found a bug? [Open an issue](https://github.com/encolajs/encolajs-enforma/issues/new)
 
-Have a great idea? [Suggest a feature](https://github.com/encolajs/validator/issues/new?template=feature_request.md)
-
-## License
+Have a great idea? [Suggest a feature](https://github.com/encolajs/encolajs-enforma/issues/new)
 
 ## License
 
