@@ -41,6 +41,10 @@ export { default as EnformaSubmitButton } from './core/EnformaSubmitButton.vue'
 export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
 export { default as EnformaRequiredIndicator } from './core/EnformaRequiredIndicator.vue'
 
+// Schema Builder
+export { SchemaBuilder, useSchemaBuilder } from './schema-builder'
+export type { SchemaBuilderMode } from './schema-builder'
+
 // Presets will be imported directly by the users
 // export { default as useDefaultPreset } from './presets/default'
 // export { default as usePrimeVuePreset } from './presets/primevue'
