@@ -10,22 +10,21 @@
     <template #default="formCtrl">
       <div class="col-start-1 col-end-3">
         <AppFormField name="name" label="Name">
-          <template #default="fieldCtrl">
+          <template #default="{ attrs, events, id }">
             <div class="flex">
               <!--
-              This field is using v-model to pass data.
-              Because of this destructuring is not possible, we must use `fieldCtrl`
-              The rest of the fields are using `attrs` (which includes `value`)
-              plus `events` because it offers greater flexibility
+              This field is now using attrs and events for consistency.
+              This approach offers greater flexibility and avoids
+              potential conflicts with v-model binding.
               -->
               <InputText
-                :id="fieldCtrl.id"
+                :id="id"
                 class="w-full"
-                v-bind="fieldCtrl.attrs"
-                v-model="fieldCtrl.model"
+                v-bind="attrs"
+                v-on="events"
               />
             </div>
-            <code>Attributes passed: {{fieldCtrl.attrs}}</code>
+            <code>Attributes passed: {{attrs}}</code>
           </template>
         </AppFormField>
       </div>
