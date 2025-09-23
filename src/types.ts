@@ -32,7 +32,7 @@ export interface FormOptions {
   /** Form submission handler */
   submitHandler?: (data: any, form: FormController) => Promise<void> | void
   /** Validation error callback */
-  onValidationError?: (form: FormController) => void
+  onValidationFail?: (form: FormController) => void
   /** Submit success callback */
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */

@@ -397,8 +397,8 @@ export function useForm<T extends object>(
 
           if (!isValid) {
             // Call validation error callback if provided
-            if (options.onValidationError) {
-              options.onValidationError(formController)
+            if (options.onValidationFail) {
+              options.onValidationFail(formController)
             }
 
             // Emit validation error event
@@ -409,7 +409,6 @@ export function useForm<T extends object>(
 
           if (options.submitHandler) {
             try {
-              // Pass both the form values and the form controller
               await options.submitHandler(valuesRef.value, formController)
 
               // Call submit success callback if provided
@@ -417,7 +416,6 @@ export function useForm<T extends object>(
                 options.onSubmitSuccess(valuesRef.value)
               }
 
-              // Emit submit success event
               formEmitter.emit('submit_success', { formController })
             } catch (error) {
               // Call submit error callback if provided

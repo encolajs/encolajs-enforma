@@ -502,7 +502,7 @@ describe('useForm', () => {
 
     test('should handle validation errors during submit', async () => {
       // Create a form with validation errors
-      const onValidationError = vi.fn()
+      const onValidationFail = vi.fn()
 
       const errorForm = useForm(
         order,
@@ -510,7 +510,7 @@ describe('useForm', () => {
           'items.*.price': 'required|integer|gt:10',
         },
         {
-          onValidationError,
+          onValidationFail,
         }
       )
 
@@ -522,7 +522,7 @@ describe('useForm', () => {
 
       // Check that submit failed and validation error handler was called
       expect(isValid).toBe(false)
-      expect(onValidationError).toHaveBeenCalled()
+      expect(onValidationFail).toHaveBeenCalled()
     })
 
     test('should handle path resolution errors in reset', async () => {
