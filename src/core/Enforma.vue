@@ -175,7 +175,7 @@ const effectiveRules = computed(() => {
   // Merge field-level rules
   const mergedRules = { ...fieldRules }
 
-  // Props rules take highest precedence
+  // Props rules take higher precedence
   if (props.rules && Object.keys(props.rules).length > 0) {
     return { ...mergedRules, ...props.rules }
   }
