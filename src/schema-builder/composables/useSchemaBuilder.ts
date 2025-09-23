@@ -1,5 +1,12 @@
 import { ref, computed, watch, Ref } from 'vue'
-import type { FormSchema, FieldSchema, SectionSchema, RepeatableSchema, RepeatableTableSchema, BaseSchema } from '../../types'
+import type {
+  FormSchema,
+  FieldSchema,
+  SectionSchema,
+  RepeatableSchema,
+  RepeatableTableSchema,
+  BaseSchema,
+} from '../../types'
 
 export type SchemaBuilderMode = 'visual' | 'json'
 
@@ -26,7 +33,7 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     selectedItem: null,
     expandedItems: new Set(),
     validationErrors: [],
-    isDirty: false
+    isDirty: false,
   })
 
   // Sync JSON text with schema
@@ -52,7 +59,11 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
         return false
       }
     } catch (error) {
-      state.value.validationErrors = [`Invalid JSON: ${error instanceof Error ? error.message : 'Unknown error'}`]
+      state.value.validationErrors = [
+        `Invalid JSON: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      ]
       return false
     }
   }
@@ -74,14 +85,14 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     { label: 'Number Input', value: 'number' },
     { label: 'Date Input', value: 'date' },
     { label: 'Email Input', value: 'email' },
-    { label: 'Password Input', value: 'password' }
+    { label: 'Password Input', value: 'password' },
   ]
 
   const availableTitleComponents = [
     { label: 'Heading 2', value: 'h2' },
     { label: 'Heading 3', value: 'h3' },
     { label: 'Heading 4', value: 'h4' },
-    { label: 'Div', value: 'div' }
+    { label: 'Div', value: 'div' },
   ]
 
   // Computed properties
@@ -89,11 +100,17 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
   const sections = computed(() => {
     return Object.entries(state.value.schema)
       .filter(([, item]) => item.type === 'section')
-      .map(([key, item]) => ({ label: (item as SectionSchema).title, value: key }))
+      .map(([key, item]) => ({
+        label: (item as SectionSchema).title,
+        value: key,
+      }))
   })
 
   const schemaItems = computed(() => {
-    return Object.entries(state.value.schema).map(([key, item]) => ({ key, ...item }))
+    return Object.entries(state.value.schema).map(([key, item]) => ({
+      key,
+      ...item,
+    }))
   })
 
   // Methods
@@ -123,9 +140,11 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     const fieldName = name || `field_${Date.now()}`
     const newField: FieldSchema = {
       type: 'field',
-      label: fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/_/g, ' '),
+      label:
+        fieldName.charAt(0).toUpperCase() +
+        fieldName.slice(1).replace(/_/g, ' '),
       inputComponent: 'input',
-      required: false
+      required: false,
     }
     state.value.schema[fieldName] = newField
     state.value.selectedItem = fieldName
@@ -138,8 +157,10 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     const sectionName = name || `section_${Date.now()}`
     const newSection: SectionSchema = {
       type: 'section',
-      title: sectionName.charAt(0).toUpperCase() + sectionName.slice(1).replace(/_/g, ' '),
-      titleComponent: 'h2'
+      title:
+        sectionName.charAt(0).toUpperCase() +
+        sectionName.slice(1).replace(/_/g, ' '),
+      titleComponent: 'h2',
     }
     state.value.schema[sectionName] = newSection
     state.value.selectedItem = sectionName
@@ -158,9 +179,9 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
         name: {
           type: 'field',
           label: 'Name',
-          inputComponent: 'input'
-        }
-      }
+          inputComponent: 'input',
+        },
+      },
     }
     state.value.schema[repeatableName] = newRepeatable
     state.value.selectedItem = repeatableName
@@ -244,41 +265,45 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
       state.value.jsonText = JSON.stringify(parsed, null, 2)
       state.value.validationErrors = []
     } catch (error) {
-      state.value.validationErrors = [`Invalid JSON: ${error instanceof Error ? error.message : 'Unknown error'}`]
+      state.value.validationErrors = [
+        `Invalid JSON: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      ]
     }
   }
 
   const validateSchema = () => {
     const errors: string[] = []
-    
+
     Object.entries(state.value.schema).forEach(([key, item]) => {
       if (!item.type) {
         errors.push(`Item '${key}': Missing required 'type' property`)
       }
-      
+
       if (item.type === 'section' && !(item as SectionSchema).title) {
         errors.push(`Section '${key}': Missing required 'title' property`)
       }
-      
+
       if (item.type === 'field' && !key) {
         errors.push(`Field: Missing name/key`)
       }
     })
-    
+
     state.value.validationErrors = errors
     return errors.length === 0
   }
 
   return {
     state: state as Readonly<Ref<SchemaBuilderState>>,
-    
+
     // Computed
     schemaAsJson,
     sections,
     schemaItems,
     availableInputComponents,
     availableTitleComponents,
-    
+
     // Methods
     setMode,
     updateJsonText,
@@ -295,9 +320,9 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     importFromClipboard,
     formatJson,
     validateSchema,
-    
+
     // Sync methods
     syncJsonFromSchema,
-    syncSchemaFromJson
+    syncSchemaFromJson,
   }
 }

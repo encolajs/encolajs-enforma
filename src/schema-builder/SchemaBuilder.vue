@@ -3,21 +3,21 @@
     <!-- Header with Mode Toggle and Actions -->
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-          <Button
-            :severity="state.currentMode !== 'json' ? '' : 'secondary'"
-            size="small"
-            @click="setMode('visual')"
-          >
-            Visual
-          </Button>
-          <Button
-            :severity="state.currentMode === 'json' ? '' : 'secondary'"
-            size="small"
-            @click="setMode('json')"
-          >
-            JSON
-          </Button>
-        </div>
+        <Button
+          :severity="state.currentMode !== 'json' ? '' : 'secondary'"
+          size="small"
+          @click="setMode('visual')"
+        >
+          Visual
+        </Button>
+        <Button
+          :severity="state.currentMode === 'json' ? '' : 'secondary'"
+          size="small"
+          @click="setMode('json')"
+        >
+          JSON
+        </Button>
+      </div>
 
       <div class="flex items-center gap-2">
         <Button
@@ -65,12 +65,7 @@
         <Toolbar>
           <template #start>
             <div class="flex gap-2">
-              <Button
-                label="Field"
-                size="small"
-                outlined
-                @click="addField"
-              />
+              <Button label="Field" size="small" outlined @click="addField" />
               <Button
                 label="Section"
                 size="small"
@@ -95,12 +90,22 @@
       </div>
 
       <!-- Schema Items -->
-      <div v-if="Object.keys(state.schema).length === 0" class="text-center py-8 text-gray-500">
+      <div
+        v-if="Object.keys(state.schema).length === 0"
+        class="text-center py-8 text-gray-500"
+      >
         <div class="text-lg mb-2">No schema items yet</div>
-        <div class="text-sm">Click "Add Field" or "Add Section" to get started</div>
+        <div class="text-sm">
+          Click "Add Field" or "Add Section" to get started
+        </div>
       </div>
 
-      <Accordion v-else :activeIndex="Array.from(state.expandedItems)" :multiple="true" class="w-full">
+      <Accordion
+        v-else
+        :activeIndex="Array.from(state.expandedItems)"
+        :multiple="true"
+        class="w-full"
+      >
         <AccordionTab
           v-for="([key, item], index) in Object.entries(state.schema)"
           :key="key"
@@ -137,27 +142,21 @@
           @input="handleJsonInput"
         />
       </div>
-      
+
       <div class="flex gap-2">
-        <Button
-          :disabled="!state.isDirty"
-          @click="applyJsonChanges"
-        >
+        <Button :disabled="!state.isDirty" @click="applyJsonChanges">
           Apply Changes
         </Button>
-        <Button
-          outlined
-          @click="resetJson"
-        >
-          Reset
-        </Button>
+        <Button outlined @click="resetJson"> Reset </Button>
       </div>
     </div>
 
     <!-- Schema Output (for debugging) -->
     <div v-if="showDebug" class="mt-6 p-4 bg-gray-100 rounded">
       <h4 class="font-medium mb-2">Current Schema (Debug)</h4>
-      <pre class="text-xs bg-white p-2 rounded overflow-auto max-h-40">{{ JSON.stringify(state.schema, null, 2) }}</pre>
+      <pre class="text-xs bg-white p-2 rounded overflow-auto max-h-40">{{
+        JSON.stringify(state.schema, null, 2)
+      }}</pre>
     </div>
   </div>
 </template>
@@ -188,7 +187,7 @@ interface SchemaBuilderProps {
 const props = withDefaults(defineProps<SchemaBuilderProps>(), {
   modelValue: () => ({}),
   mode: 'visual',
-  showDebug: false
+  showDebug: false,
 })
 
 // Emits
@@ -218,10 +217,10 @@ const {
   exportToClipboard,
   importFromClipboard,
   formatJson,
-  syncJsonFromSchema
+  syncJsonFromSchema,
 } = useSchemaBuilder({
   initialSchema: props.modelValue,
-  initialMode: props.mode
+  initialMode: props.mode,
 })
 
 // Local state for JSON textarea
@@ -233,22 +232,33 @@ watch(schemaAsJson, (newValue) => {
 })
 
 // Watch for external schema changes
-watch(() => props.modelValue, (newSchema) => {
-  if (JSON.stringify(newSchema) !== JSON.stringify(state.value.schema)) {
-    state.value.schema = { ...newSchema }
-    syncJsonFromSchema()
-  }
-}, { deep: true })
+watch(
+  () => props.modelValue,
+  (newSchema) => {
+    if (JSON.stringify(newSchema) !== JSON.stringify(state.value.schema)) {
+      state.value.schema = { ...newSchema }
+      syncJsonFromSchema()
+    }
+  },
+  { deep: true }
+)
 
 // Emit schema changes
-watch(() => state.value.schema, (newSchema) => {
-  emit('update:modelValue', { ...newSchema })
-}, { deep: true })
+watch(
+  () => state.value.schema,
+  (newSchema) => {
+    emit('update:modelValue', { ...newSchema })
+  },
+  { deep: true }
+)
 
 // Emit mode changes
-watch(() => state.value.currentMode, (newMode) => {
-  emit('update:mode', newMode)
-})
+watch(
+  () => state.value.currentMode,
+  (newMode) => {
+    emit('update:mode', newMode)
+  }
+)
 
 // Methods
 const handleJsonInput = (event: Event) => {
@@ -279,13 +289,13 @@ const handleImport = async () => {
 const getItemHeader = (key: string, item: any) => {
   const type = item.type.charAt(0).toUpperCase() + item.type.slice(1)
   let title = key
-  
+
   if (item.type === 'section' && item.title) {
     title = item.title
   } else if (item.type === 'field' && item.label) {
     title = item.label
   }
-  
+
   return `${type}: ${title}`
 }
 

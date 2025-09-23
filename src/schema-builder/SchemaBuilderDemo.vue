@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container p-6">
     <h1 class="text-2xl font-bold mb-6">Schema Builder Demo</h1>
-    
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Schema Builder -->
       <div class="schema-builder-panel">
@@ -11,15 +11,15 @@
             Create your form schema using the visual editor or JSON mode
           </p>
         </div>
-        
-        <SchemaBuilder 
-          v-model="schema" 
+
+        <SchemaBuilder
+          v-model="schema"
           :preview-data="sampleData"
           :show-debug="showDebug"
           @update:modelValue="onSchemaUpdate"
         />
       </div>
-      
+
       <!-- Live Form Preview -->
       <div class="form-preview-panel">
         <div class="mb-4">
@@ -28,34 +28,40 @@
             See how your schema renders as an actual form
           </p>
         </div>
-        
-        <div v-if="Object.keys(schema).length === 0" class="text-center py-12 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+
+        <div
+          v-if="Object.keys(schema).length === 0"
+          class="text-center py-12 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg"
+        >
           <div class="text-lg mb-2">No schema defined</div>
-          <div class="text-sm">Create some fields in the schema builder to see the form preview</div>
+          <div class="text-sm">
+            Create some fields in the schema builder to see the form preview
+          </div>
         </div>
-        
+
         <div v-else class="bg-white p-4 border border-gray-200 rounded-lg">
-          <Enforma 
-            :schema="schema" 
-            :data="formData" 
+          <Enforma
+            :schema="schema"
+            :data="formData"
             @update:data="formData = $event"
           />
-          
+
           <!-- Form Data Output -->
           <div class="mt-6 pt-4 border-t border-gray-200">
             <h3 class="text-sm font-medium text-gray-700 mb-2">Form Data:</h3>
-            <pre class="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-32">{{ JSON.stringify(formData, null, 2) }}</pre>
+            <pre
+              class="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-32"
+              >{{ JSON.stringify(formData, null, 2) }}</pre
+            >
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Controls -->
     <div class="mt-6 p-4 bg-gray-50 rounded-lg">
       <div class="flex flex-wrap items-center gap-4">
-        <Button @click="loadSampleSchema" outlined>
-          Load Sample Schema
-        </Button>
+        <Button @click="loadSampleSchema" outlined> Load Sample Schema </Button>
         <Button @click="clearSchema" severity="secondary" outlined>
           Clear Schema
         </Button>
@@ -68,10 +74,12 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Sample Data Editor -->
     <div v-if="showDebug" class="mt-4 p-4 bg-gray-50 rounded-lg">
-      <h3 class="text-sm font-medium text-gray-700 mb-2">Sample Data (for preview):</h3>
+      <h3 class="text-sm font-medium text-gray-700 mb-2">
+        Sample Data (for preview):
+      </h3>
       <Textarea
         v-model="sampleDataText"
         rows="4"
@@ -100,7 +108,7 @@ const sampleData = ref<Record<string, any>>({
   name: 'John Doe',
   email: 'john@example.com',
   age: 30,
-  country: 'US'
+  country: 'US',
 })
 const sampleDataText = ref(JSON.stringify(sampleData.value, null, 2))
 const showDebug = ref(false)
@@ -110,7 +118,7 @@ const autoUpdate = ref(true)
 const sampleSchema: FormSchema = {
   personal_info: {
     type: 'section',
-    title: 'Personal Information'
+    title: 'Personal Information',
   },
   name: {
     type: 'field',
@@ -120,8 +128,8 @@ const sampleSchema: FormSchema = {
     required: true,
     help: 'Enter your full name',
     inputProps: {
-      placeholder: 'e.g. John Doe'
-    }
+      placeholder: 'e.g. John Doe',
+    },
   },
   email: {
     type: 'field',
@@ -130,8 +138,8 @@ const sampleSchema: FormSchema = {
     inputComponent: 'email',
     required: true,
     inputProps: {
-      placeholder: 'john@example.com'
-    }
+      placeholder: 'john@example.com',
+    },
   },
   age: {
     type: 'field',
@@ -140,8 +148,8 @@ const sampleSchema: FormSchema = {
     inputComponent: 'number',
     inputProps: {
       min: 18,
-      max: 100
-    }
+      max: 100,
+    },
   },
   country: {
     type: 'field',
@@ -149,12 +157,12 @@ const sampleSchema: FormSchema = {
     label: 'Country',
     inputComponent: 'select',
     inputProps: {
-      options: ['US', 'Canada', 'UK', 'Germany', 'France', 'Other']
-    }
+      options: ['US', 'Canada', 'UK', 'Germany', 'France', 'Other'],
+    },
   },
   contact_info: {
     type: 'section',
-    title: 'Contact Information'
+    title: 'Contact Information',
   },
   bio: {
     type: 'field',
@@ -164,8 +172,8 @@ const sampleSchema: FormSchema = {
     help: 'Tell us about yourself',
     inputProps: {
       rows: 4,
-      placeholder: 'Write a short bio...'
-    }
+      placeholder: 'Write a short bio...',
+    },
   },
   skills: {
     type: 'repeatable',
@@ -178,28 +186,28 @@ const sampleSchema: FormSchema = {
       skill_name: {
         type: 'field',
         label: 'Skill',
-        inputComponent: 'input'
+        inputComponent: 'input',
       },
       level: {
         type: 'field',
         label: 'Level',
         inputComponent: 'select',
         inputProps: {
-          options: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
-        }
-      }
-    }
-  }
+          options: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+        },
+      },
+    },
+  },
 }
 
 // Methods
 const onSchemaUpdate = (newSchema: FormSchema) => {
   console.log('Schema updated:', newSchema)
-  
+
   // Auto-initialize form data for new fields
   if (autoUpdate.value) {
     const newFormData = { ...formData.value }
-    
+
     Object.entries(newSchema).forEach(([key, item]) => {
       if (item.type === 'field' && !(key in newFormData)) {
         // Initialize with sample data if available
@@ -218,7 +226,7 @@ const onSchemaUpdate = (newSchema: FormSchema) => {
         }
       }
     })
-    
+
     formData.value = newFormData
   }
 }
@@ -242,9 +250,13 @@ const updateSampleData = () => {
 }
 
 // Watch for sample data changes
-watch(sampleData, (newData) => {
-  sampleDataText.value = JSON.stringify(newData, null, 2)
-}, { deep: true })
+watch(
+  sampleData,
+  (newData) => {
+    sampleDataText.value = JSON.stringify(newData, null, 2)
+  },
+  { deep: true }
+)
 
 // Initialize with a basic field for demonstration
 onMounted(() => {

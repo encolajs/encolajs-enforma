@@ -116,9 +116,14 @@
         </label>
         <div class="space-y-2">
           <!-- Common props based on input type -->
-          <div v-if="localItem.inputComponent === 'input'" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div
+            v-if="localItem.inputComponent === 'input'"
+            class="grid grid-cols-1 md:grid-cols-2 gap-2"
+          >
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Placeholder</label>
+              <label class="block text-xs text-gray-600 mb-1"
+                >Placeholder</label
+              >
               <InputText
                 :value="getInputProp('placeholder')"
                 class="w-full"
@@ -137,9 +142,14 @@
             </div>
           </div>
 
-          <div v-else-if="localItem.inputComponent === 'textarea'" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div
+            v-else-if="localItem.inputComponent === 'textarea'"
+            class="grid grid-cols-1 md:grid-cols-2 gap-2"
+          >
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Placeholder</label>
+              <label class="block text-xs text-gray-600 mb-1"
+                >Placeholder</label
+              >
               <InputText
                 :value="getInputProp('placeholder')"
                 class="w-full"
@@ -160,7 +170,9 @@
           </div>
 
           <div v-else-if="localItem.inputComponent === 'select'">
-            <label class="block text-xs text-gray-600 mb-1">Options (one per line)</label>
+            <label class="block text-xs text-gray-600 mb-1"
+              >Options (one per line)</label
+            >
             <Textarea
               :value="getSelectOptionsText()"
               rows="4"
@@ -175,7 +187,10 @@
     </div>
 
     <!-- Section Editor -->
-    <div v-else-if="localItem.type === 'section'" class="section-editor space-y-4">
+    <div
+      v-else-if="localItem.type === 'section'"
+      class="section-editor space-y-4"
+    >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Title -->
         <div>
@@ -209,7 +224,12 @@
     </div>
 
     <!-- Repeatable Editor -->
-    <div v-else-if="localItem.type === 'repeatable' || localItem.type === 'repeatable-table'" class="repeatable-editor space-y-4">
+    <div
+      v-else-if="
+        localItem.type === 'repeatable' || localItem.type === 'repeatable-table'
+      "
+      class="repeatable-editor space-y-4"
+    >
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Min Items -->
         <div>
@@ -260,7 +280,10 @@
             input-id="allowRemove"
             @change="emitUpdate"
           />
-          <label for="allowRemove" class="ml-2 text-sm font-medium text-gray-700">
+          <label
+            for="allowRemove"
+            class="ml-2 text-sm font-medium text-gray-700"
+          >
             Allow Remove
           </label>
         </div>
@@ -280,13 +303,21 @@
           />
         </div>
 
-        <div v-if="!localItem.subfields || Object.keys(localItem.subfields).length === 0" class="text-center py-4 text-gray-500 border-2 border-dashed border-gray-200 rounded">
+        <div
+          v-if="
+            !localItem.subfields ||
+            Object.keys(localItem.subfields).length === 0
+          "
+          class="text-center py-4 text-gray-500 border-2 border-dashed border-gray-200 rounded"
+        >
           No subfields defined. Click "Add Subfield" to get started.
         </div>
 
         <div v-else class="space-y-3">
           <Card
-            v-for="([subfieldKey, subfield], index) in Object.entries(localItem.subfields)"
+            v-for="([subfieldKey, subfield], index) in Object.entries(
+              localItem.subfields
+            )"
             :key="subfieldKey"
             class="border"
           >
@@ -294,11 +325,7 @@
               <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                 <div>
                   <label class="block text-xs text-gray-600 mb-1">Name</label>
-                  <InputText
-                    :value="subfieldKey"
-                    disabled
-                    class="w-full"
-                  />
+                  <InputText :value="subfieldKey" disabled class="w-full" />
                 </div>
                 <div>
                   <label class="block text-xs text-gray-600 mb-1">Label</label>
@@ -310,7 +337,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Component</label>
+                  <label class="block text-xs text-gray-600 mb-1"
+                    >Component</label
+                  >
                   <Select
                     v-model="subfield.inputComponent"
                     :options="availableInputComponents"
@@ -335,13 +364,17 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import type { BaseSchema, FieldSchema, SectionSchema, RepeatableSchema } from '../types'
+import type {
+  BaseSchema,
+  FieldSchema,
+  SectionSchema,
+  RepeatableSchema,
+} from '../types'
 
 // PrimeVue Components
 import Button from 'primevue/button'
@@ -376,9 +409,13 @@ const emit = defineEmits<SchemaBuilderItemEmits>()
 const localItem = reactive({ ...props.item })
 
 // Watch for external changes
-watch(() => props.item, (newItem) => {
-  Object.assign(localItem, newItem)
-}, { deep: true })
+watch(
+  () => props.item,
+  (newItem) => {
+    Object.assign(localItem, newItem)
+  },
+  { deep: true }
+)
 
 // Methods
 const emitUpdate = () => {
@@ -421,9 +458,9 @@ const getSelectOptionsText = () => {
 const updateSelectOptions = (text: string) => {
   const options = text
     .split('\n')
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
-  
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+
   updateInputProp('options', options.length > 0 ? options : null)
 }
 
@@ -432,14 +469,14 @@ const addSubfield = () => {
   if (!localItem.subfields) {
     localItem.subfields = {}
   }
-  
+
   const subfieldName = `subfield_${Date.now()}`
   localItem.subfields[subfieldName] = {
     type: 'field',
     label: 'New Subfield',
-    inputComponent: 'input'
+    inputComponent: 'input',
   }
-  
+
   emitUpdate()
 }
 
@@ -463,7 +500,10 @@ onMounted(() => {
       localItem.titleComponent = 'h2'
       emitUpdate()
     }
-  } else if (localItem.type === 'repeatable' || localItem.type === 'repeatable-table') {
+  } else if (
+    localItem.type === 'repeatable' ||
+    localItem.type === 'repeatable-table'
+  ) {
     if (localItem.allowAdd === undefined) {
       localItem.allowAdd = true
       emitUpdate()
