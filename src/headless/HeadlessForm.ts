@@ -45,15 +45,6 @@ export default defineComponent({
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
       useGlobalEvents: true, // Use global event emitter for component integration
-      onValidationFail: (form) => {
-        ctx.emit('validation_fail', form)
-      },
-      onSubmitSuccess: (data) => {
-        ctx.emit('submit_success', data)
-      },
-      onSubmitError: (error, form) => {
-        ctx.emit('submit_error', error, form)
-      },
     })
 
     // Set up event handlers to forward events to component emits
