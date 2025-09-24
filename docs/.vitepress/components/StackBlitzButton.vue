@@ -22,6 +22,7 @@ import appVueRaw from '../stackblitz/src/App.vue?raw'
 import fieldsFormExampleRaw from '../../examples/enforma/FieldsFormExample.vue?raw'
 import mixedFormExampleRaw from '../../examples/enforma/MixedFormExample.vue?raw'
 import schemaFormExampleRaw from '../../examples/enforma/SchemaFormExample.vue?raw'
+import serverSideErrorsExampleRaw from '../../examples/features/ServerSideErrorsExample.vue?raw'
 import endDateFieldRaw from '../../examples/enforma/EndDateField.vue?raw'
 import salaryFieldRaw from '../../examples/enforma/SalaryField.vue?raw'
 import useFormConfigRaw from '../../examples/headless/useFormConfig.ts?raw'
@@ -56,6 +57,7 @@ const files = {
   'src/main.ts': mainTsRaw,
   'src/App.vue': appVueRaw.replaceAll('FieldsFormExample', props.component, true).replaceAll('{{title}}', props.title, true),
   'src/components/FieldsFormExample.vue': fieldsFormExampleRaw,
+  'src/components/ServerSideErrorsExample.vue': serverSideErrorsExampleRaw,
   'src/components/MixedFormExample.vue': mixedFormExampleRaw,
   'src/components/SchemaFormExample.vue': schemaFormExampleRaw,
   'src/components/EndDateField.vue': endDateFieldRaw,

@@ -147,6 +147,7 @@ export default defineConfig({
           text: 'Features',
           items: [
             { text: 'Dynamic Props', link: '/examples/dynamic-props' },
+            { text: 'Server-side Errors', link: '/examples/server-side-errors' },
           ],
         },
         {
