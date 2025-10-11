@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import Enforma from '@/core/Enforma.vue'
-import '@/utils/license'
 import { mountTestComponent } from '../utils/testSetup'
 
 // Mock the submit handler

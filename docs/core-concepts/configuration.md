@@ -94,10 +94,6 @@ const { getConfig } = useFormConfig()
 
 Below are detailed tables for all the configuration options available in Enforma. These options can be set at both the global and form-specific levels.
 
-### License Key (`licenseKey`)
-
-If you are using the Enforma library in a commercial environment (public website, intranet application etc) you must procure a license from <a href="https://encolajs.com/">encolajs.com</a>
-
 ### Pass-Through Configuration (`pt`)
 
 The pass-through configuration allows you to customize the props passed to various components.

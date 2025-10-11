@@ -5,7 +5,6 @@ import { mergeConfigs } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { messageFormatter } from '@encolajs/validator'
 import { resolveValue } from './helpers'
-import { startLicenseCheck } from '@/utils/license'
 
 /**
  * Represents a generic configuration object
@@ -138,7 +137,6 @@ export type FieldPropsTransformer = (
  * Complete form kit configuration
  */
 export interface EnformaConfig {
-  licenseKey?: string
   pt: FieldPassThroughConfig
   behavior: BehaviorConfig
   rules?: Record<string, Function>
@@ -176,7 +174,6 @@ let globalConfig: DeepPartial<EnformaConfig> = DEFAULT_CONFIG
  * Set the global configuration for all forms
  */
 export function setGlobalConfig(config: DeepPartial<EnformaConfig>): void {
-  startLicenseCheck(config.licenseKey as string)
   globalConfig = config
 }
 
