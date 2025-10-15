@@ -17,7 +17,10 @@ import AnnouncementBar from '../components/AnnouncementBar.vue'
 .VPFooter {
   padding-bottom: 80px !important;
 }
-body {
-  --vp-layout-top-height: 60px;
+@media (min-width: 768px) {
+  body {
+    --vp-layout-top-height: 60px;
+  }
 }
+
 </style>

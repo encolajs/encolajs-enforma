@@ -89,6 +89,11 @@ onMounted(checkMl)
 }
 
 @media (max-width: 768px) {
+  .announcement-bar {
+    display: none;
+    position: revert;
+    z-index:1;
+  }
   .announcement-content {
     gap: 6px;
   }
