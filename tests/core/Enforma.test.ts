@@ -302,17 +302,20 @@ describe('Enforma', () => {
     expect(childComponent.text()).toContain('bar')
   })
 
-  it('passes custom validation rules to HeadlessForm', async () => {
-    const rules = {
+  it('passes custom validator to HeadlessForm', async () => {
+    const { createEncolaValidator } = await import(
+      '@/validators/encolaValidator'
+    )
+    const validator = createEncolaValidator({
       name: 'required',
       email: 'email',
-    }
+    })
 
     const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
-        rules,
+        validator,
       },
       global: {
         components: {
@@ -324,20 +327,32 @@ describe('Enforma', () => {
 
     await wrapper.vm.$nextTick()
     const headlessForm = wrapper.findComponent(HeadlessForm)
-    expect(headlessForm.props().rules).toEqual(rules)
+    expect(headlessForm.props().validator).toBeDefined()
+    expect(headlessForm.props().validator.validate).toBeDefined()
   })
 
-  it('passes custom validation messages to HeadlessForm', async () => {
+  it('passes custom validator with messages to HeadlessForm', async () => {
+    const { createEncolaValidator } = await import(
+      '@/validators/encolaValidator'
+    )
     const messages = {
       'name:required': 'This field is required',
       'email:email': 'Invalid email format',
     }
 
+    const validator = createEncolaValidator(
+      {
+        name: 'required',
+        email: 'email',
+      },
+      messages
+    )
+
     const wrapper = mount(Enforma, {
       props: {
         data: {},
         submitHandler: () => {},
-        messages,
+        validator,
       },
       global: {
         components: {
@@ -349,7 +364,8 @@ describe('Enforma', () => {
 
     await wrapper.vm.$nextTick()
     const headlessForm = wrapper.findComponent(HeadlessForm)
-    expect(headlessForm.props().customMessages).toEqual(messages)
+    expect(headlessForm.props().validator).toBeDefined()
+    expect(headlessForm.props().validator.validate).toBeDefined()
   })
 
   it('collects and merges field-level rules and messages', async () => {

@@ -2,8 +2,7 @@
   <Enforma
     ref="formRef"
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :validator="validator"
     :submit-handler="submitHandler"
   >
     <div class="grid grid-cols-2 gap-4">
@@ -25,8 +24,6 @@
         required
         label="Email"
         :input-props="{class: 'w-full'}"
-        :rules="rules.email"
-        :messages="messages.email"
       />
       <EnformaField
         class="col-start-1 col-end-2"
@@ -124,7 +121,7 @@ import { ref } from 'vue'
 // for accessing the FormController
 const formRef = ref()
 
-const {data, rules, messages, submitHandler} = useFormConfig()
+const {data, validator, submitHandler} = useFormConfig()
 
 const skillFields = {
   name: {

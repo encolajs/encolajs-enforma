@@ -8,6 +8,7 @@ import {
   effectScope,
   EffectScope,
   watchEffect,
+  inject,
 } from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
 import { useConfig } from '@/utils/useConfig'
@@ -18,6 +19,11 @@ import {
   globalFormEmitter,
 } from '@/utils/events'
 import moveArrayItem from '@/utils/moveArrayItem'
+import type { FormValidator } from '@/validators/types'
+import { NoopValidator } from '@/validators/NoopValidator'
+import { isFormValidator, isRulesObject } from '@/validators/helpers'
+import { enformaConfigKey } from '@/constants/symbols'
+import { warnRulesDeprecation } from '@/utils/deprecationWarnings'
 
 export interface FieldController {
   $errors: Ref<string[]>
@@ -191,7 +197,7 @@ class FieldManager {
 
 export function useForm<T extends object>(
   values: object,
-  rules: ValidationRules = {},
+  validatorOrRules?: FormValidator | ValidationRules,
   options: FormOptions = {}
 ): T & FormController {
   // Create main form scope for form-level effects
@@ -205,6 +211,7 @@ export function useForm<T extends object>(
   let formState: any
   let valuesRef: any
   let formVersion: any
+  let validator: any
 
   formScope.run(() => {
     // Create form-specific event emitter
@@ -214,6 +221,35 @@ export function useForm<T extends object>(
 
     // Use form config to access the clone function
     config = useConfig()
+    const enformaConfig = inject(enformaConfigKey, null) as any
+
+    if (validatorOrRules) {
+      if (isFormValidator(validatorOrRules)) {
+        validator = validatorOrRules
+      } else if (isRulesObject(validatorOrRules)) {
+        // Show deprecation warning
+        warnRulesDeprecation('useForm')
+
+        if (options.validatorFactory) {
+          validator = options.validatorFactory.make(validatorOrRules, {
+            ...(options.customMessages || {}),
+          })
+        } else if (enformaConfig?.createEncolaValidation) {
+          validator = enformaConfig.createEncolaValidation(
+            validatorOrRules,
+            options.customMessages
+          )
+        } else {
+          const validationFactory = useValidation().factory
+          validator = validationFactory.make(validatorOrRules, {
+            ...(options.customMessages || {}),
+          })
+        }
+      }
+    } else {
+      validator = new NoopValidator()
+    }
+
     cloneFn = config.behavior.cloneFn
     valuesCopy = cloneFn(values)
     fieldManager = new FieldManager()
@@ -240,11 +276,6 @@ export function useForm<T extends object>(
     })
   })
 
-  const validationFactory = options.validatorFactory || useValidation().factory
-  const validator = validationFactory.make(rules, {
-    ...(options.customMessages || {}),
-  })
-
   async function validateField(
     path: string,
     fieldController: FieldController
@@ -258,7 +289,7 @@ export function useForm<T extends object>(
 
       const isValid = await validator.validatePath(path, valuesRef.value)
       await Promise.all(
-        validator.getDependentFields(path).map((dependant) => {
+        validator.getDependentFields(path).map((dependant: string) => {
           const depCtrl = fieldManager.get(dependant)
           if (depCtrl.$isDirty.value && !depCtrl.$isValidating.value) {
             validateField(dependant, depCtrl)

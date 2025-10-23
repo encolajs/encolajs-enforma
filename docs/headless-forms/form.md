@@ -29,7 +29,7 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
 <template>
   <HeadlessForm
     :data="formData"
-    :rules="validationRules"
+    :validator="validator"
     :submit-handler="handleSubmit"
     @submit_success="handleSuccess"
     @submit_error="handleError"
@@ -49,7 +49,7 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
           {{ form['name.$errors'][0] }}
         </div>
       </div>
-        
+
       <button type="submit">Submit</button>
       <button type="button" @click="form.reset">Reset</button>
     </template>
@@ -59,16 +59,17 @@ The `HeadlessForm` component wraps `useForm` with a Vue component interface:
 <script setup>
 import { reactive } from 'vue';
 import { HeadlessForm } from '@encolajs/enforma';
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola';
 
 const formData = reactive({
   name: '',
   email: ''
 });
 
-const validationRules = {
+const validator = createEncolaValidator({
   name: 'required',
   email: 'required|email'
-};
+});
 
 async function handleSubmit(data, formController) {
   // Handle submission
@@ -87,3 +88,25 @@ function handleFieldChange(path, value, fieldController, formController) {
 }
 </script>
 ```
+
+::: warning DEPRECATED
+The `:rules` and `:customMessages` props are deprecated in v1.3.0. Use the `:validator` prop instead.
+
+**Old way (deprecated):**
+```vue
+<HeadlessForm :data="formData" :rules="{ email: 'required|email' }" />
+```
+
+**New way (recommended):**
+```vue
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+const validator = createEncolaValidator({ email: 'required|email' })
+</script>
+<template>
+  <HeadlessForm :data="formData" :validator="validator" />
+</template>
+```
+
+See the [Migration Guide](/migration-guide-1_3) for more details.
+:::

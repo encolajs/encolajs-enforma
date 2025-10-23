@@ -13,10 +13,31 @@ A form component that provides no UI, just the form state and logic.
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
 | `data` | `Object` | Yes | The form data object |
-| `rules` | `Object` | No | Validation rules object |
-| `customMessages` | `Object` | No | Custom validation messages |
+| `validator` | `FormValidator` | No | Validator instance (created with `createEncolaValidator`, `createZodValidator`, etc.) |
 | `submitHandler` | `Function` | No | Form submission handler |
 | `validateOn` | `String` | No | When to validate fields |
+| ~~`rules`~~ | ~~`Object`~~ | No | **DEPRECATED:** Use `validator` prop instead |
+| ~~`customMessages`~~ | ~~`Object`~~ | No | **DEPRECATED:** Use `validator` prop instead |
+
+::: warning DEPRECATED PROPS
+The `:rules` and `:customMessages` props are deprecated in v1.3.0. Use the `:validator` prop with a validator factory function instead:
+
+```vue
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+
+const validator = createEncolaValidator(
+  { email: 'required|email' },
+  { 'email.required': 'Email is required' }
+)
+</script>
+<template>
+  <HeadlessForm :data="formData" :validator="validator" />
+</template>
+```
+
+See the [Migration Guide](/migration-guide-1_3) for complete migration instructions.
+:::
 
 ## Events
 

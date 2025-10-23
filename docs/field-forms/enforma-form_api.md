@@ -12,12 +12,33 @@
 |--------------------|-------------|--------------------------------------------------------------------------------------------------------------------|
 | `data`             | `Object`    | The form data object                                                                                               |
 | `schema`           | `Object`    | Optional form schema for schema-based rendering                                                                    |
-| `rules`            | `Object`    | Validation rules for form fields                                                                                   |
-| `messages`         | `Object`    | Custom validation messages                                                                                         |
+| `validator`        | `FormValidator` | Validator instance (created with `createEncolaValidator`, `createZodValidator`, etc.)                          |
 | `submitHandler`    | `Function`  | Function to be called on submit                                                                                    |
 | `config`           | `Object`    | Form configuration options                                                                                         |
 | `showResetButton`  | `Boolean` | To show the reset button (default `true`)                                                                          |
 | `showSubmitButton` | `Boolean` | To show the submit button (default `true`). This is useful if you want to place the submit button outside the form |
+| ~~`rules`~~        | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |
+| ~~`messages`~~     | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |
+
+::: warning DEPRECATED PROPS
+The `:rules` and `:messages` props are deprecated in v1.3.0. Use the `:validator` prop with a validator factory function instead:
+
+```vue
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+
+const validator = createEncolaValidator(
+  { firstName: 'required', email: 'required|email' },
+  { 'firstName.required': 'First name is required' }
+)
+</script>
+<template>
+  <Enforma :data="formData" :validator="validator" />
+</template>
+```
+
+See the [Migration Guide](/migration-guide-1_3) for complete migration instructions.
+:::
 
 ## Events
 

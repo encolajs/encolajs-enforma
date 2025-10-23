@@ -3,8 +3,8 @@
     class="grid grid-cols-2 gap-4"
     ref="$form"
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :validator="validator"
+    
     :submit-handler="submitHandler"
   >
     <template #default="formCtrl">
@@ -364,7 +364,7 @@ import AppFormField from './AppFormField.vue'
 import ExperienceEndDateField from './ExperienceEndDateField.vue'
 import useFormConfig from './useFormConfig'
 
-const {data, rules, messages, submitHandler} = useFormConfig()
+const {data, validator, submitHandler} = useFormConfig()
 
 const $form = ref(null)
 </script>

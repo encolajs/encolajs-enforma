@@ -1,8 +1,7 @@
 <template>
   <Enforma
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :validator="validator"
     :submit-handler="submitHandler"
     :schema="schema"
   >
@@ -11,6 +10,7 @@
 
 <script setup>
 import { Enforma } from '@'
+import { createEncolaValidator } from '@/validators/encolaValidator'
 import { ref, watch, computed } from 'vue'
 import castingManager from './useHydrator'
 
@@ -28,23 +28,23 @@ const data = castingManager.cast({
   ]
 }, 'order')
 
-// Validation rules
-const rules = {
-  number: 'required',
-  date: 'required|date',
-  customer: 'required',
-  'items.*.name': 'required',
-  'items.*.quantity': 'required|integer|gte:1',
-  'items.*.price': 'required|number|gte:0'
-}
-
-// Custom validation messages
-const messages = {
-  'customer_name:required': 'Please enter the customer name',
-  'items.*.name:required': 'Product name is required',
-  'items.*.quantity:min': 'Quantity must be at least 1',
-  'items.*.price:min': 'Price cannot be negative'
-}
+// Validation rules and custom messages
+const validator = createEncolaValidator(
+  {
+    number: 'required',
+    date: 'required|date',
+    customer: 'required',
+    'items.*.name': 'required',
+    'items.*.quantity': 'required|integer|gte:1',
+    'items.*.price': 'required|number|gte:0'
+  },
+  {
+    'customer_name:required': 'Please enter the customer name',
+    'items.*.name:required': 'Product name is required',
+    'items.*.quantity:min': 'Quantity must be at least 1',
+    'items.*.price:min': 'Price cannot be negative'
+  }
+)
 
 // Form submission handler
 const submitHandler = (formData) => {

@@ -29,7 +29,7 @@
       ref="modalForm"
       :data="newAddress"
       :schema="addressSchema"
-      :rules="addressRules"
+      :validator="addressValidator"
       :show-submit-button="false"
       :submit-handler="addAddress"
       >
@@ -44,6 +44,7 @@
 <script setup>
 import { Select, Dialog, Button } from 'primevue'
 import { Enforma } from '../../../src/'
+import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 import { defineProps, defineEmits, ref } from 'vue'
 
 const props = defineProps({
@@ -119,12 +120,12 @@ const modalForm = ref(null)
 let newAddress = {}
 
 // validation rules
-const addressRules = {
+const addressValidator = createEncolaValidator({
   address: 'required',
   city: 'required',
   state: 'required',
   zip: 'required',
-}
+})
 
 // submit handler called if validation passes
 function addAddress(address) {

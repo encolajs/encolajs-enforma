@@ -8,18 +8,18 @@ Once you finish the [installation](installation.md) you can start with a simple 
 
 ```vue
 <template>
-  <Enforma :data="formData" :rules="validationRules" :submit-handler="handleSubmit">
-    <EnformaField 
-      name="name" 
-      label="Full Name" 
-      inputComponent="text" 
+  <Enforma :data="formData" :validator="validator" :submit-handler="handleSubmit">
+    <EnformaField
+      name="name"
+      label="Full Name"
+      inputComponent="text"
       required
     />
-    
-    <EnformaField 
-      name="email" 
-      label="Email Address" 
-      inputComponent="email" 
+
+    <EnformaField
+      name="email"
+      label="Email Address"
+      inputComponent="email"
       required
     />
   </Enforma>
@@ -27,7 +27,8 @@ Once you finish the [installation](installation.md) you can start with a simple 
 
 <script setup>
 import { ref } from 'vue'
-import { Enforma, EnformaField, EnformaSubmitButton } from '@encolajs/enforma'
+import { Enforma, EnformaField } from '@encolajs/enforma'
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
 // Form data with initial values
 const formData = ref({
@@ -35,11 +36,11 @@ const formData = ref({
   email: '',
 })
 
-// Validation rules
-const validationRules = {
+// Create validator with validation rules
+const validator = createEncolaValidator({
   name: 'required',
   email: 'required|email',
-}
+})
 
 // Submit handler
 const handleSubmit = async (data) => {

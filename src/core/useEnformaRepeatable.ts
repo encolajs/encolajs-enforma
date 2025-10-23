@@ -26,9 +26,9 @@ export interface RepeatableFieldProps {
   allowRemove?: boolean // Whether to allow removing items
   allowSort?: boolean // Whether to allow sorting items
   // these are here so that they are not passed to the top element
-  type: any
-  rules: any
-  messages: any
+  type?: any
+  rules?: any
+  messages?: any
 }
 
 export function useEnformaRepeatable(

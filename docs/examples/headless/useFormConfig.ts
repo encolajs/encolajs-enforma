@@ -1,3 +1,5 @@
+import { createEncolaValidator } from '../../../src/validators/encolaValidator'
+
 function getData() {
   const data = {
     name: "",
@@ -28,28 +30,43 @@ function getData() {
   return data
 }
 
+const validator = createEncolaValidator(
+  {
+    name: 'required',
+    email: 'required|email',
+    'salary.min': 'number',
+    'salary.max': 'number|gt:@salary.min',
+    'available_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
+    'address.city': 'required',
+    'address.country': 'required',
+    'linkedin_profile': 'required|url',
+    'personal_site': 'url',
+    'skills.*.name': 'required',
+    'skills.*.level': 'required',
+    'experience.*.company': 'required',
+    'experience.*.position': 'required',
+    'experience.*.start': 'required|date:yy-mm-dd',
+    'experience.*.end': 'required_when:@experience.*.current,false|date:yy-mm-dd',
+  },
+  {
+    'name:required': 'You gotta have a name',
+    'salary.max:gt': 'The max should be greater than the min'
+  }
+)
+
+// For backwards compatibility, also export rules and messages separately
 const rules = {
   name: 'required',
-  email: 'required|email',
-  'salary.min': 'number',
-  'salary.max': 'number|gt:@salary.min',
-  'available_date': 'required|date:yy-mm-dd|date_after:' + (new Date().toISOString().split('T')[0]),
-  'address.city': 'required',
-  'address.country': 'required',
-  'linkedin_profile': 'required|url',
-  'personal_site': 'url',
-  'skills.*.name': 'required',
-  'skills.*.level': 'required',
-  'experience.*.company': 'required',
-  'experience.*.position': 'required',
-  'experience.*.start': 'required|date:yy-mm-dd',
-  'experience.*.end': 'required_when:@experience.*.current,false|date:yy-mm-dd',
-
+  email: {
+    'required|email': true
+  }
 }
 
 const messages = {
-  'name:required': 'You gotta have a name',
-  'salary.max:gt': 'The max should be greater than the min'
+  email: {
+    'required': 'Email is required',
+    'email': 'Please enter a valid email'
+  }
 }
 
 const submitHandler = (formData) => {
@@ -64,7 +81,8 @@ const submitHandler = (formData) => {
 export default function () {
   return {
     data: getData(),
-      rules: {...rules},
+    validator,
+    rules: {...rules},
     messages: {...messages},
     submitHandler
   }

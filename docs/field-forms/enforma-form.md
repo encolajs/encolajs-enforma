@@ -14,31 +14,32 @@
 
 ```vue
 <template>
-  <Enforma 
-    :data="formData" 
-    :rules="rules"
+  <Enforma
+    :data="formData"
+    :validator="validator"
     :submitHandler="submit"
     :config="formConfig">
     <!-- Form fields go here -->
     <EnformaField name="firstName" label="First Name" />
     <EnformaField name="lastName" label="Last Name" />
-    
+
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola';
 
 const formData = {
   firstName: '',
   lastName: ''
 };
 
-const rules = {
+const validator = createEncolaValidator({
   firstName: 'required|min_length:2',
   lastName: 'required|min_length:2',
-}
+});
 
 const formConfig = {
   // optional form-level configuration options
@@ -50,6 +51,28 @@ function submit(data) {
 }
 </script>
 ```
+
+::: warning DEPRECATED
+The `:rules` and `:messages` props are deprecated in v1.3.0. Use the `:validator` prop instead.
+
+**Old way (deprecated):**
+```vue
+<Enforma :data="formData" :rules="{ firstName: 'required' }" />
+```
+
+**New way (recommended):**
+```vue
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+const validator = createEncolaValidator({ firstName: 'required' })
+</script>
+<template>
+  <Enforma :data="formData" :validator="validator" />
+</template>
+```
+
+See the [Migration Guide](/migration-guide-1_3) for more details.
+:::
 
 For more details check out:
 - [form rendering modes](/core-concepts/rendering-modes.md) for how to render fields inside the form

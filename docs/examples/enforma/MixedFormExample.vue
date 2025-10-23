@@ -1,8 +1,8 @@
 <template>
   <Enforma
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :validator="validator"
+    
     :submit-handler="submitHandler"
     :schema="schema"
   >
@@ -21,7 +21,7 @@ import SalaryField from './SalaryField.vue'
 import EndDateField from './EndDateField.vue'
 import useFormConfig from '../headless/useFormConfig'
 
-const {data, rules, messages, submitHandler} = useFormConfig()
+const {data, validator, submitHandler} = useFormConfig()
 
 // Define the entire form structure using schema
 const schema = {

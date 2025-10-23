@@ -143,6 +143,20 @@ const { field, error, validate } = useEnformaField('email', {
 const { schema, formData, isValid } = useEnformaSchema(mySchema)
 ```
 
+## Validation
+
+Enforma supports multiple validation libraries - choose the one that fits your project:
+
+- **@encolajs/validator** - Laravel-style validation rules
+- **Zod** - TypeScript-first schema validation
+- **Yup** - Object schema validation with conditional logic
+- **Valibot** - Lightweight, modular validation
+- **No validation** - Use forms without any validation
+
+All validators work seamlessly with `useForm()` and form components like `HeadlessForm`.
+
+For detailed usage, examples, and migration guides, see the [Validation documentation](https://encolajs.com/enforma/core-concepts/validation).
+
 ## Documentation
 
 - [Official Documentation](https://encolajs.com/enforma/) - Complete guide and API reference

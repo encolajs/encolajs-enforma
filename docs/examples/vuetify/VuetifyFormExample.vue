@@ -1,8 +1,7 @@
 <template>
   <Enforma
-    :config="formConfig"
     :data="initialValues"
-    :rules="rules"
+    :validator="validator"
     :submit-handler="handleSubmit"
   >
     <VuetifyField name="name" label="Full Name" />
@@ -22,27 +21,20 @@ import { ref } from 'vue'
 import { 
   Enforma,
 } from '@/index'
+import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 // We have to use the VuetifyField due to how Vuetify implements labels and hints
 import VuetifyField from '../../../src/presets/vuetify/Field.vue'
 
-const formConfig = {
-  validationRules: {
-    name: ['required'],
-    email: ['required', 'email'],
-    role: ['required'],
-  }
-}
+const validator = createEncolaValidator({
+  name: 'required',
+  email: 'required|email'
+})
 
 const initialValues = {
   name: '',
   email: '',
   role: '',
   active: true
-}
-
-const rules = {
-  name: 'required',
-  email: 'required|email'
 }
 
 const roleSelectProps = {

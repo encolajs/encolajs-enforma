@@ -19,6 +19,10 @@ export default defineConfig({
         primevue: path.resolve(__dirname, 'src/presets/primevue.ts'),
         vuetify: path.resolve(__dirname, 'src/presets/vuetify.ts'),
         quasar: path.resolve(__dirname, 'src/presets/quasar.ts'),
+        'validators/encola': path.resolve(__dirname, 'src/validators/encolaValidator.ts'),
+        'validators/zod': path.resolve(__dirname, 'src/validators/zod.ts'),
+        'validators/yup': path.resolve(__dirname, 'src/validators/yup.ts'),
+        'validators/valibot': path.resolve(__dirname, 'src/validators/valibot.ts'),
       },
       name: 'Enforma',
       formats: ['es', 'cjs'],
@@ -26,11 +30,14 @@ export default defineConfig({
         if (entryName === 'index') {
           return `index${format === 'cjs' ? '.cjs' : ''}.js`
         }
+        if (entryName.startsWith('validators/')) {
+          return `${entryName}${format === 'cjs' ? '.cjs' : ''}.js`
+        }
         return `presets/${entryName}${format === 'cjs' ? '.cjs' : ''}.js`
       },
     },
     rollupOptions: {
-      external: ['vue'],
+      external: ['vue', '@encolajs/validator', 'zod', 'yup', 'valibot', 'mitt'],
       output: {
         globals: {
           vue: 'Vue',

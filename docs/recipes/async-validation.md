@@ -59,23 +59,24 @@ Use async validators like regular validators:
 
 ```vue
 <template>
-  <Enforma :data="formData" :rules="rules" :submitHandler="submit">
+  <Enforma :data="formData" :validator="validator" :submitHandler="submit">
     ... here goes the form's content...
   </Enforma>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
 const formData = ref({
   username: '',
   email: ''
 })
 
-const rules = {
+const validator = createEncolaValidator({
   username: 'required|unique_username',
   email: 'required|email',
-}
+})
 
 function submit(data) {
   console.log('Form submitted:', data);

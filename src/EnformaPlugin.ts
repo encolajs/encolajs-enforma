@@ -5,6 +5,8 @@ import { deepMerge, mergeConfigs } from './utils/configUtils'
 import { useValidation } from './utils/useValidation'
 import { fallbackTranslate } from './utils/useTranslation'
 import useDefaultPreset from './presets/default'
+import { enformaConfigKey } from './constants/symbols'
+import { createEncolaValidator } from './validators/encolaValidator'
 
 /**
  * Configure EncolaJS Validator instance
@@ -29,16 +31,20 @@ function configureValidation(options: DeepPartial<EnformaConfig>) {
   }
 }
 
-// Export a factory function for easier instantiation
 export const EnformaPlugin: Plugin = {
   install(app: App, options: EnformaConfig = {} as EnformaConfig): void {
-    // Set global configuration by merging defaults with provided config
     const mergedConfig = deepMerge(DEFAULT_CONFIG, options || {})
     mergedConfig.translator =
       app.config.globalProperties.$t || fallbackTranslate
+
+    if (!mergedConfig.createEncolaValidation) {
+      mergedConfig.createEncolaValidation = createEncolaValidator
+    }
+
     setGlobalConfig(mergedConfig)
 
-    // This is necessary as it provides defaults that can be overwritten by custom presets
+    app.provide(enformaConfigKey, mergedConfig)
+
     useDefaultPreset()
 
     // Configure validation

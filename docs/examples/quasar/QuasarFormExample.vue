@@ -2,9 +2,8 @@
   <div class="q-mt-lg">
     <q-card class="q-pa-md">
         <Enforma
-          :config="formConfig"
           :data="initialValues"
-          :rules="rules"
+          :validator="validator"
           :submit-handler="handleSubmit"
         >
           <div class="row q-col-gutter-md">
@@ -37,22 +36,14 @@
 
 <script setup>
 import { ref } from 'vue'
-import { 
+import {
   Enforma,
 } from '@/index'
+import { createEncolaValidator } from '@/validators/encolaValidator'
 // Import Quasar components
 import { QBtn, QCard } from 'quasar'
 // We have to use the QuasarField due to how Quasar implements labels and hints
 import QuasarField from '../../../src/presets/quasar/Field.vue'
-
-const formConfig = {
-  validationRules: {
-    name: ['required'],
-    email: ['required', 'email'],
-    role: ['required'],
-    phone: ['required'],
-  }
-}
 
 const initialValues = {
   name: '',
@@ -64,12 +55,12 @@ const initialValues = {
   newsletter: false
 }
 
-const rules = {
+const validator = createEncolaValidator({
   name: 'required',
   email: 'required|email',
   role: 'required',
   phone: 'required'
-}
+})
 
 const roleSelectProps = {
   options: [

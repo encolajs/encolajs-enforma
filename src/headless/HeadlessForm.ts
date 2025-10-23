@@ -1,8 +1,10 @@
-import { defineComponent, provide, h, PropType } from 'vue'
+import { defineComponent, provide, h, PropType, inject } from 'vue'
 import { useForm } from './useForm'
-import { formControllerKey } from '@/constants/symbols'
+import { formControllerKey, enformaConfigKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import { FieldController } from './useForm'
+import type { FormValidator } from '@/validators/types'
+import { warnRulesDeprecation } from '@/utils/deprecationWarnings'
 
 export default defineComponent({
   name: 'HeadlessForm',
@@ -12,13 +14,19 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    // Old API (deprecated)
     rules: {
       type: Object,
-      default: () => ({}),
+      default: undefined,
     },
     customMessages: {
       type: Object,
       default: () => ({}),
+    },
+    // New API (recommended)
+    validator: {
+      type: Object as PropType<FormValidator>,
+      default: undefined,
     },
     submitHandler: {
       type: Function as PropType<(data: any) => Promise<void>>,
@@ -40,8 +48,22 @@ export default defineComponent({
   ],
 
   setup(props, ctx) {
+    const enformaConfig = inject(enformaConfigKey, null) as any
+
+    // Determine validator to use
+    let validatorOrRules: FormValidator | Record<string, string> | undefined
+
+    if (props.validator) {
+      // New API: validator prop provided
+      validatorOrRules = props.validator
+    } else if (props.rules) {
+      // Old API: rules prop provided (deprecated)
+      warnRulesDeprecation('HeadlessForm')
+      validatorOrRules = props.rules
+    }
+
     // Create form using useForm with callbacks for events and global events option
-    const formCtrl: FormController = useForm(props.data, props.rules, {
+    const formCtrl: FormController = useForm(props.data, validatorOrRules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
       useGlobalEvents: true, // Use global event emitter for component integration

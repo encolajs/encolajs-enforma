@@ -11,7 +11,7 @@ component).
 - [Enforma form using schema and fields](mixed-form.md)
 - [Form using headless fields](headless-components.md)
 
-> All examples use PrimeVue components.
+> [!INFO] All examples use PrimeVue components and Encola Validator.
 
 ## Feature Examples
 - [Fields with dynamic props](dynamic-props.md)

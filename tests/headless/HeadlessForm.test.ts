@@ -4,6 +4,7 @@ import { h, inject } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import HeadlessField from '@/headless/HeadlessField'
 import { formControllerKey } from '@/constants/symbols'
+import { createEncolaValidator } from '@/validators/encolaValidator'
 
 import { FormController } from '../../src'
 
@@ -55,6 +56,8 @@ describe('HeadlessForm', () => {
     'email:email': 'Please enter a valid email',
   }
 
+  const createValidator = () => createEncolaValidator(rules, customMessages)
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -66,7 +69,7 @@ describe('HeadlessForm', () => {
       mount(HeadlessForm, {
         props: {
           data: initialData,
-          rules,
+          validator: createValidator(),
         },
         slots: {
           default: slotContent,
@@ -86,9 +89,10 @@ describe('HeadlessForm', () => {
     })
 
     it('injects form state into child components', async () => {
+      const validator = createValidator()
       const TestComponent = {
         template: `
-          <HeadlessForm :data="formData" :rules="formRules">
+          <HeadlessForm :data="formData" :validator="validator">
             <FormStateExposer />
           </HeadlessForm>
         `,
@@ -96,7 +100,7 @@ describe('HeadlessForm', () => {
         data() {
           return {
             formData: initialData,
-            formRules: rules,
+            validator,
           }
         },
       }
@@ -111,11 +115,12 @@ describe('HeadlessForm', () => {
 
   describe('field handling', () => {
     it('field access and updates', async () => {
+      const validator = createValidator()
       const TestComponent = {
         template: `
-        <HeadlessForm 
-          :data="formData" 
-          :rules="formRules"
+        <HeadlessForm
+          :data="formData"
+          :validator="validator"
           @submit="onSubmit"
         >
           <template #default="form">
@@ -133,7 +138,7 @@ describe('HeadlessForm', () => {
         data() {
           return {
             formData: { ...initialData },
-            formRules: rules,
+            validator,
           }
         },
         methods: {
@@ -166,7 +171,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
         },
         slots: {
           default: (formState: any) => {
@@ -197,7 +202,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
           submitHandler,
         },
         slots: {
@@ -224,7 +229,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
           submitHandler: submitSpy,
         },
       })
@@ -253,7 +258,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: invalidData,
-          rules,
+          validator: createValidator(),
         },
         slots: {
           default: (form: FormController) => {
@@ -286,7 +291,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
           submitHandler,
         },
       })
@@ -306,7 +311,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
         },
         slots: {
           default: (form: any) => {
@@ -356,7 +361,7 @@ describe('HeadlessForm', () => {
       const wrapper = mount(HeadlessForm, {
         props: {
           data: { ...initialData },
-          rules,
+          validator: createValidator(),
         },
       })
 
@@ -380,11 +385,12 @@ describe('HeadlessForm', () => {
   describe('form state after validation', () => {
     it('should mark fields as touched and show error messages after form submission', async () => {
       // Create a test component that includes HeadlessField for proper rendering
+      const validator = createEncolaValidator({ email: 'required|email' })
       const TestComponent = {
         template: `
-          <HeadlessForm 
-            :data="formData" 
-            :rules="formRules"
+          <HeadlessForm
+            :data="formData"
+            :validator="validator"
           >
             <template #default="form">
               <FormStateExposer />
@@ -410,7 +416,7 @@ describe('HeadlessForm', () => {
         data() {
           return {
             formData: { email: 'invalid-email' },
-            formRules: { email: 'required|email' },
+            validator,
           }
         },
       }

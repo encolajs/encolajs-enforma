@@ -2,8 +2,8 @@
   <Enforma
     ref="formRef"
     :data="data"
-    :rules="rules"
-    :custom-messages="messages"
+    :validator="validator"
+    
     :submit-handler="submitHandler"
     :schema="schema"
     :context="context"
@@ -18,6 +18,7 @@
 <script setup>
 import { Enforma } from '@'
 import { ref } from 'vue'
+import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 
 // Form reference for accessing controller methods
 const formRef = ref()
@@ -229,6 +230,8 @@ const messages = {
   'experienceDetails.required': 'Please provide details about your experience',
   'relocationPreference.validation_failed': 'Please indicate your relocation preference'
 }
+
+const validator = createEncolaValidator(rules, messages)
 
 // Submit handler
 const submitHandler = (values) => {

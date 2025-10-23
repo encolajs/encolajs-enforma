@@ -2,7 +2,7 @@
   <Enforma
     ref="formRef"
     :data="data"
-    :rules="rules"
+    :validator="validator"
     :submit-handler="submitHandler"
   >
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -20,7 +20,6 @@
         required
         label="Email"
         :input-props="{class: 'w-full'}"
-        :rules="rules.email"
       />
     </div>
   </Enforma>
@@ -28,6 +27,7 @@
 
 <script setup>
 import { Enforma, EnformaField } from '@'
+import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 
 const data = {
   name: null,
@@ -38,6 +38,8 @@ const rules = {
   name: 'required',
   email: 'required|email',
 }
+
+const validator = createEncolaValidator(rules)
 
 // The submit handler simulates talking to the server and returning errors
 const submitHandler = (formData, formController) => {

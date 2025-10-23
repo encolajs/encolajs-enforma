@@ -51,6 +51,17 @@ export type { SchemaBuilderMode } from './schema-builder'
 // export { default as useVuetifyPreset } from './presets/vuetify'
 // export { default as useQuasarPreset } from './presets/quasar'
 
+// Validator types only (implementations must be imported explicitly)
+export type { FormValidator } from './validators/types'
+export { isFormValidator, isRulesObject } from './validators/helpers'
+
+// Note: Validator implementations NOT exported from main entry point
+// For tree-shaking, users must import validators explicitly:
+// import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+// import { createZodValidator } from '@encolajs/enforma/validators/zod'
+// import { createYupValidator } from '@encolajs/enforma/validators/yup'
+// import { createValibotValidator } from '@encolajs/enforma/validators/valibot'
+
 // Type exports
 export type {
   FormOptions,
@@ -89,6 +100,7 @@ export {
   formConfigKey,
   formContextKey,
   formSchemaKey,
+  enformaConfigKey,
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'
 

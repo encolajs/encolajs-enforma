@@ -117,6 +117,11 @@ Sections can contain both fields and sections.
 
 As an alternative to providing validation rules through the `rules` prop, Enforma allows you to embed validation rules directly within your schema definition. This approach keeps validation logic close to field definitions and simplifies form configuration.
 
+>[!WARNING]
+> The `rules` and `messages` attributes work only when using Encola Validator.
+> If you are using Zod, Yup or Valibot you have to pass the validator object to the form that you have to construct separately.
+> You might want to create your own `createXYZValidatorFromSchema()` function if the form schema is passed from the server as a JSON
+
 ### Defining Rules in Schema
 
 Each field in your schema can include a `rules` property with validation rules in string format:
@@ -196,9 +201,6 @@ const schema = {
 
 ### Caveats
 
-> [!WARNING] Form's `rules` prop takes precedence
-> Validation rules passed to the form via the `rules` prop take precedence over the validation rules passed through schema. You have to choose beforehand to use one OR the other
-
 > [!WARNING] Multi-input fields require special attention
 > Fields will multiple inputs require defining special validation rules. <br>
 > In the [schema form example](/examples/schema-only.md) we have only the field `salary` for inputs `salary.min` and `salary.max`. <br>
@@ -266,11 +268,4 @@ const schema = {
   }
 }
 ```
-
-
-### Caveats
-
-> [!WARNING] Form's `customMessages` prop takes precedence
-> Custom error messages passed to the form via the `customMessages` prop take precedence over the custom error messages passed through schema. You have to choose beforehand to use one OR the other
-
  

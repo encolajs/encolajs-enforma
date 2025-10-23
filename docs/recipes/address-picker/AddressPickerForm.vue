@@ -2,7 +2,7 @@
   <Enforma
     ref="formRef"
     :data="data"
-    :rules="rules"
+    :validator="validator"
     :submit-handler="submitHandler"
   >
     <EnformaField
@@ -25,6 +25,7 @@
 
 <script setup>
 import { Enforma, EnformaField } from '@'
+import { createEncolaValidator } from '@/validators/encolaValidator'
 import AddressPicker from './AddressPicker.vue'
 
 const addresses = [
@@ -56,10 +57,10 @@ const data = {
   shipping_address: null
 }
 
-const rules = {
+const validator = createEncolaValidator({
   name: 'required',
   shipping_address: 'required'
-}
+})
 
 function submitHandler(formData) {
   alert('Form data sent to server: ' + JSON.stringify(formData))

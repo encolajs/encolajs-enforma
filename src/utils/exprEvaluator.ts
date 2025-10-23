@@ -82,7 +82,9 @@ function memoize<T extends (...args: any[]) => any>(fn: T, maxSize = 100): T {
     cache.set(key, result)
     if (cache.size > maxSize) {
       const firstKey = cache.keys().next().value
-      cache.delete(firstKey)
+      if (firstKey !== undefined) {
+        cache.delete(firstKey)
+      }
     }
 
     return result

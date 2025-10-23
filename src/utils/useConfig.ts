@@ -5,6 +5,7 @@ import { mergeConfigs } from './configUtils'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { messageFormatter } from '@encolajs/validator'
 import { resolveValue } from './helpers'
+import type { FormValidator } from '@/validators/types'
 
 /**
  * Represents a generic configuration object
@@ -133,9 +134,6 @@ export type FieldPropsTransformer = (
   ...args: any[]
 ) => Record<string, any>
 
-/**
- * Complete form kit configuration
- */
 export interface EnformaConfig {
   pt: FieldPassThroughConfig
   behavior: BehaviorConfig
@@ -144,6 +142,10 @@ export interface EnformaConfig {
   errorMessageFormatter?: messageFormatter
   expressions: ExpressionsConfig
   components: ComponentsConfig
+  createEncolaValidation?: (
+    rules: Record<string, string>,
+    customMessages?: any
+  ) => FormValidator
   transformers?: {
     // transformers that are applied to EnformaField props
     field_props?: FieldPropsTransformer[]

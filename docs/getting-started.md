@@ -9,6 +9,7 @@ Enforma is a schema-driven form builder for Vue that lets you create powerful fo
 ```vue
 <script setup>
 import { ref } from 'vue'
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
 const userData = ref({
   firstName: '',
@@ -16,11 +17,11 @@ const userData = ref({
   email: ''
 })
 
-const rules = {
+const validator = createEncolaValidator({
   firstName: 'required',
   lastName: 'required',
   email: 'required|email'
-}
+})
 
 const handleSubmit = (data) => {
   console.log('Form submitted:', data)
@@ -28,15 +29,15 @@ const handleSubmit = (data) => {
 </script>
 
 <template>
-  <Enforma 
-    :data="userData" 
-    :rules="rules" 
+  <Enforma
+    :data="userData"
+    :validator="validator"
     :submitHandler="handleSubmit"
   >
     <EnformaField name="firstName" label="First Name" />
     <EnformaField name="lastName" label="Last Name" />
     <EnformaField name="email" label="Email" />
-    
+
     <EnformaSubmitButton>Submit</EnformaSubmitButton>
   </Enforma>
 </template>
@@ -45,7 +46,7 @@ const handleSubmit = (data) => {
 ## Why Enforma?
 
 - **Multiple Rendering Approaches**: Use field-based, schema-based, headless, or mixed approaches
-- **Powerful Validation**: Built-in validation with 30+ rules, cross-field validation, and async validation
+- **Flexible Validation**: Choose from multiple validators (Zod, Yup, Valibot, @encolajs/validator) with tree-shakable imports for optimal bundle size
 - **UI Framework Agnostic**: Works seamlessly with Vuetify, PrimeVue, Quasar, or your own components
 - **Complex Data Handling**: Support for nested fields, repeatable sections, and complex data structures
 - **Developer Experience**: Intuitive API and comprehensive documentation
@@ -60,10 +61,21 @@ const handleSubmit = (data) => {
 Great for explicit control and static forms.
 
 ```vue
-<Enforma :data="data" :rules="rules">
-  <EnformaField name="firstName" label="First Name" />
-  <EnformaField name="lastName" label="Last Name" />
-</Enforma>
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+
+const validator = createEncolaValidator({
+  firstName: 'required',
+  lastName: 'required'
+})
+</script>
+
+<template>
+  <Enforma :data="data" :validator="validator">
+    <EnformaField name="firstName" label="First Name" />
+    <EnformaField name="lastName" label="Last Name" />
+  </Enforma>
+</template>
 ```
 
 #### Schema-Based Forms
@@ -71,11 +83,19 @@ Great for explicit control and static forms.
 Perfect for dynamic forms or server-driven UIs.
 
 ```vue
-<Enforma 
-  :data="data" 
-  :rules="rules" 
-  :schema="formSchema" 
-/>
+<script setup>
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+
+const validator = createEncolaValidator(rules)
+</script>
+
+<template>
+  <Enforma
+    :data="data"
+    :validator="validator"
+    :schema="formSchema"
+  />
+</template>
 ```
 
 #### Headless Forms
@@ -83,11 +103,25 @@ Perfect for dynamic forms or server-driven UIs.
 Complete UI design freedom.
 
 ```vue
-<HeadlessForm :data="data" :rules="rules">
-  <template #default="{ values, errors, touched, validate }">
-    <!-- Your custom UI implementation -->
-  </template>
-</HeadlessForm>
+<script setup>
+import { createZodValidator } from '@encolajs/enforma/validators/zod'
+import { z } from 'zod'
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8)
+})
+
+const validator = createZodValidator(schema)
+</script>
+
+<template>
+  <HeadlessForm :data="data" :validator="validator">
+    <template #default="{ values, errors, touched, validate }">
+      <!-- Your custom UI implementation -->
+    </template>
+  </HeadlessForm>
+</template>
 ```
 
 ### 🛠️ Rich Component Ecosystem
@@ -120,7 +154,9 @@ useQuasarPreset()
 - **Dynamic Properties**: Reactive props based on form values
 - **Transformation System**: Transform props at the form, field, and section levels
 - **Custom Components**: Easily integrate your own components
-- **Validation**: Sophisticated validation system with cross-field validation
+- **Multiple Validators**: Use Zod, Yup, Valibot, or @encolajs/validator with tree-shakable imports
+- **Cross-field Validation**: Validate fields in relation to one another
+- **Async Validation**: Support for server-side validation
 
 ## Getting Started
 

@@ -7,8 +7,8 @@ titleTemplate: Complete form solution for VueJS applications
 
 hero:
   name: EncolaJS Enforma
-  text: Build powerful forms with ease
-  tagline: Create everything from simple forms to complex, dynamic forms. Support for both field-based and schema forms. 30+ built-in validation rules. Presets for you favorite UI library.
+  text: Craft VueJS Forms That Just Work
+  tagline: "Design everything from basic to complex, reactive forms using components or schema definitions.<br>Use your favorite validation library (Zod, Yup, Valibot, @encolajs/validator) and UI kit (PrimeVue, Vuetify, Quasar)."
   image:
     src: /enforma-hero.png
     alt: EncolaJS Enforma
@@ -27,8 +27,8 @@ features:
     title: Complex Data Handling
     details: Built-in support for nested forms, repeatable fields, and complex data structures.
   - icon: ✅
-    title: Powerful Validation
-    details: Comprehensive validation system with built-in rules and custom validation support.
+    title: Flexible Validation
+    details: Choose from multiple validation libraries (Zod, Yup, Valibot, @encolajs/validator).
   - icon: 📝
     title: Schema-Driven Forms
     details: Define your forms using a simple, declarative JSON schema. No more boilerplate code.
