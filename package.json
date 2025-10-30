@@ -1,6 +1,6 @@
 {
     "name": "@encolajs/enforma",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "Form Kit library for VueJS 3. Render forms with ease using: headless components, fields and schema. Presets for PrimeVue, Vuetify, Quasar, Reka UI and Nuxt UI",
     "type": "module",
     "main": "dist/index.cjs.js",
