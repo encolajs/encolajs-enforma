@@ -2,11 +2,13 @@
 import VuetifyFormExample from './vuetify/VuetifyFormExample.vue'
 </script>
 
-# Form Using the Vuetify Preset
+# Forms Using the Vuetify Preset
 
 <ClientOnly>
     <LiveDemo preset="vuetify" :component="VuetifyFormExample"></LiveDemo>
 </ClientOnly>
+
+> [!WARNING] The styling of the Vuetify form may conflict with the Vitepress styles
 
 ## Source code
 

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@encolajs/hydrator": "^1.0.0",
+    "@nuxt/ui": "^4.1.0",
     "@primeuix/themes": "^1.0.3",
     "@quasar/extras": "^1.16.0",
     "@stackblitz/sdk": "^1.11.0",
@@ -20,6 +21,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
     "quasar": "^2.18.0",
+    "reka-ui": "^2.6.0",
     "vuetify": "^3.8.2"
   }
 }

@@ -10,7 +10,8 @@
 
 Building dynamic forms shouldn't be complicated! We built this library to handle real-world form scenarios with Vue 3:
 
-- 🎨 **UI Agnostic**: Use it with your preferred UI library. Comes with ready-to-use presets for PrimeVue, Vuetify, and Quasar
+- 🎨 **UI Agnostic**: Use it with your preferred UI library. Comes with ready-to-use presets for PrimeVue, Vuetify, Quasar, Reka UI and Nuxt UI
+- ✅ **Multiple Validation Options**: Use Enforma with Zod, Yup, Valibot, @encolajs/validator or you can even bring your own validator
 - ✨ **Schema-Driven**: Define forms using JSON schemas, no template code needed
 - 🎯 **Type-Safe**: Full TypeScript support with auto-completion
 - 🧩 **Headless Components**: Maximum flexibility with unstyled, accessible components

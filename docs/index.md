@@ -8,7 +8,7 @@ titleTemplate: Complete form solution for VueJS applications
 hero:
   name: EncolaJS Enforma
   text: Craft VueJS Forms That Just Work
-  tagline: "Design everything from basic to complex, reactive forms using components or schema definitions.<br>Use your favorite validation library (Zod, Yup, Valibot, @encolajs/validator) and UI kit (PrimeVue, Vuetify, Quasar)."
+  tagline: "Design everything from basic to complex, reactive forms using components or schema definitions.<br>Use your favorite validation library (Zod, Yup, Valibot, @encolajs/validator) and UI kit (PrimeVue, Vuetify, Quasar, Reka UI, Nuxt UI)."
   image:
     src: /enforma-hero.png
     alt: EncolaJS Enforma
@@ -34,7 +34,7 @@ features:
     details: Define your forms using a simple, declarative JSON schema. No more boilerplate code.
   - icon: 🎨
     title: UI Framework Integration
-    details: Ready-to-use integrations with popular UI frameworks like PrimeVue, Vuetify and Quasar.
+    details: Presets for popular UI frameworks like PrimeVue, Vuetify, Quasar, Reka UI and Nuxt UI.
   - icon: 🔄
     title: Reactive State
     details: Form state is fully reactive and accessible throughout your component tree.

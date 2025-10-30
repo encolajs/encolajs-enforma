@@ -9,6 +9,8 @@ Enforma comes with several built-in presets for popular UI libraries:
 - [Vuetify Preset](vuetify-preset.md) - For integrating with Vuetify 3
 - [PrimeVue Preset](primevue-preset.md) - For integrating with PrimeVue
 - [Quasar Preset](quasar-preset.md) - For integrating with Quasar Framework
+- [Reka UI Preset](rekaui-preset.md) - For integrating with Reka UI (headless components)
+- [Nuxt UI Preset](nuxtui-preset.md) - For integrating with Nuxt UI
 
 ## Custom Integration
 

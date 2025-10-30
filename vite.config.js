@@ -19,6 +19,8 @@ export default defineConfig({
         primevue: path.resolve(__dirname, 'src/presets/primevue.ts'),
         vuetify: path.resolve(__dirname, 'src/presets/vuetify.ts'),
         quasar: path.resolve(__dirname, 'src/presets/quasar.ts'),
+        rekaui: path.resolve(__dirname, 'src/presets/rekaui.ts'),
+        nuxtui: path.resolve(__dirname, 'src/presets/nuxtui.ts'),
         'validators/encola': path.resolve(__dirname, 'src/validators/encolaValidator.ts'),
         'validators/zod': path.resolve(__dirname, 'src/validators/zod.ts'),
         'validators/yup': path.resolve(__dirname, 'src/validators/yup.ts'),

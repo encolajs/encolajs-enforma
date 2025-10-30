@@ -2,11 +2,13 @@
 import QuasarFormExample from './quasar/QuasarFormExample.vue'
 </script>
 
-# Form Using the Quasar Preset
+# Forms Using the Quasar Preset
 
 <ClientOnly>
     <LiveDemo preset="quasar" :component="QuasarFormExample"></LiveDemo>
 </ClientOnly>
+
+> [!WARNING] The styling of the Quasar form may conflict with the Vitepress styles
 
 ## Source code
 

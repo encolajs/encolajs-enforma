@@ -20,6 +20,8 @@ component).
 ## Preset Examples
 - [Form using the Vuetify preset](vuetify-preset.md)
 - [Form using the Quasar preset](quasar-preset.md)
+- [Form using the Reka UI preset](rekaui-preset.md)
+- [Form using the Nuxt UI preset](nuxtui-preset.md)
 
 ## Other Examples
 - [Repeatable table with calculated fields](hydrator)
