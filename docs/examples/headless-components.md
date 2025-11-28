@@ -16,4 +16,5 @@ import HeadlessFormExample from './headless/HeadlessFormExample.vue'
 <<< @/examples/headless/HeadlessFormExample.vue [Headless Form]
 <<< @/examples/headless/AppFormField.vue
 <<< @/examples/headless/ExperienceEndDateField.vue
+<<< @/examples/headless/useFormConfig.ts
 :::

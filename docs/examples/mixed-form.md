@@ -21,4 +21,5 @@ This example shows how you can mix schema with custom field slots
 
 ::: code-group
 <<< @/examples/enforma/MixedFormExample.vue
+<<< @/examples/headless/useFormConfig.ts
 :::

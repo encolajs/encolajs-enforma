@@ -21,5 +21,6 @@ This example is using the PrimeVue preset
 
 ::: code-group
 <<< @/examples/enforma/SchemaFormExample.vue
+<<< @/examples/headless/useFormConfig.ts
 :::
 

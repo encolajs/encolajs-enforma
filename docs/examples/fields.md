@@ -22,5 +22,6 @@ This example is using the PrimeVue preset
 <<< @/examples/enforma/FieldsFormExample.vue [Enforma Form with Fields]
 <<< @/examples/enforma/EndDateField.vue
 <<< @/examples/enforma/SalaryField.vue
+<<< @/examples/headless/useFormConfig.ts
 :::
 

@@ -1,5 +1,6 @@
 import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 
+// this file contains a composable function to be reused for the examples
 function getData() {
   const data = {
     name: "",
@@ -30,6 +31,8 @@ function getData() {
   return data
 }
 
+// this validator is based on Encola Validator
+// but it can be replaced with a validator that uses Zod, Valibot or Yup
 const validator = createEncolaValidator(
   {
     name: 'required',
@@ -82,8 +85,6 @@ export default function () {
   return {
     data: getData(),
     validator,
-    rules: {...rules},
-    messages: {...messages},
     submitHandler
   }
 }
