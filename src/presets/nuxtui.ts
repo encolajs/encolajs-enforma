@@ -90,7 +90,7 @@ function setNuxtUISpecificProps(
  *
  * @example
  * ```ts
- * import { useNuxtUIPreset } from 'enforma'
+ * import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
  * import { UInput, USelect, USwitch, UButton } from '#components'
  *
  * useNuxtUIPreset({

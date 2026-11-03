@@ -63,7 +63,7 @@ npm install primevue
 ### Configure Enforma with PrimeVue Preset
 
 ```js
-import { usePrimeVuePreset } from '@encolajs/enforma/presets/primevue'
+import usePrimeVuePreset from '@encolajs/enforma/presets/primevue'
 // initialization of the Enforma plugin goes here
 usePrimeVuePreset()
 ```
