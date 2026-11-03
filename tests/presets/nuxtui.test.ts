@@ -52,4 +52,25 @@ describe('Nuxt UI preset', () => {
     expect(input().attributes('data-highlight')).toBe('true')
     expect(input().attributes('data-color')).toBe('error')
   })
+
+  it('passes disabled and placeholder from inputProps to the input', async () => {
+    const wrapper = mount(Enforma, {
+      props: {
+        data: { name: '' },
+        schema: {
+          name: {
+            type: 'field',
+            label: 'Name',
+            inputProps: { disabled: true, placeholder: 'Your name' },
+          },
+        },
+        submitHandler: () => Promise.resolve(true),
+      },
+    })
+    await flushPromises()
+
+    const input = wrapper.find('input')
+    expect(input.attributes('disabled')).toBeDefined()
+    expect(input.attributes('placeholder')).toBe('Your name')
+  })
 })

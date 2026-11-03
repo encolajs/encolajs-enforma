@@ -64,19 +64,6 @@ function setNuxtUISpecificProps(
     fieldProps.inputProps.color = 'error'
   }
 
-  // Handle disabled state
-  if (field.value.disabled) {
-    fieldProps.inputProps.disabled = true
-  }
-
-  // Handle placeholder
-  if (
-    fieldProps.inputProps.placeholder === undefined &&
-    field.value.placeholder
-  ) {
-    fieldProps.inputProps.placeholder = field.value.placeholder
-  }
-
   return fieldProps
 }
 

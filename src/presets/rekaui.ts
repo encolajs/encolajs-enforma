@@ -64,11 +64,6 @@ function setRekauiSpecificProps(
     fieldProps.inputProps['data-invalid'] = true
   }
 
-  // Handle disabled state
-  if (field.value.disabled) {
-    fieldProps.inputProps.disabled = true
-  }
-
   // For native inputs, add name attribute
   if (!fieldProps.inputComponent || fieldProps.inputComponent === 'input') {
     fieldProps.inputProps.name = field.value.name
