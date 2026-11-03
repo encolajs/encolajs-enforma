@@ -5,6 +5,7 @@
     v-bind="mergeProps($attrs, getPassThroughProps('pt.repeatable.moveDown'))"
     @click="$emit('click')"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-if="effectiveContent" v-html="t(effectiveContent)"></span>
   </component>
 </template>

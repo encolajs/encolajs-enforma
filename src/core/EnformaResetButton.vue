@@ -7,6 +7,7 @@
     @click.prevent="reset"
   >
     <slot name="default">
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-html="t(effectiveContent)"></span>
     </slot>
   </component>

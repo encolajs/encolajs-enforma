@@ -3,6 +3,7 @@
     :is="effectiveComponent"
     v-bind="mergeProps($attrs, getPassThroughProps('pt.required'))"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-html="effectiveContent"></span>
   </component>
 </template>

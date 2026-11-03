@@ -7,11 +7,13 @@
     :loading="$isSubmitting"
   >
     <slot name="default">
+      <!-- eslint-disable vue/no-v-html -->
       <span
         v-html="
           $isSubmitting ? t(effectiveLoadingContent) : t(effectiveContent)
         "
       ></span>
+      <!-- eslint-enable vue/no-v-html -->
     </slot>
   </component>
 </template>

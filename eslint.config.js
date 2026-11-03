@@ -25,7 +25,11 @@ export default [
         sourceType: "module",
       },
     },
+    // the processor and `vue/comment-directive` make
+    // <!-- eslint-disable --> comments work in templates
+    processor: "vue/vue",
     rules: {
+      "vue/comment-directive": "error",
       ...vuePlugin.configs.recommended.rules,
     }
   },
