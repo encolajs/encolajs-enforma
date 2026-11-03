@@ -34,13 +34,15 @@ export default defineConfig({
       name: 'Enforma',
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
+        // the package is "type": "module", so CommonJS files need the .cjs extension
+        const extension = format === 'cjs' ? 'cjs' : 'js'
         if (entryName === 'index') {
-          return `index${format === 'cjs' ? '.cjs' : ''}.js`
+          return `index.${extension}`
         }
         if (entryName.startsWith('validators/')) {
-          return `${entryName}${format === 'cjs' ? '.cjs' : ''}.js`
+          return `${entryName}.${extension}`
         }
-        return `presets/${entryName}${format === 'cjs' ? '.cjs' : ''}.js`
+        return `presets/${entryName}.${extension}`
       },
     },
     rollupOptions: {

@@ -3,73 +3,73 @@
     "version": "1.4.0",
     "description": "Form Kit library for VueJS 3. Render forms with ease using: headless components, fields and schema. Presets for PrimeVue, Vuetify, Quasar, Reka UI and Nuxt UI",
     "type": "module",
-    "main": "dist/index.cjs.js",
+    "main": "dist/index.cjs",
     "module": "dist/index.js",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
-            "require": "./dist/index.cjs.js"
+            "require": "./dist/index.cjs"
         },
         "./presets/primevue": {
             "import": "./dist/presets/primevue.js",
-            "require": "./dist/presets/primevue.cjs.js"
+            "require": "./dist/presets/primevue.cjs"
         },
         "./presets/vuetify": {
             "import": "./dist/presets/vuetify.js",
-            "require": "./dist/presets/vuetify.cjs.js"
+            "require": "./dist/presets/vuetify.cjs"
         },
         "./presets/quasar": {
             "import": "./dist/presets/quasar.js",
-            "require": "./dist/presets/quasar.cjs.js"
+            "require": "./dist/presets/quasar.cjs"
         },
         "./presets/rekaui": {
             "import": "./dist/presets/rekaui.js",
-            "require": "./dist/presets/rekaui.cjs.js"
+            "require": "./dist/presets/rekaui.cjs"
         },
         "./presets/nuxtui": {
             "import": "./dist/presets/nuxtui.js",
-            "require": "./dist/presets/nuxtui.cjs.js"
+            "require": "./dist/presets/nuxtui.cjs"
         },
         "./presets/vuetify/Field": {
             "types": "./dist/presets/vuetify/Field.vue.d.ts",
             "import": "./dist/presets/vuetify/Field.js",
-            "require": "./dist/presets/vuetify/Field.cjs.js"
+            "require": "./dist/presets/vuetify/Field.cjs"
         },
         "./presets/quasar/Field": {
             "types": "./dist/presets/quasar/Field.vue.d.ts",
             "import": "./dist/presets/quasar/Field.js",
-            "require": "./dist/presets/quasar/Field.cjs.js"
+            "require": "./dist/presets/quasar/Field.cjs"
         },
         "./presets/rekaui/Field": {
             "types": "./dist/presets/rekaui/Field.vue.d.ts",
             "import": "./dist/presets/rekaui/Field.js",
-            "require": "./dist/presets/rekaui/Field.cjs.js"
+            "require": "./dist/presets/rekaui/Field.cjs"
         },
         "./presets/nuxtui/Field": {
             "types": "./dist/presets/nuxtui/Field.vue.d.ts",
             "import": "./dist/presets/nuxtui/Field.js",
-            "require": "./dist/presets/nuxtui/Field.cjs.js"
+            "require": "./dist/presets/nuxtui/Field.cjs"
         },
         "./validators/encola": {
             "types": "./dist/validators/encola.d.ts",
             "import": "./dist/validators/encola.js",
-            "require": "./dist/validators/encola.cjs.js"
+            "require": "./dist/validators/encola.cjs"
         },
         "./validators/zod": {
             "types": "./dist/validators/zod.d.ts",
             "import": "./dist/validators/zod.js",
-            "require": "./dist/validators/zod.cjs.js"
+            "require": "./dist/validators/zod.cjs"
         },
         "./validators/yup": {
             "types": "./dist/validators/yup.d.ts",
             "import": "./dist/validators/yup.js",
-            "require": "./dist/validators/yup.cjs.js"
+            "require": "./dist/validators/yup.cjs"
         },
         "./validators/valibot": {
             "types": "./dist/validators/valibot.d.ts",
             "import": "./dist/validators/valibot.js",
-            "require": "./dist/validators/valibot.cjs.js"
+            "require": "./dist/validators/valibot.cjs"
         }
     },
     "types": "dist/index.d.ts",
