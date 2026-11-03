@@ -59,7 +59,7 @@ function setNuxtUISpecificProps(
   delete fieldProps.inputProps.value
 
   // Handle error states - use highlight prop for UInput and USelect
-  if (field.value.errors && field.value.errors.length > 0) {
+  if (field.value.error) {
     fieldProps.inputProps.highlight = true
     fieldProps.inputProps.color = 'error'
   }
