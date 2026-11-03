@@ -42,8 +42,24 @@ export function useFormConfig(injectFormConfig = true) {
     return pathUtils.get<T>(formConfig, path, defaultValue)
   }
 
+  /**
+   * Get the pass-through props at a path (e.g., 'pt.submit') to bind on a component.
+   * The `as` key is left out because Enforma uses it to pick which component to
+   * render. Forwarding it would clash with UI libraries that have their own `as` prop
+   * (e.g., Nuxt UI's UButton would render a nested button).
+   *
+   * @param path The path to the pass-through configuration
+   * @returns The pass-through props without the `as` key
+   */
+  const getPassThroughProps = (path: string): Record<string, any> => {
+    const passThroughProps = { ...(getConfig<Record<string, any>>(path) || {}) }
+    delete passThroughProps.as
+    return passThroughProps
+  }
+
   return {
     formConfig,
     getConfig,
+    getPassThroughProps,
   }
 }

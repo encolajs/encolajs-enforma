@@ -1,7 +1,7 @@
 <template>
   <component
     :is="effectiveComponent"
-    v-bind="mergeProps($attrs, getConfig('pt.submit'))"
+    v-bind="mergeProps($attrs, getPassThroughProps('pt.submit'))"
     type="submit"
     :disabled="$isSubmitting"
     :loading="$isSubmitting"
@@ -39,7 +39,7 @@ const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
 const { $isSubmitting } = formState
 const { t } = useTranslation()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.submit.as') || props.as
 

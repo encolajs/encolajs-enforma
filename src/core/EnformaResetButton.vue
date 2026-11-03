@@ -1,7 +1,7 @@
 <template>
   <component
     :is="effectiveComponent"
-    v-bind="mergeProps($attrs, getConfig('pt.reset'))"
+    v-bind="mergeProps($attrs, getPassThroughProps('pt.reset'))"
     type="reset"
     :disabled="$isSubmitting"
     @click.prevent="reset"
@@ -33,7 +33,7 @@ const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
 const { reset, $isSubmitting } = formState
 const { t } = useTranslation()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.reset.as') || props.as
 
