@@ -107,16 +107,16 @@
 
       <Accordion
         v-else
-        :activeIndex="Array.from(state.expandedItems)"
+        :activeIndex="expandedIndexes"
         :multiple="true"
         class="w-full"
+        @tab-open="(event) => toggleExpandedAt(event.index)"
+        @tab-close="(event) => toggleExpandedAt(event.index)"
       >
         <AccordionTab
           v-for="([key, item], index) in Object.entries(state.schema)"
           :key="key"
           :header="getItemHeader(key, item)"
-          @tab-open="() => state.expandedItems.add(key)"
-          @tab-close="() => state.expandedItems.delete(key)"
         >
           <SchemaBuilderItem
             :item-key="key"
@@ -219,6 +219,7 @@ const {
   updateSchemaItem,
   removeSchemaItem,
   duplicateSchemaItem,
+  toggleExpanded,
   exportToClipboard,
   importFromClipboard,
   formatJson,
@@ -227,6 +228,18 @@ const {
   initialSchema: props.modelValue,
   initialMode: props.mode,
 })
+
+// The accordion matches open tabs by index, while expandedItems holds item keys
+const expandedIndexes = computed(() =>
+  Object.keys(state.value.schema).flatMap((key, index) =>
+    state.value.expandedItems.has(key) ? [index] : []
+  )
+)
+
+// Accordion events refer to tabs by index
+const toggleExpandedAt = (index: number): void => {
+  toggleExpanded(Object.keys(state.value.schema)[index])
+}
 
 // Local state for JSON textarea
 const jsonTextLocal = ref(schemaAsJson.value)
