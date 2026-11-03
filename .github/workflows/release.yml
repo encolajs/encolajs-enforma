@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 permissions:
-  id-token: write  # required for provenance
+  id-token: write  # required for npm trusted publishing (OIDC) and provenance
   contents: read
 
 jobs:
@@ -14,15 +14,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      # trusted publishing needs npm 11.5.1+ and Node 22.14+
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           registry-url: 'https://registry.npmjs.org/'
-          always-auth: true
+          package-manager-cache: false  # never use caching in release builds
 
       - run: npm ci
-      - run: npm publish --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      # authenticates through the trusted publisher configured on npmjs.com,
+      # provenance is generated automatically
+      - run: npm publish
