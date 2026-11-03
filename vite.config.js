@@ -21,6 +21,11 @@ export default defineConfig({
         quasar: path.resolve(__dirname, 'src/presets/quasar.ts'),
         rekaui: path.resolve(__dirname, 'src/presets/rekaui.ts'),
         nuxtui: path.resolve(__dirname, 'src/presets/nuxtui.ts'),
+        // preset field components, for use in templates (e.g. presets/nuxtui/Field.js)
+        'vuetify/Field': path.resolve(__dirname, 'src/presets/vuetify/Field.vue'),
+        'quasar/Field': path.resolve(__dirname, 'src/presets/quasar/Field.vue'),
+        'rekaui/Field': path.resolve(__dirname, 'src/presets/rekaui/Field.vue'),
+        'nuxtui/Field': path.resolve(__dirname, 'src/presets/nuxtui/Field.vue'),
         'validators/encola': path.resolve(__dirname, 'src/validators/encolaValidator.ts'),
         'validators/zod': path.resolve(__dirname, 'src/validators/zod.ts'),
         'validators/yup': path.resolve(__dirname, 'src/validators/yup.ts'),

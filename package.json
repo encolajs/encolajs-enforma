@@ -31,6 +31,26 @@
             "import": "./dist/presets/nuxtui.js",
             "require": "./dist/presets/nuxtui.cjs.js"
         },
+        "./presets/vuetify/Field": {
+            "types": "./dist/presets/vuetify/Field.vue.d.ts",
+            "import": "./dist/presets/vuetify/Field.js",
+            "require": "./dist/presets/vuetify/Field.cjs.js"
+        },
+        "./presets/quasar/Field": {
+            "types": "./dist/presets/quasar/Field.vue.d.ts",
+            "import": "./dist/presets/quasar/Field.js",
+            "require": "./dist/presets/quasar/Field.cjs.js"
+        },
+        "./presets/rekaui/Field": {
+            "types": "./dist/presets/rekaui/Field.vue.d.ts",
+            "import": "./dist/presets/rekaui/Field.js",
+            "require": "./dist/presets/rekaui/Field.cjs.js"
+        },
+        "./presets/nuxtui/Field": {
+            "types": "./dist/presets/nuxtui/Field.vue.d.ts",
+            "import": "./dist/presets/nuxtui/Field.js",
+            "require": "./dist/presets/nuxtui/Field.cjs.js"
+        },
         "./validators/encola": {
             "types": "./dist/validators/encola.d.ts",
             "import": "./dist/validators/encola.js",
