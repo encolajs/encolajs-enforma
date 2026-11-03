@@ -65,12 +65,17 @@
         <Toolbar>
           <template #start>
             <div class="flex gap-2">
-              <Button label="Field" size="small" outlined @click="addField" />
+              <Button
+                label="Field"
+                size="small"
+                outlined
+                @click="() => addField()"
+              />
               <Button
                 label="Section"
                 size="small"
                 outlined
-                @click="addSection"
+                @click="() => addSection()"
               />
               <Button
                 label="Repeatable"
