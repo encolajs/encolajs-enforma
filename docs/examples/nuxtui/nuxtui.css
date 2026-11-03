@@ -1,0 +1,19 @@
+/*
+ * Nuxt UI styles for the docs live demo.
+ *
+ * In a regular app you would just use:
+ *   @import "tailwindcss";
+ *   @import "@nuxt/ui";
+ *
+ * The docs site bundles the CSS of every UI library into one stylesheet,
+ * so here we:
+ * - use the `tw` prefix (matches `theme.prefix` in the VitePress config) so
+ *   Nuxt UI classes like `bg-primary` don't clash with Vuetify/Quasar classes
+ * - skip Tailwind's Preflight (it would reset the docs styles)
+ * - mark utilities as important, because VitePress' own (un-layered) resets
+ *   for `input`/`button` would otherwise win over Tailwind's layered utilities
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw) important;
+@import "@nuxt/ui";

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import markdownItContainer from 'markdown-it-container'
 import path from 'path'
+import ui from '@nuxt/ui/vite'
 
 export default defineConfig({
   title: 'EncolaJS Enforma',
@@ -236,8 +237,25 @@ export default defineConfig({
     ],
   ],
   vite: {
+    plugins: [
+      // Nuxt UI in a non-Nuxt (Vite) app; used by the Nuxt UI live demo
+      // - router: false -> VitePress doesn't use vue-router
+      // - colorMode: false -> let VitePress own the `.dark` class
+      ui({
+        router: false,
+        colorMode: false,
+        dts: false,
+        // must match the prefix in docs/examples/nuxtui/nuxtui.css
+        theme: { prefix: 'tw' },
+        // Nuxt UI form controls are inline by default; make them fill the field
+        ui: {
+          input: { slots: { root: 'tw:w-full' } },
+          select: { slots: { base: 'tw:w-full' } },
+        },
+      }),
+    ],
     ssr: {
-      noExternal: [/\.css$/, /^vuetify/]
+      noExternal: [/\.css$/, /^vuetify/, /^@nuxt\/ui/]
     },
     resolve: {
       alias: {

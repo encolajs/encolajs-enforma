@@ -67,8 +67,8 @@ const handleSubmit = (values) => {
 <style scoped>
 .nuxtui-form-container {
   padding: 1.5rem;
-  background: rgb(var(--color-gray-50));
-  border: 1px solid rgb(var(--color-gray-200));
+  background: var(--ui-bg-muted);
+  border: 1px solid var(--ui-border);
   border-radius: 0.5rem;
 }
 

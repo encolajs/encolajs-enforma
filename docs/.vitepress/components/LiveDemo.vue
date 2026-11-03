@@ -35,11 +35,13 @@ import RekauiSelect from '../../examples/rekaui/RekauiSelect.vue'
 import RekauiSwitch from '../../examples/rekaui/RekauiSwitch.vue'
 import RekauiButton from '../../examples/rekaui/RekauiButton.vue'
 
-// Import for Nuxt UI (using wrapper components)
-import NuxtUIInput from '../../examples/nuxtui/NuxtUIInput.vue'
-import NuxtUISelect from '../../examples/nuxtui/NuxtUISelect.vue'
-import NuxtUISwitch from '../../examples/nuxtui/NuxtUISwitch.vue'
-import NuxtUIButton from '../../examples/nuxtui/NuxtUIButton.vue'
+// Import for Nuxt UI (requires the `@nuxt/ui/vite` plugin in the VitePress config)
+import '../../examples/nuxtui/nuxtui.css'
+import NuxtUI from '@nuxt/ui/vue-plugin'
+import UInput from '@nuxt/ui/components/Input.vue'
+import USelect from '@nuxt/ui/components/Select.vue'
+import USwitch from '@nuxt/ui/components/Switch.vue'
+import UButton from '@nuxt/ui/components/Button.vue'
 
 const props = defineProps({
   component: String | Object,
@@ -125,14 +127,17 @@ onMounted(() => {
       button: RekauiButton,
     })
   } else if (props.preset === 'nuxtui') {
+    // Configure Nuxt UI
+    app.use(NuxtUI)
+
     // Apply Nuxt UI preset
     useNuxtUIPreset({
-      input: NuxtUIInput,
-      text: NuxtUIInput,
-      select: NuxtUISelect,
-      switch: NuxtUISwitch,
-      toggle: NuxtUISwitch,
-      button: NuxtUIButton,
+      input: UInput,
+      text: UInput,
+      select: USelect,
+      switch: USwitch,
+      toggle: USwitch,
+      button: UButton,
     })
   }
 
