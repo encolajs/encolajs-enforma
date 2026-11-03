@@ -3,8 +3,8 @@
     <div class="enforma-field-input">
       <component
         :is="props.inputComponent"
-        :value="fieldController.value"
         v-model="fieldController.value"
+        :value="fieldController.value"
         v-bind="props.inputProps"
         v-on="props.inputEvents"
       />

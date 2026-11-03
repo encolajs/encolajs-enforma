@@ -61,11 +61,11 @@
     <!-- Controls -->
     <div class="mt-6 p-4 bg-gray-50 rounded-lg">
       <div class="flex flex-wrap items-center gap-4">
-        <Button @click="loadSampleSchema" outlined> Load Sample Schema </Button>
-        <Button @click="clearSchema" severity="secondary" outlined>
+        <Button outlined @click="loadSampleSchema"> Load Sample Schema </Button>
+        <Button severity="secondary" outlined @click="clearSchema">
           Clear Schema
         </Button>
-        <Button @click="showDebug = !showDebug" outlined>
+        <Button outlined @click="showDebug = !showDebug">
           {{ showDebug ? 'Hide' : 'Show' }} Debug
         </Button>
         <div class="flex items-center gap-2">

@@ -3,19 +3,19 @@
     <!-- Actions Row -->
     <div class="flex justify-end gap-2 mb-4">
       <Button
+        v-tooltip="'Duplicate'"
         icon="pi pi-copy"
         size="small"
         outlined
         @click="$emit('duplicate')"
-        v-tooltip="'Duplicate'"
       />
       <Button
+        v-tooltip="'Delete'"
         icon="pi pi-trash"
         size="small"
         severity="danger"
         outlined
         @click="confirmDelete"
-        v-tooltip="'Delete'"
       />
     </div>
 

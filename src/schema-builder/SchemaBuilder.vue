@@ -21,26 +21,26 @@
 
       <div class="flex items-center gap-2">
         <Button
+          v-tooltip="'Copy to clipboard'"
           icon="pi pi-download"
           size="small"
           outlined
           @click="handleExport"
-          v-tooltip="'Copy to clipboard'"
         />
         <Button
+          v-tooltip="'Import from clipboard'"
           icon="pi pi-upload"
           size="small"
           outlined
           @click="handleImport"
-          v-tooltip="'Import from clipboard'"
         />
         <Button
           v-if="state.currentMode === 'json'"
+          v-tooltip="'Format JSON'"
           icon="pi pi-code"
           size="small"
           outlined
           @click="formatJson"
-          v-tooltip="'Format JSON'"
         />
       </div>
     </div>

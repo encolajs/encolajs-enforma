@@ -1,8 +1,8 @@
 <template>
   <div v-bind="mergeProps($attrs, getPassThroughProps('pt.section'))">
     <component
-      v-if="sectionSchema?.title"
       :is="sectionSchema.titleComponent"
+      v-if="sectionSchema?.title"
       v-bind="sectionSchema.titleProps"
     >
       {{ sectionSchema.title }}
@@ -12,13 +12,13 @@
       <template v-if="shouldRenderField(field)">
         <!-- Use parentSlots directly -->
         <component
-          v-if="hasFieldSlot(field.name)"
           :is="parentSlots?.[`field(${field.name})`]"
+          v-if="hasFieldSlot(field.name)"
           :field="field"
           :formController="formCtrl"
           :config="formConfig"
         />
-        <component v-else :is="getComponent(field)" v-bind="field" />
+        <component :is="getComponent(field)" v-else v-bind="field" />
       </template>
     </template>
 
