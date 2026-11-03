@@ -265,7 +265,7 @@ watch(
 watch(
   () => state.value.schema,
   (newSchema) => {
-    emit('update:modelValue', { ...newSchema })
+    emit('update:modelValue', { ...newSchema } as FormSchema)
   },
   { deep: true }
 )

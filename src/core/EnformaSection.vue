@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="mergeProps($attrs, getConfig('pt.section'))">
+  <div v-bind="mergeProps($attrs, getPassThroughProps('pt.section'))">
     <component
       v-if="sectionSchema?.title"
       :is="sectionSchema.titleComponent"
@@ -13,7 +13,7 @@
         <!-- Use parentSlots directly -->
         <component
           v-if="hasFieldSlot(field.name)"
-          :is="parentSlots[`field(${field.name})`]"
+          :is="parentSlots?.[`field(${field.name})`]"
           :field="field"
           :formController="formCtrl"
           :config="formConfig"
@@ -164,7 +164,7 @@ const formCtrl = inject<FormController>(formControllerKey)
 const formContext = inject<any>(formContextKey, null)
 
 // Get the configuration
-const { getConfig, formConfig } = useFormConfig()
+const { getConfig, getPassThroughProps, formConfig } = useFormConfig()
 
 const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
@@ -193,7 +193,7 @@ const originalSectionSchema = computed(() => {
 // Apply section props transformers
 const sectionSchema = computed(() => {
   // Create a copy with name property for the transformer to use
-  const mergedProps = {
+  const mergedProps: Record<string, any> = {
     ...(originalSectionSchema.value || {}),
   }
   Object.entries(props).forEach(
