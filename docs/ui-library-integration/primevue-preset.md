@@ -20,7 +20,7 @@ Import and use the PrimeVue preset:
 // main.js
 import { createApp } from 'vue'
 import { EnformaPlugin } from '@encolajs/enforma'
-import { primevuePreset } from '@encolajs/enforma/presets/primevue'
+import usePrimeVuePreset from '@encolajs/enforma/presets/primevue'
 import PrimeVue from 'primevue/config'
 import { InputText, Select } from 'primevue'
 import App from './App.vue'

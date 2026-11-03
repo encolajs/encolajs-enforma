@@ -36,28 +36,28 @@
                 v-bind="getConfig('pt.repeatable.itemActions')"
               >
                 <component
-                  v-if="allowRemove"
                   :is="
                     removeButton ||
                     getConfig('components.repeatableRemoveButton')
                   "
+                  v-if="allowRemove"
                   @click="remove(index)"
                 />
                 <component
-                  v-if="allowSort"
                   :is="
                     moveUpButton ||
                     getConfig('components.repeatableMoveUpButton')
                   "
+                  v-if="allowSort"
                   :disabled="index === 0"
                   @click="moveUp(index)"
                 />
                 <component
-                  v-if="allowSort"
                   :is="
                     moveDownButton ||
                     getConfig('components.repeatableMoveDownButton')
                   "
+                  v-if="allowSort"
                   :disabled="index >= count - 1"
                   @click="moveDown(index)"
                 />
@@ -81,8 +81,8 @@
         <!-- Add button -->
         <div v-bind="getConfig('pt.repeatable.actions')">
           <component
-            v-if="canAdd && allowAdd"
             :is="addButton || getConfig('components.repeatableAddButton')"
+            v-if="canAdd && allowAdd"
             @click="add(defaultValue)"
           />
         </div>

@@ -26,6 +26,7 @@
 
     <!-- Help text -->
     <div v-if="props.help" class="enforma-field-help" v-bind="props.helpProps">
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-if="helpAsHtml" v-html="t(props.help)"></span>
       <span v-else>{{ t(props.help) }}</span>
     </div>
@@ -36,6 +37,7 @@
       class="enforma-field-error"
       v-bind="props.errorProps"
     >
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-if="errorAsHtml" v-html="fieldController.error"></span>
       <span v-else>{{ fieldController.error }}</span>
     </div>

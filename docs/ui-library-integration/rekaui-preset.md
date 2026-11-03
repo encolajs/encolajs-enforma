@@ -120,7 +120,7 @@ const localValue = computed({
 // main.js
 import { createApp } from 'vue'
 import { EnformaPlugin } from '@encolajs/enforma'
-import { useRekauiPreset } from '@encolajs/enforma/presets/rekaui'
+import useRekauiPreset from '@encolajs/enforma/presets/rekaui'
 import App from './App.vue'
 
 // Import your wrapper components

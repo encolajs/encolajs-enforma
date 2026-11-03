@@ -4,130 +4,140 @@ Enforma includes a built-in preset for [Nuxt UI](https://ui.nuxt.com/), making i
 
 ## What is Nuxt UI?
 
-Nuxt UI is a collection of fully-styled, accessible Vue components built with Tailwind CSS. While designed primarily for Nuxt applications, the components can also be used in standard Vue applications with some configuration.
+Nuxt UI is a collection of fully-styled, accessible Vue components built on [Reka UI](https://reka-ui.com/) and Tailwind CSS v4. Despite its name, it is not limited to Nuxt: it officially supports both Nuxt and plain Vue applications built with Vite (including Inertia setups such as Laravel or AdonisJS).
 
 ## Installation
 
-To use the Nuxt UI preset, you need to have Nuxt UI installed in your project:
+Install Nuxt UI and Tailwind CSS:
 
 ```bash
-npm install @nuxt/ui
+npm install @nuxt/ui tailwindcss
 ```
 
-> [!NOTE]
-> Nuxt UI is optimized for Nuxt applications. For standalone Vue apps, you may need to create wrapper components as shown below.
+Create a CSS file that imports Tailwind CSS and Nuxt UI:
+
+```css
+/* assets/css/main.css */
+@import "tailwindcss";
+@import "@nuxt/ui";
+```
+
+The rest of the setup depends on whether you use Nuxt or a standard Vue application. See the official [Nuxt](https://ui.nuxt.com/docs/getting-started/installation/nuxt) and [Vue](https://ui.nuxt.com/docs/getting-started/installation/vue) installation guides for all the options.
 
 ## Basic Usage
 
 ### For Nuxt Applications
 
-If you're using Nuxt, follow the [Nuxt UI setup instructions](https://ui.nuxt.com/getting-started/installation):
+Register the Nuxt UI module and your CSS file:
 
-```js
+```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@nuxt/ui']
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css']
 })
 ```
 
-Then configure Enforma with the Nuxt UI preset:
+Wrap your app with the `UApp` component (required for toasts, tooltips and programmatic overlays):
 
-```js
-// plugins/enforma.js
+```vue
+<!-- app.vue -->
+<template>
+  <UApp>
+    <NuxtPage />
+  </UApp>
+</template>
+```
+
+Then configure Enforma with the Nuxt UI preset in a plugin. Nuxt UI components are exposed through the `#components` virtual module:
+
+```ts
+// plugins/enforma.ts
 import { EnformaPlugin } from '@encolajs/enforma'
-import { useNuxtUIPreset } from '@encolajs/enforma/presets/nuxtui'
+import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
+import { UInput, USelect, USwitch, UButton } from '#components'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(EnformaPlugin)
 
-  // Apply Nuxt UI preset with auto-imported components
   useNuxtUIPreset({
-    input: resolveComponent('UInput'),
-    select: resolveComponent('USelect'),
-    switch: resolveComponent('USwitch'),
-    button: resolveComponent('UButton'),
+    input: UInput,
+    text: UInput,
+    select: USelect,
+    switch: USwitch,
+    toggle: USwitch,
+    button: UButton,
   })
 })
 ```
 
 ### For Standard Vue Applications
 
-For non-Nuxt Vue apps, you'll need to create wrapper components since Nuxt UI components are designed for the Nuxt ecosystem:
+Nuxt UI works in any Vue application built with Vite. Add the Nuxt UI Vite plugin, which also sets up Tailwind CSS:
 
-```vue
-<!-- components/NuxtUIInput.vue -->
-<template>
-  <input
-    v-bind="$attrs"
-    :value="modelValue"
-    @input="$emit('update:modelValue', $event.target.value)"
-    class="nuxtui-input"
-  />
-</template>
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
 
-<script setup>
-defineProps({
-  modelValue: String,
-  id: String,
-  placeholder: String,
-  disabled: Boolean,
-  highlight: Boolean
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui()
+    // If your app doesn't use vue-router (Nuxt UI 4.3+):
+    // ui({ router: false })
+  ]
 })
-
-defineEmits(['update:modelValue'])
-</script>
-
-<style scoped>
-.nuxtui-input {
-  display: block;
-  width: 100%;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-}
-.nuxtui-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-.nuxtui-input[highlight="true"] {
-  border-color: #ef4444;
-}
-</style>
 ```
 
-Then configure the preset:
+Install the Nuxt UI Vue plugin, then configure Enforma with the preset. Outside of templates, import the components you want to use directly from `@nuxt/ui/components`:
 
-```js
-// main.js
+```ts
+// main.ts
+import './assets/css/main.css'
+
 import { createApp } from 'vue'
+import ui from '@nuxt/ui/vue-plugin'
 import { EnformaPlugin } from '@encolajs/enforma'
-import { useNuxtUIPreset } from '@encolajs/enforma/presets/nuxtui'
+import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
+import UInput from '@nuxt/ui/components/Input.vue'
+import USelect from '@nuxt/ui/components/Select.vue'
+import USwitch from '@nuxt/ui/components/Switch.vue'
+import UButton from '@nuxt/ui/components/Button.vue'
 import App from './App.vue'
-
-// Import your wrapper components
-import NuxtUIInput from './components/NuxtUIInput.vue'
-import NuxtUISelect from './components/NuxtUISelect.vue'
-import NuxtUISwitch from './components/NuxtUISwitch.vue'
-import NuxtUIButton from './components/NuxtUIButton.vue'
 
 const app = createApp(App)
 
+app.use(ui)
 app.use(EnformaPlugin)
 
-// Apply Nuxt UI preset
 useNuxtUIPreset({
-  input: NuxtUIInput,
-  text: NuxtUIInput,
-  select: NuxtUISelect,
-  switch: NuxtUISwitch,
-  toggle: NuxtUISwitch,
-  button: NuxtUIButton,
+  input: UInput,
+  text: UInput,
+  select: USelect,
+  switch: USwitch,
+  toggle: USwitch,
+  button: UButton,
 })
 
 app.mount('#app')
+```
+
+As with Nuxt, wrap your root component with `UApp`, and add the `isolate` class to your root element so overlays stack correctly:
+
+```vue
+<!-- App.vue -->
+<template>
+  <UApp>
+    <RouterView />
+  </UApp>
+</template>
+```
+
+```html
+<!-- index.html -->
+<div id="app" class="isolate"></div>
 ```
 
 ## Using in Forms
@@ -186,11 +196,11 @@ The preset supports the following component types:
 
 | Field Type | Component |
 |------------|-----------|
-| `input`    | UInput / Custom input |
-| `select`   | USelect / Custom select |
-| `switch`   | USwitch / Custom switch |
-| `toggle`   | USwitch / Custom switch |
-| `button`   | UButton / Custom button |
+| `input`    | UInput    |
+| `select`   | USelect   |
+| `switch`   | USwitch   |
+| `toggle`   | USwitch   |
+| `button`   | UButton   |
 
 The preset also configures styled button components:
 
@@ -205,35 +215,26 @@ The preset also configures styled button components:
 
 ## Styling with Tailwind
 
-The preset is designed to work seamlessly with Tailwind CSS. Make sure you have Tailwind CSS configured in your project:
+Nuxt UI uses Tailwind CSS v4, which is configured in CSS rather than in a `tailwind.config.js` file. The `@import "tailwindcss"` and `@import "@nuxt/ui"` statements from the installation step are all you need: the Nuxt module or the Vite plugin wires Tailwind CSS into your build.
 
-```js
-// tailwind.config.js
-module.exports = {
-  content: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}',
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+Nuxt UI form controls are inline by default. To make them fill the width of the field, add a `w-full` class or set it globally through the `ui` option of the Nuxt module or Vite plugin:
+
+```ts
+ui({
+  ui: {
+    input: { slots: { root: 'w-full' } },
+    select: { slots: { base: 'w-full' } }
+  }
+})
 ```
 
 ## Error Handling
 
-The preset automatically applies the `highlight` prop to inputs when validation errors occur, giving them an error state styling with a red border.
+When a field has validation errors, the preset sets the `highlight` prop and `color: 'error'` on the input, so Nuxt UI renders it in its error state.
 
 ## Benefits
 
 ✅ **Beautiful Design**: Pre-styled with Tailwind CSS
-✅ **Accessible**: Built with accessibility in mind
+✅ **Accessible**: Built on Reka UI primitives
 ✅ **Consistent**: Follows Nuxt UI design system
-✅ **Flexible**: Easy to customize with Tailwind utilities
-
-> [!WARNING]
-> Nuxt UI is primarily designed for Nuxt applications. While it can be adapted for standard Vue apps with wrapper components, you may encounter integration challenges. Consider using the components as inspiration for creating your own Tailwind-based components.
-
-> [!NOTE]
-> The wrapper components approach shown above mimics Nuxt UI's design system using Tailwind CSS classes, providing a similar look and feel in non-Nuxt applications.
+✅ **Flexible**: Works with Nuxt and plain Vue + Vite apps

@@ -2,10 +2,9 @@
   <component
     :is="effectiveComponent"
     type="button"
-    v-bind="
-      mergeProps($attrs || {}, getConfig('pt.repeatable.add') || {}) || {}
-    "
+    v-bind="mergeProps($attrs || {}, getPassThroughProps('pt.repeatable.add'))"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-if="effectiveContent" v-html="t(effectiveContent)"></span>
   </component>
 </template>
@@ -26,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useTranslation()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.repeatable.add.as') || props.as
 

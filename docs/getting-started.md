@@ -137,15 +137,15 @@ Enforma integrates with popular UI libraries:
 
 ```js
 // For Vuetify
-import { useVuetifyPreset } from '@encolajs/enforma/presets/vuetify'
+import useVuetifyPreset from '@encolajs/enforma/presets/vuetify'
 useVuetifyPreset()
 
 // For PrimeVue
-import { usePrimeVuePreset } from '@encolajs/enforma/presets/primevue'
+import usePrimeVuePreset from '@encolajs/enforma/presets/primevue'
 usePrimeVuePreset()
 
 // For Quasar
-import { useQuasarPreset } from '@encolajs/enforma/presets/quasar'
+import useQuasarPreset from '@encolajs/enforma/presets/quasar'
 useQuasarPreset()
 ```
 

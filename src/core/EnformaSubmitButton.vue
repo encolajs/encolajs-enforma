@@ -1,17 +1,19 @@
 <template>
   <component
     :is="effectiveComponent"
-    v-bind="mergeProps($attrs, getConfig('pt.submit'))"
+    v-bind="mergeProps($attrs, getPassThroughProps('pt.submit'))"
     type="submit"
     :disabled="$isSubmitting"
     :loading="$isSubmitting"
   >
     <slot name="default">
+      <!-- eslint-disable vue/no-v-html -->
       <span
         v-html="
           $isSubmitting ? t(effectiveLoadingContent) : t(effectiveContent)
         "
       ></span>
+      <!-- eslint-enable vue/no-v-html -->
     </slot>
   </component>
 </template>
@@ -39,7 +41,7 @@ const $attrs = useAttrs()
 const formState = inject(formControllerKey) as FormController
 const { $isSubmitting } = formState
 const { t } = useTranslation()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.submit.as') || props.as
 

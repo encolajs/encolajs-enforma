@@ -32,7 +32,7 @@ You can use slots to customize the rendering of specific fields by providing a s
 </template>
 
 <script setup>
-import { Enforma } from 'enforma'
+import { Enforma } from '@encolajs/enforma'
 import { ref } from 'vue'
 
 const formData = ref({
@@ -135,7 +135,7 @@ You can use field slots for any field type in your schema:
 </template>
 
 <script setup>
-import { Enforma } from 'enforma'
+import { Enforma } from '@encolajs/enforma'
 import { ref } from 'vue'
 
 const formData = ref({

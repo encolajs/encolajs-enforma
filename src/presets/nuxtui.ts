@@ -59,22 +59,9 @@ function setNuxtUISpecificProps(
   delete fieldProps.inputProps.value
 
   // Handle error states - use highlight prop for UInput and USelect
-  if (field.value.errors && field.value.errors.length > 0) {
+  if (field.value.error) {
     fieldProps.inputProps.highlight = true
     fieldProps.inputProps.color = 'error'
-  }
-
-  // Handle disabled state
-  if (field.value.disabled) {
-    fieldProps.inputProps.disabled = true
-  }
-
-  // Handle placeholder
-  if (
-    fieldProps.inputProps.placeholder === undefined &&
-    field.value.placeholder
-  ) {
-    fieldProps.inputProps.placeholder = field.value.placeholder
   }
 
   return fieldProps
@@ -90,7 +77,7 @@ function setNuxtUISpecificProps(
  *
  * @example
  * ```ts
- * import { useNuxtUIPreset } from 'enforma'
+ * import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
  * import { UInput, USelect, USwitch, UButton } from '#components'
  *
  * useNuxtUIPreset({

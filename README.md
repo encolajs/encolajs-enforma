@@ -84,25 +84,14 @@ const submit = () => {
 
 Skip the styling and use our pre-built components for popular UI frameworks:
 
-```vue
-<!-- PrimeVue Preset -->
-<script setup>
+```js
+// main.js
 import { EnformaPlugin } from '@encolajs/enforma'
-import { primevuePreset } from '@encolajs/enforma/presets/primevue'
+import usePrimeVuePreset from '@encolajs/enforma/presets/primevue'
+// or: import useVuetifyPreset from '@encolajs/enforma/presets/vuetify'
 
-app.use(EnformaPlugin, { 
-  preset: primevuePreset 
-})
-</script>
-
-<!-- Vuetify Preset -->
-<script setup>
-import { vuetifyPreset } from '@encolajs/enforma/presets/vuetify'
-
-app.use(EnformaPlugin, { 
-  preset: vuetifyPreset 
-})
-</script>
+app.use(EnformaPlugin)
+usePrimeVuePreset() // or: useVuetifyPreset()
 ```
 
 ### Dynamic Schema Building

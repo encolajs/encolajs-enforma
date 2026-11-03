@@ -64,11 +64,6 @@ function setRekauiSpecificProps(
     fieldProps.inputProps['data-invalid'] = true
   }
 
-  // Handle disabled state
-  if (field.value.disabled) {
-    fieldProps.inputProps.disabled = true
-  }
-
   // For native inputs, add name attribute
   if (!fieldProps.inputComponent || fieldProps.inputComponent === 'input') {
     fieldProps.inputProps.name = field.value.name
@@ -87,7 +82,7 @@ function setRekauiSpecificProps(
  *
  * @example
  * ```ts
- * import { useRekauiPreset } from '@encolajs/enforma/presets/rekaui'
+ * import useRekauiPreset from '@encolajs/enforma/presets/rekaui'
  * import MyInput from './components/MyInput.vue'
  * import MySelect from './components/MySelect.vue'
  * import MySwitch from './components/MySwitch.vue'

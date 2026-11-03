@@ -38,6 +38,7 @@
       class="nuxtui-field-error"
       v-bind="props.errorProps"
     >
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-if="errorAsHtml" v-html="fieldController.error"></span>
       <span v-else>{{ fieldController.error }}</span>
     </div>
@@ -100,22 +101,22 @@ const requiredProps = computed(() => getConfig('pt.required', { text: '*' }))
 .nuxtui-field-label {
   font-weight: 500;
   font-size: 14px;
-  color: rgb(var(--color-gray-900));
+  color: var(--ui-text-highlighted);
 }
 
 .nuxtui-field-required {
-  color: rgb(var(--color-error-500));
+  color: var(--ui-error);
   margin-left: 2px;
 }
 
 .nuxtui-field-help {
   font-size: 13px;
-  color: rgb(var(--color-gray-500));
+  color: var(--ui-text-muted);
 }
 
 .nuxtui-field-error {
   font-size: 13px;
-  color: rgb(var(--color-error-500));
+  color: var(--ui-error);
   font-weight: 500;
 }
 </style>

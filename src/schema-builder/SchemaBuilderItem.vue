@@ -3,19 +3,19 @@
     <!-- Actions Row -->
     <div class="flex justify-end gap-2 mb-4">
       <Button
+        v-tooltip="'Duplicate'"
         icon="pi pi-copy"
         size="small"
         outlined
         @click="$emit('duplicate')"
-        v-tooltip="'Duplicate'"
       />
       <Button
+        v-tooltip="'Delete'"
         icon="pi pi-trash"
         size="small"
         severity="danger"
         outlined
         @click="confirmDelete"
-        v-tooltip="'Delete'"
       />
     </div>
 
@@ -128,7 +128,12 @@
                 :value="getInputProp('placeholder')"
                 class="w-full"
                 placeholder="Enter placeholder..."
-                @input="updateInputProp('placeholder', $event.target.value)"
+                @input="
+                  updateInputProp(
+                    'placeholder',
+                    ($event.target as HTMLInputElement).value
+                  )
+                "
               />
             </div>
             <div>
@@ -154,7 +159,12 @@
                 :value="getInputProp('placeholder')"
                 class="w-full"
                 placeholder="Enter placeholder..."
-                @input="updateInputProp('placeholder', $event.target.value)"
+                @input="
+                  updateInputProp(
+                    'placeholder',
+                    ($event.target as HTMLInputElement).value
+                  )
+                "
               />
             </div>
             <div>
@@ -178,7 +188,11 @@
               rows="4"
               class="w-full"
               placeholder="Option 1\nOption 2\nOption 3"
-              @input="updateSelectOptions($event.target.value)"
+              @input="
+                updateSelectOptions(
+                  ($event.target as HTMLTextAreaElement).value
+                )
+              "
             />
             <small class="text-gray-500">Enter each option on a new line</small>
           </div>
@@ -316,7 +330,7 @@
         <div v-else class="space-y-3">
           <Card
             v-for="([subfieldKey, subfield], index) in Object.entries(
-              localItem.subfields
+              localItem.subfields || {}
             )"
             :key="subfieldKey"
             class="border"
@@ -376,6 +390,12 @@ import type {
   RepeatableSchema,
 } from '../types'
 
+// The editor reads and writes the properties of every schema item type
+type EditableSchemaItem = BaseSchema &
+  Partial<Omit<FieldSchema, 'type'>> &
+  Partial<Omit<SectionSchema, 'type'>> &
+  Partial<Omit<RepeatableSchema, 'type'>>
+
 // PrimeVue Components
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -388,7 +408,7 @@ import Card from 'primevue/card'
 // Props
 interface SchemaBuilderItemProps {
   itemKey: string
-  item: BaseSchema
+  item: EditableSchemaItem
   sections: Array<{ label: string; value: string }>
   availableInputComponents: Array<{ label: string; value: string }>
   availableTitleComponents: Array<{ label: string; value: string }>
@@ -398,7 +418,7 @@ const props = defineProps<SchemaBuilderItemProps>()
 
 // Emits
 interface SchemaBuilderItemEmits {
-  update: [item: BaseSchema]
+  update: [item: EditableSchemaItem]
   remove: []
   duplicate: []
 }
@@ -406,7 +426,7 @@ interface SchemaBuilderItemEmits {
 const emit = defineEmits<SchemaBuilderItemEmits>()
 
 // Local reactive copy of the item
-const localItem = reactive({ ...props.item })
+const localItem = reactive<EditableSchemaItem>({ ...props.item })
 
 // Watch for external changes
 watch(

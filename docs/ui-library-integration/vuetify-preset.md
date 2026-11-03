@@ -20,7 +20,7 @@ Import and use the Vuetify preset:
 // main.js
 import { createApp } from 'vue';
 import { EnformaPlugin } from '@encolajs/enforma';
-import { useVuetifyPreset } from '@encolajs/enforma/presets/vuetify';
+import useVuetifyPreset from '@encolajs/enforma/presets/vuetify';
 import { createVuetify } from 'vuetify';
 import App from './App.vue';
 

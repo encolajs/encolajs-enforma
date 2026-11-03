@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import markdownItContainer from 'markdown-it-container'
 import path from 'path'
+import ui from '@nuxt/ui/vite'
 
 export default defineConfig({
   title: 'EncolaJS Enforma',
@@ -94,11 +95,11 @@ export default defineConfig({
           text: 'UI Library Integration',
           link: '/ui-library-integration/',
           items: [
-            { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
+            { text: 'Nuxt UI Preset', link: '/ui-library-integration/nuxtui-preset' },
+            { text: 'Reka UI Preset', link: '/ui-library-integration/rekaui-preset' },
             { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
             { text: 'Quasar Preset', link: '/ui-library-integration/quasar-preset' },
-            { text: 'Reka UI Preset', link: '/ui-library-integration/rekaui-preset' },
-            { text: 'Nuxt UI Preset', link: '/ui-library-integration/nuxtui-preset' },
+            { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
             { text: 'Creating Your Own UI Preset', link: '/ui-library-integration/creating-your-own-ui-preset' },
           ],
         },
@@ -163,10 +164,10 @@ export default defineConfig({
         {
           text: 'Presets',
           items: [
+            { text: 'Nuxt UI', link: '/examples/nuxtui-preset' },
+            { text: 'Reka UI', link: '/examples/rekaui-preset' },
             { text: 'Vuetify', link: '/examples/vuetify-preset' },
             { text: 'Quasar', link: '/examples/quasar-preset' },
-            { text: 'Reka UI', link: '/examples/rekaui-preset' },
-            { text: 'Nuxt UI', link: '/examples/nuxtui-preset' },
           ],
         },
         {
@@ -236,8 +237,25 @@ export default defineConfig({
     ],
   ],
   vite: {
+    plugins: [
+      // Nuxt UI in a non-Nuxt (Vite) app; used by the Nuxt UI live demo
+      // - router: false -> VitePress doesn't use vue-router
+      // - colorMode: false -> let VitePress own the `.dark` class
+      ui({
+        router: false,
+        colorMode: false,
+        dts: false,
+        // must match the prefix in docs/examples/nuxtui/nuxtui.css
+        theme: { prefix: 'tw' },
+        // Nuxt UI form controls are inline by default; make them fill the field
+        ui: {
+          input: { slots: { root: 'tw:w-full' } },
+          select: { slots: { base: 'tw:w-full' } },
+        },
+      }),
+    ],
     ssr: {
-      noExternal: [/\.css$/, /^vuetify/]
+      noExternal: [/\.css$/, /^vuetify/, /^@nuxt\/ui/]
     },
     resolve: {
       alias: {

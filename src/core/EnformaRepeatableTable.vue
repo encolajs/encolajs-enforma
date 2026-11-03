@@ -1,5 +1,9 @@
 <template>
-  <div v-bind="mergeProps($attrs, getConfig('pt.repeatable_table.wrapper'))">
+  <div
+    v-bind="
+      mergeProps($attrs, getPassThroughProps('pt.repeatable_table.wrapper'))
+    "
+  >
     <HeadlessRepeatable
       :name="name"
       :min="min"
@@ -50,28 +54,28 @@
                   "
                 >
                   <component
-                    v-if="allowRemove"
                     :is="
                       removeButton ||
                       getConfig('components.repeatableRemoveButton')
                     "
+                    v-if="allowRemove"
                     @click="remove(index)"
                   />
                   <component
-                    v-if="allowSort"
                     :is="
                       moveUpButton ||
                       getConfig('components.repeatableMoveUpButton')
                     "
+                    v-if="allowSort"
                     :disabled="index === 0"
                     @click="moveUp(index)"
                   />
                   <component
-                    v-if="allowSort"
                     :is="
                       moveDownButton ||
                       getConfig('components.repeatableMoveDownButton')
                     "
+                    v-if="allowSort"
                     :disabled="index >= count - 1"
                     @click="moveDown(index)"
                   />
@@ -91,8 +95,8 @@
           "
         >
           <component
-            v-if="canAdd && allowAdd"
             :is="addButton || getConfig('components.repeatableAddButton')"
+            v-if="canAdd && allowAdd"
             @click="add(defaultValue)"
           />
         </div>
@@ -123,7 +127,7 @@ const props = withDefaults(defineProps<RepeatableFieldProps>(), {
 })
 
 const $attrs = useAttrs()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps, formConfig } = useFormConfig()
 
 // Use the useEnformaRepeatable hook, but apply table-specific transformers
 const repeatableResult = useEnformaRepeatable(props)
@@ -145,7 +149,7 @@ const transformedTableConfig = computed(() => {
     repeatableTablePropsTransformers,
     { ...transformedFieldConfig.value },
     repeatableResult.formState,
-    getConfig() // pass the full config
+    formConfig
   )
 })
 

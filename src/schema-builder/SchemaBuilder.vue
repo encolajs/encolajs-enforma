@@ -21,26 +21,26 @@
 
       <div class="flex items-center gap-2">
         <Button
+          v-tooltip="'Copy to clipboard'"
           icon="pi pi-download"
           size="small"
           outlined
           @click="handleExport"
-          v-tooltip="'Copy to clipboard'"
         />
         <Button
+          v-tooltip="'Import from clipboard'"
           icon="pi pi-upload"
           size="small"
           outlined
           @click="handleImport"
-          v-tooltip="'Import from clipboard'"
         />
         <Button
           v-if="state.currentMode === 'json'"
+          v-tooltip="'Format JSON'"
           icon="pi pi-code"
           size="small"
           outlined
           @click="formatJson"
-          v-tooltip="'Format JSON'"
         />
       </div>
     </div>
@@ -65,12 +65,17 @@
         <Toolbar>
           <template #start>
             <div class="flex gap-2">
-              <Button label="Field" size="small" outlined @click="addField" />
+              <Button
+                label="Field"
+                size="small"
+                outlined
+                @click="() => addField()"
+              />
               <Button
                 label="Section"
                 size="small"
                 outlined
-                @click="addSection"
+                @click="() => addSection()"
               />
               <Button
                 label="Repeatable"
@@ -102,16 +107,16 @@
 
       <Accordion
         v-else
-        :activeIndex="Array.from(state.expandedItems)"
+        :activeIndex="expandedIndexes"
         :multiple="true"
         class="w-full"
+        @tab-open="(event) => toggleExpandedAt(event.index)"
+        @tab-close="(event) => toggleExpandedAt(event.index)"
       >
         <AccordionTab
           v-for="([key, item], index) in Object.entries(state.schema)"
           :key="key"
           :header="getItemHeader(key, item)"
-          @tab-open="() => state.expandedItems.add(key)"
-          @tab-close="() => state.expandedItems.delete(key)"
         >
           <SchemaBuilderItem
             :item-key="key"
@@ -214,6 +219,7 @@ const {
   updateSchemaItem,
   removeSchemaItem,
   duplicateSchemaItem,
+  toggleExpanded,
   exportToClipboard,
   importFromClipboard,
   formatJson,
@@ -222,6 +228,18 @@ const {
   initialSchema: props.modelValue,
   initialMode: props.mode,
 })
+
+// The accordion matches open tabs by index, while expandedItems holds item keys
+const expandedIndexes = computed(() =>
+  Object.keys(state.value.schema).flatMap((key, index) =>
+    state.value.expandedItems.has(key) ? [index] : []
+  )
+)
+
+// Accordion events refer to tabs by index
+const toggleExpandedAt = (index: number): void => {
+  toggleExpanded(Object.keys(state.value.schema)[index])
+}
 
 // Local state for JSON textarea
 const jsonTextLocal = ref(schemaAsJson.value)
@@ -247,7 +265,7 @@ watch(
 watch(
   () => state.value.schema,
   (newSchema) => {
-    emit('update:modelValue', { ...newSchema })
+    emit('update:modelValue', { ...newSchema } as FormSchema)
   },
   { deep: true }
 )

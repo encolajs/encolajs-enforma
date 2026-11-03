@@ -1,9 +1,12 @@
 <template>
   <component
     :is="effectiveComponent"
-    v-bind="mergeProps($attrs || {}, getConfig('pt.repeatable.remove') || {})"
+    v-bind="
+      mergeProps($attrs || {}, getPassThroughProps('pt.repeatable.remove'))
+    "
     @click="$emit('click')"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-if="effectiveContent" v-html="t(effectiveContent)"></span>
   </component>
 </template>
@@ -28,7 +31,7 @@ defineEmits<{
 }>()
 
 const { t } = useTranslation()
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.repeatable.remove.as') || props.as
 

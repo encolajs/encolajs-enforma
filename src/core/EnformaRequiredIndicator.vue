@@ -1,8 +1,9 @@
 <template>
   <component
     :is="effectiveComponent"
-    v-bind="mergeProps($attrs, getConfig('pt.required'))"
+    v-bind="mergeProps($attrs, getPassThroughProps('pt.required'))"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-html="effectiveContent"></span>
   </component>
 </template>
@@ -23,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   as: 'span',
 })
 
-const { getConfig } = useFormConfig()
+const { getConfig, getPassThroughProps } = useFormConfig()
 const { t } = useTranslation()
 
 const effectiveComponent = getConfig('pt.required.as') || props.as
