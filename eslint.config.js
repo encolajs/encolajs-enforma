@@ -2,6 +2,7 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import vuePlugin from "eslint-plugin-vue";
+import vueParser from "vue-eslint-parser";
 
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -16,7 +17,13 @@ export default [
       vue: vuePlugin,
     },
     languageOptions: {
-      parser: vuePlugin.parser
+      parser: vueParser,
+      parserOptions: {
+        // for <script lang="ts">
+        parser: tseslint.parser,
+        extraFileExtensions: [".vue"],
+        sourceType: "module",
+      },
     },
     rules: {
       ...vuePlugin.configs.recommended.rules,
