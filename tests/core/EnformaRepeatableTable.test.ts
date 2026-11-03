@@ -8,7 +8,11 @@ import {
   formConfigKey,
   formSchemaKey,
 } from '../../src/constants/symbols'
-import { useConfig } from '../../src/utils/useConfig'
+import {
+  useConfig,
+  getGlobalConfig,
+  setGlobalConfig,
+} from '../../src/utils/useConfig'
 import { provide } from 'vue'
 import useDefaultPreset from '../../src/presets/default'
 import { useFormConfig } from '../../src'
@@ -376,6 +380,33 @@ describe('EnformaRepeatableTable', () => {
       expect(fields).toHaveLength(0)
       const addButton = wrapper.find('.enforma-repeatable-add-button')
       expect(addButton.exists()).toBe(true)
+    })
+  })
+
+  describe('transformers', () => {
+    it('passes the form config to repeatable_table_props transformers', async () => {
+      const originalConfig = getGlobalConfig()
+      const transformer = vi.fn((props) => props)
+      setGlobalConfig({
+        ...originalConfig,
+        transformers: {
+          ...originalConfig.transformers,
+          repeatable_table_props: [transformer],
+        },
+      })
+
+      try {
+        const formState = createFormState({ items: [] })
+        createTestWrapper({ subfields: {} }, formState)
+        await flushPromises()
+
+        expect(transformer).toHaveBeenCalled()
+        const config = transformer.mock.calls[0][2]
+        expect(config).toBeTypeOf('object')
+        expect(config.pt).toBeDefined()
+      } finally {
+        setGlobalConfig(originalConfig)
+      }
     })
   })
 

@@ -123,7 +123,7 @@ const props = withDefaults(defineProps<RepeatableFieldProps>(), {
 })
 
 const $attrs = useAttrs()
-const { getConfig } = useFormConfig()
+const { getConfig, formConfig } = useFormConfig()
 
 // Use the useEnformaRepeatable hook, but apply table-specific transformers
 const repeatableResult = useEnformaRepeatable(props)
@@ -145,7 +145,7 @@ const transformedTableConfig = computed(() => {
     repeatableTablePropsTransformers,
     { ...transformedFieldConfig.value },
     repeatableResult.formState,
-    getConfig() // pass the full config
+    formConfig
   )
 })
 
