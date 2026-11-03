@@ -95,11 +95,11 @@ export default defineConfig({
           text: 'UI Library Integration',
           link: '/ui-library-integration/',
           items: [
-            { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
+            { text: 'Nuxt UI Preset', link: '/ui-library-integration/nuxtui-preset' },
+            { text: 'Reka UI Preset', link: '/ui-library-integration/rekaui-preset' },
             { text: 'Vuetify Preset', link: '/ui-library-integration/vuetify-preset' },
             { text: 'Quasar Preset', link: '/ui-library-integration/quasar-preset' },
-            { text: 'Reka UI Preset', link: '/ui-library-integration/rekaui-preset' },
-            { text: 'Nuxt UI Preset', link: '/ui-library-integration/nuxtui-preset' },
+            { text: 'PrimeVue Preset', link: '/ui-library-integration/primevue-preset' },
             { text: 'Creating Your Own UI Preset', link: '/ui-library-integration/creating-your-own-ui-preset' },
           ],
         },
@@ -164,10 +164,10 @@ export default defineConfig({
         {
           text: 'Presets',
           items: [
+            { text: 'Nuxt UI', link: '/examples/nuxtui-preset' },
+            { text: 'Reka UI', link: '/examples/rekaui-preset' },
             { text: 'Vuetify', link: '/examples/vuetify-preset' },
             { text: 'Quasar', link: '/examples/quasar-preset' },
-            { text: 'Reka UI', link: '/examples/rekaui-preset' },
-            { text: 'Nuxt UI', link: '/examples/nuxtui-preset' },
           ],
         },
         {
