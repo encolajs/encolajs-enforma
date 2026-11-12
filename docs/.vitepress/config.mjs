@@ -255,7 +255,10 @@ export default defineConfig({
       }),
     ],
     ssr: {
-      noExternal: [/\.css$/, /^vuetify/, /^@nuxt\/ui/]
+      // Nuxt UI is bundled into the server build, and so are unhead and hookable, which it
+      // needs in versions of its own (hookable 6), nested under it: externalized, they would
+      // resolve to the hookable 5 VitePress installs at the top of node_modules
+      noExternal: [/\.css$/, /^vuetify/, /^@nuxt\/ui/, /^@unhead\//, /^unhead/, /^hookable/]
     },
     resolve: {
       alias: {
