@@ -13,7 +13,32 @@ export function mergeConfigs<T extends ConfigObject>(
 }
 
 /**
- * Deep merges two objects, handling arrays and nested objects
+ * Whether a value is a component rather than configuration: an SFC or a `defineComponent()`
+ * object (setup or render), an async component, or a raw (`markRaw`) object. Components are
+ * taken as they are, never merged into another or copied.
+ */
+function isComponent(value: any): boolean {
+  return (
+    typeof value.setup === 'function' ||
+    typeof value.render === 'function' ||
+    typeof value.template === 'string' ||
+    '__asyncLoader' in value ||
+    '__name' in value ||
+    value.__v_skip === true
+  )
+}
+
+/**
+ * Whether a value is configuration that can be merged: an object (not an array) that is not a
+ * component.
+ */
+function isMergeable(value: any): boolean {
+  return isPlainObject(value) && !isComponent(value)
+}
+
+/**
+ * Deep merges two objects, handling arrays and nested objects. Components (see `isComponent()`)
+ * replace what they're merged into, and are kept as they are.
  */
 export function deepMerge(target: any, source: any): any {
   if (source == null) {
@@ -21,12 +46,12 @@ export function deepMerge(target: any, source: any): any {
   }
 
   // Return source directly if target is not an object
-  if (!isPlainObject(target)) {
+  if (!isMergeable(target)) {
     return source
   }
 
   // Return target if source is not an object
-  if (!isPlainObject(source)) {
+  if (!isMergeable(source)) {
     return target
   }
 
@@ -42,10 +67,10 @@ export function deepMerge(target: any, source: any): any {
     if (Array.isArray(sourceValue)) {
       // For arrays, replace the entire array rather than merging
       output[key] = sourceValue.slice() // Faster than spread for arrays
-    } else if (isPlainObject(sourceValue)) {
+    } else if (isMergeable(sourceValue)) {
       const targetValue = target[key]
       // Only recursively merge if targetValue is an object
-      if (isPlainObject(targetValue)) {
+      if (isMergeable(targetValue)) {
         output[key] = deepMerge(targetValue, sourceValue)
       } else {
         // If targetValue is not an object, assign sourceValue directly

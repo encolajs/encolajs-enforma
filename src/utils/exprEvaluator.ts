@@ -4,7 +4,11 @@
  * This means the prop's value is actually a formula/expression
  * that has to be derived at "runtime" and depends on the state of the form
  */
-import { computed, ComputedRef } from 'vue'
+import { ComputedRef } from 'vue'
+import {
+  ConstantFunctionProvider,
+  ExpressionLanguage,
+} from '@andreasnicolaou/typescript-expression-language'
 import { EnformaConfig } from '@/utils/useConfig'
 
 /**
@@ -63,35 +67,6 @@ function logExpressionError(
 }
 
 /**
- * Simple memoization helper for caching function results
- */
-function memoize<T extends (...args: any[]) => any>(fn: T, maxSize = 100): T {
-  const cache = new Map<string, any>()
-
-  return ((...args: any[]) => {
-    // Create a cache key from the arguments
-    const key = JSON.stringify(args)
-
-    if (cache.has(key)) {
-      return cache.get(key)
-    }
-
-    const result = fn(...args)
-
-    // Add result to cache, maintain max size
-    cache.set(key, result)
-    if (cache.size > maxSize) {
-      const firstKey = cache.keys().next().value
-      if (firstKey !== undefined) {
-        cache.delete(firstKey)
-      }
-    }
-
-    return result
-  }) as T
-}
-
-/**
  * Context for expression evaluation
  */
 export interface ExpressionContext {
@@ -128,51 +103,16 @@ const DEFAULT_OPTIONS: EvaluationOptions = {
 }
 
 /**
- * Creates and returns an evaluator function for the given expression
- * This is the part we want to memoize as function creation is expensive
+ * The expression language every expression is read in: Symfony's ExpressionLanguage, as
+ * @andreasnicolaou/typescript-expression-language implements it. It parses an expression and
+ * interprets it, so no string ever becomes code (no `new Function`, no `eval`): expressions run
+ * under a Content Security Policy without `'unsafe-eval'`, and can only reach the names they
+ * are given (`form`, `context`, `config`). `constant()` and `enum()`, which would read globals,
+ * allow nothing. Parsed expressions are cached.
  */
-function createEvaluator(expression: string): (ctx: any) => any {
-  // Basic validation of the expression
-  if (!expression || typeof expression !== 'string') {
-    throw new ExpressionError('Invalid expression provided', String(expression))
-  }
-
-  // Check for potentially unsafe expressions (basic security check)
-  if (
-    /\b(window|document|globalThis|eval|Function|setTimeout|setInterval)\b/.test(
-      expression
-    )
-  ) {
-    throw new ExpressionError(
-      'Expression contains potentially unsafe references',
-      expression
-    )
-  }
-
-  try {
-    const funcBody = `
-      with (context) {
-        try {
-          return ${expression};
-        } catch (error) {
-          // Capture and rethrow with more context
-          throw new Error(error.message);
-        }
-      }
-    `
-    return new Function('context', funcBody) as (ctx: any) => any
-  } catch (error) {
-    // Function creation error (typically syntax error)
-    throw new ExpressionError(
-      `Failed to create evaluator function: ${(error as Error).message}`,
-      expression,
-      error as Error
-    )
-  }
-}
-
-// Memoized version of createEvaluator to avoid recreating functions
-const memoizedCreateEvaluator = memoize(createEvaluator)
+const language = new ExpressionLanguage(null, [
+  new ConstantFunctionProvider([]),
+])
 
 /**
  * Safely evaluates an expression string against a context
@@ -196,13 +136,8 @@ export function evaluateExpression(
   }
 
   try {
-    // Get or create the evaluation function (memoized)
-    const evaluator = memoizedCreateEvaluator(expression)
-
-    // Create a safe context copy to prevent modifications to the original
-    const safeContext = { ...currentContext }
-    // Evaluate the expression synchronously
-    return evaluator(safeContext)
+    // Only the context's own names can be read: an expression naming another is an error
+    return language.evaluate(expression.trim(), { ...currentContext })
   } catch (error) {
     // Handle the error and provide helpful debugging information
     const expressionError =

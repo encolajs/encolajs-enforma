@@ -1,4 +1,11 @@
-import { defineComponent, provide, h, PropType, inject } from 'vue'
+import {
+  defineComponent,
+  provide,
+  h,
+  PropType,
+  inject,
+  onBeforeUnmount,
+} from 'vue'
 import { useForm } from './useForm'
 import { formControllerKey, enformaConfigKey } from '@/constants/symbols'
 import { FormController } from '@/types'
@@ -62,22 +69,34 @@ export default defineComponent({
       validatorOrRules = props.rules
     }
 
-    // Create form using useForm with callbacks for events and global events option
+    // Create form using useForm with callbacks for events. Its events go through its own
+    // emitter, which this form alone hears.
     const formCtrl: FormController = useForm(props.data, validatorOrRules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
-      useGlobalEvents: true, // Use global event emitter for component integration
+    })
+
+    // The handlers registered below, removed as the form unmounts, with the form's controller.
+    const handlers: [string, Function][] = []
+    const on = (event: string, handler: Function) => {
+      handlers.push([event, handler])
+      formCtrl.on(event as any, handler)
+    }
+    onBeforeUnmount(() => {
+      for (const [event, handler] of handlers)
+        formCtrl.off(event as any, handler)
+      formCtrl.destroy()
     })
 
     // Set up event handlers to forward events to component emits
-    formCtrl.on(
+    on(
       'submit_success',
       ({ formController }: { formController: FormController }) => {
         ctx.emit('submit_success', formController.values(), formController)
       }
     )
 
-    formCtrl.on(
+    on(
       'submit_error',
       ({
         error,
@@ -90,14 +109,14 @@ export default defineComponent({
       }
     )
 
-    formCtrl.on(
+    on(
       'validation_fail',
       ({ formController }: { formController: FormController }) => {
         ctx.emit('validation_fail', formController)
       }
     )
 
-    formCtrl.on(
+    on(
       'field_changed',
       ({
         path,
@@ -114,7 +133,7 @@ export default defineComponent({
       }
     )
 
-    formCtrl.on(
+    on(
       'field_focused',
       ({
         path,
@@ -129,7 +148,7 @@ export default defineComponent({
       }
     )
 
-    formCtrl.on(
+    on(
       'field_blurred',
       ({
         path,
@@ -144,7 +163,7 @@ export default defineComponent({
       }
     )
 
-    formCtrl.on(
+    on(
       'form_initialized',
       ({ formController }: { formController: FormController }) => {
         ctx.emit('form_initialized', formController)
@@ -172,7 +191,7 @@ export default defineComponent({
     }
 
     // Also listen for form_reset event
-    formCtrl.on(
+    on(
       'form_reset',
       ({ formController }: { formController: FormController }) => {
         ctx.emit('reset', formController)

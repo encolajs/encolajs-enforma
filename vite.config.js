@@ -46,7 +46,15 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      external: ['vue', '@encolajs/validator', 'zod', 'yup', 'valibot', 'mitt'],
+      external: [
+        'vue',
+        '@encolajs/validator',
+        'zod',
+        'yup',
+        'valibot',
+        'mitt',
+        '@andreasnicolaou/typescript-expression-language',
+      ],
       output: {
         globals: {
           vue: 'Vue',

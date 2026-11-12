@@ -38,5 +38,5 @@ const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.reset.as') || props.as
 
-const effectiveContent = getConfig('pt.reset.content')
+const effectiveContent = getConfig('pt.reset.content') || props.content
 </script>

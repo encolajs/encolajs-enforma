@@ -48,6 +48,9 @@ import {
   nextTick,
 } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
+import EnformaSchema from './EnformaSchema.vue'
+import EnformaSubmitButton from './EnformaSubmitButton.vue'
+import EnformaResetButton from './EnformaResetButton.vue'
 import {
   formContextKey,
   formConfigKey,
@@ -57,7 +60,6 @@ import {
 } from '@/constants/symbols'
 import { FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
-import { useFormConfig } from '@/utils/useFormConfig'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import {
@@ -65,6 +67,7 @@ import {
   extractMessagesFromSchema,
 } from '@/utils/extractRulesFromSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
+import { pathUtils } from '@/utils/helpers'
 
 const props = defineProps({
   data: {
@@ -93,7 +96,7 @@ const props = defineProps({
   },
   submitHandler: {
     type: Function as PropType<(data: any) => Promise<any>>,
-    required: true,
+    default: undefined,
   },
   showSubmitButton: {
     type: Boolean,
@@ -130,8 +133,11 @@ onMounted(() => {
   }
 })
 
+// The form's own config: the global one with the form's `config` on top. It reaches every
+// part of the form (fields, sections, buttons), which read it through useFormConfig().
 const formConfig = useConfig(props.config)
-const { getConfig } = useFormConfig(false)
+const getConfig = <T = any>(path: string, defaultValue?: T) =>
+  pathUtils.get<T>(formConfig, path, defaultValue)
 
 // Field rules and messages collector
 const fieldRules = reactive<ValidationRules>({})
@@ -236,16 +242,18 @@ const transformedSchema = computed(() => transformedProps.value.schema)
 const transformedContext = computed(() => transformedProps.value.context)
 const transformedFormConfig = computed(() => transformedProps.value.config)
 
-provide(formContextKey, transformedContext.value)
-provide(formSchemaKey, transformedSchema.value)
-provide(formConfigKey, transformedFormConfig.value)
+// Provided as computeds, so a changed schema or context reaches the fields without a remount
+provide(formContextKey, transformedContext)
+provide(formSchemaKey, transformedSchema)
+provide(formConfigKey, transformedFormConfig)
 provide(fieldRulesCollectorKey, fieldRulesCollector)
 
 // Get slots and provide them for field customization
 const $slots = useSlots()
 provide(formFieldSlotsKey, $slots)
 
-const submitButton = getConfig('components.submitButton')
-const resetButton = getConfig('components.resetButton')
-const schemaComponent = getConfig('components.schema')
+// Enforma's own components unless the config names others
+const submitButton = getConfig('components.submitButton') || EnformaSubmitButton
+const resetButton = getConfig('components.resetButton') || EnformaResetButton
+const schemaComponent = getConfig('components.schema') || EnformaSchema
 </script>

@@ -1,4 +1,4 @@
-import { ComponentPublicInstance, Ref } from 'vue'
+import { Component, Ref } from 'vue'
 import {
   CustomMessagesConfig,
   ValidationRule,
@@ -169,9 +169,9 @@ export interface FormController {
  */
 export interface BaseSchema {
   /**
-   * The type of schema this represents
+   * The type of schema this represents: a field when left out
    */
-  type: 'field' | 'section' | 'repeatable' | 'repeatable-table'
+  type?: 'field' | 'section' | 'repeatable' | 'repeatable-table'
 
   /**
    * The component used for rendering this part of the form
@@ -201,7 +201,8 @@ export interface BaseSchema {
  * Represents the schema definition for a single form field
  */
 export interface FieldSchema extends BaseSchema {
-  type: 'field'
+  /** A field, which an entry is when it says nothing else */
+  type?: 'field'
 
   /**
    * Label text for the field
@@ -269,7 +270,7 @@ export interface FieldSchema extends BaseSchema {
    * Component to use for this field
    * Allows direct component references
    */
-  inputComponent?: string | ComponentPublicInstance
+  inputComponent?: string | Component
 
   /**
    * Validation rules for this field in string format
