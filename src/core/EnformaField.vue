@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
-import { Component, PropType, computed } from 'vue'
+import { computed, type Component, type PropType } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
 import EnformaRequiredIndicator from './EnformaRequiredIndicator.vue'

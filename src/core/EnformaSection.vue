@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, mergeProps, unref, Ref } from 'vue'
+import { computed, inject, mergeProps, unref, type Ref } from 'vue'
 import {
   formSchemaKey,
   formControllerKey,

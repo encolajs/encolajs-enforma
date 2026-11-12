@@ -4,7 +4,7 @@ import {
   inject,
   mergeProps,
   onBeforeUnmount,
-  Component,
+  type Component,
   ComputedRef,
   Ref,
   ref,
