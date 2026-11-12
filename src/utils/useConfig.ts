@@ -102,6 +102,11 @@ export interface ExpressionsConfig {
     start: string
     end: string
   }
+  /**
+   * The schema keys whose `${…}` strings are evaluated (`['if']`). Any other key keeps its
+   * string as text. Left out, every key is evaluated.
+   */
+  only?: string[]
 }
 
 /**

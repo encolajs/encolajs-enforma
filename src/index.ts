@@ -40,6 +40,14 @@ export { default as EnformaRepeatableTable } from './core/EnformaRepeatableTable
 export { default as EnformaSubmitButton } from './core/EnformaSubmitButton.vue'
 export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
 export { default as EnformaRequiredIndicator } from './core/EnformaRequiredIndicator.vue'
+export { default as EnformaSchema } from './core/EnformaSchema.vue'
+export { default as EnformaSection } from './core/EnformaSection.vue'
+
+// For a field component of one's own (`components.field`), and for a host's own controller
+export { useEnformaField } from './core/useEnformaField'
+export type { EnformaFieldProps } from './core/useEnformaField'
+export { provideEnformaForm } from './core/provideEnformaForm'
+export type { ProvideEnformaFormOptions } from './core/provideEnformaForm'
 
 // Schema Builder
 export { SchemaBuilder, useSchemaBuilder } from './schema-builder'
@@ -100,6 +108,8 @@ export {
   formConfigKey,
   formContextKey,
   formSchemaKey,
+  formFieldSlotsKey,
+  fieldRulesCollectorKey,
   enformaConfigKey,
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'

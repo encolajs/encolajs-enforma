@@ -36,10 +36,12 @@ export const DEFAULT_CONFIG: EnformaConfig = {
    * These components are used when determining
    * what to render inside forms when schema is being used
    * (eg: each schema item comes with a `component` field
+   * Where one is null, Enforma's own is used: EnformaField, EnformaSection,
+   * EnformaSchema, EnformaRepeatable, EnformaRepeatableTable and the buttons
    */
   components: {
     field: null,
-    section: 'div', // to render a form section
+    section: null, // to render a form section
     repeatable: null, // to render a repeatable
     repeatableTable: null, // to render a repeatable table
     repeatableAddButton: null, // to render a "add" button on a repeatable field
@@ -48,7 +50,7 @@ export const DEFAULT_CONFIG: EnformaConfig = {
     repeatableMoveDownButton: null, // to render a "move down" button on a repeatable item
     submitButton: null, // to render the "submit" button on a form
     resetButton: null, // to render the "reset" button on a form
-    schema: 'div', // to render a "schema" type of component
+    schema: null, // to render a "schema" type of component
   },
 
   /**

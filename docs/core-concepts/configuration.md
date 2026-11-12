@@ -161,6 +161,7 @@ Controls how expressions are evaluated in the form.
 |--------|------|-------------|
 | `delimiters.start` | `string` | Start delimiter for expressions (default: `${`) |
 | `delimiters.end` | `string` | End delimiter for expressions (default: `}`) |
+| `only` | `string[]` | The schema keys whose expressions are evaluated (`['if']`). Every other key keeps its string as text. Left out, every key is evaluated |
 
 ### Components Configuration (`components`)
 

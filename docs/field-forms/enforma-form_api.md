@@ -15,6 +15,7 @@
 | `validator`        | `FormValidator` | Validator instance (created with `createEncolaValidator`, `createZodValidator`, etc.)                          |
 | `submitHandler`    | `Function`  | Function to be called on submit                                                                                    |
 | `config`           | `Object`    | Form configuration options                                                                                         |
+| `context`          | `Object`    | What expressions read as `context`: data and functions                                                             |
 | `showResetButton`  | `Boolean` | To show the reset button (default `true`)                                                                          |
 | `showSubmitButton` | `Boolean` | To show the submit button (default `true`). This is useful if you want to place the submit button outside the form |
 | ~~`rules`~~        | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |

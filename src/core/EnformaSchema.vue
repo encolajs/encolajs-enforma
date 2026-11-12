@@ -12,13 +12,15 @@ import { useAttrs } from 'vue'
 import type { FormSchema } from '@/types'
 import { useEnformaSchema } from './useEnformaSchema'
 import { useFormConfig } from '@/utils/useFormConfig'
+import EnformaSection from './EnformaSection.vue'
 
 const props = defineProps<{
   schema: FormSchema
 }>()
 
 const $attrs = useAttrs()
-const { sections } = useEnformaSchema(props.schema)
+// A getter, so a replaced schema is followed
+const { sections } = useEnformaSchema(() => props.schema)
 const { getConfig } = useFormConfig()
-const sectionComponent = getConfig('components.section')
+const sectionComponent = getConfig('components.section') || EnformaSection
 </script>

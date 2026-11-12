@@ -33,15 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  inject,
-  resolveComponent,
-  mergeProps,
-  ComputedRef,
-  useSlots,
-  ref,
-} from 'vue'
+import { computed, inject, mergeProps, unref, type Ref } from 'vue'
 import {
   formSchemaKey,
   formControllerKey,
@@ -52,7 +44,9 @@ import { FieldSchema, SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateCondition } from '@/utils/evaluateCondition'
-import { de } from 'vuetify/locale'
+import EnformaField from './EnformaField.vue'
+import EnformaRepeatable from './EnformaRepeatable.vue'
+import EnformaRepeatableTable from './EnformaRepeatableTable.vue'
 
 interface FieldWithPosition extends FieldSchema {
   position?: number
@@ -144,7 +138,12 @@ function shouldRenderField(field: FieldSchema & { name: string }): boolean {
   if (field['if'] === undefined) return true
   if (typeof field['if'] !== 'string') return field['if']
 
-  return evaluateCondition(field['if'], formCtrl, formContext, formConfig)
+  return evaluateCondition(
+    field['if'],
+    formCtrl,
+    unref(formContext),
+    formConfig
+  )
 }
 
 // Helper function to determine if a section should be rendered based on its 'if' property
@@ -155,20 +154,25 @@ function shouldRenderSection(
   if (section['if'] === undefined) return true
   if (typeof section['if'] !== 'string') return section['if']
 
-  return evaluateCondition(section['if'], formCtrl, formContext, formConfig)
+  return evaluateCondition(
+    section['if'],
+    formCtrl,
+    unref(formContext),
+    formConfig
+  )
 }
 
-// Inject dependencies
-const schema = inject<FormSchema>(formSchemaKey, {})
+// Inject dependencies. The schema and the context may be refs (Enforma provides computeds),
+// read where they're used, so a changed schema re-renders the section.
+const injectedSchema = inject<FormSchema | Ref<FormSchema>>(formSchemaKey, {})
 const formCtrl = inject<FormController>(formControllerKey)
 const formContext = inject<any>(formContextKey, null)
 
 // Get the configuration
 const { getConfig, getPassThroughProps, formConfig } = useFormConfig()
 
-const fieldComponent = getConfig('components.field')
 // this is needed because the component may render in a tree-like structure
-const sectionComponent = getConfig('components.section')
+const sectionComponent = getConfig('components.section') || 'EnformaSection'
 
 // Access parent slots injected from Enforma
 const parentSlots = inject(formFieldSlotsKey, null)
@@ -182,6 +186,7 @@ function hasFieldSlot(fieldName: string): boolean {
 
 // Get the section schema for this section
 const originalSectionSchema = computed(() => {
+  const schema = unref(injectedSchema)
   if (!schema) return null
   const item = schema[props.name]
   if (isSectionSchema(item)) {
@@ -227,28 +232,35 @@ function getComponent(field: any): string | object {
     repeatable: 'repeatable',
     repeatable_table: 'repeatableTable',
   }
+  // Enforma's own, where the config names none
+  const fallbacks: Record<string, object> = {
+    field: EnformaField,
+    repeatable: EnformaRepeatable,
+    repeatableTable: EnformaRepeatableTable,
+  }
   const component = componentMap[field.type || `field`] || field
-  return getConfig(`components.${component}`) as string
+  return (getConfig(`components.${component}`) ||
+    fallbacks[component as string]) as string | object
 }
 
 // Get fields for this section and sort them by position
 const sortedFields = computed(() => {
-  const fields = Object.entries(getFields(schema, props.name)).map(
-    ([name, field]) => {
-      const fieldWithPosition: FieldWithPosition = {
-        ...field,
-        name,
-      }
-      return fieldWithPosition
+  const fields = Object.entries(
+    getFields(unref(injectedSchema), props.name)
+  ).map(([name, field]) => {
+    const fieldWithPosition: FieldWithPosition = {
+      ...field,
+      name,
     }
-  )
+    return fieldWithPosition
+  })
 
   return sortByPosition(fields)
 })
 
 // Get nested sections and sort them by position
 const sortedSubsections = computed(() => {
-  const sections = getSubSections(schema, props.name).map(
+  const sections = getSubSections(unref(injectedSchema), props.name).map(
     ([name, section]) => ({ ...section, name } as SectionWithPosition)
   )
   return sortByPosition(sections)

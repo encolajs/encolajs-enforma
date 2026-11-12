@@ -13,15 +13,21 @@ Dynamic props are evaluated at runtime when components are defined in a schema:
 
 ## Evaluation Environment
 
-Dynamic props are evaluated in an environment that provides access to:
+Expressions are written in the expression language of [Symfony's ExpressionLanguage](https://symfony.com/doc/current/reference/formats/expression_language.html), as [`@andreasnicolaou/typescript-expression-language`](https://github.com/andreasnicolaou/typescript-expression-language) implements it. Enforma reads them and interprets them: no expression is ever compiled into code, so forms work under a Content Security Policy without `'unsafe-eval'`.
 
-- `form` - The **FormController** instance that gives you access to the form's methods and state
-  - `form.values()` - Get all form values
-  - `form.errors()` - Get all validation errors
-  - `form.getField(name)` - Get a specific field controller
-  - and [more...](/field-forms/enforma-form-controller_api.md)
-- `context` - The **Context Object** passed to the form via the `context` prop. Can contain custom data and functions
+An expression can read three names:
+
+- `form` - the form's **values**, read without changing anything:
+  - `form.country`, `form['address.city']` - a value, by its path (a copy of it)
+  - `form.getFieldValue(path)` - the same, as a method
+  - `form.values()` - all the values (a copy)
+  - `form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting` - the form's state
+- `context` - The **Context Object** passed to the form via the `context` prop. Can contain custom data and functions, which expressions can call
 - `config` - The **Form Configuration** used to configure the form's behavior
+
+The language has comparisons (`==`, `===`, `!=`, `<`, `>=`…), `and`/`&&`, `or`/`||`, `not`/`!`, `in`/`not in`, the ternary (`a ? b : c`), `??`, arithmetic, `~` to join strings, and array literals (`['CH', 'GB']`). It has no arrow functions, template literals or method calls on strings: put such logic in a function of the `context`.
+
+A form can limit expressions to some keys with its config's `expressions.only` (`{ expressions: { only: ['if'] } }`): every other key keeps its string as text, even one holding `${…}`. Use it when a schema's text comes from data, such as a server's database.
 
 ## Using Dynamic Props
 

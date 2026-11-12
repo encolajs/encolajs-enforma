@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { EnformaFieldProps, useEnformaField } from './useEnformaField'
-import { ComponentPublicInstance, PropType, useAttrs, computed } from 'vue'
+import { computed, type Component, type PropType } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
 import { useFormConfig } from '@/utils/useFormConfig'
 import EnformaRequiredIndicator from './EnformaRequiredIndicator.vue'
@@ -55,9 +55,7 @@ const originalProps = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: null },
   inputComponent: {
-    type: [String, Object] as unknown as PropType<
-      string | ComponentPublicInstance | null
-    >,
+    type: [String, Object] as unknown as PropType<string | Component | null>,
     default: null,
   },
   hideLabel: { type: Boolean, default: false },

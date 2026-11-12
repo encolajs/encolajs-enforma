@@ -15,6 +15,7 @@ import {
   ExpressionContext,
 } from './exprEvaluator'
 import { EnformaConfig } from './useConfig'
+import { formReader, isFormController } from './formReader'
 
 // Type for props that may contain expressions
 export type DynamicProps = Record<string, any>
@@ -28,22 +29,48 @@ export function evaluateSchema<T>(
   context: Record<string, any>,
   config: EnformaConfig
 ): T {
-  if (typeof schema !== 'object' || Array.isArray(schema)) {
+  if (typeof schema !== 'object' || schema === null || Array.isArray(schema)) {
+    return schema
+  }
+
+  // Only the keys `expressions.only` lists are evaluated, when it lists any: the others are
+  // kept as they are, text with `${…}` in it included.
+  const only = config?.expressions?.only
+  if (
+    Array.isArray(only) &&
+    !Object.keys(schema).some((key) => only.includes(key))
+  ) {
     return schema
   }
 
   const expressionContext = {
-    // Form controller (not just values)
-    form: formController ?? {},
+    // The form's values, read without side effects (see formReader.ts)
+    form: isFormController(formController)
+      ? formReader(formController)
+      : formController ?? {},
     // External context
     context: { ...context },
     // Form configuration
     config,
   }
 
-  return evaluateObject(
-    schema as Record<string, any>,
-    expressionContext,
-    config
-  ) as T
+  if (!Array.isArray(only)) {
+    return evaluateObject(
+      schema as Record<string, any>,
+      expressionContext,
+      config
+    ) as T
+  }
+
+  const result: Record<string, any> = { ...(schema as Record<string, any>) }
+  for (const key of Object.keys(result)) {
+    if (only.includes(key)) {
+      result[key] = evaluateObject(
+        { [key]: result[key] },
+        expressionContext,
+        config
+      )[key]
+    }
+  }
+  return result as T
 }

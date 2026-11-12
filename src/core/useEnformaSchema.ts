@@ -1,5 +1,5 @@
 // src/core/useEnformaSchema.ts
-import { computed } from 'vue'
+import { computed, toValue, MaybeRefOrGetter } from 'vue'
 import type { FormSchema, FieldSchema, SectionSchema } from '@/types'
 
 export interface SectionWithFields extends SectionSchema {
@@ -7,13 +7,13 @@ export interface SectionWithFields extends SectionSchema {
   subsections: Record<string, SectionWithFields>
 }
 
-export function useEnformaSchema(schema: FormSchema) {
+export function useEnformaSchema(schema: MaybeRefOrGetter<FormSchema>) {
   // Get root sections (sections that don't belong to any other section)
   const sections = computed(() => {
     const sections: Record<string, SectionWithFields> = {}
 
     // First pass: collect all sections
-    Object.entries(schema).forEach(([key, item]) => {
+    Object.entries(toValue(schema) || {}).forEach(([key, item]) => {
       if ('section' in item && 'title' in item) {
         const section = item as SectionSchema
         if (!section.section) {

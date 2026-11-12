@@ -45,7 +45,8 @@ const { getConfig, getPassThroughProps } = useFormConfig()
 
 const effectiveComponent = getConfig('pt.submit.as') || props.as
 
-const effectiveContent = getConfig('pt.submit.content')
+const effectiveContent = getConfig('pt.submit.content') || props.content
 
-const effectiveLoadingContent = getConfig('pt.submit.loadingContent')
+const effectiveLoadingContent =
+  getConfig('pt.submit.loadingContent') || props.loadingContent
 </script>

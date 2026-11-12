@@ -4,9 +4,11 @@ import {
   inject,
   mergeProps,
   onBeforeUnmount,
-  ComponentPublicInstance,
+  type Component,
   ComputedRef,
+  Ref,
   ref,
+  unref,
   watchEffect,
 } from 'vue'
 import {
@@ -27,7 +29,7 @@ import isNonEmptyObject from '@/utils/isNonEmptyObject'
 export interface EnformaFieldProps {
   name: string
   label?: string | null
-  inputComponent?: string | ComponentPublicInstance | null
+  inputComponent?: string | Component | null
   hideLabel?: boolean | undefined
   showLabelNextToInput?: boolean | undefined
   required?: boolean | string | undefined
@@ -106,7 +108,9 @@ function getFieldProps<T>(
 export function useEnformaField(originalProps: EnformaFieldProps) {
   // Get injected dependencies
   const formCtrl = inject<FormController>(formControllerKey) as FormController
-  const schema = inject<FormSchema>(formSchemaKey, {})
+  // The schema and the context may be refs (Enforma provides computeds): read where they're
+  // used, so a changed schema entry reaches the field
+  const schema = inject<FormSchema | Ref<FormSchema>>(formSchemaKey, {})
   const formContext = inject<any>(formContextKey)
   const fieldRulesCollector = inject<any>(fieldRulesCollectorKey, null)
   const { formConfig, getConfig } = useFormConfig()
@@ -137,9 +141,9 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
 
   const fieldProps = computed(() => {
     return evaluateSchema(
-      getFieldProps(originalProps, schema, formCtrl, getConfig),
+      getFieldProps(originalProps, unref(schema), formCtrl, getConfig),
       formCtrl,
-      formContext,
+      unref(formContext),
       formConfig
     )
   })

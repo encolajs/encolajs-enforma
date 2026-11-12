@@ -290,6 +290,36 @@ function handleClick(event) {
 </style>
 ```
 
+## Rendering a Schema Under Your Own Form Controller
+
+`<Enforma>` makes its own form controller and its own `<form>` element. A component that keeps its own controller (made with `useForm()`, with its own validator) and its own `<form>` calls `provideEnformaForm()` in its `setup()`, then renders `<EnformaSchema>`:
+
+```vue
+<script setup>
+import { EnformaSchema, provideEnformaForm, useForm } from '@encolajs/enforma'
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
+import MyField from './MyField.vue'
+
+const props = defineProps(['schema', 'values'])
+const controller = useForm(props.values, createEncolaValidator({ name: 'required' }))
+
+provideEnformaForm({
+  controller,
+  schema: () => props.schema,
+  // this form's own config, over the global one
+  config: { components: { field: MyField }, expressions: { only: ['if'] } },
+})
+</script>
+
+<template>
+  <form novalidate @submit.prevent="controller.submit()">
+    <EnformaSchema :schema="schema" />
+  </form>
+</template>
+```
+
+The controller's validator holds the rules: the `rules` in the schema are left to you. Only the fields that are rendered are checked, so a field hidden by its `if` isn't.
+
 ## Accessing Form Configuration in Custom Components
 
 When creating custom components, you'll often need to access the form configuration. Use the `useFormConfig` composable to get configuration values:
