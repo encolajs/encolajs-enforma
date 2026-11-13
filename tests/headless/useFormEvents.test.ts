@@ -149,19 +149,9 @@ describe('useForm events', () => {
   test('should emit form_initialized event', async () => {
     const handler = vi.fn()
 
-    // We need to create the form with the event handler already set up
-    // Since the initialized event is triggered in a setTimeout
-    const globalHandler = vi.fn()
+    const form = useForm(data, {})
 
-    // Use the global event emitter
-    const form = useForm(
-      data,
-      {},
-      {
-        useGlobalEvents: true,
-      }
-    )
-
+    // form_initialized is emitted in a setTimeout, after the handler is added
     form.on('form_initialized', handler)
 
     // Wait for the setTimeout to execute

@@ -12,12 +12,7 @@ import {
 } from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
 import { useConfig } from '@/utils/useConfig'
-import {
-  Emitter,
-  FormEvents,
-  createFormEmitter,
-  globalFormEmitter,
-} from '@/utils/events'
+import { Emitter, FormEvents, createFormEmitter } from '@/utils/events'
 import moveArrayItem from '@/utils/moveArrayItem'
 import type { FormValidator } from '@/validators/types'
 import { NoopValidator } from '@/validators/NoopValidator'
@@ -215,9 +210,7 @@ export function useForm<T extends object>(
 
   formScope.run(() => {
     // Create form-specific event emitter
-    formEmitter = options.useGlobalEvents
-      ? globalFormEmitter
-      : createFormEmitter()
+    formEmitter = createFormEmitter()
 
     // Use form config to access the clone function
     config = useConfig()

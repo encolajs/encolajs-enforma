@@ -37,8 +37,6 @@ export interface FormOptions {
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
   onSubmitError?: (error: any, form: FormController) => void
-  /** Use global event emitter instead of form-specific one */
-  useGlobalEvents?: boolean
 }
 
 /**

@@ -125,6 +125,3 @@ export function createFormEmitter(): Emitter<FormEvents> {
     },
   }
 }
-
-// Export singleton event emitter for global events
-export const globalFormEmitter = createFormEmitter()

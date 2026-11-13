@@ -1,3 +1,9 @@
+# Migration Guide: v1.6.x to v1.7.0
+
+## `useGlobalEvents` and `globalFormEmitter` are removed
+
+Since 1.6.0, `<Enforma>` and `HeadlessForm` no longer emitted on `globalFormEmitter`; only a `useForm()` made with `useGlobalEvents: true` did. Both are now gone: every form has its own emitter. Listen to a form's events on the form itself (`@submit_success`, `@field_changed`…) or on its controller (`formController.on(…)`).
+
 # Migration Guide: v1.5.x to v1.6.0
 
 Version 1.6.0 fixes how forms behave next to each other and how expressions run. Most forms need no change. Read on if you listen to forms' events through the shared emitter, configure components globally, or write expressions in JavaScript syntax.

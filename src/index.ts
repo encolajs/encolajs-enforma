@@ -19,7 +19,6 @@ export { evaluateCondition } from './utils/evaluateCondition'
 export * from './utils/helpers'
 export {
   createFormEmitter,
-  globalFormEmitter,
   type Emitter,
   type FormEvents,
   type FormEventType,

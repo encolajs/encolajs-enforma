@@ -13,7 +13,6 @@ import { useForm } from '@/headless/useForm'
 import { createEncolaValidator } from '@/validators/encolaValidator'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { setGlobalConfig, useConfig } from '@/utils/useConfig'
-import { globalFormEmitter } from '@/utils/events'
 import { evaluateCondition } from '@/utils/evaluateCondition'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import { deepMerge } from '@/utils/configUtils'
@@ -46,13 +45,6 @@ const fieldComponent = (kind: string) =>
 
 const FieldA = fieldComponent('a')
 const FieldB = fieldComponent('b')
-
-/** All the handlers on the emitter every form used to share. */
-const sharedHandlerCount = () =>
-  [...globalFormEmitter.all.values()].reduce(
-    (count, handlers) => count + (handlers?.length ?? 0),
-    0
-  )
 
 describe('Enforma 1.6: schema forms', () => {
   beforeEach(() => {
@@ -106,17 +98,6 @@ describe('Enforma 1.6: schema forms', () => {
 
       expect(first!.emitted('field_changed')).toBeUndefined()
       expect(second!.emitted('field_changed')).toHaveLength(1)
-    })
-
-    it('a form registers nothing on the emitter every form used to share', async () => {
-      const before = sharedHandlerCount()
-      const form = mount(Enforma, {
-        props: { data: {}, submitHandler: () => Promise.resolve() },
-      })
-      await flushPromises()
-      expect(sharedHandlerCount()).toBe(before)
-      form.unmount()
-      expect(sharedHandlerCount()).toBe(before)
     })
   })
 

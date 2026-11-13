@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from 'vitest'
-import { createFormEmitter, globalFormEmitter } from '@/utils/events'
+import { createFormEmitter } from '@/utils/events'
 
 describe('Form Events', () => {
   test('createFormEmitter should create a new event emitter', () => {
@@ -8,13 +8,6 @@ describe('Form Events', () => {
     expect(typeof emitter.on).toBe('function')
     expect(typeof emitter.off).toBe('function')
     expect(typeof emitter.emit).toBe('function')
-  })
-
-  test('globalFormEmitter should be a singleton', () => {
-    expect(globalFormEmitter).toBeDefined()
-    expect(typeof globalFormEmitter.on).toBe('function')
-    expect(typeof globalFormEmitter.off).toBe('function')
-    expect(typeof globalFormEmitter.emit).toBe('function')
   })
 
   test('events should be triggered and listened to', () => {
