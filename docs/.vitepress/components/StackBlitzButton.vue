@@ -18,6 +18,7 @@ import indexHtmlRaw from '../stackblitz/index.html?raw'
 import tsconfigRaw from '../stackblitz/tsconfig.json?raw'
 import viteConfigRaw from '../stackblitz/vite.config.ts?raw'
 import mainTsRaw from '../stackblitz/src/main.ts?raw'
+import mainCssRaw from '../stackblitz/src/main.css?raw'
 import appVueRaw from '../stackblitz/src/App.vue?raw'
 import fieldsFormExampleRaw from '../../examples/enforma/FieldsFormExample.vue?raw'
 import mixedFormExampleRaw from '../../examples/enforma/MixedFormExample.vue?raw'
@@ -26,6 +27,7 @@ import serverSideErrorsExampleRaw from '../../examples/features/ServerSideErrors
 import endDateFieldRaw from '../../examples/enforma/EndDateField.vue?raw'
 import salaryFieldRaw from '../../examples/enforma/SalaryField.vue?raw'
 import useFormConfigRaw from '../../examples/headless/useFormConfig.ts?raw'
+import datePickerRaw from '../../examples/nuxtui/DatePicker.vue?raw'
 
 const loading = ref(false)
 
@@ -55,6 +57,7 @@ const files = {
   'tsconfig.json': tsconfigRaw,
   'index.html': indexHtmlRaw,
   'src/main.ts': mainTsRaw,
+  'src/main.css': mainCssRaw,
   'src/App.vue': appVueRaw.replaceAll('FieldsFormExample', props.component, true).replaceAll('{{title}}', props.title, true),
   'src/components/FieldsFormExample.vue': fieldsFormExampleRaw,
   'src/components/ServerSideErrorsExample.vue': serverSideErrorsExampleRaw,
@@ -62,6 +65,7 @@ const files = {
   'src/components/SchemaFormExample.vue': schemaFormExampleRaw,
   'src/components/EndDateField.vue': endDateFieldRaw,
   'src/components/SalaryField.vue': salaryFieldRaw,
+  'src/components/DatePicker.vue': datePickerRaw,
   'src/composables/useFormConfig.ts': useFormConfigRaw
 }
 
@@ -70,6 +74,8 @@ Object.keys(files).map((k) => {
   file = file.replace(`from '@'`, `from '@encolajs/enforma'`)
   file = file.replace(`from "@"`, `from '@encolajs/enforma'`)
   file = file.replace('headless/useFormConfig', 'composables/useFormConfig')
+  file = file.replace('../../../src/validators/encolaValidator', '@encolajs/enforma/validators/encola')
+  file = file.replace('../nuxtui/DatePicker.vue', './DatePicker.vue')
 
 
   files[k] = file

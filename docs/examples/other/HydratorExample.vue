@@ -79,7 +79,7 @@ const schema = {
     label: 'Order Date',
     required: true,
     inputComponent: 'datepicker',
-    inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
+    inputProps: { class: 'w-full' },
   },
   customer: {
     type: 'field',
@@ -105,13 +105,11 @@ const schema = {
       name: {
         label: 'Product Name',
         inputComponent: 'input',
-        inputProps: { fluid: true },
       },
       quantity: {
         label: 'Quantity',
         inputComponent: 'input',
         inputProps: { 
-          fluid: true, 
           type: 'number',
           min: 1,
           step: 1
@@ -121,7 +119,6 @@ const schema = {
         label: 'Price',
         inputComponent: 'input',
         inputProps: { 
-          fluid: true, 
           type: 'number',
           min: 0,
           step: 0.01
@@ -131,7 +128,6 @@ const schema = {
         label: 'Total',
         inputComponent: 'input',
         inputProps: { 
-          fluid: true, 
           type: 'number',
           readonly: true
         },

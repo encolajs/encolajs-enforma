@@ -165,9 +165,9 @@ export default defineConfig({
         {
           text: 'Presets',
           items: [
-            { text: 'Nuxt UI', link: '/examples/nuxtui-preset' },
             { text: 'Reka UI', link: '/examples/rekaui-preset' },
             { text: 'Vuetify', link: '/examples/vuetify-preset' },
+            { text: 'PrimeVue', link: '/examples/primevue-preset' },
             { text: 'Quasar', link: '/examples/quasar-preset' },
           ],
         },
@@ -251,6 +251,8 @@ export default defineConfig({
         // Nuxt UI form controls are inline by default; make them fill the field
         ui: {
           input: { slots: { root: 'tw:w-full' } },
+          inputDate: { slots: { base: 'tw:w-full' } },
+          textarea: { slots: { root: 'tw:w-full' } },
           select: { slots: { base: 'tw:w-full' } },
         },
       }),

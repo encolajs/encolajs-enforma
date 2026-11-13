@@ -7,7 +7,7 @@ import AddressPickerForm from './address-picker/AddressPickerForm.vue'
 This recipe shows how you can go about implementing an address selector with add and edit functionality
 
 <ClientOnly>
-    <LiveDemo :component="AddressPickerForm"></LiveDemo>
+    <LiveDemo preset="primevue" :component="AddressPickerForm"></LiveDemo>
 </ClientOnly>
 
 ## Source code

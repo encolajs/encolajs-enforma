@@ -5,7 +5,7 @@ import StackBlitzButton from '../.vitepress/components/StackBlitzButton.vue'
 
 # Form Using Field Components
 
-This example is using the PrimeVue preset
+This example is using the Nuxt UI preset
 
 <StackBlitzButton 
   title="Enforma Fields Example"

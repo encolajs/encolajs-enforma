@@ -10,16 +10,18 @@
     <template #default="formCtrl">
       <div class="col-start-1 col-end-3">
         <AppFormField name="name" label="Name">
-          <template #default="{ attrs, events, id }">
+          <template #default="{ attrs, events, id, error }">
             <div class="flex">
               <!--
               This field is now using attrs and events for consistency.
               This approach offers greater flexibility and avoids
               potential conflicts with v-model binding.
               -->
-              <InputText
+              <UInput
                 :id="id"
                 class="w-full"
+                :color="error ? 'error' : undefined"
+                :highlight="!!error"
                 v-bind="attrs"
                 v-on="events"
               />
@@ -31,10 +33,12 @@
 
       <div class="col-start-1 col-end-3">
         <AppFormField name="email" label="Email">
-          <template #default="{ attrs, events, id }">
-            <InputText
+          <template #default="{ attrs, events, id, error }">
+            <UInput
               :id="id"
               class="w-full"
+              :color="error ? 'error' : undefined"
+              :highlight="!!error"
               v-bind="attrs"
               v-on="events"
             />
@@ -45,10 +49,12 @@
 
       <div class="col-start-1 cols-end-2">
         <AppFormField name="address.country" label="Country">
-          <template #default="{ attrs, events, id }">
-            <InputText
+          <template #default="{ attrs, events, id, error }">
+            <UInput
               :id="id"
               class="w-full"
+              :color="error ? 'error' : undefined"
+              :highlight="!!error"
               v-bind="attrs"
               v-on="events"
             />
@@ -58,10 +64,12 @@
 
       <div class="col-start-2 cols-end-3">
         <AppFormField name="address.city" label="City">
-          <template #default="{ attrs, events, id }">
-            <InputText
+          <template #default="{ attrs, events, id, error }">
+            <UInput
               :id="id"
               class="w-full"
+              :color="error ? 'error' : undefined"
+              :highlight="!!error"
               v-bind="attrs"
               v-on="events"
             />
@@ -73,14 +81,17 @@
         <AppFormField name="willing_to_relocate">
           <template #default="{ value, attrs, events, id }">
             <div class="flex align-center">
-              <ToggleSwitch
+              <!--
+              USwitch and USelect only report the new value
+              through `update:modelValue`, so we listen to that
+              instead of binding the native events
+              -->
+              <USwitch
                 :id="id"
                 class="me-2"
                 :model-value="value"
-                :true-value="true"
-                :false-value="false"
                 v-bind="attrs"
-                v-on="events"
+                @update:model-value="(checked) => formCtrl.setFieldValue('willing_to_relocate', checked)"
               />
               <span @click="formCtrl.setFieldValue('willing_to_relocate', !value)">Willing to relocate</span>
             </div>
@@ -90,13 +101,13 @@
 
       <div class="col-start-1 cols-end-2">
         <label class="block">Salary</label>
-        <div class="flex align-items center gap-2">
+        <div class="grid grid-cols-2 gap-2">
           <AppFormField name="salary.min">
             <template #default="{ attrs, events, id }">
-              <InputText
+              <UInput
                 :id="id"
                 placeholder="Min"
-                style="width: 100px"
+                class="w-full"
                 v-bind="attrs"
                 v-on="events"
               />
@@ -104,10 +115,10 @@
           </AppFormField>
           <AppFormField name="salary.max">
             <template #default="{ attrs, events, id }">
-              <InputText
+              <UInput
                 :id="id"
                 placeholder="Max"
-                style="width: 100px"
+                class="w-full"
                 v-bind="attrs"
                 v-on="events"
               />
@@ -122,14 +133,14 @@
 
       <div class="col-start-2 col-end-3">
         <AppFormField name="start_date" label="Available date">
-          <template #default="{ value, attrs, events, id }">
+          <template #default="{ value, attrs, events, id, error }">
             <DatePicker
               :id="id"
               :model-value="value"
-              date-format="yy-mm-dd"
-              fluid
+              class="w-full"
+              :color="error ? 'error' : undefined"
+              :highlight="!!error"
               v-bind="attrs"
-              v-on="events"
               @update:model-value="(date) => events.change({value: date})"
             />
           </template>
@@ -138,11 +149,13 @@
 
       <div class="col-start-1 col-end-2">
         <AppFormField name="linkedin_profile" label="LinkedIn profile">
-          <template #default="{ attrs, events, id }">
+          <template #default="{ attrs, events, id, error }">
             <div class="flex">
-              <InputText
+              <UInput
                 :id="id"
                 class="w-full"
+                :color="error ? 'error' : undefined"
+                :highlight="!!error"
                 v-bind="attrs"
                 v-on="events"
               />
@@ -153,11 +166,13 @@
 
       <div class="col-start-2 col-end-3">
         <AppFormField name="personal_site" label="Personal site">
-          <template #default="{ attrs, events, id }">
+          <template #default="{ attrs, events, id, error }">
             <div class="flex">
-              <InputText
+              <UInput
                 :id="id"
                 class="w-full"
+                :color="error ? 'error' : undefined"
+                :highlight="!!error"
                 v-bind="attrs"
                 v-on="events"
               />
@@ -183,7 +198,7 @@
                 <td class="p-2">
                   <AppFormField :name="`skills.${index}.name`">
                     <template #default="{ attrs, events, id }">
-                      <InputText
+                      <UInput
                         :id="id"
                         v-bind="attrs"
                         v-on="events"
@@ -193,39 +208,47 @@
                 </td>
                 <td class="p-2">
                   <AppFormField :name="`skills.${index}.level`">
-                    <template #default="{ value, attrs, events, id }">
-                      <Select
-                        :label-id="id"
+                    <template #default="{ value, attrs, events, id, error }">
+                      <USelect
+                        :id="id"
                         :model-value="value"
-                        fluid
-                        :options="['Beginner', 'Intermediate', 'Advanced', 'Expert']"
+                        class="w-full"
+                        :items="['Beginner', 'Intermediate', 'Advanced', 'Expert']"
+                        :color="error ? 'error' : undefined"
+                        :highlight="!!error"
                         v-bind="attrs"
-                        v-on="events"
+                        @update:model-value="(level) => events.change({value: level})"
+                        @blur="events.blur"
+                        @focus="events.focus"
                       />
                     </template>
                   </AppFormField>
                 </td>
                 <td class="p-2">
                   <div class="flex gap-2">
-                    <Button
-                      severity="danger"
+                    <UButton
+                      color="error"
+                      variant="ghost"
                       type="button"
                       :disabled="!canRemove"
                       @click="remove(index)"
-                      icon="pi pi-trash"
+                      icon="i-lucide-trash-2"
+                      title="Remove"
                     />
-                    <Button
-                      severity="secondary"
+                    <UButton
+                      color="neutral"
+                      variant="ghost"
                       type="button"
                       @click="moveUp(index)"
-                      icon="pi pi-arrow-up"
+                      icon="i-lucide-arrow-up"
                       title="Move up"
                     />
-                    <Button
-                      severity="secondary"
+                    <UButton
+                      color="neutral"
+                      variant="ghost"
                       type="button"
                       @click="moveDown(index)"
-                      icon="pi pi-arrow-down"
+                      icon="i-lucide-arrow-down"
                       title="Move Down"
                     />
                   </div>
@@ -234,10 +257,11 @@
               </tbody>
             </table>
             <div class="mb-4">
-              <Button
-                severity="secondary"
+              <UButton
+                color="primary"
+                variant="soft"
                 type="button"
-                icon="pi pi-plus"
+                icon="i-lucide-plus"
                 label="Add Skill"
                 @click="add({ name: '', level: '' }, 2)"
                 class="mr-2"
@@ -257,10 +281,12 @@
               class="grid grid-cols-2 gap-4 mb-8"
             >
               <AppFormField :name="`experience.${index}.company`" label="Company">
-                <template #default="{ attrs, events, id }">
-                  <InputText
+                <template #default="{ attrs, events, id, error }">
+                  <UInput
                     :id="id"
-                    fluid
+                    class="w-full"
+                    :color="error ? 'error' : undefined"
+                    :highlight="!!error"
                     v-bind="attrs"
                     v-on="events"
                   />
@@ -268,10 +294,12 @@
               </AppFormField>
 
               <AppFormField :name="`experience.${index}.position`" label="Position">
-                <template #default="{ attrs, events, id }">
-                  <InputText
+                <template #default="{ attrs, events, id, error }">
+                  <UInput
                     :id="id"
-                    fluid
+                    class="w-full"
+                    :color="error ? 'error' : undefined"
+                    :highlight="!!error"
                     v-bind="attrs"
                     v-on="events"
                   />
@@ -279,16 +307,17 @@
               </AppFormField>
 
               <AppFormField :name="`experience.${index}.start`" label="Start">
-                <template #default="{ value, attrs, events, id }">
+                <template #default="{ value, attrs, events, id, error }">
                   <DatePicker
                     :id="id"
-                    :model-value="new Date(value)"
-                    date-format="yy-mm-dd"
-                    fluid
+                    :model-value="value"
+                    class="w-full"
+                    :color="error ? 'error' : undefined"
+                    :highlight="!!error"
                     v-bind="attrs"
                     @blur="events.blur"
                     @focus="events.focus"
-                    @update:modelValue="(date) => events.change({value: date})"
+                    @update:model-value="(date) => events.change({value: date})"
                   />
                 </template>
               </AppFormField>
@@ -299,34 +328,39 @@
               />
 
               <div class="col-span-2 flex gap-2 items-right place-content-end">
-                <Button
-                  severity="danger"
+                <UButton
+                  color="error"
+                  variant="ghost"
                   type="button"
                   :disabled="!canRemove"
                   @click="remove(index)"
-                  icon="pi pi-trash"
+                  icon="i-lucide-trash-2"
+                  title="Remove"
                 />
-                <Button
-                  severity="secondary"
+                <UButton
+                  color="neutral"
+                  variant="ghost"
                   type="button"
                   @click="moveUp(index)"
-                  icon="pi pi-arrow-up"
+                  icon="i-lucide-arrow-up"
                   title="Move up"
                 />
-                <Button
-                  severity="secondary"
+                <UButton
+                  color="neutral"
+                  variant="ghost"
                   type="button"
                   @click="moveDown(index)"
-                  icon="pi pi-arrow-down"
+                  icon="i-lucide-arrow-down"
                   title="Move Down"
                 />
               </div>
             </div>
             <div class="mb-4">
-              <Button
-                severity="secondary"
+              <UButton
+                color="primary"
+                variant="soft"
                 type="button"
-                icon="pi pi-plus"
+                icon="i-lucide-plus"
                 label="Add Experience"
                 @click="add({})"
                 :disabled="!canAdd"
@@ -338,14 +372,15 @@
       </div>
 
       <div class="col-start-1 col-end-4 flex gap-2">
-        <Button
-          severity="primary"
+        <UButton
+          color="primary"
           :loading="formCtrl.$isSubmitting.value"
           :label="formCtrl.$isSubmitting.value ? 'Submitting...' : 'Submit'"
           type="submit"
         />
-        <Button
-          severity="secondary"
+        <UButton
+          color="neutral"
+          variant="outline"
           :loading="formCtrl.$isSubmitting.value"
           :label="'Reset'"
           type="reset"
@@ -358,7 +393,12 @@
 
 <script setup>
 import { HeadlessForm, HeadlessRepeatable } from '../../../src'
-import { InputText, Select, Button, ToggleSwitch, DatePicker} from 'primevue'
+import UInput from '@nuxt/ui/components/Input.vue'
+import USelect from '@nuxt/ui/components/Select.vue'
+import USwitch from '@nuxt/ui/components/Switch.vue'
+import UButton from '@nuxt/ui/components/Button.vue'
+// Nuxt UI's UInputDate with Date objects as values
+import DatePicker from '../nuxtui/DatePicker.vue'
 import { ref } from 'vue'
 import AppFormField from './AppFormField.vue'
 import ExperienceEndDateField from './ExperienceEndDateField.vue'

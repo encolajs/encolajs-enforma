@@ -45,6 +45,7 @@
         label="Willing to relocate"
         showLabelNextToInput
         input-component="toggle"
+        use-model-value
       />
       <EnformaField
         class="col-start-1 col-end-2"
@@ -59,7 +60,7 @@
         label="Available date"
         inputComponent="datepicker"
         useModelValue
-        :input-props="{class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true}"
+        :input-props="{class: 'w-full'}"
       />
       <EnformaField
         name="linkedin_profile"
@@ -90,17 +91,20 @@
 
   <h5 class="mt-8 mb-4">Manipulating the form from outside</h5>
   <div class="flex gap-2">
-  <Button
-    severity="secondary"
+  <UButton
+    color="neutral"
+    variant="outline"
     @click="formRef?.submit()"
     label="Submit"
     :loading="formRef?.$isSubmitting" />
-  <Button
-    severity="secondary"
+  <UButton
+    color="neutral"
+    variant="outline"
     @click="formRef?.setFieldValue('name', 'John Doe')"
     label="Set name to 'John Doe'" />
-  <Button
-    severity="secondary"
+  <UButton
+    color="neutral"
+    variant="outline"
     @click="formRef?.add('skills', 0, {name: 'new skill', level: 'Expert'})"
     label="Prepend new skill" />
   </div>
@@ -115,7 +119,7 @@ import { Enforma, EnformaField, EnformaRepeatable, EnformaRepeatableTable } from
 import useFormConfig from '../headless/useFormConfig'
 import EndDateField from './EndDateField.vue'
 import SalaryField from './SalaryField.vue'
-import { Button } from 'primevue'
+import UButton from '@nuxt/ui/components/Button.vue'
 import { ref } from 'vue'
 
 // for accessing the FormController
@@ -126,17 +130,13 @@ const {data, validator, submitHandler} = useFormConfig()
 const skillFields = {
   name: {
     label: "Skill",
-    inputComponent: 'input', // not necessary with the Primevue preset, it's the default
-    inputProps:  {
-      fluid: true
-    }
+    inputComponent: 'input', // not necessary with the Nuxt UI preset, it's the default
   },
   level: {
     label: "Level",
     inputComponent: 'select',
     inputProps: {
-      fluid: true,
-      options: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
+      items: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
     }
   }
 }
@@ -146,35 +146,22 @@ const experienceFields = {
     wrapperProps: {
       class: 'col-start-1 col-end-2'
     },
-    inputProps:  {
-      fluid: true
-    },
   },
   position: {
     label: "Position",
     wrapperProps: {
       class: 'col-start-2 col-end-3'
     },
-    inputProps:  {
-      fluid: true
-    },
   },
   start: {
     label: "Start",
     useModelValue: true,
     inputComponent: 'datepicker',
-    inputProps:  {
-      dateFormat: "yy-mm-dd",
-      fluid: true
-    },
   },
   end: {
     label: "End",
     useModelValue: true,
     inputComponent: EndDateField,
-    inputProps:  {
-      fluid: true
-    },
   },
 }
 

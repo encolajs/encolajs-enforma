@@ -112,7 +112,7 @@ const schema = {
     inputComponent: 'select',
     inputProps: {
       class: 'w-full',
-      options: ['email', 'phone', 'both']
+      items: ['email', 'phone', 'both']
     },
   },
   email: {
@@ -143,7 +143,7 @@ const schema = {
     inputComponent: 'select',
     inputProps: {
       class: 'w-full',
-      options: '${context.positions}'
+      items: '${context.positions}'
     },
   },
   experienceDetails: {
@@ -165,8 +165,6 @@ const schema = {
     useModelValue: true,
     inputProps: {
       class: 'w-full',
-      dateFormat: 'yy-mm-dd',
-      fluid: true
     },
   },
   remoteWork: {
@@ -178,10 +176,6 @@ const schema = {
     showLabelNextToInput: true,
     inputComponent: 'toggle',
     useModelValue: true,
-    inputProps: {
-      trueValue: true,
-      falseValue: false,
-    }
   },
   relocationPreference: {
     type: 'field',
@@ -193,7 +187,7 @@ const schema = {
     inputComponent: 'select',
     inputProps: {
       class: 'w-full',
-      options: ['Yes', 'No', 'Maybe']
+      items: ['Yes', 'No', 'Maybe']
     },
     if: '${!form.getFieldValue("remoteWork")}',
   },

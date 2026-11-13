@@ -10,24 +10,23 @@ It doesn't render the errors, or label, it just renders the inputs
         <DatePicker
           :id="end.id"
           :model-value="end.value"
-          date-format="yy-mm-dd"
-          fluid
+          class="w-full"
           :disabled="isCurrentlyWorking"
+          :color="end.error ? 'error' : undefined"
+          :highlight="!!end.error"
           v-bind="end.attrs"
-          @update:modelValue="end.events['update:modelValue']"
+          @update:model-value="(date) => end.events.change({value: date})"
         />
 
         <HeadlessField :name="currentName">
           <template #default="current">
             <div class="flex align-center mt-2">
-              <ToggleSwitch
+              <USwitch
                 :id="current.id"
                 class="me-2"
                 :model-value="current.value"
                 v-bind="current.attrs"
-                :true-value="true"
-                :false-value="false"
-                @change="(evt) => onChangeCurrent(evt.srcElement?.checked)"
+                @update:model-value="onChangeCurrent"
               />
               <span @click="onChangeCurrent(!current.value)">Currently working here</span>
             </div>
@@ -39,7 +38,9 @@ It doesn't render the errors, or label, it just renders the inputs
 
 <script setup>
 import { formControllerKey, HeadlessField } from '@'
-import { DatePicker, ToggleSwitch } from 'primevue'
+import USwitch from '@nuxt/ui/components/Switch.vue'
+// Nuxt UI's UInputDate with Date objects as values
+import DatePicker from '../nuxtui/DatePicker.vue'
 import { inject, computed } from 'vue'
 
 const props = defineProps({
@@ -56,7 +57,6 @@ const form = inject(formControllerKey)
 const isCurrentlyWorking = computed(() => form[currentName])
 
 const onChangeCurrent = (value) => {
-  debugger
   form.setFieldValue(currentName, value)
   form.setFieldValue(endName, null)
   form.validateField(endName, true)

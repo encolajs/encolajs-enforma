@@ -5,7 +5,7 @@ import StackBlitzButton from '../.vitepress/components/StackBlitzButton.vue'
 
 # Form Using Schema
 
-This example is using the PrimeVue preset
+This example is using the Nuxt UI preset
 
 <StackBlitzButton
     title="Enforma Schema Form Example"

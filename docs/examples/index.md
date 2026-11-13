@@ -11,7 +11,7 @@ component).
 - [Enforma form using schema and fields](mixed-form.md)
 - [Form using headless fields](headless-components.md)
 
-> [!INFO] All examples use PrimeVue components and Encola Validator.
+> [!INFO] All examples use Nuxt UI components and Encola Validator.
 
 ## Feature Examples
 - [Fields with dynamic props](dynamic-props.md)
@@ -19,9 +19,9 @@ component).
 
 ## Preset Examples
 - [Form using the Vuetify preset](vuetify-preset.md)
+- [Form using the PrimeVue preset](primevue-preset.md)
 - [Form using the Quasar preset](quasar-preset.md)
 - [Form using the Reka UI preset](rekaui-preset.md)
-- [Form using the Nuxt UI preset](nuxtui-preset.md)
 
 ## Other Examples
 - [Repeatable table with calculated fields](hydrator)

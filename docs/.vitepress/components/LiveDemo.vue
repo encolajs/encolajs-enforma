@@ -41,13 +41,15 @@ import NuxtUI from '@nuxt/ui/vue-plugin'
 import UInput from '@nuxt/ui/components/Input.vue'
 import USelect from '@nuxt/ui/components/Select.vue'
 import USwitch from '@nuxt/ui/components/Switch.vue'
+import UTextarea from '@nuxt/ui/components/Textarea.vue'
 import UButton from '@nuxt/ui/components/Button.vue'
+import NuxtUIDatePicker from '../../examples/nuxtui/DatePicker.vue'
 
 const props = defineProps({
   component: String | Object,
   preset: {
     type: String,
-    default: 'primevue'
+    default: 'nuxtui'
   }
 })
 
@@ -134,9 +136,11 @@ onMounted(() => {
     useNuxtUIPreset({
       input: UInput,
       text: UInput,
+      textarea: UTextarea,
       select: USelect,
       switch: USwitch,
       toggle: USwitch,
+      datepicker: NuxtUIDatePicker,
       button: UButton,
     })
   }

@@ -83,7 +83,7 @@ const schema = {
     class: 'col-start-2 col-end-3',
     label: 'Available date',
     inputComponent: 'datepicker',
-    inputProps: { class: 'w-full', dateFormat: 'yy-mm-dd', fluid: true },
+    inputProps: { class: 'w-full' },
   },
   linkedin_profile: {
     type: 'field',
@@ -111,14 +111,12 @@ const schema = {
       name: {
         label: 'Skill',
         inputComponent: 'input',
-        inputProps: { fluid: true },
       },
       level: {
         label: 'Level',
         inputComponent: 'select',
         inputProps: {
-          fluid: true,
-          options: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+          items: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
         },
       },
     },
@@ -137,25 +135,18 @@ const schema = {
       company: {
         label: 'Company',
         wrapperProps: { class: 'col-start-1 col-end-2' },
-        inputProps: { fluid: true },
       },
       position: {
         label: 'Position',
         wrapperProps: { class: 'col-start-2 col-end-3' },
-        inputProps: { fluid: true },
       },
       start: {
         label: 'Start',
         inputComponent: 'datepicker',
-        inputProps: {
-          dateFormat: 'yy-mm-dd',
-          fluid: true,
-        },
       },
       end: {
         label: 'End',
         inputComponent: EndDateField,
-        inputProps: { fluid: true },
       },
     },
   }

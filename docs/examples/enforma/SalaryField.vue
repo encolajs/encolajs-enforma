@@ -3,18 +3,22 @@
     <template #default="min">
       <HeadlessField :name="maxName">
         <template #default="max">
-          <div class="flex gap-1 items-center">
-            <InputText
+          <div class="grid grid-cols-[1fr_auto_1fr] gap-1 items-center">
+            <UInput
               :id="min.id"
-              style="width: 100px"
+              class="w-full"
+              :color="min.error ? 'error' : undefined"
+              :highlight="!!min.error"
               v-bind="min.attrs"
               v-on="min.events"
               placeholder="Min"
             />
             <span>-</span>
-            <InputText
+            <UInput
               :id="max.id"
-              style="width: 100px"
+              class="w-full"
+              :color="max.error ? 'error' : undefined"
+              :highlight="!!max.error"
               v-bind="max.attrs"
               v-on="max.events"
               placeholder="Max"
@@ -38,7 +42,7 @@
 
 <script setup>
 import { HeadlessField } from '@'
-import { InputText } from 'primevue'
+import UInput from '@nuxt/ui/components/Input.vue'
 import { useAttrs } from 'vue'
 
 const attrs = useAttrs()

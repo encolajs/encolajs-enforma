@@ -49,6 +49,22 @@
             }
         }
 
+        /* The Nuxt UI preset uses its own classes for repeatables */
+        .nuxtui-repeatable {
+            .nuxtui-repeatable-item {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0 1rem;
+                margin-bottom: 1rem;
+            }
+            /* the item's actions (remove, move up/down) */
+            .nuxtui-repeatable-item > div:last-child {
+                grid-column-start: 1;
+                grid-column-end: 3;
+                justify-content: end;
+            }
+        }
+
         .toggle-field {
             .enforma-field-input {
                 display: flex;
@@ -59,7 +75,7 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="isolate"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

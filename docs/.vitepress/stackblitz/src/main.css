@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@layer base {
+  h3 {
+    @apply text-xl font-semibold my-4;
+  }
+  h5 {
+    @apply font-semibold;
+  }
+}
