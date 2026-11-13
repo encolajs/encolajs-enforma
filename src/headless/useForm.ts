@@ -12,8 +12,8 @@ import {
 } from 'vue'
 import { generateId, pathUtils } from '@/utils/helpers'
 import { useConfig } from '@/utils/useConfig'
-import { Emitter } from 'mitt'
 import {
+  Emitter,
   FormEvents,
   createFormEmitter,
   globalFormEmitter,

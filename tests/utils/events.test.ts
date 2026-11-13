@@ -77,4 +77,81 @@ describe('Form Events', () => {
     expect(errorHandler).toHaveBeenCalledWith(errorData)
     expect(successHandler).toHaveBeenCalledTimes(1)
   })
+
+  test("'*' handlers hear every event, after the event's own handlers", () => {
+    const emitter = createFormEmitter()
+    const calls: string[] = []
+    const wildcard = vi.fn(() => calls.push('*'))
+    const formData = { formController: { id: 'test' } }
+
+    emitter.on('*', wildcard)
+    emitter.on('submit_success', () => calls.push('submit_success'))
+    emitter.emit('submit_success', formData)
+    emitter.emit('form_reset', formData)
+
+    expect(wildcard).toHaveBeenNthCalledWith(1, 'submit_success', formData)
+    expect(wildcard).toHaveBeenNthCalledWith(2, 'form_reset', formData)
+    expect(calls).toEqual(['submit_success', '*', '*'])
+
+    emitter.off('*', wildcard)
+    emitter.emit('form_reset', formData)
+    expect(wildcard).toHaveBeenCalledTimes(2)
+  })
+
+  test('off without a handler removes all the handlers of that event', () => {
+    const emitter = createFormEmitter()
+    const handler1 = vi.fn()
+    const handler2 = vi.fn()
+    const other = vi.fn()
+    const formData = { formController: { id: 'test' } }
+
+    emitter.on('submit_success', handler1)
+    emitter.on('submit_success', handler2)
+    emitter.on('form_reset', other)
+    emitter.off('submit_success')
+    emitter.emit('submit_success', formData)
+    emitter.emit('form_reset', formData)
+
+    expect(handler1).not.toHaveBeenCalled()
+    expect(handler2).not.toHaveBeenCalled()
+    expect(other).toHaveBeenCalledTimes(1)
+  })
+
+  test('off with a handler that was never added removes nothing', () => {
+    const emitter = createFormEmitter()
+    const handler = vi.fn()
+    const formData = { formController: { id: 'test' } }
+
+    emitter.off('submit_success', vi.fn())
+    emitter.on('submit_success', handler)
+    emitter.off('submit_success', vi.fn())
+    emitter.emit('submit_success', formData)
+
+    expect(handler).toHaveBeenCalledTimes(1)
+  })
+
+  test('a handler removing itself while the event runs does not skip the next one', () => {
+    const emitter = createFormEmitter()
+    const once = vi.fn(() => emitter.off('submit_success', once))
+    const next = vi.fn()
+    const formData = { formController: { id: 'test' } }
+
+    emitter.on('submit_success', once)
+    emitter.on('submit_success', next)
+    emitter.emit('submit_success', formData)
+    emitter.emit('submit_success', formData)
+
+    expect(once).toHaveBeenCalledTimes(1)
+    expect(next).toHaveBeenCalledTimes(2)
+  })
+
+  test('all holds the handlers by event type', () => {
+    const emitter = createFormEmitter()
+    const handler = vi.fn()
+
+    emitter.on('submit_success', handler)
+
+    expect(emitter.all.get('submit_success')).toEqual([handler])
+    expect(emitter.all.get('submit_error')).toBeUndefined()
+  })
 })

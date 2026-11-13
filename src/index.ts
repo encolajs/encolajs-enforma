@@ -20,6 +20,7 @@ export * from './utils/helpers'
 export {
   createFormEmitter,
   globalFormEmitter,
+  type Emitter,
   type FormEvents,
   type FormEventType,
 } from './utils/events'

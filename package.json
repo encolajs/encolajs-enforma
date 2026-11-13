@@ -213,7 +213,6 @@
         }
     },
     "dependencies": {
-        "@andreasnicolaou/typescript-expression-language": "3.2.1",
-        "mitt": "^3.0.1"
+        "@andreasnicolaou/typescript-expression-language": "3.2.1"
     }
 }

@@ -52,7 +52,6 @@ export default defineConfig({
         'zod',
         'yup',
         'valibot',
-        'mitt',
         '@andreasnicolaou/typescript-expression-language',
       ],
       output: {
