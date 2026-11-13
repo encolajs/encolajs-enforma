@@ -74,6 +74,7 @@ export default defineConfig({
                 { text: 'Schema Reference', link: '/schema-forms/schema-reference' },
                 { text: 'Field Slots', link: '/schema-forms/field-slots' },
                 { text: 'Dynamic Props', link: '/schema-forms/dynamic-props' },
+                { text: 'Expressions', link: '/schema-forms/expressions' },
                 { text: 'Transformers', link: '/schema-forms/transformers' },
                 { text: 'Mixed Forms', link: '/schema-forms/mixed-forms' },
               ]

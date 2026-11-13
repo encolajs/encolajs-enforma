@@ -25,7 +25,7 @@ An expression can read three names:
 - `context` - The **Context Object** passed to the form via the `context` prop. Can contain custom data and functions, which expressions can call
 - `config` - The **Form Configuration** used to configure the form's behavior
 
-The language has comparisons (`==`, `===`, `!=`, `<`, `>=`…), `and`/`&&`, `or`/`||`, `not`/`!`, `in`/`not in`, the ternary (`a ? b : c`), `??`, arithmetic, `~` to join strings, and array literals (`['CH', 'GB']`). It has no arrow functions, template literals or method calls on strings: put such logic in a function of the `context`.
+The language looks like JavaScript but is its own. See [Expressions](/schema-forms/expressions.md) for its syntax, the functions expressions can call (and how to add your own), and what expressions can't do.
 
 A form can limit expressions to some keys with its config's `expressions.only` (`{ expressions: { only: ['if'] } }`): every other key keeps its string as text, even one holding `${…}`. Use it when a schema's text comes from data, such as a server's database.
 

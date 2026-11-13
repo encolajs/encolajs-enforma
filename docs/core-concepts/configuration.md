@@ -162,6 +162,7 @@ Controls how expressions are evaluated in the form.
 | `delimiters.start` | `string` | Start delimiter for expressions (default: `${`) |
 | `delimiters.end` | `string` | End delimiter for expressions (default: `}`) |
 | `only` | `string[]` | The schema keys whose expressions are evaluated (`['if']`). Every other key keeps its string as text. Left out, every key is evaluated |
+| `functions` | `Record<string, Function>` | Functions expressions can call by their names (`${upper(form.name)}`). Set them in the plugin's options for the whole project, or in a form's config, where they are merged with the project's. See [Expressions](/schema-forms/expressions.md#adding-functions) |
 
 ### Components Configuration (`components`)
 

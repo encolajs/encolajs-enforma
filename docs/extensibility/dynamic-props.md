@@ -12,7 +12,7 @@ Dynamic props are schema field properties whose values are determined at runtime
 
 ## How Dynamic Props Work
 
-Dynamic props use a special string syntax that evaluates JavaScript expressions within schema fields:
+Dynamic props use a special string syntax that evaluates expressions within schema fields. The expression language looks like JavaScript but is its own: see [Expressions](/schema-forms/expressions.md) for its syntax, functions and limits.
 
 ```js
 // Basic syntax using default delimiters
@@ -22,7 +22,7 @@ Dynamic props use a special string syntax that evaluates JavaScript expressions 
 label: '${form.getFieldValue("accountType") === "business" ? "Company Name" : "Full Name"}'
 ```
 
-When Enforma encounters a string with the expression delimiters (`${` and `}` by default), it evaluates the content between them in a context that provides access to the form state, application context, and configuration.
+When a string starts and ends with the expression delimiters (`${` and `}` by default), Enforma evaluates the content between them in a context that provides access to the form state, application context, and configuration. A string with an expression in the middle of it (`'Hello ${form.name}'`) stays text.
 
 ### Key Benefits
 
@@ -37,9 +37,11 @@ Dynamic expressions are evaluated with access to:
 
 | Object | Description | Common Methods |
 |--------|-------------|----------------|
-| `form` | The form controller instance | `form.values()`, `form.getFieldValue(name)`, `form.errors()`, `form.getField(name)` |
+| `form` | The form's values, read-only (copies) | `form.country`, `form.getFieldValue(name)`, `form.values()`, `form.$isDirty` |
 | `context` | Custom data/functions provided via `:context` prop | Any properties or methods you provide |
 | `config` | Form configuration | Access to all configuration settings |
+
+Expressions can also call built-in functions and functions you add for your project. See [Expressions](/schema-forms/expressions.md).
 
 ## Common Use Cases
 
