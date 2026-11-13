@@ -1,26 +1,30 @@
+import './main.css';
 import { createApp } from 'vue';
-import App from './App.vue';
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
-import 'primeicons/primeicons.css';
-import usePrimeVuePreset from '@encolajs/enforma/presets/primevue';
-import { Button, InputText, Select, ToggleSwitch } from 'primevue';
+import ui from '@nuxt/ui/vue-plugin';
 import { EnformaPlugin } from '@encolajs/enforma';
+import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui';
+import UInput from '@nuxt/ui/components/Input.vue';
+import UTextarea from '@nuxt/ui/components/Textarea.vue';
+import USelect from '@nuxt/ui/components/Select.vue';
+import USwitch from '@nuxt/ui/components/Switch.vue';
+import UButton from '@nuxt/ui/components/Button.vue';
+// Nuxt UI's UInputDate with Date objects as values
+import DatePicker from './components/DatePicker.vue';
+import App from './App.vue';
 const app = createApp(App);
-app.use(PrimeVue, {
-    theme: {
-        preset: Aura,
-    },
-});
+// configure Nuxt UI
+app.use(ui);
 // configure Enforma
 app.use(EnformaPlugin);
-usePrimeVuePreset({
-    input: InputText,
-    text: InputText,
-    select: Select,
-    toggle: ToggleSwitch,
-    button: Button,
+useNuxtUIPreset({
+    input: UInput,
+    text: UInput,
+    textarea: UTextarea,
+    select: USelect,
+    switch: USwitch,
+    toggle: USwitch,
+    datepicker: DatePicker,
+    button: UButton,
 });
-app.component('Button', Button);
 app.mount('#app');
 //# sourceMappingURL=main.js.map
