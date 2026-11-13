@@ -7,9 +7,14 @@
 import { ComputedRef } from 'vue'
 import {
   ConstantFunctionProvider,
+  ConstantNode,
+  ExpressionFunction,
   ExpressionLanguage,
+  GetAttrNode,
+  Node,
+  ParsedExpression,
 } from '@andreasnicolaou/typescript-expression-language'
-import { EnformaConfig } from '@/utils/useConfig'
+import { EnformaConfig, ExpressionFunctions } from '@/utils/useConfig'
 
 /**
  * Custom error class for expression evaluation errors
@@ -88,6 +93,7 @@ export interface EvaluationOptions {
     start: string
     end: string
   }
+  functions?: ExpressionFunctions
 }
 
 /**
@@ -102,17 +108,199 @@ const DEFAULT_OPTIONS: EvaluationOptions = {
   },
 }
 
+/** Names the language reads as an operator or a constant, so a function can't be called by them */
+const RESERVED_NAMES = new Set([
+  'and',
+  'or',
+  'not',
+  'in',
+  'xor',
+  'contains',
+  'matches',
+  'true',
+  'false',
+  'null',
+])
+const FUNCTION_NAME = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+
+/** Expressions are interpreted, never compiled into code */
+function noCompiling(): never {
+  throw new Error('Enforma does not compile expressions')
+}
+
 /**
- * The expression language every expression is read in: Symfony's ExpressionLanguage, as
+ * An expression language: Symfony's ExpressionLanguage, as
  * @andreasnicolaou/typescript-expression-language implements it. It parses an expression and
  * interprets it, so no string ever becomes code (no `new Function`, no `eval`): expressions run
  * under a Content Security Policy without `'unsafe-eval'`, and can only reach the names they
  * are given (`form`, `context`, `config`). `constant()` and `enum()`, which would read globals,
  * allow nothing. Parsed expressions are cached.
+ *
+ * `functions` (a config's `expressions.functions`) can be called by their names, after the
+ * built-in ones, so a function named like a built-in one replaces it. They get the arguments
+ * only, and are called without `this`.
  */
-const language = new ExpressionLanguage(null, [
-  new ConstantFunctionProvider([]),
+function createLanguage(
+  functions: ExpressionFunctions = {}
+): ExpressionLanguage {
+  const language = new ExpressionLanguage(null, [
+    new ConstantFunctionProvider([]),
+  ])
+  for (const [name, fn] of Object.entries(functions)) {
+    if (
+      typeof fn !== 'function' ||
+      !FUNCTION_NAME.test(name) ||
+      RESERVED_NAMES.has(name.toLowerCase())
+    ) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `[Enforma] The expression function "${name}" is left out: it must be a function, named with letters, digits and _, and not after an operator (and, or, not, in, xor, contains, matches) or true, false, null`
+        )
+      }
+      continue
+    }
+    language.register(
+      name,
+      new ExpressionFunction(
+        name,
+        noCompiling,
+        (_values: unknown, ...args: any[]) => fn(...args)
+      )
+    )
+  }
+  return language
+}
+
+/** The language for expressions with no functions of a project's own */
+const defaultLanguage = createLanguage()
+
+/**
+ * The languages with a project's functions, by the functions they have. There are few (one per
+ * set of functions), so past MAX_LANGUAGES the least recently used one is dropped: functions
+ * written inline in a form's `:config` are new on each mount.
+ */
+const languages = new Map<string, ExpressionLanguage>()
+const MAX_LANGUAGES = 20
+const functionIds = new WeakMap<Function, number>()
+let lastFunctionId = 0
+
+function functionId(fn: unknown): number {
+  if (typeof fn !== 'function') {
+    return 0
+  }
+  let id = functionIds.get(fn)
+  if (id === undefined) {
+    id = ++lastFunctionId
+    functionIds.set(fn, id)
+  }
+  return id
+}
+
+/**
+ * The language with these functions. A language can't take a function once it has parsed an
+ * expression, so each set of functions has a language of its own. A set is known by its names
+ * and functions rather than by the object holding them: each form's config has its own copy.
+ */
+function getLanguage(functions?: ExpressionFunctions): ExpressionLanguage {
+  const names = functions ? Object.keys(functions).sort() : []
+  if (!functions || names.length === 0) {
+    return defaultLanguage
+  }
+
+  const key = JSON.stringify(
+    names.map((name) => [name, functionId(functions[name])])
+  )
+  let language = languages.get(key)
+  if (language) {
+    // Set again below, as the most recently used
+    languages.delete(key)
+  } else {
+    language = createLanguage(functions)
+    if (languages.size >= MAX_LANGUAGES) {
+      languages.delete(languages.keys().next().value as string)
+    }
+  }
+  languages.set(key, language)
+  return language
+}
+
+/**
+ * Property names an expression can't read, at any depth. Through them an expression could reach
+ * a prototype (`{}.__proto__`) and change it for the whole page (`….__defineGetter__(…)`).
+ */
+const BLOCKED_KEYS = new Set([
+  '__proto__',
+  'prototype',
+  'constructor',
+  '__defineGetter__',
+  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
 ])
+
+function assertReadable(key: unknown): void {
+  if (BLOCKED_KEYS.has(String(key))) {
+    throw new Error(`"${String(key)}" can't be read in an expression`)
+  }
+}
+
+/** The expressions guardExpression() has checked: the language caches them, so each is checked once. */
+const guarded = new WeakSet<ParsedExpression>()
+
+/**
+ * Keeps an expression away from the BLOCKED_KEYS. Every property an expression reads goes through
+ * a GetAttrNode (`a.b`, `a.b()`, `a['b']`, `a[b]`), on a name or on a literal alike:
+ * - a key written in the expression is checked here, and a blocked one is an error;
+ * - a key worked out when the expression runs (`a[b]`) is checked each time it is worked out.
+ *
+ * This reads the language's syntax tree, so the library is pinned to an exact version: the
+ * expression tests in tests/core/SchemaForms.test.ts fail if a new version changes it.
+ */
+function guardExpression(parsed: ParsedExpression): void {
+  if (guarded.has(parsed)) {
+    return
+  }
+
+  const reads: GetAttrNode[] = []
+  const stack: Node[] = [parsed.getNodes()]
+  while (stack.length > 0) {
+    const node = stack.pop() as Node
+    if (node instanceof GetAttrNode) {
+      reads.push(node)
+    }
+    for (const child of Object.values(node.nodes ?? {})) {
+      if (child instanceof Node) {
+        stack.push(child)
+      }
+    }
+  }
+
+  // Every written key first, so a rejected expression is left as it was
+  for (const read of reads) {
+    const key = read.nodes.attribute
+    if (key instanceof ConstantNode) {
+      assertReadable(key.attributes.value)
+    }
+  }
+
+  for (const read of reads) {
+    const key = read.nodes.attribute
+    if (
+      read.attributes.type === GetAttrNode.ARRAY_CALL &&
+      !(key instanceof ConstantNode)
+    ) {
+      const checkedKey: Node = Object.create(key)
+      checkedKey.evaluate = (functions, values): any => {
+        const value = key.evaluate(functions, values)
+        assertReadable(value)
+        return value
+      }
+      read.nodes.attribute = checkedKey
+    }
+  }
+
+  guarded.add(parsed)
+}
 
 /**
  * Safely evaluates an expression string against a context
@@ -137,7 +325,11 @@ export function evaluateExpression(
 
   try {
     // Only the context's own names can be read: an expression naming another is an error
-    return language.evaluate(expression.trim(), { ...currentContext })
+    const values = { ...currentContext }
+    const language = getLanguage(options?.functions)
+    const parsed = language.parse(expression.trim(), Object.keys(values))
+    guardExpression(parsed)
+    return language.evaluate(parsed, values)
   } catch (error) {
     // Handle the error and provide helpful debugging information
     const expressionError =

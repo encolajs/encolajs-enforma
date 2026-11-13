@@ -91,6 +91,7 @@ export type {
   FieldPassThroughConfig,
   BehaviorConfig,
   ExpressionsConfig,
+  ExpressionFunctions,
   ComponentsConfig,
   ConfigProvider,
 } from './utils/useConfig'

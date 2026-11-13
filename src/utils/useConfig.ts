@@ -95,6 +95,11 @@ export interface BehaviorConfig {
 }
 
 /**
+ * Functions an expression can call by their names (`${upper(form.name)}`), by name
+ */
+export type ExpressionFunctions = Record<string, (...args: any[]) => any>
+
+/**
  * Configuration for expression handling
  */
 export interface ExpressionsConfig {
@@ -107,6 +112,13 @@ export interface ExpressionsConfig {
    * string as text. Left out, every key is evaluated.
    */
   only?: string[]
+  /**
+   * Functions expressions can call by their names, set for a whole project (EnformaPlugin's
+   * options) or for one form (its `config`, merged name by name over the project's). They get
+   * the arguments only. One named like a built-in function (`min`, `max`, `count`, `isset`,
+   * `now`) replaces it.
+   */
+  functions?: ExpressionFunctions
 }
 
 /**

@@ -12,7 +12,7 @@ import { provideEnformaForm } from '@/core/provideEnformaForm'
 import { useForm } from '@/headless/useForm'
 import { createEncolaValidator } from '@/validators/encolaValidator'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
-import { setGlobalConfig } from '@/utils/useConfig'
+import { setGlobalConfig, useConfig } from '@/utils/useConfig'
 import { globalFormEmitter } from '@/utils/events'
 import { evaluateCondition } from '@/utils/evaluateCondition'
 import { evaluateSchema } from '@/utils/evaluateSchema'
@@ -327,6 +327,176 @@ describe('Enforma 1.6: schema forms', () => {
       } finally {
         error.mockRestore()
       }
+    })
+
+    it("can't reach a prototype, by a key written in the expression or worked out", () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const context = {
+        labels: { CH: 'Switzerland' },
+        key: '__proto__',
+        getter: () => 'polluted',
+      }
+      const attacks = [
+        "${config.__proto__.__defineGetter__('polluted', context.getter)}",
+        "${{}.__proto__.__defineGetter__('polluted', context.getter)}",
+        "${form.tags.__proto__.__defineGetter__('polluted', context.getter)}",
+        "${context['constructor']}",
+        "${{}['__pro' ~ 'to__']}",
+        '${context.labels[context.key]}',
+      ]
+      try {
+        // Twice: an expression is parsed once, then read from the language's cache
+        for (const attack of [...attacks, ...attacks]) {
+          expect(
+            evaluateCondition(attack, controller, context, DEFAULT_CONFIG)
+          ).toBeUndefined()
+        }
+        expect('polluted' in {}).toBe(false)
+        expect('polluted' in []).toBe(false)
+      } finally {
+        delete (Object.prototype as any).polluted
+        delete (Array.prototype as any).polluted
+        error.mockRestore()
+      }
+    })
+
+    it('read keys worked out when they run, and call methods of what they are given', () => {
+      const context = {
+        labels: { CH: 'Switzerland' },
+        totals: new Map([['CH', 3]]),
+      }
+      expect(
+        evaluateCondition(
+          '${context.labels[form.country]}',
+          controller,
+          context,
+          DEFAULT_CONFIG
+        )
+      ).toBe('Switzerland')
+      expect(
+        evaluateCondition(
+          '${context.totals.get(form.country) + 1}',
+          controller,
+          context,
+          DEFAULT_CONFIG
+        )
+      ).toBe(4)
+    })
+
+    describe('with functions of their own', () => {
+      const withFunctions = (functions: Record<string, any>) => ({
+        ...DEFAULT_CONFIG,
+        expressions: { ...DEFAULT_CONFIG.expressions, functions },
+      })
+      const lower = (value: string) => value.toLowerCase()
+
+      it('call the functions of their config, by name', () => {
+        expect(
+          evaluateCondition(
+            "${lower(form.country) ~ '-' ~ lower('GB')}",
+            controller,
+            {},
+            withFunctions({ lower })
+          )
+        ).toBe('ch-gb')
+      })
+
+      it('call only the functions of their own config', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+        try {
+          const upper = (value: string) => value.toUpperCase()
+          expect(
+            evaluateCondition(
+              "${upper('ch')}",
+              controller,
+              {},
+              withFunctions({ upper })
+            )
+          ).toBe('CH')
+          expect(
+            evaluateCondition(
+              "${upper('ch')}",
+              controller,
+              {},
+              withFunctions({ lower })
+            )
+          ).toBeUndefined()
+          expect(
+            evaluateCondition("${upper('ch')}", controller, {}, DEFAULT_CONFIG)
+          ).toBeUndefined()
+        } finally {
+          error.mockRestore()
+        }
+      })
+
+      it('replace a built-in function with one of the same name', () => {
+        const max = () => 'mine'
+        expect(
+          evaluateCondition(
+            '${max(1, 2)}',
+            controller,
+            {},
+            withFunctions({ max })
+          )
+        ).toBe('mine')
+        expect(
+          evaluateCondition('${max(1, 2)}', controller, {}, DEFAULT_CONFIG)
+        ).toBe(2)
+      })
+
+      it("get the project's functions and the form's together", () => {
+        setGlobalConfig(
+          deepMerge(DEFAULT_CONFIG, { expressions: { functions: { lower } } })
+        )
+        const config = useConfig({
+          expressions: {
+            functions: { twice: (value: string) => value + value },
+          },
+        })
+        expect(
+          evaluateCondition(
+            '${twice(lower(form.country))}',
+            controller,
+            {},
+            config
+          )
+        ).toBe('chch')
+      })
+
+      it('leave out a function that could not be called by its name', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        try {
+          const config = withFunctions({
+            and: () => 'and',
+            'my-function': () => 'dash',
+            notAFunction: 'text',
+            ok: () => 'ok',
+          })
+          expect(evaluateCondition('${ok()}', controller, {}, config)).toBe(
+            'ok'
+          )
+          expect(warn).toHaveBeenCalledTimes(3)
+        } finally {
+          warn.mockRestore()
+        }
+      })
+
+      it('render a label worked out by a function of the form config', async () => {
+        const wrapper = mount(Enforma, {
+          props: {
+            data: { name: 'ANA' },
+            schema: { name: { label: '${lower(form.name)}' } },
+            config: {
+              components: { field: FieldA },
+              expressions: { functions: { lower } },
+            },
+            showSubmitButton: false,
+          },
+        })
+        await flushPromises()
+
+        expect(wrapper.find('label[for="name"]').text()).toBe('ana')
+      })
     })
 
     it('limited to `if` with expressions.only, leave every other prop as text', () => {
