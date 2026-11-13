@@ -3,7 +3,7 @@
     <!-- Label -->
     <label
       v-if="!props.hideLabel && props.label"
-      :for="fieldController.value.id"
+      :for="fieldController.id"
       v-bind="props.labelProps"
       class="nuxtui-field-label"
     >
