@@ -41,7 +41,7 @@ All schema types share these base properties:
 | `type` | string | Yes | Type of schema: 'field', 'section', 'repeatable', or 'repeatable-table'.                                                        |
 | `component` | string | No | The component used for rendering this part of the form. If not provided, the components provided via configuration will be used |
 | `section` | string | No | The section this schema belongs to                                                                                              |
-| `position` | number | No | Position for rendering in the form/parent section                                                                               |
+| `position` | number | No | Position for rendering in the form/parent section. Fields and sub-sections are ordered together, see [Section Schema](#section-schema) |
 | `if` | string | No | Conditional expression to determine if this part of the should be shown                                                         |
 
 > [!IMPORTANT] 
@@ -108,10 +108,22 @@ All schema types share these base properties:
 
 Sections can contain both fields and sections.
 
-> [!WARNING]
-> The fields are rendered before the sub-sections. 
-> If you want to render fields last, you must assign them to a sub-section in the last position. 
-> If you want to alternate fields with sub-sections you have to use only sub-sections
+By default, the fields of a section are rendered before its sub-sections. To render a sub-section above some fields, give a `position` to the sub-section and to the fields:
+
+- a sub-section is rendered above the fields with a higher `position`
+- on equal positions the field is rendered first
+- fields without a `position` are rendered after the fields that have one
+
+To freely alternate fields and sub-sections, give a `position` to all of them:
+
+```js
+const schema = {
+  name: { type: 'field', label: 'Name', position: 1 },
+  address: { type: 'section', title: 'Address', position: 2 },
+  city: { type: 'field', label: 'City', section: 'address' },
+  notes: { type: 'field', label: 'Notes', position: 3 },
+}
+```
 
 ## Validation Rules in Schema
 

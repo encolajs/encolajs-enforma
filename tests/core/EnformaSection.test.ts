@@ -242,6 +242,76 @@ describe('EnformaSection', () => {
     expect(sections[2].text()).toBe('Subsection 3')
   })
 
+  describe('order of fields and sub-sections', () => {
+    const subsection = (title: string, position?: number): SectionSchema => ({
+      type: 'section',
+      section: 'section1',
+      title,
+      titleComponent: 'h3',
+      ...(position !== undefined ? { position } : {}),
+    })
+    const field = (position?: number): FieldSchema => ({
+      type: 'field',
+      section: 'section1',
+      inputComponent: 'input',
+      ...(position !== undefined ? { position } : {}),
+    })
+
+    const renderOrder = (schema: FormSchema): string[] => {
+      const wrapper = mountTestComponent(
+        EnformaSection,
+        { name: 'section1' },
+        {
+          global: {
+            provide: {
+              [formSchemaKey]: schema,
+              [formControllerKey]: formState,
+            },
+          },
+        }
+      )
+      return Array.from(
+        wrapper.element.querySelectorAll('.enforma-input, h3')
+      ).map((el) =>
+        el.tagName === 'H3'
+          ? (el.textContent || '').trim()
+          : (el.getAttribute('name') as string)
+      )
+    }
+
+    it('renders a sub-section above the fields with a higher position', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          section1: { type: 'section', title: 'Section 1' },
+          field1: field(2),
+          field2: field(),
+          sub1: subsection('Sub 1', 1),
+          sub2: subsection('Sub 2', 2),
+          field3: field(4),
+        })
+      )
+      await flushPromises()
+
+      // on equal positions the field comes first
+      expect(order).toEqual(['Sub 1', 'field1', 'Sub 2', 'field3', 'field2'])
+    })
+
+    it('renders fields without position above the sub-sections', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          section1: { type: 'section', title: 'Section 1' },
+          sub1: subsection('Sub 1'),
+          field1: field(),
+          sub2: subsection('Sub 2', 1),
+          field2: field(),
+        })
+      )
+      await flushPromises()
+
+      expect(order).toEqual(['field1', 'field2', 'Sub 2', 'Sub 1'])
+    })
+  })
+
   it('includes fields without section in the default section', async () => {
     const schema = createMockSchema({
       default: {
