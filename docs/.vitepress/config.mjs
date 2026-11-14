@@ -25,6 +25,7 @@ export default defineConfig({
       { text: 'Documentation', link: '/getting-started' },
       { text: 'Recipes', link: '/recipes/' },
       { text: 'Examples', link: '/examples/' },
+      { text: 'Schema Builder', link: '/schema-builder' },
       { text: 'More...',
         items: [
           {text: 'EncolaJS Validator', link: 'https://encolajs.com/validator/'},

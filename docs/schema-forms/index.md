@@ -4,6 +4,8 @@ Schema-based forms in Enforma allow you to define your entire form structure usi
 
 > :notebook_with_decorative_cover: For a complete working example check out the [schema form example](/examples/schema-only.md)
 
+> :hammer_and_wrench: To see how a schema is put together, drag fields around in the [Schema Builder](/schema-builder.md)
+
 ### Key Benefits
 
 - **Declarative Approach** - Define your entire form using simple JSON
