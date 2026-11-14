@@ -39,7 +39,7 @@ const validator = createEncolaValidator(
     'items.*.price': 'required|number|gte:0'
   },
   {
-    'customer_name:required': 'Please enter the customer name',
+    'customer:required': 'Please enter the customer name',
     'items.*.name:required': 'Product name is required',
     'items.*.quantity:min': 'Quantity must be at least 1',
     'items.*.price:min': 'Price cannot be negative'
