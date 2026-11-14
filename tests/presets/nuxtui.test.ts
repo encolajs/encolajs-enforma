@@ -53,6 +53,38 @@ describe('Nuxt UI preset', () => {
     expect(input().attributes('data-color')).toBe('error')
   })
 
+  it('clears the error state once the error is fixed', async () => {
+    const wrapper = mount(Enforma, {
+      props: {
+        data: { name: '' },
+        schema: {
+          name: {
+            type: 'field',
+            label: 'Name',
+            rules: 'required',
+            inputProps: { class: 'w-full' },
+          },
+        },
+        submitHandler: () => Promise.resolve(true),
+      },
+    })
+    await flushPromises()
+
+    const input = (): ReturnType<typeof wrapper.find> => wrapper.find('input')
+
+    // @ts-expect-error vm is a form
+    await wrapper.vm.submit()
+    await flushPromises()
+    expect(input().attributes('data-highlight')).toBe('true')
+    expect(input().attributes('data-color')).toBe('error')
+
+    // @ts-expect-error vm is a form
+    await wrapper.vm.setFieldValue('name', 'John')
+    await flushPromises()
+    expect(input().attributes('data-highlight')).toBe('false')
+    expect(input().attributes('data-color')).toBe('')
+  })
+
   it('passes disabled and placeholder from inputProps to the input', async () => {
     const wrapper = mount(Enforma, {
       props: {

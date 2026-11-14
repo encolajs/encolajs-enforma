@@ -207,9 +207,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
       return props
     }
 
+    // Transformers set props on `inputProps` (e.g. the error state). Give them a copy: the
+    // object belongs to the cached `fieldProps`, so changes made to it would outlive the state
+    // that caused them (an input would stay in the error state after the error is fixed)
     return applyTransformers(
       fieldPropsTransformers,
-      { ...props },
+      { ...props, inputProps: { ...(props.inputProps || {}) } },
       fieldController,
       formCtrl,
       formConfig
