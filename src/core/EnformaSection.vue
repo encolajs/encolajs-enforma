@@ -8,26 +8,25 @@
       {{ sectionSchema.title }}
     </component>
 
-    <template v-for="field in sortedFields" :key="field.name">
-      <template v-if="shouldRenderField(field)">
+    <template v-for="item in sortedItems" :key="item.name">
+      <template v-if="isSectionSchema(item)">
+        <component
+          :is="sectionComponent"
+          v-bind="item"
+          v-if="shouldRenderSection(item)"
+        />
+      </template>
+      <template v-else-if="shouldRenderField(item)">
         <!-- Use parentSlots directly -->
         <component
-          :is="parentSlots?.[`field(${field.name})`]"
-          v-if="hasFieldSlot(field.name)"
-          :field="field"
+          :is="parentSlots?.[`field(${item.name})`]"
+          v-if="hasFieldSlot(item.name)"
+          :field="item"
           :formController="formCtrl"
           :config="formConfig"
         />
-        <component :is="getComponent(field)" v-else v-bind="field" />
+        <component :is="getComponent(item)" v-else v-bind="item" />
       </template>
-    </template>
-
-    <template v-for="subSection in sortedSubsections" :key="subSection.name">
-      <component
-        :is="sectionComponent"
-        v-bind="subSection"
-        v-if="shouldRenderSection(subSection)"
-      />
     </template>
   </div>
 </template>
@@ -118,6 +117,34 @@ function sortByPosition<T extends { position?: number }>(items: T[]): T[] {
     // If neither has position, maintain original order
     return 0
   })
+}
+
+/**
+ * Merges the sorted fields and sub-sections into the rendering order.
+ * Fields come first, unless a sub-section and a field both have a position
+ * and the sub-section's position is lower
+ */
+function mergeByPosition<
+  F extends { position?: number },
+  S extends { position?: number }
+>(fields: F[], sections: S[]): Array<F | S> {
+  const items: Array<F | S> = []
+  let f = 0
+  let s = 0
+  while (f < fields.length && s < sections.length) {
+    const fieldPosition = fields[f].position
+    const sectionPosition = sections[s].position
+    if (
+      fieldPosition !== undefined &&
+      sectionPosition !== undefined &&
+      sectionPosition < fieldPosition
+    ) {
+      items.push(sections[s++])
+    } else {
+      items.push(fields[f++])
+    }
+  }
+  return items.concat(fields.slice(f), sections.slice(s))
 }
 
 // this is needed because the component may render in a tree-like structure
@@ -265,4 +292,9 @@ const sortedSubsections = computed(() => {
   )
   return sortByPosition(sections)
 })
+
+// Fields and nested sections, in the order they are rendered
+const sortedItems = computed(() =>
+  mergeByPosition(sortedFields.value, sortedSubsections.value)
+)
 </script>
