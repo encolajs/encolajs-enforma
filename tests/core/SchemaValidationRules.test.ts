@@ -152,4 +152,36 @@ describe('Schema Validation Rules', () => {
     expect(errors.name).toBeDefined()
     expect(errors.personalInfo).toBeUndefined()
   })
+
+  it('should keep a field hidden by its if unchecked when a field its rules name changes', async () => {
+    const schema = {
+      starts_on: {
+        type: 'field' as const,
+        label: 'Starts on',
+        rules: 'required',
+      },
+      ends_on: {
+        type: 'field' as const,
+        label: 'Ends on',
+        rules: 'required|date_after:@starts_on',
+        if: false,
+      },
+    }
+
+    const wrapper = mountTestComponent(Enforma, {
+      data: { starts_on: '2026-01-10', ends_on: null },
+      schema,
+      submitHandler: mockSubmitHandler,
+    })
+    await flushPromises()
+
+    // @ts-expect-error vm is a form
+    await wrapper.vm.setFieldValue('starts_on', '2026-01-12')
+    await flushPromises()
+
+    // @ts-expect-error vm is a form
+    expect(await wrapper.vm.validate()).toBe(true)
+    // @ts-expect-error vm is a form
+    expect(wrapper.vm.hasField('ends_on')).toBe(false)
+  })
 })
