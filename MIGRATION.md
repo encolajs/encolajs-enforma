@@ -1,5 +1,15 @@
 # Migration Guide: v1.6.x to v1.7.0
 
+## Root sections are ordered with the root fields
+
+A section is at the root of the form when its `section` is left out, `null` or empty. Root sections and the fields at the root are now ordered together by `position`, as a section's own fields and sub-sections are: a root section is rendered above the root fields with a higher `position`, and after the root fields without one.
+
+What changes:
+
+- A section with `section: null` used to be rendered before every root field, whatever their positions. Give it a `position` lower than the fields' to keep it first.
+- A field with `section: null` (or empty) is now rendered at the root. It used to be rendered nowhere.
+- `<EnformaSchema>` renders the root as one section, `default`, so the root sections are inside its element rather than beside it, and their component gets all their keys as props, as a sub-section's does, rather than only `name`.
+
 ## `useGlobalEvents` and `globalFormEmitter` are removed
 
 Since 1.6.0, `<Enforma>` and `HeadlessForm` no longer emitted on `globalFormEmitter`; only a `useForm()` made with `useGlobalEvents: true` did. Both are now gone: every form has its own emitter. Listen to a form's events on the form itself (`@submit_success`, `@field_changed`…) or on its controller (`formController.on(…)`).

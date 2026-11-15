@@ -61,6 +61,21 @@ function isSectionSchema(value: any): value is SectionSchema {
   return value && typeof value === 'object' && value?.type === 'section'
 }
 
+/**
+ * Whether an entry sits in section `sectionName`. The `default` section is the root:
+ * it holds the entries that name no section (left out, null or empty) and those
+ * naming `default`.
+ */
+function belongsTo(
+  entry: { section?: string | null },
+  sectionName: string
+): boolean {
+  if (sectionName === 'default') {
+    return !entry.section || entry.section === sectionName
+  }
+  return entry.section === sectionName
+}
+
 function getFields(
   schema: FormSchema | undefined,
   sectionName: string
@@ -68,17 +83,10 @@ function getFields(
   if (!schema) return {}
 
   const entries = Object.entries(schema)
-    .filter(([_, field]) => {
-      if (!field) return false
-      if (isSectionSchema(field)) return false
-
-      // For default section, include fields without a section
-      if (sectionName === 'default') {
-        return !('section' in field) || field.section === sectionName
-      }
-      // For other sections, only include fields that belong to this section
-      return field.section === sectionName
-    })
+    .filter(
+      ([_, field]) =>
+        field && !isSectionSchema(field) && belongsTo(field, sectionName)
+    )
     .map(([key, field]) => [key, field as FieldSchema])
 
   return Object.fromEntries(entries)
@@ -90,18 +98,14 @@ function getSubSections(
 ): Array<[string, SectionSchema]> {
   if (!schema) return []
 
-  // Find all sections that belong to this section
-  return Object.entries(schema).filter(([_, field]) => {
-    if (!field) return false
-    if (!isSectionSchema(field)) return false
-
-    // For default section, include fields without a section
-    if (sectionName === 'default') {
-      return !('section' in field) || field.section === sectionName
-    }
-    // For other sections, only include fields that belong to this section
-    return field.section === sectionName
-  }) as Array<[string, SectionSchema]>
+  // The sections inside this one; a section is never its own sub-section
+  return Object.entries(schema).filter(
+    ([key, field]) =>
+      field &&
+      isSectionSchema(field) &&
+      key !== sectionName &&
+      belongsTo(field, sectionName)
+  ) as Array<[string, SectionSchema]>
 }
 
 // Helper function to sort items by position

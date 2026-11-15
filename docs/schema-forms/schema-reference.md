@@ -40,7 +40,7 @@ All schema types share these base properties:
 |----------|------|----------|---------------------------------------------------------------------------------------------------------------------------------|
 | `type` | string | Yes | Type of schema: 'field', 'section', 'repeatable', or 'repeatable-table'.                                                        |
 | `component` | string | No | The component used for rendering this part of the form. If not provided, the components provided via configuration will be used |
-| `section` | string | No | The section this schema belongs to                                                                                              |
+| `section` | string | No | The section this schema belongs to. Left out, null or empty, it sits at the root of the form, with the other root fields and sections |
 | `position` | number | No | Position for rendering in the form/parent section. Fields and sub-sections are ordered together, see [Section Schema](#section-schema) |
 | `if` | string | No | Conditional expression to determine if this part of the should be shown                                                         |
 
@@ -124,6 +124,8 @@ const schema = {
   notes: { type: 'field', label: 'Notes', position: 3 },
 }
 ```
+
+The form's root is a section too. A field or a section whose `section` is left out, `null` or empty sits at the root, and the root's fields and sections follow the same order: `name`, then the `address` section, then `notes` above.
 
 ## Validation Rules in Schema
 

@@ -178,9 +178,10 @@ export interface BaseSchema {
   component?: string
 
   /**
-   * The section this schema belongs to, used for organizing into groups
+   * The section this schema belongs to, used for organizing into groups.
+   * Left out, null or empty, it sits at the root, with the other root entries
    */
-  section?: string
+  section?: string | null
 
   /**
    * Position for rendering this in the form/parent section

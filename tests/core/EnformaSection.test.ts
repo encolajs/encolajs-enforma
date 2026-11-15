@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { computed } from 'vue'
 import EnformaSection from '../../src/core/EnformaSection.vue'
+import EnformaSchema from '../../src/core/EnformaSchema.vue'
 import {
   formSchemaKey,
   formControllerKey,
@@ -544,5 +545,87 @@ describe('EnformaSection', () => {
     expect(sections[0].find('h3').text()).toBe('Subsection 1')
     expect(sections[1].find('h4').text()).toBe('Sub-subsection 1')
     expect(wrapper.find('.enforma-input').attributes()['name']).toBe('field1')
+  })
+
+  describe('root sections', () => {
+    const rootSection = (
+      title: string,
+      extra: Partial<SectionSchema> = {}
+    ): SectionSchema => ({
+      type: 'section',
+      title,
+      titleComponent: 'h3',
+      ...extra,
+    })
+    const rootField = (position?: number): FieldSchema => ({
+      type: 'field',
+      inputComponent: 'input',
+      ...(position !== undefined ? { position } : {}),
+    })
+
+    const renderSchema = (schema: FormSchema) =>
+      mountTestComponent(
+        EnformaSchema,
+        { schema },
+        {
+          global: {
+            provide: {
+              [formSchemaKey]: schema,
+              [formControllerKey]: formState,
+            },
+          },
+        }
+      )
+    const renderOrder = (schema: FormSchema): string[] =>
+      Array.from(
+        renderSchema(schema).element.querySelectorAll('.enforma-input, h3')
+      ).map((el) =>
+        el.tagName === 'H3'
+          ? (el.textContent || '').trim()
+          : (el.getAttribute('name') as string)
+      )
+
+    it('renders a section without a section key once, at the root', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: rootSection('Details'),
+          name: { ...rootField(), section: 'details' },
+        })
+      )
+      await flushPromises()
+
+      const titles = wrapper.findAll('h3')
+      expect(titles.map((title) => title.text())).toEqual(['Details'])
+      expect(wrapper.findAll('.enforma-input').length).toBe(1)
+    })
+
+    it('renders a root field with a lower position above a root section', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          details: rootSection('Details', { position: 2 }),
+          name: rootField(1),
+          notes: rootField(3),
+        })
+      )
+      await flushPromises()
+
+      expect(order).toEqual(['name', 'Details', 'notes'])
+    })
+
+    it('takes a section whose section is null or empty as a root section, ordered with the root fields', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          first: rootSection('First', { section: null, position: 1 }),
+          second: rootSection('Second', { section: '' as any, position: 3 }),
+          name: rootField(2),
+          email: { ...rootField(), section: null },
+        })
+      )
+      await flushPromises()
+
+      // as a section's own items are: a sub-section goes above a field only when both
+      // have a position, so a field without one comes before the sections after it
+      expect(order).toEqual(['First', 'name', 'email', 'Second'])
+    })
   })
 })
