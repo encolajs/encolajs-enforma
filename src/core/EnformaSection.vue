@@ -7,6 +7,13 @@
     >
       {{ sectionSchema.title }}
     </component>
+    <component
+      :is="sectionSchema.descriptionComponent || 'p'"
+      v-if="sectionSchema?.description"
+      v-bind="sectionSchema.descriptionProps"
+    >
+      {{ sectionSchema.description }}
+    </component>
 
     <template v-for="item in sortedItems" :key="item.name">
       <template v-if="isSectionSchema(item)">
@@ -171,8 +178,13 @@ const props = defineProps<{
   title?: string
   titleComponent?: string | object
   titleProps?: object | null
+  description?: string
+  descriptionComponent?: string | object
+  descriptionProps?: object | null
   section?: string | null
   position?: number | null
+  columns?: number | Record<string, number> | null
+  span?: number | Record<string, number> | null
 }>()
 
 // Helper function to determine if a field should be rendered based on its 'if' property
@@ -244,10 +256,13 @@ function sectionComponentFor(section: SectionWithPosition): string | object {
   return sectionComponent
 }
 
-/** What a sub-section's component is given: its schema, but the component drawing it */
+/**
+ * What a sub-section's component is given: its schema, but the component drawing it,
+ * with its `props` spread over it (a card's `variant`)
+ */
 function sectionBindings(section: SectionWithPosition): Record<string, any> {
-  const { component: _component, ...bindings } = section
-  return bindings
+  const { component: _component, props: given, ...bindings } = section
+  return { ...bindings, ...(given || {}) }
 }
 
 // Access parent slots injected from Enforma

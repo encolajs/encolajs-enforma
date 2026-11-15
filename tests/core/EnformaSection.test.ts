@@ -732,5 +732,72 @@ describe('EnformaSection', () => {
       )
       warn.mockRestore()
     })
+
+    it('gives a root section and a sub-section their description and their props', async () => {
+      // A section component recording what it was given
+      const given: Record<string, any>[] = []
+      const Probe = defineComponent({
+        props: { name: String, description: String, variant: String },
+        setup(props) {
+          given.push(props)
+          return () => h('div', { class: 'probe' })
+        },
+      })
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: section('Details', {
+            component: 'probe',
+            description: 'Who you are',
+            props: { variant: 'subtle' },
+          }),
+          outer: section('Outer'),
+          inner: section('Inner', {
+            section: 'outer',
+            component: 'probe',
+            description: 'Inside',
+            props: { variant: 'outline' },
+          }),
+        }),
+        { components: { probe: Probe } }
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('.probe').length).toBe(2)
+      expect(
+        given.map(({ name, description, variant }) => ({
+          name,
+          description,
+          variant,
+        }))
+      ).toEqual([
+        { name: 'details', description: 'Who you are', variant: 'subtle' },
+        { name: 'inner', description: 'Inside', variant: 'outline' },
+      ])
+    })
+
+    it('draws a description under the title, no title for a section without one, and puts its props on its element', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: section('Details', {
+            description: 'Who you are',
+            props: { class: 'grid' },
+          }),
+          group: { type: 'section', description: 'Joined' } as SectionSchema,
+        })
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Details',
+      ])
+      const descriptions = wrapper.findAll('p')
+      expect(descriptions.map((description) => description.text())).toEqual([
+        'Who you are',
+        'Joined',
+      ])
+      // under its title
+      expect(descriptions[0].element.previousElementSibling?.tagName).toBe('H3')
+      expect(wrapper.find('.grid').find('h3').text()).toBe('Details')
+    })
   })
 })

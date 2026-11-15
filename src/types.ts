@@ -196,6 +196,12 @@ export interface BaseSchema {
    * Or a boolean value
    */
   if?: string | boolean
+
+  /**
+   * How many of its section's columns this takes, or how many per breakpoint
+   * (`{ lg: 2 }`). Data only: the kit's components lay it out
+   */
+  span?: number | Record<string, number>
 }
 
 /**
@@ -289,14 +295,35 @@ export interface FieldSchema extends BaseSchema {
 export interface SectionSchema extends BaseSchema {
   type: 'section'
 
-  // title of the component
-  title: string
+  // title of the section: a section that only groups (a field group, tabs) has none
+  title?: string
 
   // tag/component used for title
   titleComponent?: string
 
   // props to be passed to the title
   titleProps?: Record<string, any>
+
+  // a line under the title, saying what the section is for
+  description?: string
+
+  // tag/component used for the description, `p` by default
+  descriptionComponent?: string
+
+  // props to be passed to the description
+  descriptionProps?: Record<string, any>
+
+  /**
+   * Props for the section's component, spread over the props it gets from the schema:
+   * a card's `variant`, a tabs' `orientation`. Enforma's own section puts them on its element
+   */
+  props?: Record<string, any>
+
+  /**
+   * How many columns the section's items take, or how many per breakpoint
+   * (`{ md: 2, lg: 3 }`). Data only: the kit's section component lays them out
+   */
+  columns?: number | Record<string, number>
 }
 
 /**

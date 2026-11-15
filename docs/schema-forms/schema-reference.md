@@ -43,6 +43,7 @@ All schema types share these base properties:
 | `section` | string | No | The section this schema belongs to. Left out, null or empty, it sits at the root of the form, with the other root fields and sections |
 | `position` | number | No | Position for rendering in the form/parent section. Fields and sub-sections are ordered together, see [Section Schema](#section-schema) |
 | `if` | string | No | Conditional expression to determine if this part of the should be shown                                                         |
+| `span` | number or object | No | How many of its section's `columns` it takes (`2`), or how many per breakpoint (`{ lg: 2 }`). Data only: the kit's components lay it out |
 
 > [!IMPORTANT] 
 > Use the `component` for customizing the rendering of the form. For example if you have a special repeatable table make your own component like `<OrderItemsTable/>`. See more on [Integrating Custom Components](/extensibility/custom-components.md) 
@@ -102,10 +103,15 @@ All schema types share these base properties:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `title` | string | Yes | Title of the section |
+| `title` | string | No | Title of the section. A section that only groups fields (tabs, a field group) needs none |
 | `titleComponent` | string | No | Tag/component used for title |
 | `titleProps` | object | No | Props to be passed to the title |
+| `description` | string | No | A line under the title, saying what the section is for |
+| `descriptionComponent` | string | No | Tag/component used for the description (`p` by default) |
+| `descriptionProps` | object | No | Props to be passed to the description |
 | `component` | string or component | No | The component drawing the section, see [Section components](#section-components) |
+| `props` | object | No | Props for the section's component, spread over those it gets from the schema (a card's `variant`). `EnformaSection` puts them on its element (`{ class: 'grid' }`) |
+| `columns` | number or object | No | How many columns the section's items take (`2`), or how many per breakpoint (`{ md: 2, lg: 3 }`). Data only, with its items' `span`: the kit's section component lays them out |
 
 Sections can contain both fields and sections.
 
@@ -141,6 +147,8 @@ const schema = {
 // The form's config
 const config = { components: { card: CardSection } }
 ```
+
+A section's component gets the same props at the root of the form as inside another section.
 
 A name is looked up in the form's config first (`components.card`), then among the components registered in the Vue app (`app.component('CardSection', …)`, named `'card-section'` or `'CardSection'`). `component` may also be the component itself. When nothing has the name, Enforma warns once and draws the section with the section component. The section's component gets the section's schema as props, but `component`.
 
