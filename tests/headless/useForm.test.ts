@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { FormController, useForm } from '../../src'
 import type { FormValidator } from '../../src/validators/types'
+import { formReader } from '../../src/utils/formReader'
 
 describe('useForm', () => {
   let order
@@ -703,6 +704,85 @@ describe('useForm', () => {
       expect(await form.validate()).toBe(true)
       await new Promise((resolve) => setTimeout(resolve, 50))
       expect(checks.length).toBeLessThanOrEqual(4)
+    })
+  })
+
+  describe('saved values', () => {
+    test('commit() makes the current values those reset() returns to', async () => {
+      const form = useForm({ name: 'Ana' })
+
+      await form.setFieldValue('name', 'Bob')
+      form.commit()
+      await form.setFieldValue('name', 'Cid')
+      form.reset()
+
+      expect(form.getFieldValue('name')).toBe('Bob')
+    })
+
+    test('$isChanged is true after a change, false once it is undone, and false after commit()', async () => {
+      const form = useForm({ name: 'Ana', tags: ['a'] })
+      expect(form.$isChanged.value).toBe(false)
+
+      await form.setFieldValue('name', 'Bob')
+      expect(form.$isChanged.value).toBe(true)
+      await form.setFieldValue('name', 'Ana')
+      expect(form.$isChanged.value).toBe(false)
+
+      await form.setFieldValue('tags', ['a', 'b'])
+      expect(form.$isChanged.value).toBe(true)
+      form.commit()
+      expect(form.$isChanged.value).toBe(false)
+      // $isDirty, unlike it, stays true at any change: set as a field sets a value
+      await form.setFieldValue('tags', ['a'], true, { $isDirty: true })
+      await form.setFieldValue('tags', ['a', 'b'], true, { $isDirty: true })
+      expect(form.$isDirty.value).toBe(true)
+      expect(form.$isChanged.value).toBe(false)
+    })
+
+    test('commit(values) saves the values given, which reset() then brings', async () => {
+      const form = useForm({ name: 'Ana' })
+
+      form.commit({ name: 'Ana Lopez' })
+      expect(form.$isChanged.value).toBe(true)
+      form.reset()
+
+      expect(form.getFieldValue('name')).toBe('Ana Lopez')
+      expect(form.$isChanged.value).toBe(false)
+    })
+
+    test("commit() clears the fields' states, as reset() does", async () => {
+      const form = useForm({ name: 'Ana' })
+      form.setFieldErrors('name', ['Taken'])
+      await form.setFieldValue('name', 'Bob', false, { $isDirty: true })
+
+      form.commit()
+
+      const field = form.getField('name')
+      expect(field.$errors.value).toEqual([])
+      expect(field.$isDirty.value).toBe(false)
+      expect(field.$isTouched.value).toBe(false)
+      expect(form.$isDirty.value).toBe(false)
+    })
+
+    test('a key the saved values lack is unchanged after reset(), which empties it', async () => {
+      const form = useForm({ name: 'Ana' } as Record<string, any>)
+      await form.setFieldValue('nickname', 'An')
+      expect(form.$isChanged.value).toBe(true)
+
+      form.reset()
+
+      expect(form.getFieldValue('nickname')).toBeNull()
+      expect(form.$isChanged.value).toBe(false)
+    })
+
+    test('an expression reads it as form.$isChanged', async () => {
+      const form = useForm({ name: 'Ana' })
+      const reader = formReader(form)
+      expect(reader.$isChanged).toBe(false)
+
+      await form.setFieldValue('name', 'Bob')
+
+      expect(reader.$isChanged).toBe(true)
     })
   })
 })

@@ -95,11 +95,19 @@ export interface FormController {
   $isSubmitting: Ref<boolean>
   $isDirty: Ref<boolean>
   $isTouched: Ref<boolean>
+  /** Whether the values differ from the saved ones, false again when a change is undone */
+  $isChanged: Ref<boolean>
 
   // Form ARIA attributes
   readonly $formAttrs: Record<string, any>
 
   reset(): void
+
+  /**
+   * The current values, or `values`, become the saved ones: those reset() returns to and
+   * $isChanged compares with. The fields' states clear, as reset() clears them
+   */
+  commit(values?: object): void
 
   values(): object
 
