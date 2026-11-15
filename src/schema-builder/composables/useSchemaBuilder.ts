@@ -101,7 +101,8 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     return Object.entries(state.value.schema)
       .filter(([, item]) => item.type === 'section')
       .map(([key, item]) => ({
-        label: (item as SectionSchema).title,
+        // A section that only groups fields has no title: its key names it
+        label: (item as SectionSchema).title || key,
         value: key,
       }))
   })
@@ -279,10 +280,6 @@ export function useSchemaBuilder(options: UseSchemaBuilderOptions = {}) {
     Object.entries(state.value.schema).forEach(([key, item]) => {
       if (!item.type) {
         errors.push(`Item '${key}': Missing required 'type' property`)
-      }
-
-      if (item.type === 'section' && !(item as SectionSchema).title) {
-        errors.push(`Section '${key}': Missing required 'title' property`)
       }
 
       if (item.type === 'field' && !key) {
