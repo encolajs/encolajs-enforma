@@ -52,6 +52,7 @@ export default defineConfig({
             { text: 'Configuration', link: '/core-concepts/configuration' },
             { text: 'Validation System', link: '/core-concepts/validation' },
             { text: 'Rendering Modes', link: '/core-concepts/rendering-modes' },
+            { text: 'Pending Work', link: '/core-concepts/pending-work' },
             { text: 'Accessibility', link: '/core-concepts/accessibility' },
           ],
         },
@@ -124,6 +125,7 @@ export default defineConfig({
           items: [
             { text: 'Multi-input Fields', link: '/recipes/multi-input-field' },
             { text: 'Address Picker', link: '/recipes/address-picker' },
+            { text: 'File Upload', link: '/recipes/file-upload' },
           ],
         },
         {

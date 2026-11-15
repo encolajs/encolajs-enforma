@@ -441,6 +441,19 @@ export function evaluateTemplateString(
 }
 
 /**
+ * Whether the object is kept as it is, not copied: a component (an `inputComponent`, for one),
+ * whose copy would be a new component, which Vue mounts afresh; or an object marked raw
+ */
+function isKeptAsIs(obj: Record<string, any>): boolean {
+  return (
+    obj.__v_skip === true ||
+    typeof obj.render === 'function' ||
+    typeof obj.setup === 'function' ||
+    typeof obj.template === 'string'
+  )
+}
+
+/**
  * Evaluates all expressions in an object and replaces them with results
  * Returns an object with computed refs for properties containing expressions
  */
@@ -454,7 +467,7 @@ export function evaluateObject<T extends Record<string, any>>(
     return obj
   }
 
-  if (obj.dep) {
+  if (obj.dep || isKeptAsIs(obj)) {
     return obj
   }
 

@@ -10,9 +10,10 @@
  *
  * So `form.country` (or `form['address.city']`) gives a copy of that value, read through the
  * form's own keys only; `form.getFieldValue(path)` and `form.values()` give copies too; and the
- * form's state (`form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting`)
- * gives a boolean. Nothing else is reachable. Reading a value also reads the form's version, so
- * an expression worked out in a computed or a render is worked out again when the values change.
+ * form's state (`form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting`,
+ * `form.$isChanged`, `form.$isPending`) gives a boolean. Nothing else is reachable. Reading a
+ * value also reads the form's version, so an expression worked out in a computed or a render is
+ * worked out again when the values change.
  */
 import { unref } from 'vue'
 import type { FormController } from '@/types'
@@ -24,6 +25,7 @@ const STATE = [
   '$isValidating',
   '$isSubmitting',
   '$isChanged',
+  '$isPending',
 ]
 
 const hasOwn = (value: any, key: string) =>

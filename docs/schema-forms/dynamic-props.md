@@ -21,7 +21,7 @@ An expression can read three names:
   - `form.country`, `form['address.city']` - a value, by its path (a copy of it)
   - `form.getFieldValue(path)` - the same, as a method
   - `form.values()` - all the values (a copy)
-  - `form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting` - the form's state
+  - `form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting`, `form.$isChanged`, `form.$isPending` - the form's state
 - `context` - The **Context Object** passed to the form via the `context` prop. Can contain custom data and functions, which expressions can call
 - `config` - The **Form Configuration** used to configure the form's behavior
 

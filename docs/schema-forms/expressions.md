@@ -31,7 +31,7 @@ An expression can read three names. Naming anything else (`window`, `document`, 
   - `form.country`, `form['address.city']` - a value, by its path (a copy of it)
   - `form.getFieldValue(path)` - the same, as a method
   - `form.values()` - all the values (a copy)
-  - `form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting`, `form.$isChanged` - the form's state
+  - `form.$isDirty`, `form.$isTouched`, `form.$isValidating`, `form.$isSubmitting`, `form.$isChanged`, `form.$isPending` - the form's state
 - `context` - the form's `context` prop. Expressions can read its data and call its functions: `context.statesOf(form.country)`
 - `config` - the form's configuration
 

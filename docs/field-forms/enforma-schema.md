@@ -314,23 +314,21 @@ const addressSchema = {
 
 ## Custom Field Rendering
 
-Override the rendering of specific fields using slots:
+Override the rendering of a field with a slot on `<Enforma>` named `field(<path>)`. It draws in place of the field, and gets the field's schema entry (`field`, with its path as `field.name`), the form's controller (`formController`) and the form's configuration (`config`):
 
 ```vue
 <template>
-  <Enforma :data="formData">
-    <EnformaSchema :schema="formSchema">
-      <!-- Custom rendering for the "avatar" field -->
-      <template #field:avatar="{ fieldProps }">
-        <div class="avatar-field">
-          <label>{{ fieldProps.label }}</label>
-          <AvatarUploader 
-            :value="formData.avatar"
-            @update:value="val => formData.avatar = val"
-          />
-        </div>
-      </template>
-    </EnformaSchema>
+  <Enforma :data="formData" :schema="formSchema">
+    <!-- Custom rendering for the "avatar" field -->
+    <template #field(avatar)="{ field, formController }">
+      <div class="avatar-field">
+        <label>{{ field.label }}</label>
+        <AvatarUploader
+          :value="formController.getFieldValue(field.name)"
+          @update:value="(value) => formController.setFieldValue(field.name, value)"
+        />
+      </div>
+    </template>
   </Enforma>
 </template>
 
@@ -338,13 +336,13 @@ Override the rendering of specific fields using slots:
 import AvatarUploader from '@/components/AvatarUploader.vue';
 
 const formSchema = {
-  fields: [
-    { name: 'username', label: 'Username', component: 'text' },
-    { name: 'avatar', label: 'Profile Picture', component: 'custom' }
-  ]
+  username: { label: 'Username' },
+  avatar: { label: 'Profile Picture' }
 };
 </script>
 ```
+
+See [Field Slots](/schema-forms/field-slots.md) for more.
 
 ## Loading Schema from an API
 

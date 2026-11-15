@@ -15,6 +15,8 @@ export interface ButtonForm {
   controller: ComputedRef<FormController | null>
   /** Whether the form is submitting */
   isSubmitting: ComputedRef<boolean>
+  /** Whether the form waits for pending work (an upload), and won't submit */
+  isPending: ComputedRef<boolean>
   /**
    * The form's id, for the button's `form` attribute, when the button is given its form. A
    * button in its form is left to that form, which may be a host's own, with no id.
@@ -47,6 +49,7 @@ export function useButtonForm(
 
   // A ref to an <Enforma> reads its state unwrapped, a controller as refs
   const isSubmitting = computed(() => !!unref(controller.value?.$isSubmitting))
+  const isPending = computed(() => !!unref(controller.value?.$isPending))
   const formId = computed(() =>
     form() ? unref(controller.value?.$formId) : undefined
   )
@@ -64,5 +67,5 @@ export function useButtonForm(
     }
   }
 
-  return { controller, isSubmitting, formId, checkFormOwner }
+  return { controller, isSubmitting, isPending, formId, checkFormOwner }
 }

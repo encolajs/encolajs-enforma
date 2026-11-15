@@ -35,5 +35,8 @@ The field controller is an object that provides properties and methods for manag
 | `attrs` | `object` | HTML attributes for the field.                                                                                                                |
 | `events` | `object` | Event handlers for the field.                                                                                                                 |
 | `model` | `{ value: any }` | A reactive object that can be used with v-model for two-way binding. The model property will only trigger validation when the field is dirty. |
+| `isPending` | `boolean` | Whether the field has work running (`track()`, `beginPending()`), such as an upload |
+| `track(work)` | `(work: Promise \| (signal) => Promise) => Promise` | The form's `track()` for this field: the form waits for the work. [See Pending Work](/core-concepts/pending-work.md) |
+| `beginPending()` | `() => { done, signal }` | The form's `beginPending()` for this field |
 
 > [!WARNING] It is recommend to **NOT use** the `model` as you won't be able to control when the field gets validated. If you do use it, you shouldn't pass the `onChange` and `onInput` events to the input.

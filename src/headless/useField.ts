@@ -1,5 +1,10 @@
 import { computed, ComputedRef, ref, shallowRef, watch, watchEffect } from 'vue'
-import { FieldController, FieldControllerExport, FormController } from '@/types'
+import {
+  FieldController,
+  FieldControllerExport,
+  FormController,
+  PendingHandle,
+} from '@/types'
 import { debounce } from '@/utils/debounce'
 import { pathUtils } from '@/utils/helpers'
 
@@ -144,6 +149,18 @@ export function useField(
 
   const debouncedValidate = debounce(validate, 200)
 
+  /** Registers work the form waits for, for this field (@see FormController.beginPending) */
+  function beginPending(): PendingHandle {
+    return form.beginPending(name)
+  }
+
+  /** Registers the promise as work for this field (@see FormController.track) */
+  function track<T>(
+    work: Promise<T> | ((signal: AbortSignal) => Promise<T>)
+  ): Promise<T> {
+    return form.track(work, name)
+  }
+
   const events = {
     input: (e: any) => {
       handleChange(e?.value || (e.target as HTMLInputElement)?.value, 'input')
@@ -182,10 +199,13 @@ export function useField(
       isDirty: fieldController?.$isDirty.value || false,
       isTouched: fieldController?.$isTouched.value || false,
       isValidating: fieldController?.$isValidating.value || false,
+      isPending: fieldController?.$isPending.value || false,
       isFocused: isFocused.value,
 
       // Methods
       validate,
+      beginPending,
+      track,
 
       // Lifecycle methods for external management
       initField,
@@ -194,7 +214,11 @@ export function useField(
       attrs: {
         value,
         'aria-invalid': !!error,
-        'aria-busy': fieldController?.$isValidating.value ? 'true' : undefined,
+        'aria-busy':
+          fieldController?.$isValidating.value ||
+          fieldController?.$isPending.value
+            ? 'true'
+            : undefined,
         'aria-describedby': getDescribedByIds(
           name,
           fieldController,
