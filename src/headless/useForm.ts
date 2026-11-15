@@ -283,6 +283,9 @@ export function useForm<T extends object>(
       const isValid = await validator.validatePath(path, valuesRef.value)
       await Promise.all(
         validator.getDependentFields(path).map((dependant: string) => {
+          // A dependant with no state, such as a field hidden by its `if`, isn't
+          // mounted: getting one would create it, and validate() would then check it
+          if (!fieldManager.has(dependant)) return
           const depCtrl = fieldManager.get(dependant)
           if (depCtrl.$isDirty.value && !depCtrl.$isValidating.value) {
             validateField(dependant, depCtrl)
