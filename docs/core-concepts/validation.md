@@ -53,6 +53,12 @@ const form = useForm(formData, validator)
 </script>
 ```
 
+### Which fields are checked
+
+A form checks the fields it has a state for: those whose component is mounted, and those the form was asked about (`validateField(path)`, `getField(path)`). A field's state goes with its component when it unmounts. So `validate()` and `submit()` don't check a field whose component never mounts, or no longer is: a field hidden by its `if`, but also one inside a closed tab or a collapsed panel whose content unmounts.
+
+Keep the content of tabs and panels mounted, and hide it (`v-show`, the `hidden` attribute, CSS), so their fields are checked with the rest of the form. A kit's section component drawing tabs (see [Custom Section Components](/extensibility/custom-components#custom-section-components)) renders every panel and shows one.
+
 ### Form-Level Validation
 
 Enforma supports validation at multiple levels:

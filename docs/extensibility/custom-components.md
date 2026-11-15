@@ -259,6 +259,8 @@ const tabs = computed(() => items.value.filter((item) => item.kind === 'section'
 // each tab: item.schema.title; each panel: h(item.component, item.props)
 ```
 
+Render every panel, and show one (`v-show`): a field whose panel unmounts isn't checked (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)).
+
 It also gives `fields`, the paths of the fields inside the section at any depth (its sub-sections' too, those hidden by their `if` left out, a repeatable's path standing for its items' fields), and `errorCount`, how many of them have errors, which follows each check, a fix and `reset()`. A tab shows its sub-section's count:
 
 ```js
