@@ -135,7 +135,7 @@ export default defineConfig({
         {
           text: 'Other',
           items: [
-            { text: 'Form in Modal', link: '/recipes/form-in-modal' },
+            { text: 'Buttons Outside the Form', link: '/recipes/form-in-modal' },
           ],
         },
       ],

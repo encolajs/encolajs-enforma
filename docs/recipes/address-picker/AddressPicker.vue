@@ -25,6 +25,7 @@
     v-model:visible="showAddressModal"
     modal
     header="Add New Address" :style="{ width: '25rem' }">
+    <!-- the form's own buttons are hidden: they're in the footer -->
     <Enforma
       ref="modalForm"
       :data="newAddress"
@@ -34,16 +35,17 @@
       :submit-handler="addAddress"
       >
     </Enforma>
-    <div class="flex justify-end gap-2">
+    <template #footer>
       <Button type="button" label="Cancel" severity="secondary" @click="showAddressModal = false"></Button>
-      <Button type="button" label="Add address" @click="modalForm?.submit"></Button>
-    </div>
+      <!-- outside the <form>: given the form, it submits it, and so does Enter in a field -->
+      <EnformaSubmitButton :form="modalForm">Add address</EnformaSubmitButton>
+    </template>
   </Dialog>
 </template>
 
 <script setup>
 import { Select, Dialog, Button } from 'primevue'
-import { Enforma } from '../../../src/'
+import { Enforma, EnformaSubmitButton } from '../../../src/'
 import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 import { defineProps, defineEmits, ref } from 'vue'
 

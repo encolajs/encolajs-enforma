@@ -16,8 +16,9 @@
 | `submitHandler`    | `Function`  | Function to be called on submit                                                                                    |
 | `config`           | `Object`    | Form configuration options                                                                                         |
 | `context`          | `Object`    | What expressions read as `context`: data and functions                                                             |
+| `id`               | `String`    | The `<form>`'s id, read once, as the form is made. Without it, one is made up. A button outside the form names the form by it |
 | `showResetButton`  | `Boolean` | To show the reset button (default `true`)                                                                          |
-| `showSubmitButton` | `Boolean` | To show the submit button (default `true`). This is useful if you want to place the submit button outside the form |
+| `showSubmitButton` | `Boolean` | To show the submit and reset buttons (default `true`). Hide them to place the buttons outside the form ([recipe](/recipes/form-in-modal.md)) |
 | ~~`rules`~~        | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |
 | ~~`messages`~~     | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |
 
@@ -59,3 +60,16 @@ See the [Migration Guide](/migration-guide-1_3) for complete migration instructi
 |-----------|-------|--------------------------------------------------------------------|
 | `default` | None | The main slot for form content where the fields are being rendered |
 | `actions` | None | The place where the submit and reset buttons are being rendered    |
+
+## Submit and Reset Buttons
+
+`<EnformaSubmitButton>` and `<EnformaResetButton>` are the buttons `<Enforma>` renders in its `actions` slot. Render them yourself to place them elsewhere: in the form, or outside it ([recipe](/recipes/form-in-modal.md)).
+
+| Prop             | Type               | Description                                                                                                  |
+|------------------|--------------------|--------------------------------------------------------------------------------------------------------------|
+| `form`           | `Object`           | The form to submit or reset, for a button outside it: a ref to its `<Enforma>`, or a controller from `useForm()`. `null` until the form mounts, and the button is disabled until then. Without it, the form the button is in |
+| `content`        | `String`           | The button's text (default `Submit` / `Reset`), unless the config has one (`pt.submit.content` / `pt.reset.content`, which the default preset sets). To name one button, put its text in its default slot: `<EnformaSubmitButton>Save</EnformaSubmitButton>` |
+| `loadingContent` | `String`           | The submit button's text while the form submits (default `Submitting...`), unless the config has one (`pt.submit.loadingContent`) |
+| `as`             | `String`, `Object` | The component to render (default `button`, or `pt.submit.as` / `pt.reset.as` from the config)                |
+
+The submit button given a `form` names it by its id (`<button type="submit" form="…">`), so a click and Enter in a field submit it. Both buttons are disabled while the form submits.

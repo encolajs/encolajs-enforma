@@ -17,3 +17,12 @@
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
 @import "tailwindcss/utilities.css" layer(utilities) prefix(tw) important;
 @import "@nuxt/ui";
+
+/*
+ * Nuxt UI's modals and slideovers render at the end of <body> with no z-index, and VitePress'
+ * code blocks have one, so the page's code would show through a modal. Keep them on top.
+ */
+[role='dialog'][data-slot='content'],
+[data-slot='overlay'] {
+  z-index: 100;
+}
