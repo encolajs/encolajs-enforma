@@ -169,7 +169,7 @@ export interface BaseSchema {
   /**
    * The type of schema this represents: a field when left out
    */
-  type?: 'field' | 'section' | 'repeatable' | 'repeatable-table'
+  type?: 'field' | 'section' | 'repeatable' | 'repeatable-table' | 'content'
 
   /**
    * The component used for rendering this part of the form
@@ -327,6 +327,26 @@ export interface SectionSchema extends BaseSchema {
 }
 
 /**
+ * Content among a section's items, which isn't a field: a line restating the form, a
+ * preview, a note, a button. It has no value and no rules
+ */
+export interface ContentSchema extends BaseSchema {
+  type: 'content'
+
+  /**
+   * The component drawing it: looked up by name in the form's config (`components.note`),
+   * then among the components registered in the Vue app, or the component itself
+   */
+  component: string | Component
+
+  /**
+   * Props for its component, which may be expressions worked out from the form's values
+   * (`'${form.price - form.cost}'`), then passed through the `content_props` transformers
+   */
+  props?: Record<string, any>
+}
+
+/**
  * Schema for repeatable field groups
  */
 export interface RepeatableSchema extends BaseSchema {
@@ -446,6 +466,7 @@ export interface FormSchema {
     | SectionSchema
     | RepeatableSchema
     | RepeatableTableSchema
+    | ContentSchema
 }
 
 export type { FieldController } from './headless/useForm'

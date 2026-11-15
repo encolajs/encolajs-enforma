@@ -21,14 +21,19 @@ import type { SectionSchema, FormSchema, FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateCondition } from '@/utils/evaluateCondition'
+import { evaluateSchema } from '@/utils/evaluateSchema'
 import EnformaField from './EnformaField.vue'
 import EnformaRepeatable from './EnformaRepeatable.vue'
 import EnformaRepeatableTable from './EnformaRepeatableTable.vue'
 // Used when a section renders, never as this module loads: the two import each other
 import EnformaSection from './EnformaSection.vue'
 
-/** What an item of a section is: a field, a sub-section or a repeatable */
-export type EnformaSectionItemKind = 'field' | 'section' | 'repeatable'
+/** What an item of a section is: a field, a sub-section, a repeatable, or content (no value) */
+export type EnformaSectionItemKind =
+  | 'field'
+  | 'section'
+  | 'repeatable'
+  | 'content'
 
 /** One item of a section, as `useEnformaSection()` gives it, in render order */
 export interface EnformaSectionItem {
@@ -40,7 +45,10 @@ export interface EnformaSectionItem {
   schema: Record<string, any> & { name: string }
   /** What draws it: its own component, or the config's for its kind */
   component: string | object
-  /** What its component is given */
+  /**
+   * What its component is given: a content entry's `props`, its expressions worked out and
+   * passed through the `content_props` transformers
+   */
   props: Record<string, any>
   /**
    * The form's slot for this field (`field(email)`), drawn instead of its component, with
@@ -59,8 +67,8 @@ export interface EnformaSectionState {
   items: ComputedRef<EnformaSectionItem[]>
 }
 
-// The component names sections gave that nothing has, each warned about once
-const unknownSectionComponents = new Set<string>()
+// The component names sections and content entries gave that nothing has, each warned about once
+const unknownComponents = new Set<string>()
 
 export function isSectionSchema(value: any): value is SectionSchema {
   return value && typeof value === 'object' && value?.type === 'section'
@@ -127,6 +135,7 @@ function mergeByPosition<
 /** What kind of item an entry is */
 function kindOf(entry: Record<string, any>): EnformaSectionItemKind {
   if (isSectionSchema(entry)) return 'section'
+  if (entry.type === 'content') return 'content'
   if (
     entry.type === 'repeatable' ||
     entry.type === 'repeatable-table' ||
@@ -177,29 +186,64 @@ export function useEnformaSection(
   }
 
   /**
-   * The component drawing a sub-section: the one its `component` names, from the form's
-   * config (`components.card`) or the Vue app, or the component it gives itself; the
-   * config's section component without one, or when nothing has the name it gives.
+   * The component an entry's `component` gives: looked up by name in the form's config
+   * (`components.card`), then among the components registered in the Vue app, or the
+   * component itself. Undefined without one, or, with a warning, when nothing has its name.
    */
-  function sectionComponentFor(
-    section: Record<string, any> & { name: string }
-  ): string | object {
-    const named = section.component
+  function namedComponent(
+    entry: Record<string, any> & { name: string },
+    otherwise: string
+  ): string | object | undefined {
+    const named = entry.component
     if (named && typeof named === 'object') return named
-    if (typeof named !== 'string' || named === '') return sectionComponent
+    if (typeof named !== 'string' || named === '') return undefined
     const component =
       getConfig(`components.${named}`) ??
       appComponents[named] ??
       appComponents[camelize(named)] ??
       appComponents[capitalize(camelize(named))]
     if (component) return component as string | object
-    if (!unknownSectionComponents.has(named)) {
-      unknownSectionComponents.add(named)
+    if (!unknownComponents.has(named)) {
+      unknownComponents.add(named)
       console.warn(
-        `[Enforma] The section "${section.name}" names the component "${named}", which neither the form's config nor the Vue app has: it is drawn with the section component`
+        `[Enforma] "${entry.name}" names the component "${named}", which neither the form's config nor the Vue app has: ${otherwise}`
       )
     }
-    return sectionComponent
+    return undefined
+  }
+
+  /**
+   * The component drawing a sub-section: the one its `component` names, or the config's
+   * section component without one, or when nothing has the name it gives.
+   */
+  function sectionComponentFor(
+    section: Record<string, any> & { name: string }
+  ): string | object {
+    return (
+      namedComponent(
+        section,
+        'the section is drawn with the section component'
+      ) ?? sectionComponent
+    )
+  }
+
+  /**
+   * What a content entry's component is given: its `props`, their expressions worked out
+   * from the form's values, through the `content_props` transformers
+   */
+  function contentProps(content: Record<string, any>): Record<string, any> {
+    const evaluated = evaluateSchema(
+      { ...(content.props || {}) },
+      formCtrl as FormController,
+      unref(formContext) || {},
+      formConfig
+    )
+    return applyTransformers(
+      getConfig('transformers.content_props', []) as Function[],
+      evaluated,
+      formCtrl as FormController,
+      formConfig
+    )
   }
 
   /** The component drawing a field or a repeatable: its own, or the config's for its type */
@@ -282,26 +326,43 @@ export function useEnformaSection(
 
     return mergeByPosition(fields, sections)
       .filter(isShown)
-      .map((entry): EnformaSectionItem => {
+      .flatMap((entry): EnformaSectionItem[] => {
         const kind = kindOf(entry)
+        if (kind === 'content') {
+          const component = namedComponent(entry, 'the content is left out')
+          if (!component) return []
+          return [
+            {
+              kind,
+              name: entry.name,
+              schema: entry,
+              component,
+              props: contentProps(entry),
+            },
+          ]
+        }
         if (kind === 'section') {
-          return {
+          return [
+            {
+              kind,
+              name: entry.name,
+              schema: entry,
+              component: sectionComponentFor(entry),
+              props: sectionBindings(entry),
+            },
+          ]
+        }
+        const slot = parentSlots?.[`field(${entry.name})`]
+        return [
+          {
             kind,
             name: entry.name,
             schema: entry,
-            component: sectionComponentFor(entry),
-            props: sectionBindings(entry),
-          }
-        }
-        const slot = parentSlots?.[`field(${entry.name})`]
-        return {
-          kind,
-          name: entry.name,
-          schema: entry,
-          component: fieldComponentFor(entry),
-          props: entry,
-          ...(slot ? { slot } : {}),
-        }
+            component: fieldComponentFor(entry),
+            props: entry,
+            ...(slot ? { slot } : {}),
+          },
+        ]
       })
   })
 

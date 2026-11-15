@@ -257,6 +257,18 @@ const sectionPropsTransformer = (sectionOptions, formController) => {
 - Adding accessibility features to sections
 - Implementing conditional section rendering
 
+### Content Props Transformers
+
+Content props transformers (`content_props`) change the props of a content entry's component (see [Content Schema](/schema-forms/schema-reference#content-schema)), after its expressions are worked out. They get the props and the form controller.
+
+```js
+// Formats every amount a content entry shows
+const amountsTransformer = (props) =>
+  typeof props.amount === 'number'
+    ? { ...props, amount: props.amount.toFixed(2) }
+    : props
+```
+
 ## Registering Transformers
 
 Transformers are registered in the Enforma configuration:

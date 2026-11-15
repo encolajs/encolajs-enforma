@@ -174,6 +174,8 @@ export interface EnformaConfig {
     repeatable_table_props?: FormPropsTransformer[]
     // transformers applied to EnformaSection props
     section_props?: FormPropsTransformer[]
+    // transformers applied to a content entry's props
+    content_props?: FormPropsTransformer[]
     [key: string]: Function[] | undefined
   }
   [key: string]: any

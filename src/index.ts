@@ -88,6 +88,7 @@ export type {
   EventTrigger,
   FieldSchema,
   SectionSchema,
+  ContentSchema,
   FormSchema,
 } from './types'
 
