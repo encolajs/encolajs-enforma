@@ -47,7 +47,7 @@ See the [Migration Guide](/migration-guide-1_3) for complete migration instructi
 |----------------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | `submit_error`       | `formData`                                         | Emitted when there's an error while submitting the form                                                         |
 | `submit_success`     | `formData`                                         | Emitted when the form is successfully submited                                                                  |
-| `validation_fail`   | `{ formController }`                               | Emitted when validation fails. This is where you add notifications/toasts or scroll the form to the first field |
+| `validation_fail`   | `(formController, paths)`                          | Emitted when validation fails, with the fields that failed in the order the schema renders them. This is where you add notifications/toasts, open the tab holding the first and focus it (`formController.focusField(paths[0])`) |
 | `validation_success` | `formData`                                         | Emitted when validation passes                                                                                  |
 | `field_change`       | `{ path, value, fieldController, formController }` | Emitted when any field value changes                                                                            |
 | `field_blur`         | `{ name, fieldController, formController }`        | Emitted when a field is blurred                                                                                 |

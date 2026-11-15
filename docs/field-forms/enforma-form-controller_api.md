@@ -46,6 +46,7 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
 | `removeField(path)` | `path: string` | `void` | Removes a field from the form |
 | `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
+| `focusField(path)` | `path: string` | `void` | Asks the field at `path` to focus its input (Enforma's fields do, by the input's id), as after a refused submit |
 | `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
 | `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |
 

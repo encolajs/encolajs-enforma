@@ -160,8 +160,18 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     )
   }
 
+  // focusField(path) focuses this field's input, found by its id
+  const focusRequested = ({ path }: { path: string }) => {
+    if (path !== fieldProps.value.name || typeof document === 'undefined')
+      return
+    const input = document.getElementById(fieldId.value) as HTMLElement | null
+    input?.focus()
+  }
+  formCtrl?.on('field_focus_requested', focusRequested)
+
   // Set up cleanup
   onBeforeUnmount(() => {
+    formCtrl?.off('field_focus_requested', focusRequested)
     formCtrl?.removeField(fieldProps.value.name)
     // Unregister field rules and messages
     if (fieldRulesCollector) {

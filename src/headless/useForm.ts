@@ -334,6 +334,28 @@ export function useForm<T extends object>(
     return false
   }
 
+  /**
+   * The fields that have errors, in the order they render (`fieldOrder`), a repeatable's
+   * items where the repeatable is; those it doesn't list last, in the order the form got them
+   */
+  function failingPaths(): string[] {
+    const failing = Array.from(fieldManager.all().entries())
+      .filter(([, state]) => state.$errors.value.length > 0)
+      .map(([path]) => path)
+    const order = options.fieldOrder?.() ?? []
+    if (order.length === 0) return failing
+    const rank = (path: string) => {
+      const at = order.findIndex(
+        (listed) => path === listed || path.startsWith(`${listed}.`)
+      )
+      return at === -1 ? order.length : at
+    }
+    return failing
+      .map((path, at) => ({ path, at, rank: rank(path) }))
+      .sort((a, b) => a.rank - b.rank || a.at - b.at)
+      .map(({ path }) => path)
+  }
+
   function getArrayByPath(obj: any, arrayPath: string): any[] {
     return pathUtils.get(obj, arrayPath) as any[]
   }
@@ -430,13 +452,16 @@ export function useForm<T extends object>(
           const isValid = await validateForm()
 
           if (!isValid) {
+            // The fields that failed, in the order they render
+            const paths = failingPaths()
+
             // Call validation error callback if provided
             if (options.onValidationFail) {
-              options.onValidationFail(formController)
+              options.onValidationFail(formController, paths)
             }
 
             // Emit validation error event
-            formEmitter.emit('validation_fail', { formController })
+            formEmitter.emit('validation_fail', { formController, paths })
 
             return false
           }
@@ -602,6 +627,13 @@ export function useForm<T extends object>(
 
       hasField(path: string): boolean {
         return fieldManager.has(path)
+      },
+
+      focusField(path: string): void {
+        formEmitter.emit('field_focus_requested', {
+          path,
+          formController: this,
+        })
       },
 
       setFieldFocused(path: string): void {

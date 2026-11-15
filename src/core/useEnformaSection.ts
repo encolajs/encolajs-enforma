@@ -140,6 +140,53 @@ function mergeByPosition<
   return items.concat(fields.slice(f), sections.slice(s))
 }
 
+/**
+ * The entries of section `sectionName` of `schema`, each with its name, in render order:
+ * fields (and content) and sub-sections by `position`
+ */
+function orderedEntries(
+  schema: FormSchema | undefined,
+  sectionName: string
+): Array<Record<string, any> & { name: string; position?: number }> {
+  const entries = Object.entries(schema || {}).filter(
+    ([key, entry]) =>
+      entry &&
+      key !== sectionName &&
+      belongsTo(entry as { section?: string | null }, sectionName)
+  )
+  const withName = ([key, entry]: [string, any]) =>
+    ({ ...entry, name: key } as Record<string, any> & {
+      name: string
+      position?: number
+    })
+  const fields = sortByPosition(
+    entries.filter(([, entry]) => !isSectionSchema(entry)).map(withName)
+  )
+  const sections = sortByPosition(
+    entries.filter(([, entry]) => isSectionSchema(entry)).map(withName)
+  )
+  return mergeByPosition(fields, sections)
+}
+
+/**
+ * The paths of the fields of `schema` in the order they render, its sections' fields where
+ * the sections are, a repeatable's path where it is: `useForm()`'s `fieldOrder`, so a refused
+ * submit gives its failing fields in that order
+ */
+export function fieldsInRenderOrder(
+  schema: FormSchema | undefined,
+  sectionName = 'default',
+  seen: Set<string> = new Set()
+): string[] {
+  seen.add(sectionName)
+  return orderedEntries(schema, sectionName).flatMap((entry) => {
+    if (seen.has(entry.name)) return []
+    const kind = kindOf(entry)
+    if (kind === 'section') return fieldsInRenderOrder(schema, entry.name, seen)
+    return kind === 'content' ? [] : [entry.name]
+  })
+}
+
 /** What kind of item an entry is */
 function kindOf(entry: Record<string, any>): EnformaSectionItemKind {
   if (isSectionSchema(entry)) return 'section'
@@ -312,27 +359,8 @@ export function useEnformaSection(
 
   const shown = computed(() => isShown(schema.value))
 
-  const items = computed(() => {
-    const sectionName = toValue(name)
-    const entries = Object.entries(unref(injectedSchema) || {}).filter(
-      ([key, entry]) =>
-        entry &&
-        key !== sectionName &&
-        belongsTo(entry as { section?: string | null }, sectionName)
-    )
-    const withName = ([key, entry]: [string, any]) =>
-      ({ ...entry, name: key } as Record<string, any> & {
-        name: string
-        position?: number
-      })
-    const fields = sortByPosition(
-      entries.filter(([, entry]) => !isSectionSchema(entry)).map(withName)
-    )
-    const sections = sortByPosition(
-      entries.filter(([, entry]) => isSectionSchema(entry)).map(withName)
-    )
-
-    return mergeByPosition(fields, sections)
+  const items = computed(() =>
+    orderedEntries(unref(injectedSchema), toValue(name))
       .filter(isShown)
       .flatMap((entry): EnformaSectionItem[] => {
         const kind = kindOf(entry)
@@ -372,7 +400,7 @@ export function useEnformaSection(
           },
         ]
       })
-  })
+  )
 
   /** The fields and repeatables inside section `sectionName`, at any depth, those shown */
   function fieldsInside(

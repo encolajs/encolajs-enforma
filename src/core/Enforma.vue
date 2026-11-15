@@ -6,9 +6,12 @@
     :custom-messages="effectiveMessages"
     :submit-handler="submitHandler"
     :validate-on="config.validateOn"
+    :field-order="fieldOrder"
     @submit_success="emit('submit_success', $event)"
     @submit_error="emit('submit_error', $event)"
-    @validation_fail="emit('validation_fail', $event)"
+    @validation_fail="
+      (formController, paths) => emit('validation_fail', formController, paths)
+    "
     @field_changed="emit('field_changed', $event)"
     @field_focus="emit('field_focus', $event)"
     @field_blur="emit('field_blur', $event)"
@@ -49,6 +52,7 @@ import {
 } from 'vue'
 import HeadlessForm from '@/headless/HeadlessForm'
 import EnformaSchema from './EnformaSchema.vue'
+import { fieldsInRenderOrder } from './useEnformaSection'
 import EnformaSubmitButton from './EnformaSubmitButton.vue'
 import EnformaResetButton from './EnformaResetButton.vue'
 import {
@@ -239,6 +243,8 @@ const transformedProps = computed(() => {
 
 // Extract the transformed props into individual reactive properties
 const transformedSchema = computed(() => transformedProps.value.schema)
+// The schema's fields in the order they render: a refused submit's failing fields follow it
+const fieldOrder = () => fieldsInRenderOrder(transformedSchema.value)
 const transformedContext = computed(() => transformedProps.value.context)
 const transformedFormConfig = computed(() => transformedProps.value.config)
 

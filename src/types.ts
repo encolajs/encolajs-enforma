@@ -31,8 +31,14 @@ export interface FormOptions {
   validateOn?: 'input' | 'change' | 'blur' | 'submit'
   /** Form submission handler */
   submitHandler?: (data: any, form: FormController) => Promise<void> | void
-  /** Validation error callback */
-  onValidationFail?: (form: FormController) => void
+  /** Validation error callback, given the fields that failed, in the order they render */
+  onValidationFail?: (form: FormController, paths: string[]) => void
+  /**
+   * The fields' paths in the order they render (`fieldsInRenderOrder(schema)` for a schema
+   * form): a refused submit gives its failing fields in that order. Without it, in the
+   * order the form got them
+   */
+  fieldOrder?: () => string[]
   /** Submit success callback */
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
@@ -137,6 +143,9 @@ export interface FormController {
   ): FormController
 
   // Focus/Blur handling
+  /** Asks the field at `path` to focus its input: Enforma's fields do (`field_focus_requested`) */
+  focusField(path: string): void
+
   setFieldFocused(path: string): void
 
   setFieldBlurred(path: string): void

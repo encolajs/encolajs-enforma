@@ -46,7 +46,10 @@ export { default as EnformaSectionItems } from './core/EnformaSectionItems.vue'
 
 // For a field component of one's own (`components.field`), and for a host's own controller
 export { useEnformaField } from './core/useEnformaField'
-export { useEnformaSection } from './core/useEnformaSection'
+export {
+  useEnformaSection,
+  fieldsInRenderOrder,
+} from './core/useEnformaSection'
 export type {
   EnformaSectionItem,
   EnformaSectionItemKind,

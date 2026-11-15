@@ -41,6 +41,11 @@ export default defineComponent({
         return Promise.resolve(true)
       },
     },
+    // The fields' paths in the order they render, for a refused submit's `paths`
+    fieldOrder: {
+      type: Function as PropType<() => string[]>,
+      default: undefined,
+    },
   },
 
   emits: [
@@ -74,6 +79,7 @@ export default defineComponent({
     const formCtrl: FormController = useForm(props.data, validatorOrRules, {
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
+      fieldOrder: () => props.fieldOrder?.() ?? [],
     })
 
     // The handlers registered below, removed as the form unmounts, with the form's controller.
@@ -111,8 +117,14 @@ export default defineComponent({
 
     on(
       'validation_fail',
-      ({ formController }: { formController: FormController }) => {
-        ctx.emit('validation_fail', formController)
+      ({
+        formController,
+        paths,
+      }: {
+        formController: FormController
+        paths: string[]
+      }) => {
+        ctx.emit('validation_fail', formController, paths)
       }
     )
 
