@@ -9,7 +9,9 @@ import {
   EffectScope,
   watchEffect,
   inject,
+  getCurrentInstance,
 } from 'vue'
+import * as Vue from 'vue'
 import { generateId, isPlainObject, pathUtils } from '@/utils/helpers'
 import { isDeepEqual } from '@/utils/isDeepEqual'
 import { useConfig } from '@/utils/useConfig'
@@ -217,11 +219,29 @@ class FieldManager {
   }
 }
 
+// Vue's useId(), from Vue 3.5 on. Read off the module, as an import would fail on older Vue
+const vueUseId = (Vue as Record<string, any>).useId as
+  | (() => string)
+  | undefined
+let formCount = 0
+
+/**
+ * An id for a form given none. In a component on Vue 3.5+ it's useId()'s, which the server and
+ * the browser make up alike; otherwise a count's, so a server-rendered form needs an `id`.
+ */
+function makeFormId(): string {
+  if (vueUseId && getCurrentInstance()) return `enforma-${vueUseId()}`
+  return `enforma-${++formCount}`
+}
+
 export function useForm<T extends object>(
   values: object,
   validatorOrRules?: FormValidator | ValidationRules,
   options: FormOptions = {}
 ): T & FormController {
+  // The form's id, which is the <form>'s, set once
+  const formId = options.id || makeFormId()
+
   // Create main form scope for form-level effects
   const formScope = effectScope()
 
@@ -774,13 +794,18 @@ export function useForm<T extends object>(
         formScope.stop()
       },
 
-      // Form-level ARIA attributes
+      get $formId() {
+        return formId
+      },
+
+      // The <form>'s attributes: its id and its ARIA attributes
       get $formAttrs() {
         const hasFormErrors = Array.from(fieldManager.all().values()).some(
           (field) => field.$errors.value.length > 0
         )
 
         return {
+          id: formId,
           'aria-busy': formState.$isSubmitting.value ? 'true' : undefined,
           'aria-invalid': hasFormErrors ? 'true' : undefined,
         }
@@ -805,9 +830,8 @@ export function useForm<T extends object>(
             if (prop === '$formVersion') {
               return formVersion.value
             }
-            // Handle formAttrs
-            if (prop === '$formAttrs') {
-              return target.$formAttrs
+            if (prop === '$formAttrs' || prop === '$formId') {
+              return target[prop]
             }
             return formState[prop as keyof typeof formState]
           }

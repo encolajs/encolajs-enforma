@@ -1,5 +1,6 @@
 <template>
   <HeadlessForm
+    :id="id"
     ref="form"
     :data="data"
     :rules="effectiveRules"
@@ -109,6 +110,11 @@ const props = defineProps({
   showResetButton: {
     type: Boolean,
     default: true,
+  },
+  // The <form>'s id, read once, as the form is made. Without it, one is made up
+  id: {
+    type: String,
+    default: undefined,
   },
 })
 

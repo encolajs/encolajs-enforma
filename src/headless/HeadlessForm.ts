@@ -46,6 +46,11 @@ export default defineComponent({
       type: Function as PropType<() => string[]>,
       default: undefined,
     },
+    // The <form>'s id, read once, as the form is made. Without it, one is made up
+    id: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: [
@@ -77,6 +82,7 @@ export default defineComponent({
     // Create form using useForm with callbacks for events. Its events go through its own
     // emitter, which this form alone hears.
     const formCtrl: FormController = useForm(props.data, validatorOrRules, {
+      id: props.id,
       customMessages: props.customMessages,
       submitHandler: props.submitHandler,
       fieldOrder: () => props.fieldOrder?.() ?? [],
