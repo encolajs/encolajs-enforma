@@ -18,7 +18,7 @@ import moveArrayItem from '@/utils/moveArrayItem'
 import type { FormValidator } from '@/validators/types'
 import { NoopValidator } from '@/validators/NoopValidator'
 import { isFormValidator, isRulesObject } from '@/validators/helpers'
-import { enformaConfigKey } from '@/constants/symbols'
+import { enformaConfigKey, formControllerSelfKey } from '@/constants/symbols'
 import { warnRulesDeprecation } from '@/utils/deprecationWarnings'
 
 export interface FieldController {
@@ -762,6 +762,12 @@ export function useForm<T extends object>(
         triggerUpdate() // Manual reactivity trigger
       },
 
+      // The controller itself, for <Enforma>, which reaches it through a ref to its HeadlessForm
+      // (@see formControllerSelfKey)
+      [formControllerSelfKey](): FormController {
+        return formController
+      },
+
       // Enhanced cleanup with effectScope
       destroy(): void {
         // Clean up all form and field effects
@@ -834,6 +840,17 @@ export function useForm<T extends object>(
         }
 
         return undefined
+      },
+
+      // The form's methods and state are "in" the controller, so a ref to the component that
+      // exposes it (Vue's expose proxy checks `key in` before reading) reads them. Field values
+      // are not: they're read with getFieldValue()
+      has(target: FormController, prop: string | symbol): boolean {
+        if (prop in target) return true
+        return (
+          typeof prop === 'string' &&
+          (prop in formState || prop === '$formVersion')
+        )
       },
 
       set(_: FormController, prop: string | symbol, value: any): boolean {
