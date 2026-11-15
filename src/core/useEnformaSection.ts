@@ -65,6 +65,14 @@ export interface EnformaSectionState {
   shown: ComputedRef<boolean>
   /** Its items, in render order, those hidden by their `if` left out */
   items: ComputedRef<EnformaSectionItem[]>
+  /**
+   * The paths of the fields inside it, at any depth (its sub-sections' included), those
+   * hidden by their `if`, or inside a hidden sub-section, left out. A repeatable's path
+   * stands for all of its items' fields
+   */
+  fields: ComputedRef<string[]>
+  /** How many of those fields have errors: a tab's count */
+  errorCount: ComputedRef<number>
 }
 
 // The component names sections and content entries gave that nothing has, each warned about once
@@ -366,5 +374,43 @@ export function useEnformaSection(
       })
   })
 
-  return { schema, shown, items }
+  /** The fields and repeatables inside section `sectionName`, at any depth, those shown */
+  function fieldsInside(
+    sectionName: string,
+    seen: Set<string> = new Set()
+  ): Array<{ path: string; repeatable: boolean }> {
+    seen.add(sectionName)
+    return Object.entries(unref(injectedSchema) || {}).flatMap(
+      ([key, entry]: [string, any]) => {
+        if (!entry || key === sectionName || seen.has(key)) return []
+        if (!belongsTo(entry, sectionName) || !isShown(entry)) return []
+        const kind = kindOf(entry)
+        if (kind === 'section') return fieldsInside(key, seen)
+        if (kind === 'content') return []
+        return [{ path: key, repeatable: kind === 'repeatable' }]
+      }
+    )
+  }
+
+  const insideFields = computed(() => fieldsInside(toValue(name)))
+  const fields = computed(() => insideFields.value.map(({ path }) => path))
+
+  const errorCount = computed(() => {
+    if (!formCtrl) return 0
+    // Read again as validate() ends, and as array items move, so the states that fields
+    // got since (a repeatable's items) are counted
+    void formCtrl.$isValidating?.value
+    void formCtrl.$formVersion
+    const errors = formCtrl.errors() as Record<string, string[]>
+    return insideFields.value.filter(({ path, repeatable }) =>
+      repeatable
+        ? Object.entries(errors).some(
+            ([errorPath, messages]) =>
+              errorPath.startsWith(`${path}.`) && messages.length > 0
+          )
+        : formCtrl.getField(path).$errors.value.length > 0
+    ).length
+  })
+
+  return { schema, shown, items, fields, errorCount }
 }

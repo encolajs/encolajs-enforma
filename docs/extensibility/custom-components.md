@@ -259,6 +259,13 @@ const tabs = computed(() => items.value.filter((item) => item.kind === 'section'
 // each tab: item.schema.title; each panel: h(item.component, item.props)
 ```
 
+It also gives `fields`, the paths of the fields inside the section at any depth (its sub-sections' too, those hidden by their `if` left out, a repeatable's path standing for its items' fields), and `errorCount`, how many of them have errors, which follows each check, a fix and `reset()`. A tab shows its sub-section's count:
+
+```js
+// in each tab's own component, given its sub-section's name
+const { errorCount } = useEnformaSection(() => props.name)
+```
+
 ### Custom Button Components
 
 You can also create custom button components for form actions:
