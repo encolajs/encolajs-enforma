@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { FormController, useForm } from '../../src'
+import type { FormValidator } from '../../src/validators/types'
 
 describe('useForm', () => {
   let order
@@ -652,6 +653,56 @@ describe('useForm', () => {
       // Fix the error
       await form.setFieldValue('items.0.price', 150)
       expect(form.$formAttrs['aria-invalid']).toBeUndefined()
+    })
+  })
+
+  describe('dependent fields', () => {
+    // Two fields whose rules name each other, as a password and its repeat do: each is the
+    // other's dependant. The validator answers after a timer, as rules with several promises do.
+    function mutualValidator(checks: string[]): FormValidator {
+      return {
+        validate: async () => true,
+        validatePath: async (path: string) => {
+          checks.push(path)
+          await new Promise((resolve) => setTimeout(resolve, 0))
+          return true
+        },
+        getErrors: () => ({}),
+        getErrorsForPath: () => [],
+        getDependentFields: (path: string) =>
+          path === 'new_password' ? ['password_again'] : ['new_password'],
+        clearErrorsForPath: () => {},
+        reset: () => {},
+      }
+    }
+
+    test('checks each dependant once per change, though two fields name each other', async () => {
+      const checks: string[] = []
+      const form = useForm(
+        { new_password: 'abcdefgh', password_again: 'abcdefgh' },
+        mutualValidator(checks)
+      )
+      form.getField('new_password').$isDirty.value = true
+      form.getField('password_again').$isDirty.value = true
+
+      await form.setFieldValue('password_again', 'abcdefgi')
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(checks).toEqual(['password_again', 'new_password'])
+    })
+
+    test('validate() settles, the dependants checked', async () => {
+      const checks: string[] = []
+      const form = useForm(
+        { new_password: 'abcdefgh', password_again: 'abcdefgh' },
+        mutualValidator(checks)
+      )
+      form.getField('new_password').$isDirty.value = true
+      form.getField('password_again').$isDirty.value = true
+
+      expect(await form.validate()).toBe(true)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      expect(checks.length).toBeLessThanOrEqual(4)
     })
   })
 })
