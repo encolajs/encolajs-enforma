@@ -269,11 +269,18 @@ export function useForm<T extends object>(
     })
   })
 
+  /**
+   * Checks a field, then its dirty dependants (the fields whose rules name it), each
+   * once: `checked` holds the fields this round has checked, so two fields whose rules
+   * name each other (a password and its repeat) don't check each other forever.
+   */
   async function validateField(
     path: string,
-    fieldController: FieldController
+    fieldController: FieldController,
+    checked: Set<string> = new Set()
   ): Promise<boolean> {
     if (!validator) return true
+    checked.add(path)
 
     try {
       fieldController.$isValidating.value = true
@@ -285,10 +292,10 @@ export function useForm<T extends object>(
         validator.getDependentFields(path).map((dependant: string) => {
           // A dependant with no state, such as a field hidden by its `if`, isn't
           // mounted: getting one would create it, and validate() would then check it
-          if (!fieldManager.has(dependant)) return
+          if (checked.has(dependant) || !fieldManager.has(dependant)) return
           const depCtrl = fieldManager.get(dependant)
           if (depCtrl.$isDirty.value && !depCtrl.$isValidating.value) {
-            validateField(dependant, depCtrl)
+            return validateField(dependant, depCtrl, checked)
           }
         })
       )
