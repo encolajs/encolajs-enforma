@@ -7,6 +7,8 @@ import { getGlobalConfig, setGlobalConfig } from '../../src/utils/useConfig'
 import useDefaultPreset from '../../src/presets/default'
 import EnformaSection from '../../src/core/EnformaSection.vue'
 import EnformaSchema from '../../src/core/EnformaSchema.vue'
+import EnformaSectionItems from '../../src/core/EnformaSectionItems.vue'
+import { useEnformaSection } from '../../src/core/useEnformaSection'
 import {
   formSchemaKey,
   formControllerKey,
@@ -798,6 +800,183 @@ describe('EnformaSection', () => {
       // under its title
       expect(descriptions[0].element.previousElementSibling?.tagName).toBe('H3')
       expect(wrapper.find('.grid').find('h3').text()).toBe('Details')
+    })
+  })
+
+  describe('headless sections', () => {
+    const renderSchema = (schema: FormSchema, components = {}) => {
+      setGlobalConfig(DEFAULT_CONFIG)
+      useDefaultPreset()
+      const config = getGlobalConfig()
+      return mount(EnformaSchema, {
+        props: { schema },
+        global: {
+          provide: {
+            [formConfigKey]: {
+              ...config,
+              components: { ...config.components, ...components },
+            },
+            [formSchemaKey]: schema,
+            [formControllerKey]: formState,
+          },
+        },
+      })
+    }
+    const inputOrder = (wrapper: ReturnType<typeof mount>, selector: string) =>
+      wrapper
+        .find(selector)
+        .findAll('.enforma-input, h3')
+        .map((el) =>
+          el.element.tagName === 'H3' ? el.text() : el.attributes('name')
+        )
+
+    // A section's fields and sub-section, positioned, one hidden by its `if`
+    const sectionSchema = (component?: string): FormSchema =>
+      createMockSchema({
+        details: {
+          type: 'section',
+          ...(component ? { component } : {}),
+          props: { class: 'details' },
+        } as SectionSchema,
+        name: {
+          type: 'field',
+          section: 'details',
+          inputComponent: 'input',
+          position: 2,
+        },
+        hidden: {
+          type: 'field',
+          section: 'details',
+          inputComponent: 'input',
+          position: 3,
+          if: false,
+        },
+        email: { type: 'field', section: 'details', inputComponent: 'input' },
+        address: {
+          type: 'section',
+          section: 'details',
+          title: 'Address',
+          titleComponent: 'h3',
+          position: 1,
+        },
+        city: { type: 'field', section: 'address', inputComponent: 'input' },
+      })
+
+    it('draws, in a section of its own around EnformaSectionItems, the same items in the same order as EnformaSection', async () => {
+      const Card = defineComponent({
+        props: { name: { type: String, required: true } },
+        setup(props) {
+          return () =>
+            h('div', { class: 'details card' }, [
+              h(EnformaSectionItems, { name: props.name }),
+            ])
+        },
+      })
+      const own = renderSchema(sectionSchema('card'), { card: Card })
+      const enforma = renderSchema(sectionSchema())
+      await flushPromises()
+
+      expect(own.find('.card').exists()).toBe(true)
+      expect(inputOrder(own, '.details')).toEqual([
+        'Address',
+        'city',
+        'name',
+        'email',
+      ])
+      expect(inputOrder(own, '.details')).toEqual(
+        inputOrder(enforma, '.details')
+      )
+    })
+
+    it('lists the sub-sections, for a section that draws them as tabs', async () => {
+      const Tabs = defineComponent({
+        props: { name: { type: String, required: true } },
+        setup(props) {
+          const { items, shown } = useEnformaSection(() => props.name)
+          return () =>
+            h('div', { class: 'tabs', hidden: !shown.value }, [
+              h(
+                'div',
+                { role: 'tablist' },
+                items.value
+                  .filter((item) => item.kind === 'section')
+                  .map((item) =>
+                    h('button', { role: 'tab' }, item.schema.title)
+                  )
+              ),
+              ...items.value
+                .filter((item) => item.kind === 'section')
+                .map((item) =>
+                  h('div', { role: 'tabpanel' }, [
+                    h(item.component as any, item.props),
+                  ])
+                ),
+            ])
+        },
+      })
+      const wrapper = renderSchema(
+        createMockSchema({
+          product: { type: 'section', component: 'tabs' } as SectionSchema,
+          general: {
+            type: 'section',
+            section: 'product',
+            title: 'General',
+            position: 1,
+          },
+          pricing: {
+            type: 'section',
+            section: 'product',
+            title: 'Pricing',
+            position: 2,
+          },
+          title: { type: 'field', section: 'general', inputComponent: 'input' },
+          price: { type: 'field', section: 'pricing', inputComponent: 'input' },
+        }),
+        { tabs: Tabs }
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('[role=tab]').map((tab) => tab.text())).toEqual([
+        'General',
+        'Pricing',
+      ])
+      const panels = wrapper.findAll('[role=tabpanel]')
+      expect(panels[0].find('.enforma-input').attributes('name')).toBe('title')
+      expect(panels[1].find('.enforma-input').attributes('name')).toBe('price')
+    })
+
+    it('gives the section its schema and its items, tagged by kind, when used on its own', () => {
+      const schema = createMockSchema({
+        details: { type: 'section', title: 'Details' },
+        name: { type: 'field', section: 'details' },
+        jobs: { type: 'repeatable', section: 'details', subfields: {} },
+        address: { type: 'section', section: 'details', title: 'Address' },
+      })
+      let state: ReturnType<typeof useEnformaSection> | undefined
+      mount(
+        defineComponent({
+          setup() {
+            state = useEnformaSection('details', { title: 'Given' })
+            return () => null
+          },
+        }),
+        {
+          global: {
+            provide: {
+              [formSchemaKey]: schema,
+              [formControllerKey]: formState,
+            },
+          },
+        }
+      )
+
+      expect(state!.schema.value.title).toBe('Given')
+      expect(state!.shown.value).toBe(true)
+      expect(state!.items.value.map(({ kind, name }) => [kind, name])).toEqual([
+        ['field', 'name'],
+        ['repeatable', 'jobs'],
+        ['section', 'address'],
+      ])
     })
   })
 })
