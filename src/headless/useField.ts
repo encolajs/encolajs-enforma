@@ -194,7 +194,11 @@ export function useField(
       attrs: {
         value,
         'aria-invalid': !!error,
-        'aria-busy': fieldController?.$isValidating.value ? 'true' : undefined,
+        'aria-busy':
+          fieldController?.$isValidating.value ||
+          fieldController?.$isPending.value
+            ? 'true'
+            : undefined,
         'aria-describedby': getDescribedByIds(
           name,
           fieldController,

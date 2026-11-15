@@ -4,7 +4,7 @@
     v-bind="mergeProps($attrs, getPassThroughProps('pt.submit'))"
     type="submit"
     :form="formId"
-    :disabled="!controller || isSubmitting"
+    :disabled="!controller || isSubmitting || isPending"
     :loading="isSubmitting"
     @click="checkFormOwner"
   >
@@ -44,11 +44,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const $attrs = useAttrs()
 // The button submits through the <form> it belongs to: the one it's in, or the one named by
-// its `form` attribute, so Enter in a field presses it too
-const { controller, isSubmitting, formId, checkFormOwner } = useButtonForm(
-  () => props.form,
-  'EnformaSubmitButton'
-)
+// its `form` attribute, so Enter in a field presses it too. It's disabled while the form waits
+// for pending work (an upload), which the form won't submit before
+const { controller, isSubmitting, isPending, formId, checkFormOwner } =
+  useButtonForm(() => props.form, 'EnformaSubmitButton')
 const { t } = useTranslation()
 const { getConfig, getPassThroughProps } = useFormConfig()
 

@@ -580,6 +580,9 @@ export function useForm<T extends object>(
       },
 
       submit: async function () {
+        // The form waits for its pending work (an upload) before it submits
+        if (formState.$isPending.value) return false
+
         formState.$isSubmitting.value = true
 
         try {
@@ -606,6 +609,9 @@ export function useForm<T extends object>(
 
             return false
           }
+
+          // Work may have begun while the form validated
+          if (formState.$isPending.value) return false
 
           if (options.submitHandler) {
             try {
@@ -927,7 +933,10 @@ export function useForm<T extends object>(
 
         return {
           id: formId,
-          'aria-busy': formState.$isSubmitting.value ? 'true' : undefined,
+          'aria-busy':
+            formState.$isSubmitting.value || formState.$isPending.value
+              ? 'true'
+              : undefined,
           'aria-invalid': hasFormErrors ? 'true' : undefined,
         }
       },

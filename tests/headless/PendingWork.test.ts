@@ -1,9 +1,33 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick, provide, ref } from 'vue'
 import { useForm } from '../../src'
 import HeadlessField from '@/headless/HeadlessField'
 import { formControllerKey } from '@/constants/symbols'
+import type { FormValidator } from '@/validators/types'
+import { formReader } from '@/utils/formReader'
+import { useField } from '@/headless/useField'
+
+/** A validator that holds every check until `release()` is called; every value passes */
+function heldValidator(): { validator: FormValidator; release: () => void } {
+  let release = () => {}
+  const held = new Promise<void>((r) => (release = () => r()))
+  return {
+    validator: {
+      validate: async () => true,
+      validatePath: async () => {
+        await held
+        return true
+      },
+      getErrors: () => ({}),
+      getErrorsForPath: () => [],
+      getDependentFields: () => [],
+      clearErrorsForPath: () => {},
+      reset: () => {},
+    },
+    release: () => release(),
+  }
+}
 
 describe('pending work', () => {
   test('beginPending() marks the field and the form pending until done() is called', () => {
@@ -260,6 +284,84 @@ describe('pending work', () => {
       expect(work.signal.aborted).toBe(false)
       expect(form['avatar.$isPending'].value).toBe(true)
     })
+  })
+
+  describe('submitting', () => {
+    test('submit() refuses at once while work is pending: no field touched, no validation, no event', async () => {
+      const submitHandler = vi.fn()
+      const validatePath = vi.fn(async () => true)
+      const form = useForm(
+        { name: 'Ana', avatar: null },
+        { ...heldValidator().validator, validatePath },
+        { submitHandler }
+      )
+      form.getField('name')
+      const events = vi.fn()
+      form.on('validation_fail', events)
+      form.on('submit_success', events)
+      form.on('submit_error', events)
+      form.beginPending('avatar')
+
+      const submitting = form.submit()
+      expect(form.$isSubmitting.value).toBe(false)
+
+      await expect(submitting).resolves.toBe(false)
+      expect(submitHandler).not.toHaveBeenCalled()
+      expect(validatePath).not.toHaveBeenCalled()
+      expect(form['name.$isTouched'].value).toBe(false)
+      expect(events).not.toHaveBeenCalled()
+    })
+
+    test('submit() refuses when work begins while the form validates, before the submit handler', async () => {
+      const submitHandler = vi.fn()
+      const { validator, release } = heldValidator()
+      const form = useForm({ name: 'Ana', avatar: null }, validator, {
+        submitHandler,
+      })
+      form.getField('name')
+
+      const submitting = form.submit()
+      form.beginPending('avatar')
+      release()
+
+      await expect(submitting).resolves.toBe(false)
+      expect(submitHandler).not.toHaveBeenCalled()
+      expect(form.$isSubmitting.value).toBe(false)
+    })
+
+    test('submit() goes ahead once the work is done', async () => {
+      const submitHandler = vi.fn()
+      const form = useForm({ avatar: null }, undefined, { submitHandler })
+      const { done } = form.beginPending('avatar')
+      done()
+
+      await expect(form.submit()).resolves.toBe(true)
+      expect(submitHandler).toHaveBeenCalled()
+    })
+  })
+
+  test('an expression reads it as form.$isPending', () => {
+    const form = useForm({ avatar: null })
+    const reader = formReader(form)
+    expect(reader.$isPending).toBe(false)
+
+    const { done } = form.beginPending('avatar')
+    expect(reader.$isPending).toBe(true)
+
+    done()
+    expect(reader.$isPending).toBe(false)
+  })
+
+  test("a field's attributes mark it busy while its work is pending", () => {
+    const form = useForm({ avatar: null })
+    const field = useField('avatar', form)
+    expect(field.value.attrs['aria-busy']).toBeUndefined()
+
+    const { done } = form.beginPending('avatar')
+    expect(field.value.attrs['aria-busy']).toBe('true')
+
+    done()
+    expect(field.value.attrs['aria-busy']).toBeUndefined()
   })
 
   test("the pending flags can't be written", () => {
