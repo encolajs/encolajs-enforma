@@ -88,6 +88,7 @@ export type {
   FieldControllerExport,
   ValidationRules,
   FieldController,
+  PendingHandle,
   EventTrigger,
   FieldSchema,
   SectionSchema,

@@ -1,4 +1,9 @@
-import { FormController, FormOptions, ValidationRules } from '@/types'
+import {
+  FormController,
+  FormOptions,
+  PendingHandle,
+  ValidationRules,
+} from '@/types'
 import { useValidation } from '@/utils/useValidation'
 import {
   computed,
@@ -28,7 +33,20 @@ export interface FieldController {
   $isDirty: Ref<boolean>
   $isTouched: Ref<boolean>
   $isValidating: Ref<boolean>
+  /** Whether work registered for the field (beginPending(), track()) is still running */
+  $isPending: Ref<boolean>
   _id: string
+}
+
+/** Work registered with beginPending(): the field it's for, or null for the form's own */
+interface PendingWork {
+  state: FieldController | null
+  controller: AbortController
+}
+
+/** Why dropped work's signal aborted: an AbortError, also where `signal.reason` is missing */
+function abortReason(signal: AbortSignal): unknown {
+  return signal.reason ?? new DOMException('The work was dropped', 'AbortError')
 }
 
 /** Whether a value is what reset() gives a key the saved values lack: null, [] or {} */
@@ -67,10 +85,13 @@ export interface StateChanges {
 class FieldManager {
   private _fields: Map<string, FieldController>
   private _fieldScopes: Map<string, EffectScope>
+  // Called with a field's state as it leaves its path: deleted, or moved to another one
+  private _onLeave: (state: FieldController) => void
 
-  constructor() {
+  constructor(onLeave: (state: FieldController) => void = () => {}) {
     this._fields = new Map<string, FieldController>()
     this._fieldScopes = new Map<string, EffectScope>()
+    this._onLeave = onLeave
   }
 
   all(): Map<string, FieldController> {
@@ -84,7 +105,9 @@ class FieldManager {
       fieldScope.stop()
       this._fieldScopes.delete(path)
     }
+    const state = this._fields.get(path)
     this._fields.delete(path)
+    if (state) this._onLeave(state)
   }
 
   has(path: string): boolean {
@@ -104,6 +127,7 @@ class FieldManager {
           $isDirty: ref(false),
           $isTouched: ref(false),
           $isValidating: ref(false),
+          $isPending: ref(false),
           _id: generateId('field', path),
         }
 
@@ -130,6 +154,7 @@ class FieldManager {
           if (index >= startIndex) {
             const newPath = `${arrayPath}.${index + offset}.${rest}`
             newStates.set(newPath, state)
+            if (offset !== 0) this._onLeave(state)
           } else {
             newStates.set(path, state)
           }
@@ -186,6 +211,7 @@ class FieldManager {
         const newPath = `${prefix}${newIndex}.${rest}`
         changes.set(newPath, state)
         this._fields.delete(path)
+        this._onLeave(state)
       }
     }
 
@@ -209,6 +235,7 @@ class FieldManager {
             const newPath = `${arrayPath}.${newIndex}.${rest}`
             newStates.set(newPath, state)
           }
+          if (newIndex !== oldIndex) this._onLeave(state)
         }
       } else {
         newStates.set(path, state)
@@ -255,6 +282,9 @@ export function useForm<T extends object>(
   let formVersion: any
   let savedVersion: any
   let validator: any
+  // The work registered with beginPending() that hasn't been released yet
+  const pendingWork = new Set<PendingWork>()
+  let pendingCount: Ref<number>
 
   formScope.run(() => {
     // Create form-specific event emitter
@@ -293,11 +323,13 @@ export function useForm<T extends object>(
 
     cloneFn = config.behavior.cloneFn
     valuesCopy = cloneFn(values)
-    fieldManager = new FieldManager()
+    // A field's work is dropped as the field leaves its path: removed, or its row moved
+    fieldManager = new FieldManager(dropFieldWork)
     // Use shallowRef for performance with large/complex data
     valuesRef = shallowRef(values)
     formVersion = ref(0) // Manual reactivity trigger
     savedVersion = ref(0) // Bumped as commit() saves the values
+    pendingCount = ref(0)
     formState = {
       $isValidating: ref(false),
       $isSubmitting: ref(false),
@@ -310,6 +342,8 @@ export function useForm<T extends object>(
         void savedVersion.value
         return !sameValues(valuesRef.value, valuesCopy)
       }),
+      // Whether any registered work (beginPending(), track()) is still running
+      $isPending: computed(() => pendingCount.value > 0),
     }
 
     // Form-level reactive effects using watchEffect for automatic dependency tracking
@@ -410,6 +444,57 @@ export function useForm<T extends object>(
       .map((path, at) => ({ path, at, rank: rank(path) }))
       .sort((a, b) => a.rank - b.rank || a.at - b.at)
       .map(({ path }) => path)
+  }
+
+  /** Whether a field has registered work that is still running */
+  function hasWork(state: FieldController): boolean {
+    for (const work of pendingWork) {
+      if (work.state === state) return true
+    }
+    return false
+  }
+
+  function addWork(work: PendingWork): void {
+    pendingWork.add(work)
+    pendingCount.value = pendingWork.size
+    if (work.state) work.state.$isPending.value = true
+  }
+
+  /** Stops counting the work; a second call does nothing */
+  function releaseWork(work: PendingWork): void {
+    if (!pendingWork.delete(work)) return
+    pendingCount.value = pendingWork.size
+    if (work.state) work.state.$isPending.value = hasWork(work.state)
+  }
+
+  /** Releases the work and aborts its signal: the work is no longer the form's to wait for */
+  function dropWork(work: PendingWork): void {
+    releaseWork(work)
+    work.controller.abort()
+  }
+
+  /** Drops the field's work */
+  function dropFieldWork(state: FieldController): void {
+    Array.from(pendingWork)
+      .filter((work) => work.state === state)
+      .forEach(dropWork)
+  }
+
+  /** Drops all the work registered: the form's own, and every field's */
+  function dropAllWork(): void {
+    Array.from(pendingWork).forEach(dropWork)
+  }
+
+  function beginPending(path?: string): PendingHandle {
+    const work: PendingWork = {
+      state: path === undefined ? null : fieldManager.get(path),
+      controller: new AbortController(),
+    }
+    addWork(work)
+    return {
+      done: () => releaseWork(work),
+      signal: work.controller.signal,
+    }
   }
 
   function getArrayByPath(obj: any, arrayPath: string): any[] {
@@ -555,6 +640,39 @@ export function useForm<T extends object>(
         }
       },
 
+      // Registers work the form waits for: while it runs, the form and the field at `path`
+      // (the form itself without one) are pending
+      beginPending(path?: string): PendingHandle {
+        return beginPending(path)
+      },
+
+      // Registers the promise as work the form waits for, until it settles. Given a function,
+      // calls it with the work's signal for the promise
+      track<T>(
+        work: Promise<T> | ((signal: AbortSignal) => Promise<T>),
+        path?: string
+      ): Promise<T> {
+        const { done, signal } = beginPending(path)
+        let promise: Promise<T>
+        try {
+          promise = typeof work === 'function' ? work(signal) : work
+        } catch (error) {
+          done()
+          return Promise.reject(error)
+        }
+        return new Promise<T>((resolve, reject) => {
+          // Dropped work rejects at once, whenever its promise settles
+          const onAbort = () => reject(abortReason(signal))
+          signal.addEventListener('abort', onAbort, { once: true })
+          Promise.resolve(promise)
+            .then(resolve, reject)
+            .finally(() => {
+              signal.removeEventListener('abort', onAbort)
+              done()
+            })
+        })
+      },
+
       // Reset the business object to initial state
       reset(): void {
         const resetValues = config.behavior.cloneFn(valuesCopy)
@@ -598,6 +716,9 @@ export function useForm<T extends object>(
             fieldManager.delete(path)
           }
         })
+
+        // The work running for the values reset() discards is no longer waited for
+        dropAllWork()
 
         // Reset form-level state
         formState.$isDirty.value = false
@@ -845,6 +966,7 @@ export function useForm<T extends object>(
               case 'errors':
               case 'isTouched':
               case 'isValidating':
+              case 'isPending':
                 return computed(() => {
                   // @ts-expect-error the props we access are correct
                   return fieldController['$' + metaProp]?.value

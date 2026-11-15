@@ -94,6 +94,14 @@ export interface FieldControllerExport {
   id: string
 }
 
+/** Work registered with beginPending() */
+export interface PendingHandle {
+  /** Stops counting the work; a second call does nothing */
+  done: () => void
+  /** Aborts when the form drops the work */
+  signal: AbortSignal
+}
+
 export interface FormController {
   // Form state properties
   $isValidating: Ref<boolean>
@@ -102,6 +110,8 @@ export interface FormController {
   $isTouched: Ref<boolean>
   /** Whether the values differ from the saved ones, false again when a change is undone */
   $isChanged: Ref<boolean>
+  /** Whether any registered work (beginPending(), track()) is still running */
+  readonly $isPending: Readonly<Ref<boolean>>
 
   /** The form's id: the one it was given, or one made up */
   readonly $formId: string
@@ -122,6 +132,22 @@ export interface FormController {
   errors(): Record<string, string[]>
 
   submit(): Promise<boolean>
+
+  /**
+   * Registers work the form waits for, such as an upload: while it runs, the form and the
+   * field at `path` (the form itself without one) are pending, until `done()` is called
+   */
+  beginPending(path?: string): PendingHandle
+
+  /**
+   * Registers the promise as work the form waits for (as beginPending() does), until it
+   * settles; gives what the promise gives. Given a function, calls it with the work's signal
+   * for the promise
+   */
+  track<T>(
+    work: Promise<T> | ((signal: AbortSignal) => Promise<T>),
+    path?: string
+  ): Promise<T>
 
   validate(): Promise<boolean>
 
