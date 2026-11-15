@@ -71,6 +71,8 @@ export interface FieldControllerExport {
   isDirty: boolean
   isTouched: boolean
   isValidating: boolean
+  /** Whether work registered for the field (beginPending(), track()) is still running */
+  isPending: boolean
   isFocused: boolean
 
   // Two-way binding model
@@ -78,6 +80,12 @@ export interface FieldControllerExport {
 
   // Methods
   validate: () => Promise<boolean>
+  /** Registers work the form waits for, for this field (@see FormController.beginPending) */
+  beginPending: () => PendingHandle
+  /** Registers the promise as work for this field (@see FormController.track) */
+  track: <T>(
+    work: Promise<T> | ((signal: AbortSignal) => Promise<T>)
+  ) => Promise<T>
 
   // Lifecycle methods (for components that need to manage field lifecycle)
   initField?: () => void

@@ -364,6 +364,48 @@ describe('pending work', () => {
     expect(field.value.attrs['aria-busy']).toBeUndefined()
   })
 
+  describe('useField()', () => {
+    test('isPending tells whether the field has work pending', () => {
+      const form = useForm({ avatar: null })
+      const field = useField('avatar', form)
+      expect(field.value.isPending).toBe(false)
+
+      const { done } = form.beginPending('avatar')
+      expect(field.value.isPending).toBe(true)
+
+      done()
+      expect(field.value.isPending).toBe(false)
+    })
+
+    test('beginPending() registers work for the field', () => {
+      const form = useForm({ avatar: null, cover: null })
+      const field = useField('avatar', form)
+
+      const { done, signal } = field.value.beginPending()
+
+      expect(form['avatar.$isPending'].value).toBe(true)
+      expect(form['cover.$isPending'].value).toBe(false)
+      expect(signal.aborted).toBe(false)
+      done()
+      expect(form.$isPending.value).toBe(false)
+    })
+
+    test('track() registers the promise as work for the field, and gives its result', async () => {
+      const form = useForm({ avatar: null })
+      const field = useField('avatar', form)
+      let resolve!: (value: string) => void
+
+      const tracked = field.value.track(
+        new Promise<string>((r) => (resolve = r))
+      )
+      expect(form['avatar.$isPending'].value).toBe(true)
+
+      resolve('f-1')
+      await expect(tracked).resolves.toBe('f-1')
+      expect(form['avatar.$isPending'].value).toBe(false)
+    })
+  })
+
   test("the pending flags can't be written", () => {
     const form = useForm({ avatar: null })
     form.beginPending('avatar')
