@@ -113,19 +113,16 @@ const submitHandler = async function (data, formController) {
 
 Most of the times forms are self-contained, meaning that whatever happens in a form (clicking on fields, submitting etc) is triggered by elements inside the form.
 
-For situation when you need to manipulate the form from outside (eg: triggering the form submit from a button outside the `<Enforma/>` component) you have to option to create a reference to the form, which exposes the FormController (an object 
-that lets you perform certain operations)
+When a button has to be outside the form, like Save in a modal's footer or beside the page title, hide the form's own buttons and give the form to `<EnformaSubmitButton>` (or `<EnformaResetButton>`) through a ref. The button submits the form, Enter in a field does too, and the button shows when the form is submitting. See the [Buttons Outside the Form recipe](/recipes/form-in-modal.md).
 
-```vue {3,15}
+```vue {3,4,7}
 <template>
-  <Enforma 
+  <Enforma
     ref="formRef"
+    :show-submit-button="false"
     ... rest of the props
-    >
-  </Enforma>
-  <Button @click="formRef.submit()">
-    Button outside the form
-  </Button>
+  />
+  <EnformaSubmitButton :form="formRef" />
 </template>
 
 <script setup>
@@ -136,5 +133,7 @@ const formRef = ref(null)
 // rest of the configuration goes here
 </script>
 ```
+
+The ref holds the form's FormController: call its methods (`formRef.value.submit()`, `formRef.value.setFieldValue('name', 'John')`) and read its state (`formRef.value.$isSubmitting`, `formRef.value.$isChanged`), which follows the form as it changes. It's `null` until the form has mounted.
 
 Read more on the FormController [here](enforma-form-controller_api.md)

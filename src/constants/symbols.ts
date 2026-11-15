@@ -39,3 +39,10 @@ export const fieldRulesCollectorKey = Symbol('fieldRulesCollector')
  * Symbol for providing/injecting the Enforma plugin configuration
  */
 export const enformaConfigKey = Symbol('enformaConfig')
+
+/**
+ * Key of the form controller's method that returns the controller itself. `<Enforma>` reaches
+ * its controller through a ref to its `HeadlessForm`, and a component's ref adds the
+ * component's own properties (`$el`, `$props`, `$emit`…) to what the component exposes.
+ */
+export const formControllerSelfKey = Symbol('formControllerSelf')

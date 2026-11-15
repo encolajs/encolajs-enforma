@@ -23,6 +23,11 @@ export type EventTrigger = 'input' | 'change' | 'blur'
  * Form state options
  */
 export interface FormOptions {
+  /**
+   * The form's id, which `$formAttrs` gives its `<form>`, so a button outside the form can
+   * name it (`<button form="…">`). Read once, as the form is made. Without it, one is made up
+   */
+  id?: string
   /** Custom validator factory */
   validatorFactory?: ValidatorFactory
   /** Custom error messages */
@@ -98,7 +103,10 @@ export interface FormController {
   /** Whether the values differ from the saved ones, false again when a change is undone */
   $isChanged: Ref<boolean>
 
-  // Form ARIA attributes
+  /** The form's id: the one it was given, or one made up */
+  readonly $formId: string
+
+  /** The `<form>`'s attributes: its id and its ARIA attributes */
   readonly $formAttrs: Record<string, any>
 
   reset(): void

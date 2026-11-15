@@ -3,15 +3,15 @@
     :is="effectiveComponent"
     v-bind="mergeProps($attrs, getPassThroughProps('pt.submit'))"
     type="submit"
-    :disabled="$isSubmitting"
-    :loading="$isSubmitting"
+    :form="formId"
+    :disabled="!controller || isSubmitting"
+    :loading="isSubmitting"
+    @click="checkFormOwner"
   >
     <slot name="default">
       <!-- eslint-disable vue/no-v-html -->
       <span
-        v-html="
-          $isSubmitting ? t(effectiveLoadingContent) : t(effectiveContent)
-        "
+        v-html="isSubmitting ? t(effectiveLoadingContent) : t(effectiveContent)"
       ></span>
       <!-- eslint-enable vue/no-v-html -->
     </slot>
@@ -19,27 +19,36 @@
 </template>
 
 <script setup lang="ts">
+import { mergeProps, useAttrs } from 'vue'
 import { useFormConfig } from '@/utils/useFormConfig'
-import { inject, mergeProps, useAttrs, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-import { formControllerKey } from '@/constants/symbols'
-import { FormController } from '@/types'
+import { useButtonForm } from './useButtonForm'
 
 interface Props {
   content?: string
   loadingContent?: string
   as?: string | object
+  /**
+   * The form to submit, for a button outside it: a ref to its `<Enforma>`, or its controller.
+   * Without it, the form the button is in
+   */
+  form?: object | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: 'Submit',
   loadingContent: 'Submitting...',
   as: 'button',
+  form: undefined,
 })
 
 const $attrs = useAttrs()
-const formState = inject(formControllerKey) as FormController
-const { $isSubmitting } = formState
+// The button submits through the <form> it belongs to: the one it's in, or the one named by
+// its `form` attribute, so Enter in a field presses it too
+const { controller, isSubmitting, formId, checkFormOwner } = useButtonForm(
+  () => props.form,
+  'EnformaSubmitButton'
+)
 const { t } = useTranslation()
 const { getConfig, getPassThroughProps } = useFormConfig()
 

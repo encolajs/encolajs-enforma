@@ -1,5 +1,6 @@
 <template>
   <HeadlessForm
+    :id="id"
     ref="form"
     :data="data"
     :rules="effectiveRules"
@@ -41,7 +42,6 @@
 import {
   provide,
   ref,
-  onMounted,
   PropType,
   reactive,
   computed,
@@ -61,8 +61,9 @@ import {
   formSchemaKey,
   formFieldSlotsKey,
   fieldRulesCollectorKey,
+  formControllerSelfKey,
 } from '@/constants/symbols'
-import { FormSchema } from '@/types'
+import { FormController, FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
@@ -110,6 +111,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  // The <form>'s id, read once, as the form is made. Without it, one is made up
+  id: {
+    type: String,
+    default: undefined,
+  },
 })
 
 const emit = defineEmits([
@@ -126,16 +132,29 @@ const emit = defineEmits([
 const form = ref()
 
 /**
- * Expose the form controller
- * This allows parent components to call methods like validate(), reset(), etc.
+ * Expose the form controller, so a parent holding a ref to this form can call its methods
+ * (submit(), validate(), reset()…) and read its state ($isSubmitting, $isChanged…).
+ * Everything is read from the controller as it's asked for, so the state is the current one
+ * and a computed reading it is worked out again as it changes. Before the form has mounted
+ * there's no controller, and nothing is read.
+ *
+ * The controller is taken from the HeadlessForm's ref, not used as that ref: the ref also
+ * holds the HeadlessForm's own properties ($el, $props, $emit…), which would stand in for
+ * this component's. A key the controller lacks is read from the target, where Vue keeps its
+ * marks.
  */
-const exposedController = reactive({})
+const controller = (): any => form.value?.[formControllerSelfKey]?.()
+const exposedController = new Proxy({} as Record<string | symbol, any>, {
+  get(target, key) {
+    const ctrl = controller()
+    return ctrl && key in ctrl ? ctrl[key] : Reflect.get(target, key)
+  },
+  has: (target, key) => {
+    const ctrl = controller()
+    return (!!ctrl && key in ctrl) || Reflect.has(target, key)
+  },
+}) as FormController
 defineExpose(exposedController)
-onMounted(() => {
-  if (form.value) {
-    Object.assign(exposedController, form.value)
-  }
-})
 
 // The form's own config: the global one with the form's `config` on top. It reaches every
 // part of the form (fields, sections, buttons), which read it through useFormConfig().

@@ -357,13 +357,15 @@ provideEnformaForm({
 </script>
 
 <template>
-  <form novalidate @submit.prevent="controller.submit()">
+  <form v-bind="controller.$formAttrs" novalidate @submit.prevent="controller.submit()">
     <EnformaSchema :schema="schema" />
   </form>
 </template>
 ```
 
 The controller's validator holds the rules: the `rules` in the schema are left to you. Only the fields that are rendered are checked, so a field hidden by its `if` isn't.
+
+`controller.$formAttrs` gives the `<form>` its id (`useForm(values, validator, { id: 'profile' })` sets it, or one is made up) and its ARIA attributes. A submit button outside the `<form>` names the form by that id: `<EnformaSubmitButton :form="controller" />` ([recipe](/recipes/form-in-modal.md#a-form-of-your-own)).
 
 ## Accessing Form Configuration in Custom Components
 

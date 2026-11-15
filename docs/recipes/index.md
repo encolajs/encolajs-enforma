@@ -8,7 +8,7 @@ In this section you can find recipes to solve some form related issues:
 - **Validation**
   - [Async validation rule](async-validation.md) - checking if an email is already in use
 - **Other Scenarios**
-  - [Forms in modals](form-in-modal.md) - displaying a form inside a modal
+  - [Buttons outside the form](form-in-modal.md) - Save in a modal's footer, or beside the page title
 
 > [!WARNING] The solutions implemented here are minimal and should be used as inspiration only
 

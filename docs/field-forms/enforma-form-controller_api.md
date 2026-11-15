@@ -19,6 +19,8 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `$isDirty` | `boolean` | Whether any field has been modified |
 | `$isTouched` | `boolean` | Whether any field has been touched/focused |
 | `$isChanged` | `boolean` | Whether the values differ from the saved ones (those the form was given, or `commit()`'s). Unlike `$isDirty`, it turns false again when the user undoes a change: an "Unsaved changes" badge, a Save button disabled while there is nothing to save |
+| `$formId` | `string` | The form's id: the one given to `useForm()` (its `id` option) or to `<Enforma>`/`<HeadlessForm>` (their `id` prop), or one made up |
+| `$formAttrs` | `object` | The `<form>`'s attributes: its `id` and its ARIA attributes (`aria-busy`, `aria-invalid`). Bind them to a `<form>` of your own: `<form v-bind="controller.$formAttrs">` |
 
 ## Form Values Management
 
