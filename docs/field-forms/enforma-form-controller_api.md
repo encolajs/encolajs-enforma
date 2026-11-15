@@ -19,6 +19,7 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `$isDirty` | `boolean` | Whether any field has been modified |
 | `$isTouched` | `boolean` | Whether any field has been touched/focused |
 | `$isChanged` | `boolean` | Whether the values differ from the saved ones (those the form was given, or `commit()`'s). Unlike `$isDirty`, it turns false again when the user undoes a change: an "Unsaved changes" badge, a Save button disabled while there is nothing to save |
+| `$isPending` | `boolean` | Whether work handed to the form (`track()`, `beginPending()`) is still running, such as an upload. The form won't submit meanwhile. Read-only |
 | `$formId` | `string` | The form's id: the one given to `useForm()` (its `id` option) or to `<Enforma>`/`<HeadlessForm>` (their `id` prop), or one made up |
 | `$formAttrs` | `object` | The `<form>`'s attributes: its `id` and its ARIA attributes (`aria-busy`, `aria-invalid`). Bind them to a `<form>` of your own: `<form v-bind="controller.$formAttrs">` |
 
@@ -42,6 +43,15 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field |
 | `getFieldErrors(path)` | `path: string` | `string[]` | Gets errors for a specific field |
 | `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
+
+## Pending Work
+
+Work the form waits for before it submits, such as an upload. [See Pending Work](/core-concepts/pending-work.md)
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `track(work, path?)` | `work: Promise \| (signal: AbortSignal) => Promise, path?: string` | `Promise` | The form waits for the promise until it settles, and gives what it gives. Given a function, calls it with a signal that aborts when the form drops the work; a dropped work rejects with an `AbortError`. Without `path`, the work is the form's own |
+| `beginPending(path?)` | `path?: string` | `{ done, signal }` | The form waits until `done()` is called (a second call does nothing). `signal` aborts when the form drops the work. Without `path`, the work is the form's own |
 
 ## Field Management
 
@@ -85,4 +95,5 @@ Each field in the form has the following state properties:
 | `$isDirty` | `boolean` | Field has been modified |
 | `$isTouched` | `boolean` | Field has been focused/interacted with |
 | `$isValidating` | `boolean` | Field is currently validating |
+| `$isPending` | `boolean` | Field has work running (`track()`, `beginPending()`), such as an upload. Read-only |
 | `$isValid` | `boolean` | Computed property: field has no errors |

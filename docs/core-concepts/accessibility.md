@@ -10,7 +10,7 @@ All form fields automatically include:
 
 - `aria-invalid` - Indicates validation state (true when field has errors)
 - `aria-required` - Indicates if the field is required (based on validation rules)
-- `aria-busy` - Shows when field is being validated asynchronously
+- `aria-busy` - Shows when field is being validated asynchronously, or has [pending work](/core-concepts/pending-work.md) such as an upload
 - `aria-describedby` - Links to error messages and help text
 - `aria-labelledby` - Links to field labels
 - `aria-errormessage` - Points to specific error message elements
@@ -19,7 +19,7 @@ All form fields automatically include:
 
 Forms provide:
 
-- `aria-busy` - Indicates when the form is being submitted
+- `aria-busy` - Indicates when the form is being submitted, or waits for [pending work](/core-concepts/pending-work.md)
 - `aria-invalid` - Shows if the form has validation errors
 
 ## Repeatable Arrays ARIA Support

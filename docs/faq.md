@@ -170,29 +170,7 @@ In the Vue Dev Tools, locate the form component (`Enforma` or `HeadlessForm`) an
 
 ### How do I handle file uploads?
 
-Use the file field type:
-
-```vue
-<template>
-  <Enforma :data="formData" :submitHandler="submit">
-    <EnformaField 
-      name="profileImage" 
-      type="file" 
-      label="Profile Image" 
-      accept="image/*" 
-    />
-  </Enforma>
-</template>
-
-<script setup>
-async function submit(data) {
-  const formData = new FormData();
-  formData.append('file', data.profileImage);
-  
-  await api.uploadFile(formData);
-}
-</script>
-```
+Enforma has no file field of its own: give the field an input component of yours. The [File Upload recipe](/recipes/file-upload.md) builds one that uploads the file as soon as it's picked and stores the id the server answers with. The input hands its upload to the form with `track()`, and the form won't submit until it's done ([see Pending Work](/core-concepts/pending-work.md)).
 
 ### How do I create custom field components?
 
