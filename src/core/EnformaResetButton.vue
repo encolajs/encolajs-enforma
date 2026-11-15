@@ -3,8 +3,8 @@
     :is="effectiveComponent"
     v-bind="mergeProps($attrs, getPassThroughProps('pt.reset'))"
     type="reset"
-    :disabled="$isSubmitting"
-    @click.prevent="reset"
+    :disabled="!controller || isSubmitting"
+    @click.prevent="controller?.reset()"
   >
     <slot name="default">
       <!-- eslint-disable-next-line vue/no-v-html -->
@@ -14,25 +14,33 @@
 </template>
 
 <script setup lang="ts">
+import { mergeProps, useAttrs } from 'vue'
 import { useFormConfig } from '@/utils/useFormConfig'
-import { inject, mergeProps, useAttrs, computed } from 'vue'
 import { useTranslation } from '@/utils/useTranslation'
-import { formControllerKey } from '@/constants/symbols'
-import { FormController } from '@/types'
+import { useButtonForm } from './useButtonForm'
 
 interface Props {
   content?: string
   as?: string | object
+  /**
+   * The form to reset, for a button outside it: a ref to its `<Enforma>`, or its controller.
+   * Without it, the form the button is in
+   */
+  form?: object | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: 'Reset',
   as: 'button',
+  form: undefined,
 })
 
 const $attrs = useAttrs()
-const formState = inject(formControllerKey) as FormController
-const { reset, $isSubmitting } = formState
+// The button resets the form's values itself, so the browser's own reset never runs
+const { controller, isSubmitting } = useButtonForm(
+  () => props.form,
+  'EnformaResetButton'
+)
 const { t } = useTranslation()
 const { getConfig, getPassThroughProps } = useFormConfig()
 
