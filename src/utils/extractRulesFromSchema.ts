@@ -17,6 +17,8 @@ export function extractRulesFromSchema(
     const fullFieldName = fieldNamePrefix
       ? `${fieldNamePrefix}.${fieldName}`
       : fieldName
+    // Content has no value, so nothing to check
+    if (fieldConfig?.type === 'content') continue
 
     // @ts-expect-error this is a field
     if (fieldConfig.rules && typeof fieldConfig.rules === 'string') {
@@ -52,6 +54,8 @@ export function extractMessagesFromSchema(
     const fullFieldName = fieldNamePrefix
       ? `${fieldNamePrefix}.${fieldName}`
       : fieldName
+    // Content has no value, so nothing to check
+    if (fieldConfig?.type === 'content') continue
 
     // @ts-expect-error this is a field
     if (fieldConfig.messages && typeof fieldConfig.messages === 'object') {

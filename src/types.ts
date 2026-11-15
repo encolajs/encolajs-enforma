@@ -31,8 +31,14 @@ export interface FormOptions {
   validateOn?: 'input' | 'change' | 'blur' | 'submit'
   /** Form submission handler */
   submitHandler?: (data: any, form: FormController) => Promise<void> | void
-  /** Validation error callback */
-  onValidationFail?: (form: FormController) => void
+  /** Validation error callback, given the fields that failed, in the order they render */
+  onValidationFail?: (form: FormController, paths: string[]) => void
+  /**
+   * The fields' paths in the order they render (`fieldsInRenderOrder(schema)` for a schema
+   * form): a refused submit gives its failing fields in that order. Without it, in the
+   * order the form got them
+   */
+  fieldOrder?: () => string[]
   /** Submit success callback */
   onSubmitSuccess?: (data: any) => void
   /** Submit error callback */
@@ -89,11 +95,19 @@ export interface FormController {
   $isSubmitting: Ref<boolean>
   $isDirty: Ref<boolean>
   $isTouched: Ref<boolean>
+  /** Whether the values differ from the saved ones, false again when a change is undone */
+  $isChanged: Ref<boolean>
 
   // Form ARIA attributes
   readonly $formAttrs: Record<string, any>
 
   reset(): void
+
+  /**
+   * The current values, or `values`, become the saved ones: those reset() returns to and
+   * $isChanged compares with. The fields' states clear, as reset() clears them
+   */
+  commit(values?: object): void
 
   values(): object
 
@@ -137,6 +151,9 @@ export interface FormController {
   ): FormController
 
   // Focus/Blur handling
+  /** Asks the field at `path` to focus its input: Enforma's fields do (`field_focus_requested`) */
+  focusField(path: string): void
+
   setFieldFocused(path: string): void
 
   setFieldBlurred(path: string): void
@@ -169,18 +186,21 @@ export interface BaseSchema {
   /**
    * The type of schema this represents: a field when left out
    */
-  type?: 'field' | 'section' | 'repeatable' | 'repeatable-table'
+  type?: 'field' | 'section' | 'repeatable' | 'repeatable-table' | 'content'
 
   /**
    * The component used for rendering this part of the form
-   * Depending on each type of element there will be defaults
+   * Depending on each type of element there will be defaults.
+   * A section's is looked up by name in the form's config (`components.card`), then
+   * among the components registered in the Vue app; it may also be a component
    */
-  component?: string
+  component?: string | Component
 
   /**
-   * The section this schema belongs to, used for organizing into groups
+   * The section this schema belongs to, used for organizing into groups.
+   * Left out, null or empty, it sits at the root, with the other root entries
    */
-  section?: string
+  section?: string | null
 
   /**
    * Position for rendering this in the form/parent section
@@ -193,6 +213,12 @@ export interface BaseSchema {
    * Or a boolean value
    */
   if?: string | boolean
+
+  /**
+   * How many of its section's columns this takes, or how many per breakpoint
+   * (`{ lg: 2 }`). Data only: the kit's components lay it out
+   */
+  span?: number | Record<string, number>
 }
 
 /**
@@ -286,14 +312,55 @@ export interface FieldSchema extends BaseSchema {
 export interface SectionSchema extends BaseSchema {
   type: 'section'
 
-  // title of the component
-  title: string
+  // title of the section: a section that only groups (a field group, tabs) has none
+  title?: string
 
   // tag/component used for title
   titleComponent?: string
 
   // props to be passed to the title
   titleProps?: Record<string, any>
+
+  // a line under the title, saying what the section is for
+  description?: string
+
+  // tag/component used for the description, `p` by default
+  descriptionComponent?: string
+
+  // props to be passed to the description
+  descriptionProps?: Record<string, any>
+
+  /**
+   * Props for the section's component, spread over the props it gets from the schema:
+   * a card's `variant`, a tabs' `orientation`. Enforma's own section puts them on its element
+   */
+  props?: Record<string, any>
+
+  /**
+   * How many columns the section's items take, or how many per breakpoint
+   * (`{ md: 2, lg: 3 }`). Data only: the kit's section component lays them out
+   */
+  columns?: number | Record<string, number>
+}
+
+/**
+ * Content among a section's items, which isn't a field: a line restating the form, a
+ * preview, a note, a button. It has no value and no rules
+ */
+export interface ContentSchema extends BaseSchema {
+  type: 'content'
+
+  /**
+   * The component drawing it: looked up by name in the form's config (`components.note`),
+   * then among the components registered in the Vue app, or the component itself
+   */
+  component: string | Component
+
+  /**
+   * Props for its component, which may be expressions worked out from the form's values
+   * (`'${form.price - form.cost}'`), then passed through the `content_props` transformers
+   */
+  props?: Record<string, any>
 }
 
 /**
@@ -416,6 +483,7 @@ export interface FormSchema {
     | SectionSchema
     | RepeatableSchema
     | RepeatableTableSchema
+    | ContentSchema
 }
 
 export type { FieldController } from './headless/useForm'

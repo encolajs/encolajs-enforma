@@ -42,9 +42,19 @@ export { default as EnformaResetButton } from './core/EnformaResetButton.vue'
 export { default as EnformaRequiredIndicator } from './core/EnformaRequiredIndicator.vue'
 export { default as EnformaSchema } from './core/EnformaSchema.vue'
 export { default as EnformaSection } from './core/EnformaSection.vue'
+export { default as EnformaSectionItems } from './core/EnformaSectionItems.vue'
 
 // For a field component of one's own (`components.field`), and for a host's own controller
 export { useEnformaField } from './core/useEnformaField'
+export {
+  useEnformaSection,
+  fieldsInRenderOrder,
+} from './core/useEnformaSection'
+export type {
+  EnformaSectionItem,
+  EnformaSectionItemKind,
+  EnformaSectionState,
+} from './core/useEnformaSection'
 export type { EnformaFieldProps } from './core/useEnformaField'
 export { provideEnformaForm } from './core/provideEnformaForm'
 export type { ProvideEnformaFormOptions } from './core/provideEnformaForm'
@@ -81,6 +91,7 @@ export type {
   EventTrigger,
   FieldSchema,
   SectionSchema,
+  ContentSchema,
   FormSchema,
 } from './types'
 

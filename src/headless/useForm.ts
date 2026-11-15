@@ -10,7 +10,8 @@ import {
   watchEffect,
   inject,
 } from 'vue'
-import { generateId, pathUtils } from '@/utils/helpers'
+import { generateId, isPlainObject, pathUtils } from '@/utils/helpers'
+import { isDeepEqual } from '@/utils/isDeepEqual'
 import { useConfig } from '@/utils/useConfig'
 import { Emitter, FormEvents, createFormEmitter } from '@/utils/events'
 import moveArrayItem from '@/utils/moveArrayItem'
@@ -26,6 +27,32 @@ export interface FieldController {
   $isTouched: Ref<boolean>
   $isValidating: Ref<boolean>
   _id: string
+}
+
+/** Whether a value is what reset() gives a key the saved values lack: null, [] or {} */
+function isBlank(value: any): boolean {
+  if (value === undefined || value === null) return true
+  if (Array.isArray(value)) return value.length === 0
+  return isPlainObject(value) && Object.keys(value).length === 0
+}
+
+/**
+ * Whether the form's values are the saved ones. A key the saved values lack is unchanged
+ * while it holds what reset() gives it
+ */
+function sameValues(current: any, saved: any): boolean {
+  if (!isPlainObject(current) || !isPlainObject(saved)) {
+    return isDeepEqual(current, saved)
+  }
+  const keys = new Set([...Object.keys(current), ...Object.keys(saved)])
+  for (const key of keys) {
+    if (Object.prototype.hasOwnProperty.call(saved, key)) {
+      if (!isDeepEqual(current[key], saved[key])) return false
+    } else if (!isBlank(current[key])) {
+      return false
+    }
+  }
+  return true
 }
 
 export interface StateChanges {
@@ -206,6 +233,7 @@ export function useForm<T extends object>(
   let formState: any
   let valuesRef: any
   let formVersion: any
+  let savedVersion: any
   let validator: any
 
   formScope.run(() => {
@@ -246,15 +274,23 @@ export function useForm<T extends object>(
     cloneFn = config.behavior.cloneFn
     valuesCopy = cloneFn(values)
     fieldManager = new FieldManager()
+    // Use shallowRef for performance with large/complex data
+    valuesRef = shallowRef(values)
+    formVersion = ref(0) // Manual reactivity trigger
+    savedVersion = ref(0) // Bumped as commit() saves the values
     formState = {
       $isValidating: ref(false),
       $isSubmitting: ref(false),
       $isDirty: ref(false),
       $isTouched: ref(false),
+      // Whether the values differ from the saved ones (those given, or commit()'s), false
+      // again when the user undoes a change
+      $isChanged: computed(() => {
+        void formVersion.value
+        void savedVersion.value
+        return !sameValues(valuesRef.value, valuesCopy)
+      }),
     }
-    // Use shallowRef for performance with large/complex data
-    valuesRef = shallowRef(values)
-    formVersion = ref(0) // Manual reactivity trigger
 
     // Form-level reactive effects using watchEffect for automatic dependency tracking
     watchEffect(() => {
@@ -332,6 +368,28 @@ export function useForm<T extends object>(
     }
 
     return false
+  }
+
+  /**
+   * The fields that have errors, in the order they render (`fieldOrder`), a repeatable's
+   * items where the repeatable is; those it doesn't list last, in the order the form got them
+   */
+  function failingPaths(): string[] {
+    const failing = Array.from(fieldManager.all().entries())
+      .filter(([, state]) => state.$errors.value.length > 0)
+      .map(([path]) => path)
+    const order = options.fieldOrder?.() ?? []
+    if (order.length === 0) return failing
+    const rank = (path: string) => {
+      const at = order.findIndex(
+        (listed) => path === listed || path.startsWith(`${listed}.`)
+      )
+      return at === -1 ? order.length : at
+    }
+    return failing
+      .map((path, at) => ({ path, at, rank: rank(path) }))
+      .sort((a, b) => a.rank - b.rank || a.at - b.at)
+      .map(({ path }) => path)
   }
 
   function getArrayByPath(obj: any, arrayPath: string): any[] {
@@ -430,13 +488,16 @@ export function useForm<T extends object>(
           const isValid = await validateForm()
 
           if (!isValid) {
+            // The fields that failed, in the order they render
+            const paths = failingPaths()
+
             // Call validation error callback if provided
             if (options.onValidationFail) {
-              options.onValidationFail(formController)
+              options.onValidationFail(formController, paths)
             }
 
             // Emit validation error event
-            formEmitter.emit('validation_fail', { formController })
+            formEmitter.emit('validation_fail', { formController, paths })
 
             return false
           }
@@ -528,6 +589,22 @@ export function useForm<T extends object>(
         formEmitter.emit('form_reset', { formController: this })
       },
 
+      // The current values, or `values`, become the saved ones: those reset() returns to,
+      // which $isChanged compares with. The fields' states clear, as reset() clears them
+      commit(values?: object): void {
+        valuesCopy = cloneFn(values === undefined ? valuesRef.value : values)
+        savedVersion.value++
+
+        fieldManager.all().forEach((fieldController) => {
+          fieldController.$errors.value = []
+          fieldController.$isDirty.value = false
+          fieldController.$isTouched.value = false
+          fieldController.$isValidating.value = false
+        })
+        formState.$isDirty.value = false
+        formState.$isTouched.value = false
+      },
+
       // validation-related methods
       async validate(): Promise<boolean> {
         return await validateForm()
@@ -602,6 +679,13 @@ export function useForm<T extends object>(
 
       hasField(path: string): boolean {
         return fieldManager.has(path)
+      },
+
+      focusField(path: string): void {
+        formEmitter.emit('field_focus_requested', {
+          path,
+          formController: this,
+        })
       },
 
       setFieldFocused(path: string): void {

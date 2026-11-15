@@ -42,6 +42,7 @@ export type FormEventType =
   | 'field_blurred'
   | 'form_reset'
   | 'form_initialized'
+  | 'field_focus_requested'
 
 /**
  * Form events payload types
@@ -56,6 +57,8 @@ export type FormEvents = {
   }
   validation_fail: {
     formController: FormController
+    /** The fields that failed, in the order they render when the form knows it */
+    paths: string[]
   }
   field_changed: {
     path: string
@@ -77,6 +80,11 @@ export type FormEvents = {
     formController: FormController
   }
   form_initialized: {
+    formController: FormController
+  }
+  /** `focusField(path)` asked the field at `path` to focus its input */
+  field_focus_requested: {
+    path: string
     formController: FormController
   }
 }

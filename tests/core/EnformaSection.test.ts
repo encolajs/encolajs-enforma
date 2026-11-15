@@ -1,7 +1,14 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { flushPromises } from '@vue/test-utils'
-import { computed } from 'vue'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import { computed, defineComponent, h } from 'vue'
+import { DEFAULT_CONFIG } from '../../src/constants/defaults'
+import { formConfigKey } from '../../src/constants/symbols'
+import { getGlobalConfig, setGlobalConfig } from '../../src/utils/useConfig'
+import useDefaultPreset from '../../src/presets/default'
 import EnformaSection from '../../src/core/EnformaSection.vue'
+import EnformaSchema from '../../src/core/EnformaSchema.vue'
+import EnformaSectionItems from '../../src/core/EnformaSectionItems.vue'
+import { useEnformaSection } from '../../src/core/useEnformaSection'
 import {
   formSchemaKey,
   formControllerKey,
@@ -544,5 +551,432 @@ describe('EnformaSection', () => {
     expect(sections[0].find('h3').text()).toBe('Subsection 1')
     expect(sections[1].find('h4').text()).toBe('Sub-subsection 1')
     expect(wrapper.find('.enforma-input').attributes()['name']).toBe('field1')
+  })
+
+  describe('root sections', () => {
+    const rootSection = (
+      title: string,
+      extra: Partial<SectionSchema> = {}
+    ): SectionSchema => ({
+      type: 'section',
+      title,
+      titleComponent: 'h3',
+      ...extra,
+    })
+    const rootField = (position?: number): FieldSchema => ({
+      type: 'field',
+      inputComponent: 'input',
+      ...(position !== undefined ? { position } : {}),
+    })
+
+    const renderSchema = (schema: FormSchema) =>
+      mountTestComponent(
+        EnformaSchema,
+        { schema },
+        {
+          global: {
+            provide: {
+              [formSchemaKey]: schema,
+              [formControllerKey]: formState,
+            },
+          },
+        }
+      )
+    const renderOrder = (schema: FormSchema): string[] =>
+      Array.from(
+        renderSchema(schema).element.querySelectorAll('.enforma-input, h3')
+      ).map((el) =>
+        el.tagName === 'H3'
+          ? (el.textContent || '').trim()
+          : (el.getAttribute('name') as string)
+      )
+
+    it('renders a section without a section key once, at the root', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: rootSection('Details'),
+          name: { ...rootField(), section: 'details' },
+        })
+      )
+      await flushPromises()
+
+      const titles = wrapper.findAll('h3')
+      expect(titles.map((title) => title.text())).toEqual(['Details'])
+      expect(wrapper.findAll('.enforma-input').length).toBe(1)
+    })
+
+    it('renders a root field with a lower position above a root section', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          details: rootSection('Details', { position: 2 }),
+          name: rootField(1),
+          notes: rootField(3),
+        })
+      )
+      await flushPromises()
+
+      expect(order).toEqual(['name', 'Details', 'notes'])
+    })
+
+    it('takes a section whose section is null or empty as a root section, ordered with the root fields', async () => {
+      const order = renderOrder(
+        createMockSchema({
+          first: rootSection('First', { section: null, position: 1 }),
+          second: rootSection('Second', { section: '' as any, position: 3 }),
+          name: rootField(2),
+          email: { ...rootField(), section: null },
+        })
+      )
+      await flushPromises()
+
+      // as a section's own items are: a sub-section goes above a field only when both
+      // have a position, so a field without one comes before the sections after it
+      expect(order).toEqual(['First', 'name', 'email', 'Second'])
+    })
+  })
+
+  describe('section components', () => {
+    // A section component of one's own: a frame around its title, marked with `kind`
+    const frame = (kind: string) =>
+      defineComponent({
+        name: `${kind}Frame`,
+        props: { name: String, title: String },
+        setup(props) {
+          return () =>
+            h('div', { class: kind, 'data-section': props.name }, props.title)
+        },
+      })
+    const Card = frame('card')
+
+    const renderSchema = (
+      schema: FormSchema,
+      { components = {}, appComponents = {} } = {}
+    ) => {
+      setGlobalConfig(DEFAULT_CONFIG)
+      useDefaultPreset()
+      const config = getGlobalConfig()
+      return mount(EnformaSchema, {
+        props: { schema },
+        global: {
+          components: appComponents,
+          provide: {
+            [formConfigKey]: {
+              ...config,
+              components: { ...config.components, ...components },
+            },
+            [formSchemaKey]: schema,
+            [formControllerKey]: formState,
+          },
+        },
+      })
+    }
+    const section = (title: string, extra: Partial<SectionSchema> = {}) =>
+      ({
+        type: 'section',
+        title,
+        titleComponent: 'h3',
+        ...extra,
+      } as SectionSchema)
+
+    it('draws a section with the component its config names, and its sibling with the section component', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'card' }),
+          billing: section('Billing'),
+        }),
+        { components: { card: Card } }
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.card').attributes('data-section')).toBe('shipping')
+      expect(wrapper.find('.card').text()).toBe('Shipping')
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Billing',
+      ])
+    })
+
+    it('finds a component registered in the Vue app by its name', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'panel-frame' }),
+        }),
+        { appComponents: { PanelFrame: frame('panel') } }
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.panel').attributes('data-section')).toBe('shipping')
+    })
+
+    it('takes a component the section gives itself, which never reaches it as a prop', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({ shipping: section('Shipping', { component: Card }) })
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.card').text()).toBe('Shipping')
+      expect(wrapper.find('.card').attributes('component')).toBeUndefined()
+    })
+
+    it('warns about a name nothing has, and draws the section with the section component', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'nowhere' }),
+        })
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Shipping',
+      ])
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('names the component "nowhere"')
+      )
+      warn.mockRestore()
+    })
+
+    it('gives a root section and a sub-section their description and their props', async () => {
+      // A section component recording what it was given
+      const given: Record<string, any>[] = []
+      const Probe = defineComponent({
+        props: { name: String, description: String, variant: String },
+        setup(props) {
+          given.push(props)
+          return () => h('div', { class: 'probe' })
+        },
+      })
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: section('Details', {
+            component: 'probe',
+            description: 'Who you are',
+            props: { variant: 'subtle' },
+          }),
+          outer: section('Outer'),
+          inner: section('Inner', {
+            section: 'outer',
+            component: 'probe',
+            description: 'Inside',
+            props: { variant: 'outline' },
+          }),
+        }),
+        { components: { probe: Probe } }
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('.probe').length).toBe(2)
+      expect(
+        given.map(({ name, description, variant }) => ({
+          name,
+          description,
+          variant,
+        }))
+      ).toEqual([
+        { name: 'details', description: 'Who you are', variant: 'subtle' },
+        { name: 'inner', description: 'Inside', variant: 'outline' },
+      ])
+    })
+
+    it('draws a description under the title, no title for a section without one, and puts its props on its element', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          details: section('Details', {
+            description: 'Who you are',
+            props: { class: 'grid' },
+          }),
+          group: { type: 'section', description: 'Joined' } as SectionSchema,
+        })
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Details',
+      ])
+      const descriptions = wrapper.findAll('p')
+      expect(descriptions.map((description) => description.text())).toEqual([
+        'Who you are',
+        'Joined',
+      ])
+      // under its title
+      expect(descriptions[0].element.previousElementSibling?.tagName).toBe('H3')
+      expect(wrapper.find('.grid').find('h3').text()).toBe('Details')
+    })
+  })
+
+  describe('headless sections', () => {
+    const renderSchema = (schema: FormSchema, components = {}) => {
+      setGlobalConfig(DEFAULT_CONFIG)
+      useDefaultPreset()
+      const config = getGlobalConfig()
+      return mount(EnformaSchema, {
+        props: { schema },
+        global: {
+          provide: {
+            [formConfigKey]: {
+              ...config,
+              components: { ...config.components, ...components },
+            },
+            [formSchemaKey]: schema,
+            [formControllerKey]: formState,
+          },
+        },
+      })
+    }
+    const inputOrder = (wrapper: ReturnType<typeof mount>, selector: string) =>
+      wrapper
+        .find(selector)
+        .findAll('.enforma-input, h3')
+        .map((el) =>
+          el.element.tagName === 'H3' ? el.text() : el.attributes('name')
+        )
+
+    // A section's fields and sub-section, positioned, one hidden by its `if`
+    const sectionSchema = (component?: string): FormSchema =>
+      createMockSchema({
+        details: {
+          type: 'section',
+          ...(component ? { component } : {}),
+          props: { class: 'details' },
+        } as SectionSchema,
+        name: {
+          type: 'field',
+          section: 'details',
+          inputComponent: 'input',
+          position: 2,
+        },
+        hidden: {
+          type: 'field',
+          section: 'details',
+          inputComponent: 'input',
+          position: 3,
+          if: false,
+        },
+        email: { type: 'field', section: 'details', inputComponent: 'input' },
+        address: {
+          type: 'section',
+          section: 'details',
+          title: 'Address',
+          titleComponent: 'h3',
+          position: 1,
+        },
+        city: { type: 'field', section: 'address', inputComponent: 'input' },
+      })
+
+    it('draws, in a section of its own around EnformaSectionItems, the same items in the same order as EnformaSection', async () => {
+      const Card = defineComponent({
+        props: { name: { type: String, required: true } },
+        setup(props) {
+          return () =>
+            h('div', { class: 'details card' }, [
+              h(EnformaSectionItems, { name: props.name }),
+            ])
+        },
+      })
+      const own = renderSchema(sectionSchema('card'), { card: Card })
+      const enforma = renderSchema(sectionSchema())
+      await flushPromises()
+
+      expect(own.find('.card').exists()).toBe(true)
+      expect(inputOrder(own, '.details')).toEqual([
+        'Address',
+        'city',
+        'name',
+        'email',
+      ])
+      expect(inputOrder(own, '.details')).toEqual(
+        inputOrder(enforma, '.details')
+      )
+    })
+
+    it('lists the sub-sections, for a section that draws them as tabs', async () => {
+      const Tabs = defineComponent({
+        props: { name: { type: String, required: true } },
+        setup(props) {
+          const { items, shown } = useEnformaSection(() => props.name)
+          return () =>
+            h('div', { class: 'tabs', hidden: !shown.value }, [
+              h(
+                'div',
+                { role: 'tablist' },
+                items.value
+                  .filter((item) => item.kind === 'section')
+                  .map((item) =>
+                    h('button', { role: 'tab' }, item.schema.title)
+                  )
+              ),
+              ...items.value
+                .filter((item) => item.kind === 'section')
+                .map((item) =>
+                  h('div', { role: 'tabpanel' }, [
+                    h(item.component as any, item.props),
+                  ])
+                ),
+            ])
+        },
+      })
+      const wrapper = renderSchema(
+        createMockSchema({
+          product: { type: 'section', component: 'tabs' } as SectionSchema,
+          general: {
+            type: 'section',
+            section: 'product',
+            title: 'General',
+            position: 1,
+          },
+          pricing: {
+            type: 'section',
+            section: 'product',
+            title: 'Pricing',
+            position: 2,
+          },
+          title: { type: 'field', section: 'general', inputComponent: 'input' },
+          price: { type: 'field', section: 'pricing', inputComponent: 'input' },
+        }),
+        { tabs: Tabs }
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('[role=tab]').map((tab) => tab.text())).toEqual([
+        'General',
+        'Pricing',
+      ])
+      const panels = wrapper.findAll('[role=tabpanel]')
+      expect(panels[0].find('.enforma-input').attributes('name')).toBe('title')
+      expect(panels[1].find('.enforma-input').attributes('name')).toBe('price')
+    })
+
+    it('gives the section its schema and its items, tagged by kind, when used on its own', () => {
+      const schema = createMockSchema({
+        details: { type: 'section', title: 'Details' },
+        name: { type: 'field', section: 'details' },
+        jobs: { type: 'repeatable', section: 'details', subfields: {} },
+        address: { type: 'section', section: 'details', title: 'Address' },
+      })
+      let state: ReturnType<typeof useEnformaSection> | undefined
+      mount(
+        defineComponent({
+          setup() {
+            state = useEnformaSection('details', { title: 'Given' })
+            return () => null
+          },
+        }),
+        {
+          global: {
+            provide: {
+              [formSchemaKey]: schema,
+              [formControllerKey]: formState,
+            },
+          },
+        }
+      )
+
+      expect(state!.schema.value.title).toBe('Given')
+      expect(state!.shown.value).toBe(true)
+      expect(state!.items.value.map(({ kind, name }) => [kind, name])).toEqual([
+        ['field', 'name'],
+        ['repeatable', 'jobs'],
+        ['section', 'address'],
+      ])
+    })
   })
 })

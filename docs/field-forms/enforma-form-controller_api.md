@@ -18,6 +18,7 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `$isSubmitting` | `boolean` | Whether the form is currently submitting |
 | `$isDirty` | `boolean` | Whether any field has been modified |
 | `$isTouched` | `boolean` | Whether any field has been touched/focused |
+| `$isChanged` | `boolean` | Whether the values differ from the saved ones (those the form was given, or `commit()`'s). Unlike `$isDirty`, it turns false again when the user undoes a change: an "Unsaved changes" badge, a Save button disabled while there is nothing to save |
 
 ## Form Values Management
 
@@ -27,6 +28,7 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `setFieldValue(path, value, validate, stateChanges)` | `path: string, value: any, validate?: boolean, stateChanges?: object` | `Promise<void>` | Sets a field value |
 | `getFieldValue(path)` | `path: string` | `any` | Retrieves the value of a field |
 | `reset()` | - | `void` | Resets form to initial state |
+| `commit(values?)` | `values?: object` | `void` | The current values, or `values`, become the saved ones: those `reset()` returns to and `$isChanged` compares with. Call it after a successful save, so Discard brings back what was saved. The fields' states clear, as `reset()` clears them. `values` only become the saved copy: set them on the form too to show them |
 
 ## Validation Methods
 
@@ -46,6 +48,7 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
 | `removeField(path)` | `path: string` | `void` | Removes a field from the form |
 | `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
+| `focusField(path)` | `path: string` | `void` | Asks the field at `path` to focus its input (Enforma's fields do, by the input's id), as after a refused submit |
 | `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
 | `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |
 

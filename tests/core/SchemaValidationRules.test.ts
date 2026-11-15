@@ -184,4 +184,39 @@ describe('Schema Validation Rules', () => {
     // @ts-expect-error vm is a form
     expect(wrapper.vm.hasField('ends_on')).toBe(false)
   })
+
+  it('should check only the fields that are mounted: a field whose component never mounts passes', async () => {
+    // A section that draws its title only, as a closed tab whose panel unmounts would
+    const Closed = {
+      props: ['name', 'title'],
+      template: '<h3>{{ title }}</h3>',
+    }
+    const schema = {
+      shown: { type: 'field' as const, label: 'Shown', rules: 'required' },
+      later: {
+        type: 'section' as const,
+        title: 'Later',
+        component: 'closed',
+      },
+      unmounted: {
+        type: 'field' as const,
+        label: 'Unmounted',
+        section: 'later',
+        rules: 'required',
+      },
+    }
+
+    const wrapper = mountTestComponent(Enforma, {
+      data: { shown: 'yes', unmounted: '' },
+      schema,
+      config: { components: { closed: Closed } },
+      submitHandler: mockSubmitHandler,
+    })
+    await flushPromises()
+
+    expect(wrapper.find('h3').text()).toBe('Later')
+    // @ts-expect-error vm is a form
+    expect(await wrapper.vm.submit()).toBe(true)
+    expect(mockSubmitHandler).toHaveBeenCalled()
+  })
 })

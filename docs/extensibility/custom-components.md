@@ -223,6 +223,51 @@ const requiredIndicator = getConfig('pt.required.text', '*')
 </style>
 ```
 
+### Custom Section Components
+
+A section of the schema can be drawn by a component of your own, which the section names with `component` (see [Section components](/schema-forms/schema-reference#section-components)). Register it in the form's config under that name, or in the Vue app:
+
+```js
+const config = { components: { card: CardSection } }
+// in the schema: shipping: { type: 'section', title: 'Shipping', component: 'card' }
+```
+
+It receives the section's schema as props: its `name`, its `title` and its other keys.
+
+A section component draws its own frame and leaves its items to Enforma with `<EnformaSectionItems :name>`, which renders them exactly as `EnformaSection` does: in render order (fields and sub-sections by `position`), those hidden by their `if` left out, each with its component or the form's `field(name)` slot.
+
+```vue
+<template>
+  <UCard>
+    <template #header>{{ title }}</template>
+    <EnformaSectionItems :name="name" />
+  </UCard>
+</template>
+
+<script setup>
+import { EnformaSectionItems } from '@encolajs/enforma'
+
+defineProps({ name: { type: String, required: true }, title: String })
+</script>
+```
+
+To draw the items itself (sub-sections as tabs), a section component uses `useEnformaSection(name, props?)`. It gives `schema`, the section's entry with the props its component was given over it, after the `section_props` transformers; `shown`, whether its `if` holds; and `items`, in render order, those hidden by their `if` left out. Each item has its `kind` (`field`, `section` or `repeatable`), its `name`, its `schema` entry, the `component` drawing it and the `props` it is given, and, for a field the form has a slot for, that `slot`.
+
+```js
+const { items } = useEnformaSection(() => props.name)
+const tabs = computed(() => items.value.filter((item) => item.kind === 'section'))
+// each tab: item.schema.title; each panel: h(item.component, item.props)
+```
+
+Render every panel, and show one (`v-show`): a field whose panel unmounts isn't checked (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)).
+
+It also gives `fields`, the paths of the fields inside the section at any depth (its sub-sections' too, those hidden by their `if` left out, a repeatable's path standing for its items' fields), and `errorCount`, how many of them have errors, which follows each check, a fix and `reset()`. A tab shows its sub-section's count:
+
+```js
+// in each tab's own component, given its sub-section's name
+const { errorCount } = useEnformaSection(() => props.name)
+```
+
 ### Custom Button Components
 
 You can also create custom button components for form actions:

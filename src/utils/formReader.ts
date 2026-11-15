@@ -18,7 +18,13 @@ import { unref } from 'vue'
 import type { FormController } from '@/types'
 import cloneFn from './cloneFn'
 
-const STATE = ['$isDirty', '$isTouched', '$isValidating', '$isSubmitting']
+const STATE = [
+  '$isDirty',
+  '$isTouched',
+  '$isValidating',
+  '$isSubmitting',
+  '$isChanged',
+]
 
 const hasOwn = (value: any, key: string) =>
   Object.prototype.hasOwnProperty.call(value, key)
