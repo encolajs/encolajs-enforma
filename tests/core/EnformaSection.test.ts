@@ -1,6 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { flushPromises } from '@vue/test-utils'
-import { computed } from 'vue'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import { computed, defineComponent, h } from 'vue'
+import { DEFAULT_CONFIG } from '../../src/constants/defaults'
+import { formConfigKey } from '../../src/constants/symbols'
+import { getGlobalConfig, setGlobalConfig } from '../../src/utils/useConfig'
+import useDefaultPreset from '../../src/presets/default'
 import EnformaSection from '../../src/core/EnformaSection.vue'
 import EnformaSchema from '../../src/core/EnformaSchema.vue'
 import {
@@ -626,6 +630,107 @@ describe('EnformaSection', () => {
       // as a section's own items are: a sub-section goes above a field only when both
       // have a position, so a field without one comes before the sections after it
       expect(order).toEqual(['First', 'name', 'email', 'Second'])
+    })
+  })
+
+  describe('section components', () => {
+    // A section component of one's own: a frame around its title, marked with `kind`
+    const frame = (kind: string) =>
+      defineComponent({
+        name: `${kind}Frame`,
+        props: { name: String, title: String },
+        setup(props) {
+          return () =>
+            h('div', { class: kind, 'data-section': props.name }, props.title)
+        },
+      })
+    const Card = frame('card')
+
+    const renderSchema = (
+      schema: FormSchema,
+      { components = {}, appComponents = {} } = {}
+    ) => {
+      setGlobalConfig(DEFAULT_CONFIG)
+      useDefaultPreset()
+      const config = getGlobalConfig()
+      return mount(EnformaSchema, {
+        props: { schema },
+        global: {
+          components: appComponents,
+          provide: {
+            [formConfigKey]: {
+              ...config,
+              components: { ...config.components, ...components },
+            },
+            [formSchemaKey]: schema,
+            [formControllerKey]: formState,
+          },
+        },
+      })
+    }
+    const section = (title: string, extra: Partial<SectionSchema> = {}) =>
+      ({
+        type: 'section',
+        title,
+        titleComponent: 'h3',
+        ...extra,
+      } as SectionSchema)
+
+    it('draws a section with the component its config names, and its sibling with the section component', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'card' }),
+          billing: section('Billing'),
+        }),
+        { components: { card: Card } }
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.card').attributes('data-section')).toBe('shipping')
+      expect(wrapper.find('.card').text()).toBe('Shipping')
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Billing',
+      ])
+    })
+
+    it('finds a component registered in the Vue app by its name', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'panel-frame' }),
+        }),
+        { appComponents: { PanelFrame: frame('panel') } }
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.panel').attributes('data-section')).toBe('shipping')
+    })
+
+    it('takes a component the section gives itself, which never reaches it as a prop', async () => {
+      const wrapper = renderSchema(
+        createMockSchema({ shipping: section('Shipping', { component: Card }) })
+      )
+      await flushPromises()
+
+      expect(wrapper.find('.card').text()).toBe('Shipping')
+      expect(wrapper.find('.card').attributes('component')).toBeUndefined()
+    })
+
+    it('warns about a name nothing has, and draws the section with the section component', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const wrapper = renderSchema(
+        createMockSchema({
+          shipping: section('Shipping', { component: 'nowhere' }),
+        })
+      )
+      await flushPromises()
+
+      expect(wrapper.findAll('h3').map((title) => title.text())).toEqual([
+        'Shipping',
+      ])
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('names the component "nowhere"')
+      )
+      warn.mockRestore()
     })
   })
 })

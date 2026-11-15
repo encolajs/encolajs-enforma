@@ -11,8 +11,8 @@
     <template v-for="item in sortedItems" :key="item.name">
       <template v-if="isSectionSchema(item)">
         <component
-          :is="sectionComponent"
-          v-bind="item"
+          :is="sectionComponentFor(item)"
+          v-bind="sectionBindings(item)"
           v-if="shouldRenderSection(item)"
         />
       </template>
@@ -32,7 +32,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, mergeProps, unref, type Ref } from 'vue'
+import {
+  camelize,
+  capitalize,
+  computed,
+  getCurrentInstance,
+  inject,
+  mergeProps,
+  unref,
+  type Ref,
+} from 'vue'
 import {
   formSchemaKey,
   formControllerKey,
@@ -151,6 +160,9 @@ function mergeByPosition<
   return items.concat(fields.slice(f), sections.slice(s))
 }
 
+// The component names sections gave that nothing has, each warned about once
+const unknownSectionComponents = new Set<string>()
+
 // this is needed because the component may render in a tree-like structure
 defineOptions({ name: 'EnformaSection' })
 
@@ -204,6 +216,39 @@ const { getConfig, getPassThroughProps, formConfig } = useFormConfig()
 
 // this is needed because the component may render in a tree-like structure
 const sectionComponent = getConfig('components.section') || 'EnformaSection'
+
+// The components registered in the Vue app, which a section may name
+const appComponents = getCurrentInstance()?.appContext.components ?? {}
+
+/**
+ * The component drawing a sub-section: the one its `component` names, from the form's
+ * config (`components.card`) or the Vue app, or the component it gives itself; the
+ * config's section component without one, or when nothing has the name it gives.
+ */
+function sectionComponentFor(section: SectionWithPosition): string | object {
+  const named = section.component
+  if (named && typeof named === 'object') return named
+  if (typeof named !== 'string' || named === '') return sectionComponent
+  const component =
+    getConfig(`components.${named}`) ??
+    appComponents[named] ??
+    appComponents[camelize(named)] ??
+    appComponents[capitalize(camelize(named))]
+  if (component) return component as string | object
+  if (!unknownSectionComponents.has(named)) {
+    unknownSectionComponents.add(named)
+    console.warn(
+      `[Enforma] The section "${section.name}" names the component "${named}", which neither the form's config nor the Vue app has: it is drawn with the section component`
+    )
+  }
+  return sectionComponent
+}
+
+/** What a sub-section's component is given: its schema, but the component drawing it */
+function sectionBindings(section: SectionWithPosition): Record<string, any> {
+  const { component: _component, ...bindings } = section
+  return bindings
+}
 
 // Access parent slots injected from Enforma
 const parentSlots = inject(formFieldSlotsKey, null)

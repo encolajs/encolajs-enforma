@@ -105,6 +105,7 @@ All schema types share these base properties:
 | `title` | string | Yes | Title of the section |
 | `titleComponent` | string | No | Tag/component used for title |
 | `titleProps` | object | No | Props to be passed to the title |
+| `component` | string or component | No | The component drawing the section, see [Section components](#section-components) |
 
 Sections can contain both fields and sections.
 
@@ -126,6 +127,22 @@ const schema = {
 ```
 
 The form's root is a section too. A field or a section whose `section` is left out, `null` or empty sits at the root, and the root's fields and sections follow the same order: `name`, then the `address` section, then `notes` above.
+
+### Section components
+
+Every section is drawn with the form's section component (`components.section` in the config, `EnformaSection` by default). A section can name another one with `component`, so a form mixes sections drawn as cards, as tabs or as plain groups:
+
+```js
+const schema = {
+  shipping: { type: 'section', title: 'Shipping', component: 'card' },
+  billing: { type: 'section', title: 'Billing' },
+}
+
+// The form's config
+const config = { components: { card: CardSection } }
+```
+
+A name is looked up in the form's config first (`components.card`), then among the components registered in the Vue app (`app.component('CardSection', …)`, named `'card-section'` or `'CardSection'`). `component` may also be the component itself. When nothing has the name, Enforma warns once and draws the section with the section component. The section's component gets the section's schema as props, but `component`.
 
 ## Validation Rules in Schema
 

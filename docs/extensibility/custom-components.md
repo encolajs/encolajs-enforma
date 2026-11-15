@@ -223,6 +223,17 @@ const requiredIndicator = getConfig('pt.required.text', '*')
 </style>
 ```
 
+### Custom Section Components
+
+A section of the schema can be drawn by a component of your own, which the section names with `component` (see [Section components](/schema-forms/schema-reference#section-components)). Register it in the form's config under that name, or in the Vue app:
+
+```js
+const config = { components: { card: CardSection } }
+// in the schema: shipping: { type: 'section', title: 'Shipping', component: 'card' }
+```
+
+It receives the section's schema as props: its `name`, its `title` and its other keys.
+
 ### Custom Button Components
 
 You can also create custom button components for form actions:

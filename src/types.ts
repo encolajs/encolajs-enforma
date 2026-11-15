@@ -173,9 +173,11 @@ export interface BaseSchema {
 
   /**
    * The component used for rendering this part of the form
-   * Depending on each type of element there will be defaults
+   * Depending on each type of element there will be defaults.
+   * A section's is looked up by name in the form's config (`components.card`), then
+   * among the components registered in the Vue app; it may also be a component
    */
-  component?: string
+  component?: string | Component
 
   /**
    * The section this schema belongs to, used for organizing into groups.
