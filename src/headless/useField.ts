@@ -1,4 +1,13 @@
-import { computed, ComputedRef, ref, shallowRef, watch, watchEffect } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  getCurrentInstance,
+  onBeforeUnmount,
+  ref,
+  shallowRef,
+  watch,
+  watchEffect,
+} from 'vue'
 import {
   FieldController,
   FieldControllerExport,
@@ -40,6 +49,9 @@ export function useField(
 
   // Create a reference to track focus state
   const isFocused = ref(false)
+
+  // Whether the field's component has unmounted (@see onBeforeUnmount below)
+  let unmounted = false
 
   // The field's state, made as the field is: the form checks the fields it has a state for
   form.getField(name)
@@ -94,6 +106,8 @@ export function useField(
     value: any,
     trigger: 'input' | 'change' | 'blur' = 'input'
   ): Promise<void> {
+    if (unmounted) return
+
     // Update the form directly through the proxy
     const stateChanges = {
       $isTouched: true,
@@ -104,6 +118,8 @@ export function useField(
     }
 
     await form.setFieldValue(name, value, false, stateChanges)
+    // Gone while its value was set: it isn't checked any more
+    if (unmounted) return
 
     if (trigger === 'change' && options.validateOn === 'change') {
       debouncedValidate()
@@ -120,6 +136,7 @@ export function useField(
    * Handle blur events
    */
   function handleBlur(): void {
+    if (unmounted) return
     isFocused.value = false
     // Notify the form about field blur
     if (form.setFieldBlurred) {
@@ -135,6 +152,7 @@ export function useField(
    * Handle focus events
    */
   function handleFocus(): void {
+    if (unmounted) return
     isFocused.value = true
 
     // Notify the form about field focus
@@ -152,6 +170,17 @@ export function useField(
   }
 
   const debouncedValidate = debounce(validate, 200)
+
+  // Once the field's component unmounts (hidden by its `if`, its row removed), the field is
+  // out of the form: its pending check is dropped, and its input's events (the browser blurs
+  // a focused input as it's removed) are ignored. Either would give it a state again, which
+  // the form would then check
+  if (getCurrentInstance()) {
+    onBeforeUnmount(() => {
+      unmounted = true
+      debouncedValidate.cancel()
+    })
+  }
 
   /** Registers work the form waits for, for this field (@see FormController.beginPending) */
   function beginPending(): PendingHandle {
