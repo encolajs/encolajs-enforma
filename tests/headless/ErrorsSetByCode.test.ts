@@ -58,7 +58,7 @@ describe('errors set by code', () => {
     wrapper.unmount()
   })
 
-  it('stay through a check of the rules, after the rules\' own errors', async () => {
+  it("stay through a check of the rules, after the rules' own errors", async () => {
     const { form, wrapper } = await emailForm('')
     form.setErrors({ email: ['Taken'] })
 
@@ -78,7 +78,7 @@ describe('errors set by code', () => {
     wrapper.unmount()
   })
 
-  it('go as the field\'s value changes, the rules being checked', async () => {
+  it("go as the field's value changes, the rules being checked", async () => {
     const { form, wrapper } = await emailForm()
     expect(await form.submit()).toBe(true)
     form.setErrors({ email: ['Taken'] })
@@ -155,7 +155,10 @@ describe('errors set by code', () => {
   })
 
   it('go as the form is reset or committed', async () => {
-    const form = useForm({ email: 'ana@example.com' }, createEncolaValidator({ email: 'email' }))
+    const form = useForm(
+      { email: 'ana@example.com' },
+      createEncolaValidator({ email: 'email' })
+    )
     form.setErrors({ email: ['Taken'] })
     form.reset()
     expect(form.getFieldErrors('email')).toEqual([])

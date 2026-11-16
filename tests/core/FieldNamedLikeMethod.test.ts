@@ -80,7 +80,11 @@ describe('a field named like a controller method', () => {
       props: {
         data,
         schema: {
-          track: { label: 'Track quantity', inputComponent: Checkbox, useModelValue: true },
+          track: {
+            label: 'Track quantity',
+            inputComponent: Checkbox,
+            useModelValue: true,
+          },
           commit: { label: 'Commit message' },
         },
       },
@@ -90,7 +94,9 @@ describe('a field named like a controller method', () => {
 
     const checkbox = wrapper.find('input[name="track"]')
     expect((checkbox.element as HTMLInputElement).checked).toBe(true)
-    expect((wrapper.find('input[name="commit"]').element as HTMLInputElement).value).toBe('abc')
+    expect(
+      (wrapper.find('input[name="commit"]').element as HTMLInputElement).value
+    ).toBe('abc')
 
     await checkbox.setValue(false)
     await flushPromises()

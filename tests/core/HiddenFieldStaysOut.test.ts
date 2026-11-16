@@ -35,7 +35,10 @@ async function mountCustomsForm() {
           data: reactive({ country: 'CH', customs: '' }),
           schema: {
             country: { label: 'Country' },
-            customs: { label: 'Customs reference', if: '${form.country == "CH"}' },
+            customs: {
+              label: 'Customs reference',
+              if: '${form.country == "CH"}',
+            },
           },
           validator: createEncolaValidator({ customs: 'required' }),
           submitHandler: () => Promise.resolve(true),
@@ -49,7 +52,8 @@ async function mountCustomsForm() {
   expect(await form.value!.submit()).toBe(false)
   await flushPromises()
   await wait(50)
-  const customs = wrapper.find('input[name="customs"]').element as HTMLInputElement
+  const customs = wrapper.find('input[name="customs"]')
+    .element as HTMLInputElement
   expect(document.activeElement).toBe(customs)
 
   return { wrapper, form: form.value!, customs }
@@ -62,7 +66,7 @@ async function chooseGermany(form: FormController) {
 }
 
 describe('a field that hides stays out of the form', () => {
-  it('when hidden within its check\'s delay after the user leaves it', async () => {
+  it("when hidden within its check's delay after the user leaves it", async () => {
     const { wrapper, form, customs } = await mountCustomsForm()
 
     customs.dispatchEvent(new FocusEvent('blur'))

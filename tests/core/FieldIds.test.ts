@@ -24,13 +24,16 @@ afterEach(() => {
   delete (Element.prototype as any).scrollIntoView
 })
 
-describe('a field\'s id', () => {
-  it('is the form\'s id and its path', async () => {
+describe("a field's id", () => {
+  it("is the form's id and its path", async () => {
     const wrapper = mount(Enforma, {
       props: {
         id: 'signup',
         data: reactive({ email: '', address: { city: '' } }),
-        schema: { email: { label: 'Email' }, 'address.city': { label: 'City' } },
+        schema: {
+          email: { label: 'Email' },
+          'address.city': { label: 'City' },
+        },
       },
     })
     await flushPromises()
@@ -44,14 +47,19 @@ describe('a field\'s id', () => {
   })
 
   it('stays unique as rows move: a field made on a taken path gets a number after it', () => {
-    const form = useForm({ items: [{ name: 'a' }, { name: 'b' }] }, undefined, { id: 'f' })
+    const form = useForm({ items: [{ name: 'a' }, { name: 'b' }] }, undefined, {
+      id: 'f',
+    })
     expect(form.getField('items.0.name')._id).toBe('f__items.0.name')
     expect(form.getField('items.1.name')._id).toBe('f__items.1.name')
 
     // The second row's state moves to the first path; a row added takes the second path
     form.remove('items', 0)
     form.add('items', 1, { name: 'c' })
-    const ids = [form.getField('items.0.name')._id, form.getField('items.1.name')._id]
+    const ids = [
+      form.getField('items.0.name')._id,
+      form.getField('items.1.name')._id,
+    ]
     expect(ids[0]).toBe('f__items.1.name')
     expect(ids[1]).toBe('f__items.1.name-2')
   })
@@ -60,7 +68,12 @@ describe('a field\'s id', () => {
     const App = defineComponent({
       setup: () => () =>
         h(Enforma, {
-          data: reactive({ email: '', iban: '', vat: '', items: [{ name: '' }] }),
+          data: reactive({
+            email: '',
+            iban: '',
+            vat: '',
+            items: [{ name: '' }],
+          }),
           schema: {
             email: { label: 'Email' },
             account: { type: 'section', component: 'tabs' },
@@ -104,7 +117,7 @@ describe('a field\'s id', () => {
   })
 })
 
-describe('focusField() finds a field\'s input', () => {
+describe("focusField() finds a field's input", () => {
   /** A form whose `code` field is drawn by `field`, or whose input is `input` */
   async function mountForm(extra: Record<string, any>) {
     const form = ref<FormController | null>(null)
@@ -149,7 +162,9 @@ describe('focusField() finds a field\'s input', () => {
           ])
       },
     })
-    const form = await mountForm({ config: { components: { field: KitField } } })
+    const form = await mountForm({
+      config: { components: { field: KitField } },
+    })
 
     expect(form.focusField('code')).toBe(true)
     await vi.waitFor(() => expect(document.activeElement?.id).toBe('kit-input'))
@@ -170,7 +185,9 @@ describe('focusField() finds a field\'s input', () => {
           ])
       },
     })
-    const form = await mountForm({ config: { components: { field: KitField } } })
+    const form = await mountForm({
+      config: { components: { field: KitField } },
+    })
 
     expect(form.focusField('code')).toBe(true)
     await vi.waitFor(() =>
