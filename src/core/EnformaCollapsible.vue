@@ -21,7 +21,7 @@
           v-bind="getPassThroughProps('pt.collapsible.toggle')"
           @click="open = !open"
         >
-          {{ section.title || name }}
+          {{ title }}
           <EnformaErrorBadge
             :count="panel.errorCount"
             v-bind="getPassThroughProps('pt.collapsible.badge')"
@@ -62,11 +62,9 @@
 // A section that opens and closes: its title is the button doing it, with how many of its
 // fields have errors, its description under it; its items are its body. Open at first,
 // unless `props.open` is false. It opens as focusField() goes to one of its fields.
-import { mergeProps, ref } from 'vue'
+import { mergeProps } from 'vue'
 import { useFormConfig } from '@/utils/useFormConfig'
-import { generateId } from '@/utils/helpers'
-import { useEnformaSection } from './useEnformaSection'
-import { useEnformaPanel } from './useEnformaPanel'
+import { useEnformaCollapsible } from './useEnformaCollapsible'
 import EnformaSectionItems from './EnformaSectionItems.vue'
 import EnformaPanel from './EnformaPanel'
 import EnformaErrorBadge from './EnformaErrorBadge.vue'
@@ -94,15 +92,15 @@ const props = withDefaults(
 )
 
 const { getPassThroughProps } = useFormConfig()
-const { schema: section } = useEnformaSection(
+const {
+  schema: section,
+  title,
+  open,
+  panel,
+  headerId,
+  bodyId,
+} = useEnformaCollapsible(
   () => props.name,
   () => props
 )
-
-const open = ref(section.value.open !== false)
-const panel = useEnformaPanel({ reveal: () => (open.value = true) })
-
-const idBase = generateId('collapsible', props.name)
-const headerId = `${idBase}-header`
-const bodyId = `${idBase}-body`
 </script>

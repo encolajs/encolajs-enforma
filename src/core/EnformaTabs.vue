@@ -3,20 +3,7 @@
     v-bind="mergeProps($attrs, getPassThroughProps('pt.tabs.root'))"
     :data-orientation="orientation"
   >
-    <component
-      :is="section.titleComponent || 'h2'"
-      v-if="section.title"
-      v-bind="section.titleProps"
-    >
-      {{ section.title }}
-    </component>
-    <component
-      :is="section.descriptionComponent || 'p'"
-      v-if="section.description"
-      v-bind="section.descriptionProps"
-    >
-      {{ section.description }}
-    </component>
+    <EnformaSectionIntro :section="section" />
 
     <!-- Its own fields and content, above the tabs -->
     <EnformaSectionItems
@@ -44,7 +31,7 @@
           v-bind="getPassThroughProps('pt.tabs.tab')"
           @click="active = tab.name"
         >
-          {{ tab.schema.title || tab.name }}
+          {{ labelOf(tab) }}
           <EnformaErrorBadge
             :count="panelFor(tab.name).errorCount"
             v-bind="getPassThroughProps('pt.tabs.badge')"
@@ -63,13 +50,7 @@
         v-bind="getPassThroughProps('pt.tabs.panel')"
       >
         <EnformaPanel :panel="panelFor(tab.name)">
-          <component
-            :is="tab.schema.descriptionComponent || 'p'"
-            v-if="tab.schema.description"
-            v-bind="tab.schema.descriptionProps"
-          >
-            {{ tab.schema.description }}
-          </component>
+          <EnformaSectionIntro :section="tab.schema" hide-title />
           <EnformaSectionItems :name="tab.name" />
         </EnformaPanel>
       </div>
@@ -83,11 +64,10 @@
 // `props.active` names the tab open at first (the first one otherwise), `props.orientation`
 // lays the tabs out `horizontal` (by default) or `vertical`. A tab shows how many of its
 // fields have errors, and opens as focusField() goes to one of them.
-import { computed, mergeProps, ref, watch } from 'vue'
+import { mergeProps } from 'vue'
 import { useFormConfig } from '@/utils/useFormConfig'
-import { generateId } from '@/utils/helpers'
-import { useEnformaSection } from './useEnformaSection'
-import { useEnformaPanel, type EnformaPanelState } from './useEnformaPanel'
+import { useEnformaTabs } from './useEnformaTabs'
+import EnformaSectionIntro from './EnformaSectionIntro.vue'
 import EnformaSectionItems from './EnformaSectionItems.vue'
 import EnformaPanel from './EnformaPanel'
 import EnformaErrorBadge from './EnformaErrorBadge.vue'
@@ -113,52 +93,19 @@ const props = defineProps<{
 }>()
 
 const { getPassThroughProps } = useFormConfig()
-const { schema: section, items } = useEnformaSection(
+const {
+  schema: section,
+  orientation,
+  tabs,
+  active,
+  labelOf,
+  panelFor,
+  tabId,
+  panelId,
+} = useEnformaTabs(
   () => props.name,
   () => props
 )
-
-const orientation = computed(() =>
-  section.value.orientation === 'vertical' ? 'vertical' : 'horizontal'
-)
-
-// The sub-sections shown (by their `if`) are the tabs
-const tabs = computed(() =>
-  items.value.filter((item) => item.kind === 'section')
-)
-const tabNames = computed(() => tabs.value.map((tab) => tab.name))
-
-// The open tab: the one chosen, or the first while that one is hidden
-const chosen = ref<string | null>(section.value.active ?? null)
-const active = computed<string | null>({
-  get: () =>
-    chosen.value && tabNames.value.includes(chosen.value)
-      ? chosen.value
-      : tabNames.value[0] ?? null,
-  set: (name) => (chosen.value = name),
-})
-// A hidden open tab gives way to the first for good
-watch(tabNames, (names) => {
-  if (chosen.value && !names.includes(chosen.value)) {
-    chosen.value = names[0] ?? null
-  }
-})
-
-// Each tab's panel, which focusField() opens it through and which counts its errors
-const panels = new Map<string, EnformaPanelState>()
-function panelFor(name: string): EnformaPanelState {
-  let panel = panels.get(name)
-  if (!panel) {
-    panel = useEnformaPanel({ reveal: () => (active.value = name) })
-    panels.set(name, panel)
-  }
-  return panel
-}
-
-const idBase = generateId('tabs', props.name)
-const idPart = (name: string) => name.replace(/[^a-zA-Z0-9_-]/g, '_')
-const tabId = (name: string) => `${idBase}-tab-${idPart(name)}`
-const panelId = (name: string) => `${idBase}-panel-${idPart(name)}`
 
 // The tabs' buttons, for the keyboard to move between them
 const tabButtons: Record<string, HTMLElement | null> = {}
@@ -168,7 +115,7 @@ const tabButtons: Record<string, HTMLElement | null> = {}
  * up and down when vertical), Home and End the first and the last, and focus its button
  */
 function onKeydown(event: KeyboardEvent): void {
-  const names = tabNames.value
+  const names = tabs.value.map((tab) => tab.name)
   if (names.length === 0 || !active.value) return
   const vertical = orientation.value === 'vertical'
   const list = event.currentTarget as HTMLElement | null

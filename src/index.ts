@@ -67,6 +67,11 @@ export type {
   EnformaPanelOptions,
   EnformaPanelState,
 } from './core/useEnformaPanel'
+// For a kit's own tabs and collapsible sections
+export { useEnformaTabs } from './core/useEnformaTabs'
+export type { EnformaTabsState } from './core/useEnformaTabs'
+export { useEnformaCollapsible } from './core/useEnformaCollapsible'
+export type { EnformaCollapsibleState } from './core/useEnformaCollapsible'
 export { provideEnformaForm } from './core/provideEnformaForm'
 export type { ProvideEnformaFormOptions } from './core/provideEnformaForm'
 
