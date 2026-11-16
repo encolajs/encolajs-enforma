@@ -119,9 +119,9 @@ const validator = createEncolaValidator(
     password_confirmation: 'required'
   },
   {
-    'email.required': 'Please provide your email address',
-    'password.min': 'Password must be at least 8 characters',
-    'password.same_as': 'Passwords must match',
+    'email:required': 'Please provide your email address',
+    'password:min': 'Password must be at least 8 characters',
+    'password:same_as': 'Passwords must match',
   }
 )
 
@@ -134,7 +134,7 @@ const formProps = {
 
 ### Custom Messages
 
-Customize error messages by passing a second parameter to `createEncolaValidator`:
+Customize error messages by passing a second parameter to `createEncolaValidator`. Each key is a field's path and a rule's name, joined by a colon (`'email:required'`); `*` stands for any item of a list (`'jobs.*.title:required'`):
 
 ```vue
 <script setup>
@@ -146,9 +146,9 @@ const validator = createEncolaValidator(
     password: 'required|min_length:8'
   },
   {
-    'email.required': 'Please enter your email address',
-    'email.email': 'Please enter a valid email',
-    'password.min_length': 'Password must be at least 8 characters'
+    'email:required': 'Please enter your email address',
+    'email:email': 'Please enter a valid email',
+    'password:min_length': 'Password must be at least 8 characters'
   }
 )
 </script>

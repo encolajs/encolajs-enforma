@@ -219,9 +219,9 @@ const rules = {
 
 // Custom error messages
 const messages = {
-  'email.required': 'Email address is required when email is selected as contact method',
-  'phone.required': 'Phone number is required when phone is selected as contact method',
-  'experienceDetails.required': 'Please provide details about your experience',
+  'email:required': 'Email address is required when email is selected as contact method',
+  'phone:required': 'Phone number is required when phone is selected as contact method',
+  'experienceDetails:required': 'Please provide details about your experience',
   'relocationPreference.validation_failed': 'Please indicate your relocation preference'
 }
 

@@ -30,7 +30,7 @@ import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
 const validator = createEncolaValidator(
   { email: 'required|email' },
-  { 'email.required': 'Email is required' }
+  { 'email:required': 'Email is required' }
 )
 </script>
 <template>

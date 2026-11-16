@@ -252,7 +252,7 @@ const formProps = {
   schema,
   // rules prop is not needed when using schema-based validation
   customMessages: {
-    'age.gte': 'Must be at least 18 years old'
+    'age:gte': 'Must be at least 18 years old'
   }
 }
 ```

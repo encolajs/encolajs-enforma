@@ -215,8 +215,8 @@ const form = useForm(data, createEncolaValidator({
 <script setup>
 const form = useForm(data, rules, {
   customMessages: {
-    'email.required': 'Please enter your email',
-    'email.email': 'Email format is invalid'
+    'email:required': 'Please enter your email',
+    'email:email': 'Email format is invalid'
   }
 })
 </script>
@@ -230,8 +230,8 @@ import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 const validator = createEncolaValidator(
   { email: 'required|email' },
   {
-    'email.required': 'Please enter your email',
-    'email.email': 'Email format is invalid'
+    'email:required': 'Please enter your email',
+    'email:email': 'Email format is invalid'
   }
 )
 
