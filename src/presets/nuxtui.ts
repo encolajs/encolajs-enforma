@@ -1,5 +1,7 @@
 import { Component } from 'vue'
 import Field from '@/presets/nuxtui/Field.vue'
+import Tabs from '@/presets/nuxtui/Tabs.vue'
+import Collapsible from '@/presets/nuxtui/Collapsible.vue'
 import { FieldControllerExport, FormController } from '@/types'
 import {
   DeepPartial,
@@ -74,11 +76,13 @@ function setNuxtUISpecificProps(
  *
  * @param components - Record of component names to Nuxt UI components
  *                     Example: { input: UInput, select: USelect, switch: USwitch, toggle: USwitch }
+ *                     Sections drawn as tabs and collapsibles use `tabs` (UTabs),
+ *                     `collapsible` (UCollapsible), `button` (UButton) and `badge` (UBadge)
  *
  * @example
  * ```ts
  * import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
- * import { UInput, USelect, USwitch, UButton } from '#components'
+ * import { UInput, USelect, USwitch, UButton, UTabs, UCollapsible, UBadge } from '#components'
  *
  * useNuxtUIPreset({
  *   input: UInput,
@@ -86,6 +90,9 @@ function setNuxtUISpecificProps(
  *   switch: USwitch,
  *   toggle: USwitch,
  *   button: UButton,
+ *   tabs: UTabs,
+ *   collapsible: UCollapsible,
+ *   badge: UBadge,
  * })
  * ```
  */
@@ -187,12 +194,48 @@ export default function useNuxtUIPreset(
           size: 'sm',
         },
       },
+      tabs: {
+        root: { class: 'nuxtui-tabs' },
+        list: { as: inputComponents.tabs },
+        badge: {
+          as: inputComponents.badge,
+          color: 'error',
+          variant: 'solid',
+          size: 'sm',
+        },
+      },
+      collapsible: {
+        root: { class: 'nuxtui-collapsible' },
+        header: { class: 'nuxtui-collapsible-header' },
+        title: { class: 'nuxtui-collapsible-title' },
+        toggle: {
+          as: inputComponents.button,
+          color: 'neutral',
+          variant: 'ghost',
+          trailingIcon: 'i-lucide-chevron-down',
+          block: true,
+        },
+        badge: {
+          as: inputComponents.badge,
+          color: 'error',
+          variant: 'solid',
+          size: 'sm',
+        },
+        description: { class: 'nuxtui-collapsible-description text-sm' },
+        body: { as: inputComponents.collapsible },
+      },
     },
     /**
-     * Default components to be used inside Enforma forms
+     * Default components to be used inside Enforma forms. Tabs and collapsibles are drawn with
+     * Nuxt UI's when this call gives them (`tabs`, `collapsible`, with `button`), Enforma's
+     * otherwise
      */
     components: {
       field: Field,
+      ...(components?.tabs ? { tabs: Tabs } : {}),
+      ...(components?.collapsible && inputComponents.button
+        ? { collapsible: Collapsible }
+        : {}),
     },
     /**
      * Functions to transform props of Enforma components before rendering
