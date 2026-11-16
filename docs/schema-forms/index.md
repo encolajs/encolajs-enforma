@@ -39,7 +39,7 @@ You can also define validation rules directly in the schema at the field level. 
 :::
 
 ::: warning DEPRECATED
-The `:rules` prop is deprecated in v1.3.0. Use the `:validator` prop instead. See the [Migration Guide](/migration-guide-1_3) for details.
+The `:rules` prop is deprecated in v1.3.0. Use the `:validator` prop instead.
 :::
 
 ## Schema Features

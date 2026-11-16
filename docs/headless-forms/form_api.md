@@ -37,8 +37,6 @@ const validator = createEncolaValidator(
   <HeadlessForm :data="formData" :validator="validator" />
 </template>
 ```
-
-See the [Migration Guide](/migration-guide-1_3) for complete migration instructions.
 :::
 
 ## Events

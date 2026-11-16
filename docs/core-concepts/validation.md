@@ -222,7 +222,7 @@ For implementing a server-calling validation rule, check out the ["Async Validat
 The legacy `:rules` prop and rules object parameter are deprecated but still supported in v1.3.0.
 :::
 
-See the [Migration Guide](/migration-guide-1_3) for complete migration instructions.
+Pass a validator instead, as in [Basic Usage](#basic-usage).
 
 ## Integration with Zod
 

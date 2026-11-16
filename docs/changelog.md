@@ -2,6 +2,53 @@
 
 The changes of each version since 1.3.0, the latest first. A version marked ⚠️ changes something your forms may rely on: read its breaking changes before you upgrade.
 
+## 1.7.0 ⚠️
+
+_2026-11-16_
+
+Most forms need no change. The [migration guide](https://github.com/encolajs/encolajs-enforma/blob/master/MIGRATION.md) says what may.
+
+### Breaking changes
+
+- **A refused submit goes to the first field with errors.** It opens the tabs and collapsibles holding the field, scrolls it to the middle of the view and focuses its input. It used to leave the page as it was. To keep it that way, set `behavior.focusFirstError: false` in the plugin's options or in a form's `config`. See [Going to the first field with errors](/core-concepts/validation#going-to-the-first-field-with-errors).
+- **Root sections are ordered with the root fields by `position`**, as a section's fields and sub-sections are since 1.6.4. A section whose `section` is left out, `null` or empty used to be rendered before every root field; give it a lower `position` than theirs to keep it first. A field with `section: null` is now rendered at the root (it was rendered nowhere), and root sections are rendered inside the root's element.
+- **`<EnformaField>` takes no `rules` or `messages`**, and `fieldRulesCollectorKey` is no longer exported. They were read after the form had made its validator, so they were never checked: give the rules to the form (a validator, `<Enforma>`'s `rules` and `messages`, or the schema's). A schema field keeps its `rules` and `messages`.
+
+### New
+
+- **Tabs and collapsible sections.** A section with `component: 'tabs'` draws its sub-sections as tabs, horizontal or vertical (`props.orientation`), opening on `props.active`. A section with `component: 'collapsible'` opens and closes with its title, closed at first with `props.open: false`. Each shows how many errors it holds. Every preset draws them with its UI library's widgets; the Nuxt UI preset does when given `UTabs`, `UCollapsible`, `UButton` and `UBadge`. See [Tabs and Collapsibles](/schema-forms/tabs-and-collapsibles).
+- **`focusField(path)` and `focusFirstError()`**, on the form controller and on a ref to `<Enforma>`: go to a field, opening the panels around it. Call `focusFirstError()` after `setErrors()` to go to errors from the server. A `field_focus_requested` listener can answer the request itself by setting `handled`.
+- **Panels of your own.** In a form written by hand, wrap the content of your own tabs and collapsibles in `<EnformaPanel :panel="useEnformaPanel({ reveal })">`: a refused submit opens them, and `panel.errorCount` counts their errors. See [Tabs and Collapsibles in forms with fields](/field-forms/tabs-and-collapsibles).
+- **`validation_fail` and `onValidationFail` give the failing fields' paths**, in the order they are on the page. `useForm()` and `HeadlessForm` take a `fieldOrder`.
+- **Sections drawn by your own components.** A section names its component with `component`: a name in the form's config, a component registered in the Vue app, or a component. Sections gain `description`, `props` and `columns`, and any entry `span`. A section's title is optional, and is drawn only with a `titleComponent`, so a section can just group fields. See [Section components](/schema-forms/schema-reference#section-components).
+- **`useEnformaSection()` and `<EnformaSectionItems>`**, for a section component of your own: the section's items in render order, the paths of its fields, and how many of them have errors. `useEnformaTabs()`, `useEnformaCollapsible()` and `<EnformaErrorBadge>` give tabs and collapsibles of your own what Enforma's use. See [Custom Section Components](/extensibility/custom-components#custom-section-components).
+- **Content entries.** An entry with `type: 'content'` renders a component among its section's items, by `position`, while its `if` holds. Its props may be expressions, and pass through the new `content_props` transformers. See [Content Schema](/schema-forms/schema-reference#content-schema).
+- **`commit(values?)` and `$isChanged`.** `commit()` makes the current values, or those given, the saved ones that `reset()` returns to: Discard after a save no longer brings back what was there before it. `$isChanged` says whether the values differ from the saved ones, and turns false again when a change is undone. Expressions read it as `form.$isChanged`.
+- **Buttons outside the form.** Each form has an id (the `id` prop, `useForm({ id })`, or one made up), given as `$formId` and in `$formAttrs`. `<EnformaSubmitButton :form>` and `<EnformaResetButton :form>` act on a form they are outside of, given a ref to the `<Enforma>` or a controller: Save in a modal's footer, or beside a page's title. See [Buttons Outside the Form](/recipes/form-in-modal).
+- **Pending work.** `track(promise, path?)` and `beginPending(path?)` make the form wait for work such as an upload. While it runs, `$isPending` (and `form['path.$isPending']` for a field) is true, the submit is refused and the submit button is disabled. Work for a field is dropped as the field leaves its path, and all of it on `reset()`. `useField()` gives `isPending`, `beginPending()` and `track()`. See [Pending Work](/core-concepts/pending-work).
+- New exports: `EnformaSectionItems`, `EnformaPanel`, `EnformaTabs`, `EnformaCollapsible`, `EnformaErrorBadge`, `useEnformaSection`, `fieldsInRenderOrder`, `useEnformaPanel`, `useEnformaTabs`, `useEnformaCollapsible`, `errorCountText`, `visuallyHidden`, and the types that go with them, `PendingHandle`, `FocusTarget` and `ContentSchema`.
+
+### Changes
+
+- The presets import their UI library from your app instead of bundling a copy of their own, which your app's config, theme and plugin didn't reach: `presets/primevue.js` goes from 545 KB to 65 KB, `presets/quasar.js` from 728 KB to 66 KB. The schema builder, in the main entry, still brings its own PrimeVue.
+
+### Fixes
+
+- An untouched field drawn by the form's `field(x)` slot is checked. A required one let the submit through.
+- A ref to `<Enforma>` or `<HeadlessForm>` reads the form's state as it changes. `$isSubmitting` and `$isDirty` read `undefined`, and `$formAttrs` stayed as it was on mount.
+- A field's custom `inputComponent` stays mounted as the field's value changes. It was mounted afresh on every change and lost its state, such as a file input's file.
+- Quasar preset: the field's id reaches `QInput`'s native input, so its label points at it and it can be focused.
+- The schema builder accepts a section without a title.
+
+### Documentation
+
+- [Tabs and Collapsibles](/schema-forms/tabs-and-collapsibles) pages for schema forms and [forms with fields](/field-forms/tabs-and-collapsibles), and a larger [example](/examples/tabs-and-collapsibles).
+- A [Pending Work](/core-concepts/pending-work) page and a [File Upload](/recipes/file-upload) recipe.
+- The "Form in Modal" recipe becomes [Buttons Outside the Form](/recipes/form-in-modal).
+- The encola validator's custom messages are keyed `path:rule`, and the examples use rules it has (`min_length`, not `min`).
+- The outdated `EnformaSchema` page is removed: render a schema with `<Enforma :schema>`.
+- This changelog.
+
 ## 1.6.4 ⚠️
 
 _2026-11-15_
@@ -120,7 +167,7 @@ _2025-10-30_
 
 _2025-10-23_
 
-Existing forms keep working, with deprecation warnings in development. The [migration guide](/migration-guide-1_3) shows how to move to validators.
+Existing forms keep working, with deprecation warnings in development.
 
 ### New
 

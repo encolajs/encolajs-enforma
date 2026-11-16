@@ -40,12 +40,6 @@ export default defineConfig({
         { text: 'Installation', link: '/installation' },
         { text: 'Quick Start', link: '/quick-start' },
         {
-          text: 'Migration Guide',
-          items: [
-            { text: '1.2 => 1.3', link: 'migration-guide-1_3' },
-          ],
-        },
-        {
           text: 'Core Concepts',
           items: [
             { text: 'Architecture Overview', link: '/core-concepts/architecture-overview' },

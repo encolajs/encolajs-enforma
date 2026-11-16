@@ -70,8 +70,6 @@ const validator = createEncolaValidator({ firstName: 'required' })
   <Enforma :data="formData" :validator="validator" />
 </template>
 ```
-
-See the [Migration Guide](/migration-guide-1_3) for more details.
 :::
 
 For more details check out:
