@@ -14,8 +14,9 @@
     <!-- unmount-on-hide off: every panel is drawn, one shown, so the fields of the others are checked -->
     <TabsRoot
       v-if="tabs.length > 0"
-      v-model="active"
+      :model-value="active ?? tabs[0].name"
       :orientation="orientation"
+      @update:model-value="(value: string | number) => (active = String(value))"
       :unmount-on-hide="false"
       :style="vertical ? { display: 'flex', gap: '1rem' } : undefined"
     >

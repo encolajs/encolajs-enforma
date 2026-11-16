@@ -13,7 +13,7 @@
 
     <Tabs
       v-if="tabs.length > 0"
-      :value="active ?? undefined"
+      :value="active ?? tabs[0].name"
       v-bind="mergeProps(getPassThroughProps('pt.tabs.list'), verticalLayout)"
       @update:value="(value: string | number) => (active = String(value))"
     >
