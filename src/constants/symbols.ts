@@ -46,3 +46,15 @@ export const enformaConfigKey = Symbol('enformaConfig')
  * component's own properties (`$el`, `$props`, `$emit`…) to what the component exposes.
  */
 export const formControllerSelfKey = Symbol('formControllerSelf')
+
+/**
+ * Key of the form controller's method that registers a focus target: what answers
+ * `focusField(path)` for a path, and places the path on the page (an Enforma field)
+ */
+export const formFocusTargetsKey = Symbol('formFocusTargets')
+
+/**
+ * Symbol for providing/injecting the panel (a tab, a collapsible) around a field, with the
+ * panels around it
+ */
+export const enformaPanelScopeKey = Symbol('enformaPanelScope')

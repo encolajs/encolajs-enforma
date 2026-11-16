@@ -1,6 +1,7 @@
 // src/core/useEnformaField.ts
 import {
   computed,
+  getCurrentInstance,
   inject,
   mergeProps,
   onBeforeUnmount,
@@ -24,6 +25,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
+import { useFocusTarget } from './useFocusTarget'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -160,18 +162,34 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
     )
   }
 
-  // focusField(path) focuses this field's input, found by its id
-  const focusRequested = ({ path }: { path: string }) => {
-    if (path !== fieldProps.value.name || typeof document === 'undefined')
-      return
-    const input = document.getElementById(fieldId.value) as HTMLElement | null
-    input?.focus()
+  // focusField(path) opens the panels holding this field, scrolls its wrapper (label, input,
+  // error) into view and focuses its input, found by its id
+  const instance = getCurrentInstance()
+  const wrapperElement = (): Element | null => {
+    const root = instance?.proxy?.$el
+    if (typeof Element !== 'undefined' && root instanceof Element) return root
+    return typeof document === 'undefined'
+      ? null
+      : document.getElementById(`wrapper-${fieldId.value}`)
   }
-  formCtrl?.on('field_focus_requested', focusRequested)
+  useFocusTarget(formCtrl, {
+    path: () => fieldProps.value.name,
+    element: wrapperElement,
+    input: () => {
+      const id = String(fieldId.value)
+      const inWrapper = wrapperElement()?.querySelector<HTMLElement>(
+        `[id="${id.replace(/["\\]/g, '\\$&')}"]`
+      )
+      if (inWrapper) return inWrapper
+      return typeof document === 'undefined'
+        ? null
+        : document.getElementById(id)
+    },
+    hasError: () => !!fieldController.value.error,
+  })
 
   // Set up cleanup
   onBeforeUnmount(() => {
-    formCtrl?.off('field_focus_requested', focusRequested)
     formCtrl?.removeField(fieldProps.value.name)
     // Unregister field rules and messages
     if (fieldRulesCollector) {

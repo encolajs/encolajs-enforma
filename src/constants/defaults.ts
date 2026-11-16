@@ -17,6 +17,8 @@ export const DEFAULT_CONFIG: EnformaConfig = {
   behavior: {
     validateOn: 'blur',
     cloneFn,
+    // A refused submit goes to the first field with errors (focusFirstError())
+    focusFirstError: true,
   },
 
   /**

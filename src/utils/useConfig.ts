@@ -90,6 +90,11 @@ export interface FieldPassThroughConfig {
 export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
   cloneFn: (data: any) => any
+  /**
+   * Whether a refused submit goes to the first field with errors: opens the tabs and panels
+   * holding it, scrolls to it and focuses it (`focusFirstError()`). True by default
+   */
+  focusFirstError?: boolean
 
   [key: string]: any
 }

@@ -13,6 +13,7 @@
  */
 import {
   computed,
+  onBeforeUnmount,
   provide,
   toValue,
   type ComputedRef,
@@ -32,6 +33,7 @@ import {
   type DeepPartial,
   type EnformaConfig,
 } from '@/utils/useConfig'
+import { goToFirstError } from './useFocusTarget'
 
 export interface ProvideEnformaFormOptions {
   /** The form controller, from `useForm()`. */
@@ -67,5 +69,12 @@ export function provideEnformaForm(options: ProvideEnformaFormOptions): {
   })
   // Nor are the slots of an `<Enforma>` further up used for this form's fields
   provide(formFieldSlotsKey, null)
+  // A refused submit goes to the first field with errors, as in an `<Enforma>`
+  const onValidationFail = () =>
+    goToFirstError(options.controller, config.value)
+  options.controller.on('validation_fail', onValidationFail)
+  onBeforeUnmount(() =>
+    options.controller.off('validation_fail', onValidationFail)
+  )
   return { config }
 }

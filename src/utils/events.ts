@@ -82,10 +82,15 @@ export type FormEvents = {
   form_initialized: {
     formController: FormController
   }
-  /** `focusField(path)` asked the field at `path` to focus its input */
+  /** `focusField(path)` asked the field at `path` to show itself and focus its input */
   field_focus_requested: {
     path: string
     formController: FormController
+    /**
+     * A listener that shows the field sets it, so focusField() says something answered and
+     * focusFirstError() stops there. Enforma's fields answer without it
+     */
+    handled?: boolean
   }
 }
 

@@ -10,9 +10,7 @@
     :field-order="fieldOrder"
     @submit_success="emit('submit_success', $event)"
     @submit_error="emit('submit_error', $event)"
-    @validation_fail="
-      (formController, paths) => emit('validation_fail', formController, paths)
-    "
+    @validation_fail="onValidationFail"
     @field_changed="emit('field_changed', $event)"
     @field_focus="emit('field_focus', $event)"
     @field_blur="emit('field_blur', $event)"
@@ -53,6 +51,7 @@ import {
 import HeadlessForm from '@/headless/HeadlessForm'
 import EnformaSchema from './EnformaSchema.vue'
 import { fieldsInRenderOrder } from './useEnformaSection'
+import { goToFirstError } from './useFocusTarget'
 import EnformaSubmitButton from './EnformaSubmitButton.vue'
 import EnformaResetButton from './EnformaResetButton.vue'
 import {
@@ -272,6 +271,13 @@ provide(formContextKey, transformedContext)
 provide(formSchemaKey, transformedSchema)
 provide(formConfigKey, transformedFormConfig)
 provide(fieldRulesCollectorKey, fieldRulesCollector)
+
+// A refused submit goes to the first field with errors, after the form's listeners have heard
+// of it and its errors are drawn
+function onValidationFail(formController: FormController, paths: string[]) {
+  emit('validation_fail', formController, paths)
+  goToFirstError(formController, transformedFormConfig.value)
+}
 
 // Get slots and provide them for field customization
 const $slots = useSlots()
