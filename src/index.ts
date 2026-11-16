@@ -17,6 +17,7 @@ export { debounce } from './utils/debounce'
 export { evaluateSchema } from './utils/evaluateSchema'
 export { evaluateCondition } from './utils/evaluateCondition'
 export * from './utils/helpers'
+export { errorCountText, visuallyHidden } from './utils/errorCountText'
 export {
   createFormEmitter,
   type Emitter,
@@ -44,6 +45,9 @@ export { default as EnformaSchema } from './core/EnformaSchema.vue'
 export { default as EnformaSection } from './core/EnformaSection.vue'
 export { default as EnformaSectionItems } from './core/EnformaSectionItems.vue'
 export { default as EnformaPanel } from './core/EnformaPanel'
+export { default as EnformaTabs } from './core/EnformaTabs.vue'
+export { default as EnformaCollapsible } from './core/EnformaCollapsible.vue'
+export { default as EnformaErrorBadge } from './core/EnformaErrorBadge.vue'
 
 // For a field component of one's own (`components.field`), and for a host's own controller
 export { useEnformaField } from './core/useEnformaField'
