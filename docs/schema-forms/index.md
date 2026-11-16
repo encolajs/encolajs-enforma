@@ -37,7 +37,7 @@ const validator = createEncolaValidator(formRules)
 ```
 
 ::: tip
-You can also define validation rules directly in the schema at the field level. See [Schema-Based Validation](/core-concepts/validation.md#field-level-validation) for more details.
+You can also define validation rules directly in the schema at the field level. See [Form-Level Validation](/core-concepts/validation.md#form-level-validation) for more details.
 :::
 
 ::: warning DEPRECATED

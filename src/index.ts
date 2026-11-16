@@ -139,7 +139,6 @@ export {
   formContextKey,
   formSchemaKey,
   formFieldSlotsKey,
-  fieldRulesCollectorKey,
   enformaConfigKey,
 } from './constants/symbols'
 export { DEFAULT_CONFIG } from './constants/defaults'

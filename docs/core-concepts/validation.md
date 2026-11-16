@@ -93,8 +93,7 @@ Tabs and panels of your own open too, when their content is wrapped in an `<Enfo
 Enforma supports validation at multiple levels:
 
 1. **Form-level validation** - Validator passed to the form component
-2. **Field-level validation** - Rules specified on individual fields
-3. **Schema-level validation** - Rules defined in form schemas
+2. **Schema-level validation** - Rules defined on the fields of the form's schema (`rules`, `messages`), which the form reads
 
 **Using with form components:**
 
@@ -131,37 +130,6 @@ const formProps = {
   validator
 }
 </script>
-```
-
-### Field-Level Validation
-
-You can specify validation rules directly on individual `<EnformaField>` components:
-
-```vue
-<template>
-  <Enforma :data="formData" :submitHandler="submit">
-    <EnformaField
-      name="email"
-      label="Email"
-      inputComponent="input"
-      rules="required|email"
-      :messages="{
-        required: 'Email is required',
-        email: 'Please enter a valid email address'
-      }"
-    />
-    <EnformaField
-      name="phone"
-      label="Phone"
-      inputComponent="input"
-      rules="required|phone"
-      :messages="{
-        required: 'Phone number is required',
-        phone: 'Please enter a valid phone number'
-      }"
-    />
-  </Enforma>
-</template>
 ```
 
 ### Custom Messages

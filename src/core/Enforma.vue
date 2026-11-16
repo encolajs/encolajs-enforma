@@ -41,7 +41,6 @@ import {
   provide,
   ref,
   PropType,
-  reactive,
   computed,
   useSlots,
   toRaw,
@@ -59,7 +58,6 @@ import {
   formConfigKey,
   formSchemaKey,
   formFieldSlotsKey,
-  fieldRulesCollectorKey,
   formControllerSelfKey,
 } from '@/constants/symbols'
 import { FormController, FormSchema } from '@/types'
@@ -161,72 +159,22 @@ const formConfig = useConfig(props.config)
 const getConfig = <T = any>(path: string, defaultValue?: T) =>
   pathUtils.get<T>(formConfig, path, defaultValue)
 
-// Field rules and messages collector
-const fieldRules = reactive<ValidationRules>({})
-const fieldMessages = reactive<Record<string, any>>({})
-
-const fieldRulesCollector = {
-  registerField(
-    fieldName: string,
-    rules?: string,
-    messages?: Record<string, any>
-  ) {
-    if (rules) {
-      // Parse rules string format like "required|email"
-      fieldRules[fieldName] = rules
-    }
-    if (messages && Object.keys(messages).length > 0) {
-      // Convert nested format to flat format
-      Object.keys(messages).forEach((ruleName) => {
-        const flatKey = `${fieldName}:${ruleName}`
-        fieldMessages[flatKey] = messages[ruleName]
-      })
-    }
-  },
-  unregisterField(fieldName: string) {
-    delete fieldRules[fieldName]
-    // Remove all messages for this field
-    Object.keys(fieldMessages).forEach((key) => {
-      if (key.startsWith(`${fieldName}:`)) {
-        delete fieldMessages[key]
-      }
-    })
-  },
-}
-
+// The form's rules and messages: its schema's, or those it is given. Validation is set up
+// for the whole form; a field gives none
 const effectiveRules = computed(() => {
   const schemaRules = extractRulesFromSchema(props.schema || {})
   if (Object.keys(schemaRules).length > 0) {
     return schemaRules
   }
-
-  // Merge field-level rules
-  const mergedRules = { ...fieldRules }
-
-  // Props rules take higher precedence
-  if (props.rules && Object.keys(props.rules).length > 0) {
-    return { ...mergedRules, ...props.rules }
-  }
-
-  return mergedRules
+  return props.rules || {}
 })
 
-// Use either schema messages or provided messages
 const effectiveMessages = computed(() => {
   const schemaMessages = extractMessagesFromSchema(props.schema || {})
   if (Object.keys(schemaMessages).length > 0) {
     return schemaMessages
   }
-
-  // Merge field-level messages (already in flat format)
-  const mergedMessages = { ...fieldMessages }
-
-  // Props messages take highest precedence
-  if (props.messages && Object.keys(props.messages).length > 0) {
-    return { ...mergedMessages, ...props.messages }
-  }
-
-  return mergedMessages
+  return props.messages || {}
 })
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
@@ -270,7 +218,6 @@ const transformedFormConfig = computed(() => transformedProps.value.config)
 provide(formContextKey, transformedContext)
 provide(formSchemaKey, transformedSchema)
 provide(formConfigKey, transformedFormConfig)
-provide(fieldRulesCollectorKey, fieldRulesCollector)
 
 // A refused submit goes to the first field with errors, after the form's listeners have heard
 // of it and its errors are drawn

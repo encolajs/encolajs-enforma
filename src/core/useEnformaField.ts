@@ -16,7 +16,6 @@ import {
   formContextKey,
   formControllerKey,
   formSchemaKey,
-  fieldRulesCollectorKey,
 } from '@/constants/symbols'
 import { FormController, FormSchema } from '@/types'
 import { useField } from '@/headless/useField'
@@ -114,7 +113,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // used, so a changed schema entry reaches the field
   const schema = inject<FormSchema | Ref<FormSchema>>(formSchemaKey, {})
   const formContext = inject<any>(formContextKey)
-  const fieldRulesCollector = inject<any>(fieldRulesCollectorKey, null)
   const { formConfig, getConfig } = useFormConfig()
 
   // Validate form context
@@ -153,15 +151,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Initialize field with useField composable
   const fieldController = useField(fieldProps.value.name, formCtrl, {})
 
-  // Register field rules and messages with parent form if collector is available
-  if (fieldRulesCollector && (originalProps.rules || originalProps.messages)) {
-    fieldRulesCollector.registerField(
-      originalProps.name,
-      originalProps.rules,
-      originalProps.messages
-    )
-  }
-
   // focusField(path) opens the panels holding this field, scrolls its wrapper (label, input,
   // error) into view and focuses its input, found by its id
   const instance = getCurrentInstance()
@@ -177,10 +166,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Set up cleanup
   onBeforeUnmount(() => {
     formCtrl?.removeField(fieldProps.value.name)
-    // Unregister field rules and messages
-    if (fieldRulesCollector) {
-      fieldRulesCollector.unregisterField(originalProps.name)
-    }
   })
 
   // First, apply transformers to the field options

@@ -31,11 +31,6 @@ export const formSchemaKey = Symbol('formSchema')
 export const formFieldSlotsKey = Symbol('formFieldSlots')
 
 /**
- * Symbol for providing/injecting field rules collector
- */
-export const fieldRulesCollectorKey = Symbol('fieldRulesCollector')
-
-/**
  * Symbol for providing/injecting the Enforma plugin configuration
  */
 export const enformaConfigKey = Symbol('enformaConfig')
