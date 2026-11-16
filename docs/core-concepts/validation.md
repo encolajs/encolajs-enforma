@@ -15,7 +15,7 @@ Enforma's validation approach focuses on:
 
 Starting with v1.3.0, Enforma supports multiple validation libraries. Choose the one that best fits your project needs:
 
-- **@encolajs/validator** - Laravel-style validation rules with pipe notation (`required|email|min:8`)
+- **@encolajs/validator** - Laravel-style validation rules with pipe notation (`required|email|min_length:8`)
 - **Zod** - TypeScript-first schema validation with excellent type inference
 - **Yup** - Object schema validation with powerful conditional logic
 - **Valibot** - Lightweight, modular validation library for optimal bundle size
@@ -115,12 +115,12 @@ const formData = {
 const validator = createEncolaValidator(
   {
     email: 'required|email',
-    password: 'required|min:8|same_as:@password_confirmation',
+    password: 'required|min_length:8|same_as:@password_confirmation',
     password_confirmation: 'required'
   },
   {
     'email:required': 'Please provide your email address',
-    'password:min': 'Password must be at least 8 characters',
+    'password:min_length': 'Password must be at least 8 characters',
     'password:same_as': 'Passwords must match',
   }
 )
@@ -203,7 +203,7 @@ EncolaJS Validator supports validators that reference other field values using t
 
 ```js
 const validator = createEncolaValidator({
-  password: 'required|min:8|same_as:@password_confirmation',
+  password: 'required|min_length:8|same_as:@password_confirmation',
   password_confirmation: 'required'
 })
 ```

@@ -86,11 +86,11 @@ Validation is set up for the whole form, not on its fields: give `<Enforma>` a v
 <script setup>
 const rules = {
   email: 'required|email',
-  password: 'required|min:8',
+  password: 'required|min_length:8',
 }
 const messages = {
   'email:required': 'Email is required',
-  'password:min': 'Password must be at least 8 characters long',
+  'password:min_length': 'Password must be at least 8 characters long',
 }
 </script>
 ```
