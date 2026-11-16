@@ -151,6 +151,7 @@ Controls how the form behaves during validation and interaction.
 | Option | Type | Description                                                                                                                                                                                                                            |
 |--------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `validateOn` | `'input' \| 'change' \| 'blur' \| 'submit'` | When to trigger validation                                                                                                                                                                                                             |
+| `focusFirstError` | `boolean` | Whether a refused submit goes to the first field with errors, opening the tabs and collapsibles holding it (`true` by default). See [Going to the first field with errors](/core-concepts/validation#going-to-the-first-field-with-errors) |
 | `cloneFn` | `(data: any) => any` | Custom function to clone initial form data for resetting the form. If the default implementation is not behaving as expected, you can try to use [lodash's deepCopy](https://lodash.com/docs/4.17.15#cloneDeep) or implement your own. |
 
 ### Expressions Configuration (`expressions`)

@@ -218,9 +218,19 @@ The preset also configures button components for form actions:
 | EnformaRepeatableMoveUpButton | Move item up |
 | EnformaRepeatableMoveDownButton | Move item down |
 
+## Tabs and Collapsible Sections
+
+The preset draws the schema's [tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections) with Reka UI's primitives, which it imports itself:
+
+- `component: 'tabs'` with `TabsRoot`, `TabsList`, `TabsTrigger` and `TabsContent`, `unmount-on-hide` turned off so the fields of the hidden tabs are checked; vertical tabs (`props.orientation: 'vertical'`) sit beside their panels
+- `component: 'collapsible'` with `CollapsibleRoot`, its trigger in the title and its description under it
+- the count of errors of each in a `span`
+
+They are unstyled, like the primitives: style them through the classes the preset gives them (`rekaui-tabs`, `rekaui-tab`, `rekaui-collapsible-toggle`, `rekaui-error-badge`…), which you can change in the config's `pt.tabs` and `pt.collapsible`.
+
 ## Tree-Shaking
 
-Because you only import the Reka UI primitives you actually use in your wrapper components, this preset is extremely tree-shakable. You only bundle what you need!
+Because you only import the Reka UI primitives you actually use in your wrapper components, this preset is extremely tree-shakable. You only bundle what you need! The tabs and collapsible primitives are the exception: the preset imports them for the sections it draws.
 
 ## Benefits
 

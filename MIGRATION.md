@@ -10,6 +10,10 @@ What changes:
 - A field with `section: null` (or empty) is now rendered at the root. It used to be rendered nowhere.
 - `<EnformaSchema>` renders the root as one section, `default`, so the root sections are inside its element rather than beside it, and their component gets all their keys as props, as a sub-section's does, rather than only `name`.
 
+## A refused submit goes to the first field with errors
+
+A refused submit used to leave the page as it was. It now goes to the first field with errors: it opens the tabs and collapsibles holding it, scrolls it into view and focuses its input (see [Going to the first field with errors](https://encolajs.com/enforma/core-concepts/validation#going-to-the-first-field-with-errors)). To keep the page where it is, set `behavior.focusFirstError: false` in the plugin's options or in a form's `config`.
+
 ## `useGlobalEvents` and `globalFormEmitter` are removed
 
 Since 1.6.0, `<Enforma>` and `HeadlessForm` no longer emitted on `globalFormEmitter`; only a `useForm()` made with `useGlobalEvents: true` did. Both are now gone: every form has its own emitter. Listen to a form's events on the form itself (`@submit_success`, `@field_changed`…) or on its controller (`formController.on(…)`).

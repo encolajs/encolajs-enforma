@@ -152,6 +152,35 @@ A section's component gets the same props at the root of the form as inside anot
 
 A name is looked up in the form's config first (`components.card`), then among the components registered in the Vue app (`app.component('CardSection', …)`, named `'card-section'` or `'CardSection'`). `component` may also be the component itself. When nothing has the name, Enforma warns once and draws the section with the section component. The section's component gets the section's schema as props, but `component`.
 
+### Tabs and collapsible sections
+
+Every preset draws two more kinds of section, with its UI library's own widgets (Enforma's plain ones in the default preset):
+
+- `component: 'tabs'`: its sub-sections are the tabs. Each tab is titled by its sub-section's `title` (its name without one), which the panel doesn't repeat; the panel starts with the sub-section's `description`. The tabs section's own fields and content are drawn above the tabs.
+- `component: 'collapsible'`: the section opens and closes with its title, its `description` under the title, read while it is closed.
+
+```js
+const schema = {
+  account: { type: 'section', component: 'tabs', props: { orientation: 'vertical' } },
+  profile: { type: 'section', section: 'account', title: 'Profile' },
+  name: { label: 'Name', section: 'profile', rules: 'required' },
+  billing: { type: 'section', section: 'account', title: 'Billing' },
+  iban: { label: 'IBAN', section: 'billing', rules: 'required' },
+  extra: { type: 'section', section: 'billing', component: 'collapsible', title: 'Company', props: { open: false } },
+  vat: { label: 'VAT number', section: 'extra' },
+}
+```
+
+| Prop (in `props`) | Section | Description |
+|-------------------|---------|-------------|
+| `active` | tabs | The sub-section whose tab is open at first. The first tab without it |
+| `orientation` | tabs | `'horizontal'` (by default) or `'vertical'`, the tabs beside their panels |
+| `open` | collapsible | Whether it is open at first. It is, unless `open` is `false` |
+
+A sub-section hidden by its `if` loses its tab; when the open tab hides, the first one opens. Every panel is drawn and the hidden ones are only hidden, so their fields are checked with the rest of the form (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)).
+
+Each tab and collapsible shows how many of the fields inside it have errors, as a badge that screen readers hear as "2 errors" (translated through the form's translation function, `'1 error'` and `'{count} errors'`). A refused submit opens the tabs and collapsibles holding the first field with errors, before going to it (see [Going to the first field with errors](/core-concepts/validation#going-to-the-first-field-with-errors)).
+
 ## Content Schema
 
 A content entry sits among a section's items, by its `section` and `position`, but isn't a field: a line restating the form ("Profit per item: €54.50"), a preview, a note, a button. It has no value, no rules and no errors, and never appears in `values()` or `errors()`.

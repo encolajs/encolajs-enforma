@@ -251,22 +251,92 @@ defineProps({ name: { type: String, required: true }, title: String })
 </script>
 ```
 
-To draw the items itself (sub-sections as tabs), a section component uses `useEnformaSection(name, props?)`. It gives `schema`, the section's entry with the props its component was given over it, after the `section_props` transformers; `shown`, whether its `if` holds; and `items`, in render order, those hidden by their `if` left out. Each item has its `kind` (`field`, `section` or `repeatable`), its `name`, its `schema` entry, the `component` drawing it and the `props` it is given, and, for a field the form has a slot for, that `slot`.
+To draw the items itself, a section component uses `useEnformaSection(name, props?)`. It gives `schema`, the section's entry with the props its component was given over it, after the `section_props` transformers; `shown`, whether its `if` holds; and `items`, in render order, those hidden by their `if` left out. Each item has its `kind` (`field`, `section`, `repeatable` or `content`), its `name`, its `schema` entry, the `component` drawing it and the `props` it is given, and, for a field the form has a slot for, that `slot`. `<EnformaSectionItems :name :kinds>` draws only the items of some kinds: `:kinds="['field', 'repeatable', 'content']"` leaves the sub-sections to you.
 
-```js
-const { items } = useEnformaSection(() => props.name)
-const tabs = computed(() => items.value.filter((item) => item.kind === 'section'))
-// each tab: item.schema.title; each panel: h(item.component, item.props)
+It also gives `fields`, the paths of the fields inside the section at any depth (its sub-sections' too, those hidden by their `if` left out, a repeatable's path standing for its items' fields), and `errorCount`, how many of them have errors (each failing field of a repeatable's items, and one more for an error on the list itself), which follows each check, a fix and `reset()`.
+
+#### Tabs and collapsibles of your own
+
+The presets draw `component: 'tabs'` and `component: 'collapsible'` sections (see [Tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections)). To draw them with other widgets, register your components under those names. `useEnformaTabs(name, props?)` gives what tabs need: `tabs` (the sub-sections shown), `active` (the open tab's name, which you set to open another), `orientation`, `labelOf(tab)`, `tabId(name)`, `panelId(name)` and `panelFor(name)`, each tab's [panel](#panels-of-your-own). `useEnformaCollapsible(name, props?)` gives `title`, `open`, `panel`, `headerId` and `bodyId`.
+
+```vue
+<template>
+  <MyTabs v-model="active">
+    <MyTab v-for="tab in tabs" :key="tab.name" :value="tab.name">
+      {{ labelOf(tab) }}
+      <EnformaErrorBadge :count="panelFor(tab.name).errorCount" />
+    </MyTab>
+    <!-- Every panel drawn, one shown: the fields of the others are checked -->
+    <MyTabPanel v-for="tab in tabs" :key="tab.name" :value="tab.name">
+      <EnformaPanel :panel="panelFor(tab.name)">
+        <EnformaSectionItems :name="tab.name" />
+      </EnformaPanel>
+    </MyTabPanel>
+  </MyTabs>
+</template>
+
+<script setup>
+import {
+  EnformaErrorBadge,
+  EnformaPanel,
+  EnformaSectionItems,
+  useEnformaTabs,
+} from '@encolajs/enforma'
+
+const props = defineProps({ name: { type: String, required: true } })
+const { tabs, active, labelOf, panelFor } = useEnformaTabs(() => props.name, () => props)
+</script>
 ```
 
-Render every panel, and show one (`v-show`): a field whose panel unmounts isn't checked (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)).
+`<EnformaErrorBadge :count>` shows the count, which screen readers hear as "2 errors", and nothing while there are none. Give it your UI library's badge with `as` (`:as="UBadge" color="error"`).
 
-It also gives `fields`, the paths of the fields inside the section at any depth (its sub-sections' too, those hidden by their `if` left out, a repeatable's path standing for its items' fields), and `errorCount`, how many of them have errors, which follows each check, a fix and `reset()`. A tab shows its sub-section's count:
+### Panels of your own
 
-```js
-// in each tab's own component, given its sub-section's name
-const { errorCount } = useEnformaSection(() => props.name)
+A panel is what hides fields until it is opened: a tab, a collapsible, an accordion's item. When its content is wrapped in an `<EnformaPanel>`, `focusField()` and a refused submit open it before going to a field inside it, the outermost panel first, and it counts the fields inside it that have errors. This works in hand-written forms as in a schema's sections.
+
+The component drawing the panels makes one for each with `useEnformaPanel({ reveal })`, `reveal` opening it, and reads its `errorCount`: a tab's header sits outside the tab's content, so the component holding both holds the panel.
+
+```vue
+<template>
+  <Enforma :data="data" :rules="rules">
+    <UTabs v-model="tab" :items="items" :unmount-on-hide="false">
+      <template #trailing="{ item }">
+        <UBadge v-if="panels[item.value].errorCount" color="error" :label="panels[item.value].errorCount" />
+      </template>
+      <template #content="{ item }">
+        <EnformaPanel :panel="panels[item.value]">
+          <template v-if="item.value === 'profile'">
+            <EnformaField name="name" label="Name" />
+          </template>
+          <template v-else>
+            <EnformaField name="iban" label="IBAN" />
+          </template>
+        </EnformaPanel>
+      </template>
+    </UTabs>
+  </Enforma>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { Enforma, EnformaField, EnformaPanel, useEnformaPanel } from '@encolajs/enforma'
+
+const data = ref({ name: '', iban: '' })
+const rules = { name: 'required', iban: 'required' }
+
+const tab = ref('profile')
+const items = [
+  { label: 'Profile', value: 'profile' },
+  { label: 'Billing', value: 'billing' },
+]
+const panels = {
+  profile: useEnformaPanel({ reveal: () => { tab.value = 'profile' } }),
+  billing: useEnformaPanel({ reveal: () => { tab.value = 'billing' } }),
+}
+</script>
 ```
+
+Keep the panels' content mounted while hidden: a field whose panel unmounts isn't checked (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)). Give `<EnformaPanel>` the same panel for as long as the panel is drawn.
 
 ### Custom Button Components
 

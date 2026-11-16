@@ -96,6 +96,14 @@ The preset also includes styled button components:
 > The Vuetify library is pretty comples so the provided preset may not fit all the edge-cases and we have little to none experience with Vuetify. 
 > If you might need to take the files provided in the preset provided and customize it. **PRs are welcome** :)
 
+## Tabs and Collapsible Sections
+
+The preset draws the schema's [tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections) with Vuetify:
+
+- `component: 'tabs'` with `VTabs` and a `VTabsWindow` whose items are `eager`, so the fields of the tabs never opened are drawn and checked; vertical tabs (`props.orientation: 'vertical'`) sit beside their panels
+- `component: 'collapsible'` with `VExpansionPanels`, `eager` too. Vuetify's panel title is a button, which holds no heading: the title is drawn as text, with the description under it, inside the button
+- the count of errors of each with a `VChip` (`color: 'error'`)
+
 ## Known Issues
 
 Due to how Vuetify implements events, some of the components might not work with the `HeadlessField` component. 

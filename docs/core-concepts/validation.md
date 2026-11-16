@@ -57,7 +57,36 @@ const form = useForm(formData, validator)
 
 A form checks the fields it has a state for: those whose component is mounted, and those the form was asked about (`validateField(path)`, `getField(path)`). A field's state goes with its component when it unmounts. So `validate()` and `submit()` don't check a field whose component never mounts, or no longer is: a field hidden by its `if`, but also one inside a closed tab or a collapsed panel whose content unmounts.
 
-Keep the content of tabs and panels mounted, and hide it (`v-show`, the `hidden` attribute, CSS), so their fields are checked with the rest of the form. A kit's section component drawing tabs (see [Custom Section Components](/extensibility/custom-components#custom-section-components)) renders every panel and shows one.
+Keep the content of tabs and panels mounted, and hide it (`v-show`, the `hidden` attribute, CSS), so their fields are checked with the rest of the form. The tabs and collapsible sections the presets draw (see [Tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections)) do. A UI library's tabs or accordion of your own may unmount hidden content by default: turn that off (Nuxt UI's and Reka UI's `unmount-on-hide`, Vuetify's `eager`, PrimeVue's `lazy` left off).
+
+### Going to the first field with errors
+
+When a submit is refused, the form goes to the first field with errors: it opens the tabs and collapsibles holding it, the outermost first, scrolls the field (its label, input and error) to the middle of the view, and focuses its input. It goes after the `validation_fail` listeners have heard of it.
+
+"First" is first on the page: the fields are taken in the order they are on the page, the schema's order standing in for those not on it. `validation_fail`'s `paths` follow the same order.
+
+The scroll is smooth, unless the user asks for less motion (`prefers-reduced-motion`). A header that stays at the top of the page can cover the field: give the fields room under it with CSS.
+
+```css
+.enforma-field-wrapper { scroll-margin-top: 4rem; }
+```
+
+To leave the page as it is, turn it off for every form, or for one in its `config`:
+
+```js
+app.use(EnformaPlugin, { behavior: { focusFirstError: false } })
+```
+
+Errors set by your code, such as the server's (`setErrors()`), don't move the page. Go to the first of them with `focusFirstError()`, which says whether there was one:
+
+```js
+formController.setErrors(response.errors)
+formController.focusFirstError()
+```
+
+`focusField(path)` goes to one field the same way. Both say whether something on the page answered: a path no field on the page has is skipped by `focusFirstError()`.
+
+Tabs and panels of your own open too, when their content is wrapped in an `<EnformaPanel>` (see [Panels of your own](/extensibility/custom-components#panels-of-your-own)). In a headless form, which draws its own inputs, the controller emits `field_focus_requested` with the path: a listener showing the field sets `handled` to `true` on the event, so `focusField()` says it was found.
 
 ### Form-Level Validation
 

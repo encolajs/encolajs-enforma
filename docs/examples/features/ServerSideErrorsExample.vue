@@ -49,6 +49,8 @@ const submitHandler = (formData, formController) => {
         formController.setErrors({
           name: ['You are not allowed in this establishment']
         })
+        // go to the first of them
+        formController.focusFirstError()
         reject(false)
         return
       }
