@@ -116,6 +116,7 @@ export default defineConfig({
           ],
         },
         { text: 'F.A.Q.', link: '/faq' },
+        { text: 'Changelog', link: '/changelog' },
         { text: 'Contribution Guide', link: '/contribution-guide' },
       ],
       '/recipes/': [
