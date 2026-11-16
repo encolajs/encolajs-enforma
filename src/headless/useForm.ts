@@ -41,6 +41,14 @@ export interface FieldController {
   /** Whether work registered for the field (beginPending(), track()) is still running */
   $isPending: Ref<boolean>
   _id: string
+  /** The errors its rules gave at its last check */
+  _ruleErrors: string[]
+  /**
+   * The errors set by code (setErrors(), setFieldErrors()), such as a server's: shown after
+   * the rules' own, kept by a check of the rules, gone as the value changes or the form is
+   * submitted again
+   */
+  _setErrors: string[]
 }
 
 /** Work registered with beginPending(): the field it's for, or null for the form's own */
@@ -140,6 +148,8 @@ class FieldManager {
           $isValidating: ref(false),
           $isPending: ref(false),
           _id: this._idFor(path),
+          _ruleErrors: [],
+          _setErrors: [],
         }
 
         // Field-specific reactive effects can be added here in the future
@@ -382,6 +392,35 @@ export function useForm<T extends object>(
     })
   })
 
+  /** Shows a field's errors: its rules', then those set by code */
+  function showErrors(state: FieldController): void {
+    const ruleErrors = state._ruleErrors
+    const errors = [
+      ...ruleErrors,
+      ...state._setErrors.filter((error) => !ruleErrors.includes(error)),
+    ]
+    // An unchanged empty list isn't set again, which would trigger its readers
+    if (errors.length > 0 || state.$errors.value.length > 0) {
+      state.$errors.value = errors
+    }
+  }
+
+  /** Clears a field's errors and the errors set for it by code: reset(), commit() */
+  function clearErrors(state: FieldController): void {
+    state._ruleErrors = []
+    state._setErrors = []
+    state.$errors.value = []
+  }
+
+  /** The errors set by code for the field at `path` go, as its value changes */
+  function dropSetErrors(path: string): void {
+    if (!fieldManager.has(path)) return
+    const state = fieldManager.get(path)
+    if (state._setErrors.length === 0) return
+    state._setErrors = []
+    showErrors(state)
+  }
+
   /**
    * Checks a field, then its dirty dependants (the fields whose rules name it), each
    * once: `checked` holds the fields this round has checked, so two fields whose rules
@@ -412,15 +451,12 @@ export function useForm<T extends object>(
           }
         })
       )
-      if (!isValid) {
-        fieldController.$errors.value = validator.getErrorsForPath(path)
-        return false
-      }
-
-      if (fieldController.$errors.value.length > 0) {
-        fieldController.$errors.value = []
-      }
-      return true
+      fieldController._ruleErrors = isValid
+        ? []
+        : validator.getErrorsForPath(path)
+      showErrors(fieldController)
+      // Errors set by code count until they go: the value changes, the form is sent again
+      return isValid && fieldController._setErrors.length === 0
     } catch (e: any) {
       console.error(`[Enforma] Error validating field ${path}`, e)
       return false
@@ -569,7 +605,9 @@ export function useForm<T extends object>(
     stateChanges: StateChanges = {}
   ): Promise<void> {
     const state = fieldManager.get(path)
+    const previous = pathUtils.get(valuesRef.value, path)
     pathUtils.set(valuesRef.value, path, value)
+    if (!Object.is(previous, value)) dropSetErrors(path)
 
     // Manually trigger reactivity since we're using shallowRef
     triggerUpdate()
@@ -642,10 +680,12 @@ export function useForm<T extends object>(
         formState.$isSubmitting.value = true
 
         try {
-          // Mark all fields as touched before validation
+          // Mark all fields as touched before validation. The errors set by code (the
+          // server's last answer) go: the form is sent again
           fieldManager.all().forEach((fieldController, path) => {
             fieldController.$isTouched.value = true
             fieldController.$isDirty.value = true
+            fieldController._setErrors = []
           })
 
           // Validate all fields
@@ -768,7 +808,7 @@ export function useForm<T extends object>(
             const value = pathUtils.get(valuesRef.value, path)
 
             // Path still exists, reset the state but keep the field registered
-            fieldController.$errors.value = []
+            clearErrors(fieldController)
             fieldController.$isDirty.value = false
             fieldController.$isTouched.value = false
             fieldController.$isValidating.value = false
@@ -799,7 +839,7 @@ export function useForm<T extends object>(
         savedVersion.value++
 
         fieldManager.all().forEach((fieldController) => {
-          fieldController.$errors.value = []
+          clearErrors(fieldController)
           fieldController.$isDirty.value = false
           fieldController.$isTouched.value = false
           fieldController.$isValidating.value = false
@@ -820,7 +860,11 @@ export function useForm<T extends object>(
 
       setFieldErrors(path: string, errors: string[]): void {
         const fieldController = fieldManager.get(path)
-        fieldController.$errors.value = errors
+        // They replace the errors shown, as they always have (`[]` clears them); the rules'
+        // own come back with the field's next check, before them
+        fieldController._ruleErrors = []
+        fieldController._setErrors = [...errors]
+        showErrors(fieldController)
         fieldController.$isTouched.value = true
       },
 
@@ -940,6 +984,7 @@ export function useForm<T extends object>(
         array.push(item)
         this.move(arrayPath, len, index)
         fieldManager.shift(arrayPath, index, 1)
+        dropSetErrors(arrayPath)
         triggerUpdate() // Manual reactivity trigger
       },
 
@@ -960,6 +1005,7 @@ export function useForm<T extends object>(
 
         // Reindex remaining field states
         reindexArrayFieldControllers(arrayPath, index)
+        dropSetErrors(arrayPath)
         triggerUpdate() // Manual reactivity trigger
       },
 
@@ -967,6 +1013,7 @@ export function useForm<T extends object>(
         const array = getArrayByPath(valuesRef.value, arrayPath)
         moveArrayItem(array as [any], fromIndex, toIndex)
         fieldManager.move(arrayPath, fromIndex, toIndex)
+        dropSetErrors(arrayPath)
         triggerUpdate() // Manual reactivity trigger
       },
 
@@ -980,6 +1027,7 @@ export function useForm<T extends object>(
 
         array.sort(callback)
         fieldManager.reorder(arrayPath, newPositions)
+        dropSetErrors(arrayPath)
         triggerUpdate() // Manual reactivity trigger
       },
 
@@ -1104,7 +1152,9 @@ export function useForm<T extends object>(
             }
           } else {
             // Set the value immediately
+            const previous = pathUtils.get(valuesRef.value, prop)
             pathUtils.set(valuesRef.value, prop, value)
+            if (!Object.is(previous, value)) dropSetErrors(prop)
             triggerUpdate() // Manual reactivity trigger
             const fiel = fieldManager.get(prop)
             fiel.$isDirty.value = true

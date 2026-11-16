@@ -42,9 +42,9 @@ The controller also gives a field's value as `controller[path]` (`controller.ema
 | `validate()` | - | `Promise<boolean>` | Validates all fields |
 | `validateField(path)` | `path: string` | `Promise<boolean>` | Validates a specific field |
 | `errors()` | - | `object` | Gets all form errors by field path |
-| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field |
+| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field, such as the server's, replacing those it shows (`[]` clears them). They stay until the field's value changes or the form is submitted again, reset or committed: a check of the field's rules shows the rules' errors before them, and says the field is invalid while they last |
 | `getFieldErrors(path)` | `path: string` | `string[]` | Gets errors for a specific field |
-| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
+| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields, as `setFieldErrors()` does for each |
 
 ## Pending Work
 
