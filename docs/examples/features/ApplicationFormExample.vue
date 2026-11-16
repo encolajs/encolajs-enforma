@@ -5,6 +5,7 @@
     :validator="validator"
     :schema="schema"
     :submit-handler="submitHandler"
+    :config="config"
   />
 
   <div class="flex gap-2 mt-4">
@@ -24,6 +25,9 @@ import { Enforma } from '@'
 import { createEncolaValidator } from '../../../src/validators/encolaValidator'
 
 const formRef = ref()
+
+// Room above the form's buttons, below the tabs
+const config = { pt: { actions: { class: 'flex gap-2 mt-8' } } }
 
 const data = ref({
   applyingAs: 'Individual',

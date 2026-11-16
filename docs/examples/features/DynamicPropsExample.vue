@@ -235,8 +235,9 @@ const submitHandler = (values) => {
 }
 </script>
 
-<style>
-.example .enforma-section {
+<style scoped>
+/* This form's sections only: a two-column grid */
+.example :deep(.enforma-section) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
