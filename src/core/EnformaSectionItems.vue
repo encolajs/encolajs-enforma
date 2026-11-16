@@ -1,13 +1,14 @@
 <template>
   <template v-for="item in items" :key="item.name">
     <!-- The form's slot for a field, `field(email)`, drawn instead of its component -->
-    <component
-      :is="item.slot"
-      v-if="item.slot"
-      :field="item.schema"
-      :formController="formCtrl"
-      :config="formConfig"
-    />
+    <EnformaFieldSlot v-if="item.slot" :name="item.name">
+      <component
+        :is="item.slot"
+        :field="item.schema"
+        :formController="formCtrl"
+        :config="formConfig"
+      />
+    </EnformaFieldSlot>
     <component :is="item.component" v-else v-bind="item.props" />
   </template>
 </template>
@@ -22,6 +23,7 @@ import { formControllerKey } from '@/constants/symbols'
 import type { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { useEnformaSection } from './useEnformaSection'
+import EnformaFieldSlot from './EnformaFieldSlot'
 
 defineOptions({ name: 'EnformaSectionItems', inheritAttrs: false })
 

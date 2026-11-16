@@ -470,10 +470,12 @@ export function useForm<T extends object>(
       .map(([path]) => path)
     const order = [...pathsInPageOrder(), ...(options.fieldOrder?.() ?? [])]
     if (order.length === 0) return failing
+    // Where the path is listed, or else the repeatable holding it: an item's field placed on
+    // the page goes where it is, not where its repeatable starts
     const rank = (path: string) => {
-      const at = order.findIndex(
-        (listed) => path === listed || path.startsWith(`${listed}.`)
-      )
+      const exact = order.indexOf(path)
+      if (exact !== -1) return exact
+      const at = order.findIndex((listed) => path.startsWith(`${listed}.`))
       return at === -1 ? order.length : at
     }
     return failing

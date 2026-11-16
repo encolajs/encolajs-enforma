@@ -3,7 +3,12 @@
  * the panels holding it, which count it while it has errors, and with the form controller,
  * which places it on the page and asks it to show itself.
  */
-import { nextTick, onBeforeUnmount } from 'vue'
+import {
+  nextTick,
+  onBeforeUnmount,
+  type ComponentInternalInstance,
+  type VNode,
+} from 'vue'
 import { formFocusTargetsKey } from '@/constants/symbols'
 import type { FocusTarget, FormController } from '@/types'
 import { registerInPanels, type EnformaPanelState } from './useEnformaPanel'
@@ -17,6 +22,59 @@ export interface FocusTargetOptions {
   input?: () => HTMLElement | null | undefined
   /** Whether it has errors, which the panels holding it count */
   hasError: () => boolean
+}
+
+/**
+ * The first element a component draws: its root element, or the first element of the
+ * fragment it draws (a slot giving several nodes)
+ */
+export function rootElementOf(
+  instance: ComponentInternalInstance | null
+): Element | null {
+  let tree: VNode | null | undefined = instance?.subTree
+  // A component drawing another (a slot's function): what that one draws
+  while (tree?.component) tree = tree.component.subTree
+  if (!tree || typeof Element === 'undefined') return null
+  if (tree.el instanceof Element) return tree.el
+  // A fragment: its nodes sit between its two anchors
+  for (
+    let node = (tree.el as Node | null)?.nextSibling;
+    node && node !== tree.anchor;
+    node = node.nextSibling
+  ) {
+    if (node instanceof Element) return node
+  }
+  return null
+}
+
+/** The element with the id `id`: `root` itself, one inside it, or one elsewhere in the page */
+export function elementById(
+  root: Element | null | undefined,
+  id: string | null | undefined
+): HTMLElement | null {
+  if (!id) return null
+  if (root?.id === id) return root as HTMLElement
+  const inRoot = root?.querySelector<HTMLElement>(
+    `[id="${id.replace(/["\\]/g, '\\$&')}"]`
+  )
+  if (inRoot) return inRoot
+  return typeof document === 'undefined' ? null : document.getElementById(id)
+}
+
+/**
+ * Whether the field at `path` has errors, without giving it a state where it has none (the
+ * form would then check it). Read again as validate() ends and as array items move
+ */
+export function hasErrorsAt(
+  formCtrl: FormController | undefined,
+  path: string
+): boolean {
+  if (!formCtrl) return false
+  void formCtrl.$isValidating?.value
+  void (formCtrl as any).$formVersion
+  return (
+    formCtrl.hasField(path) && formCtrl.getField(path).$errors.value.length > 0
+  )
 }
 
 /**
@@ -65,7 +123,10 @@ export function useFocusTarget(
   formCtrl: FormController | undefined,
   options: FocusTargetOptions
 ): void {
-  const panels = registerInPanels({ hasError: options.hasError })
+  const panels = registerInPanels({
+    path: options.path,
+    hasError: options.hasError,
+  })
   const target: FocusTarget = {
     path: options.path,
     element: options.element,

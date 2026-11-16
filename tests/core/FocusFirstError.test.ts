@@ -15,6 +15,7 @@ import {
 import Enforma from '@/core/Enforma.vue'
 import EnformaField from '@/core/EnformaField.vue'
 import EnformaPanel from '@/core/EnformaPanel'
+import EnformaSectionItems from '@/core/EnformaSectionItems.vue'
 import { useEnformaPanel, type EnformaPanelState } from '@/core/useEnformaPanel'
 import { provideEnformaForm } from '@/core/provideEnformaForm'
 import { useForm } from '@/headless/useForm'
@@ -22,6 +23,7 @@ import { createEncolaValidator } from '@/validators/encolaValidator'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
 import { setGlobalConfig } from '@/utils/useConfig'
 import useDefaultPreset from '@/presets/default'
+import { formFocusTargetsKey } from '@/constants/symbols'
 import type { FormController } from '@/types'
 
 // jsdom has no scrollIntoView: record what was scrolled to, and how
@@ -402,5 +404,187 @@ describe('a form whose host made its controller', () => {
     await flushPromises()
 
     expect(focusedName()).toBe('name')
+  })
+})
+
+/** A section drawn closed, its items in a panel, showing the panel's count */
+const Collapsed = defineComponent({
+  props: { name: { type: String, required: true } },
+  setup(props) {
+    const open = ref(false)
+    const panel = useEnformaPanel({ reveal: () => (open.value = true) })
+    return () =>
+      h('section', { 'data-errors': String(panel.errorCount) }, [
+        shownWhen(open.value, { 'data-body': props.name }, [
+          h(EnformaPanel, { panel }, () => [
+            h(EnformaSectionItems, { name: props.name }),
+          ]),
+        ]),
+      ])
+  },
+})
+
+describe('repeatables and field slots in a panel', () => {
+  const config = { components: { collapsed: Collapsed } }
+
+  it('an error on a repeatable itself opens its panel and scrolls the repeatable into view', async () => {
+    const { wrapper, form } = mountSchemaForm(
+      {
+        work: { type: 'section', component: 'collapsed' },
+        jobs: {
+          type: 'repeatable',
+          section: 'work',
+          subfields: { title: { inputComponent: 'input' } },
+        },
+      },
+      { jobs: [{ title: 'Cook' }] },
+      { config }
+    )
+    await flushPromises()
+    const body = wrapper.element.querySelector('[data-body="work"]')
+    expect(isShown(body)).toBe(false)
+
+    form.value!.setErrors({ jobs: ['Add at least two jobs'] })
+    await flushPromises()
+    expect(wrapper.find('[data-errors]').attributes('data-errors')).toBe('1')
+
+    expect(form.value!.focusFirstError()).toBe(true)
+    await flushPromises()
+
+    expect(isShown(body)).toBe(true)
+    expect(scrolls).toHaveLength(1)
+    // The repeatable: it holds its items
+    expect(
+      scrolls[0].element.querySelector('[name="jobs.0.title"]')
+    ).not.toBeNull()
+  })
+
+  it("count each failing field of a repeatable's items", async () => {
+    const { wrapper, form } = mountSchemaForm(
+      {
+        work: { type: 'section', component: 'collapsed' },
+        jobs: {
+          type: 'repeatable',
+          section: 'work',
+          subfields: {
+            title: { inputComponent: 'input', rules: 'required' },
+          },
+        },
+      },
+      { jobs: [{ title: '' }, { title: 'Cook' }, { title: '' }] },
+      { config }
+    )
+    await flushPromises()
+
+    await form.value!.submit()
+    await flushPromises()
+
+    expect(wrapper.find('[data-errors]').attributes('data-errors')).toBe('2')
+    expect(focusedName()).toBe('jobs.0.title')
+  })
+
+  it("a field drawn by the form's slot opens its panel, and its element with the field's id is focused", async () => {
+    const form = ref<FormController | null>(null)
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            Enforma,
+            {
+              ref: form,
+              data: reactive({ city: '' }),
+              schema: {
+                place: { type: 'section', component: 'collapsed' },
+                city: { section: 'place', rules: 'required' },
+              },
+              config,
+            },
+            {
+              'field(city)': ({ formController }: any) =>
+                h('select', {
+                  id: formController.getField('city')._id,
+                  name: 'city',
+                }),
+            }
+          ),
+      }),
+      { attachTo: document.body }
+    )
+    await flushPromises()
+
+    expect(await form.value!.submit()).toBe(false)
+    await flushPromises()
+
+    expect(isShown(wrapper.element.querySelector('[data-body="place"]'))).toBe(
+      true
+    )
+    expect(focusedName()).toBe('city')
+    expect(wrapper.find('[data-errors]').attributes('data-errors')).toBe('1')
+  })
+
+  it('count a field once when the slot draws it with an EnformaField', async () => {
+    const form = ref<FormController | null>(null)
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            Enforma,
+            {
+              ref: form,
+              data: reactive({ city: '' }),
+              schema: {
+                place: { type: 'section', component: 'collapsed' },
+                city: { section: 'place', rules: 'required' },
+              },
+              config,
+            },
+            { 'field(city)': () => h(EnformaField, { name: 'city' }) }
+          ),
+      }),
+      { attachTo: document.body }
+    )
+    await flushPromises()
+
+    await form.value!.submit()
+    await flushPromises()
+
+    expect(wrapper.find('[data-errors]').attributes('data-errors')).toBe('1')
+    expect(focusedName()).toBe('city')
+  })
+})
+
+describe('the failing fields of a repeatable', () => {
+  it('are in the order their fields are on the page, not where the repeatable starts', async () => {
+    const failed: string[][] = []
+    const form = useForm(
+      { jobs: [{ title: '' }, { title: '' }] },
+      createEncolaValidator({ 'jobs.*.title': 'required' }),
+      {
+        fieldOrder: () => ['jobs'],
+        onValidationFail: (_, paths) => failed.push(paths),
+      }
+    )
+    // The form got jobs.0.title first, but jobs.1.title is drawn above it
+    form.getField('jobs.0.title')
+    form.getField('jobs.1.title')
+    const list = document.createElement('div')
+    const second = list.appendChild(document.createElement('div'))
+    const first = list.appendChild(document.createElement('div'))
+    const register = (form as any)[formFocusTargetsKey]
+    register({ path: () => 'jobs', element: () => list, focus: () => {} })
+    register({
+      path: () => 'jobs.0.title',
+      element: () => first,
+      focus: () => {},
+    })
+    register({
+      path: () => 'jobs.1.title',
+      element: () => second,
+      focus: () => {},
+    })
+
+    await form.submit()
+
+    expect(failed).toEqual([['jobs.1.title', 'jobs.0.title']])
   })
 })

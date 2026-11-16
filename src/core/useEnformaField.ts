@@ -25,7 +25,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
-import { useFocusTarget } from './useFocusTarget'
+import { elementById, rootElementOf, useFocusTarget } from './useFocusTarget'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -165,26 +165,12 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // focusField(path) opens the panels holding this field, scrolls its wrapper (label, input,
   // error) into view and focuses its input, found by its id
   const instance = getCurrentInstance()
-  const wrapperElement = (): Element | null => {
-    const root = instance?.proxy?.$el
-    if (typeof Element !== 'undefined' && root instanceof Element) return root
-    return typeof document === 'undefined'
-      ? null
-      : document.getElementById(`wrapper-${fieldId.value}`)
-  }
+  const wrapperElement = (): Element | null =>
+    rootElementOf(instance) ?? elementById(null, `wrapper-${fieldId.value}`)
   useFocusTarget(formCtrl, {
     path: () => fieldProps.value.name,
     element: wrapperElement,
-    input: () => {
-      const id = String(fieldId.value)
-      const inWrapper = wrapperElement()?.querySelector<HTMLElement>(
-        `[id="${id.replace(/["\\]/g, '\\$&')}"]`
-      )
-      if (inWrapper) return inWrapper
-      return typeof document === 'undefined'
-        ? null
-        : document.getElementById(id)
-    },
+    input: () => elementById(wrapperElement(), String(fieldId.value)),
     hasError: () => !!fieldController.value.error,
   })
 

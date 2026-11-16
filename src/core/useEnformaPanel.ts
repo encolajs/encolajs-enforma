@@ -32,6 +32,8 @@ export interface EnformaPanelState {
 
 /** A field inside a panel, as it registers with it */
 export interface EnformaPanelEntry {
+  /** Its path: two entries for one path (a slot drawing an EnformaField) count once */
+  path(): string
   /** Whether it has errors */
   hasError(): boolean
 }
@@ -57,11 +59,11 @@ export function useEnformaPanel(
   const panel = reactive({
     reveal: () => options.reveal(),
     errorCount: computed(() => {
-      let count = 0
+      const failing = new Set<string>()
       for (const entry of entries) {
-        if (entry.hasError()) count++
+        if (entry.hasError()) failing.add(entry.path())
       }
-      return count
+      return failing.size
     }),
   }) as EnformaPanelState
   entriesOf.set(toRaw(panel), entries)
