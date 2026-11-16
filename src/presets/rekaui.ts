@@ -1,5 +1,7 @@
 import { Component } from 'vue'
 import Field from '@/presets/rekaui/Field.vue'
+import RekaUITabs from '@/presets/rekaui/Tabs.vue'
+import RekaUICollapsible from '@/presets/rekaui/Collapsible.vue'
 import { FieldControllerExport, FormController } from '@/types'
 import {
   DeepPartial,
@@ -185,12 +187,31 @@ export default function useRekauiPreset(
           variant: 'ghost',
         },
       },
+      tabs: {
+        root: { class: 'rekaui-tabs' },
+        list: { class: 'rekaui-tabs-list flex gap-2' },
+        tab: { class: 'rekaui-tab' },
+        badge: { class: 'rekaui-error-badge' },
+        panel: { class: 'rekaui-tabs-panel' },
+      },
+      collapsible: {
+        root: { class: 'rekaui-collapsible' },
+        header: { class: 'rekaui-collapsible-header' },
+        title: { class: 'rekaui-collapsible-title' },
+        toggle: { class: 'rekaui-collapsible-toggle' },
+        badge: { class: 'rekaui-error-badge' },
+        description: { class: 'rekaui-collapsible-description' },
+        body: { class: 'rekaui-collapsible-body' },
+      },
     },
     /**
      * Default components to be used inside Enforma forms
      */
     components: {
       field: Field,
+      // sections drawn as Reka UI tabs and collapsibles
+      tabs: RekaUITabs,
+      collapsible: RekaUICollapsible,
     },
     /**
      * Functions to transform props of Enforma components before rendering

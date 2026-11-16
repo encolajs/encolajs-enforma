@@ -139,6 +139,7 @@
         "primevue": "^4.4.1",
         "prismjs": "^1.30.0",
         "quasar": "^2.18.0",
+        "reka-ui": "^2.11.0",
         "tslib": "^2.8.1",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.25.0",
