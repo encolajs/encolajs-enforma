@@ -58,8 +58,10 @@ function setQuasarSpecificProps(
   // Setup Quasar-specific props
   fieldProps.inputProps = fieldProps.inputProps || {}
 
-  // Ensure we have an id for the field
+  // Ensure we have an id for the field. QInput gives its native input the id in `for`, which
+  // the label, the ARIA attributes and focusField() point at
   fieldProps.inputProps.id = field.value.id
+  fieldProps.inputProps.for = field.value.id
 
   // Set modelValue for v-model binding
   fieldProps.inputProps.modelValue = field.value.value

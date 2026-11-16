@@ -56,6 +56,8 @@ const isShown = (element: Element | undefined) =>
 let scrolledTo: Array<string | null | undefined>
 const scrolledName = () => scrolledTo[0]
 
+const focusedName = () => document.activeElement?.getAttribute('name')
+
 describe('Quasar preset: tabs and collapsibles', () => {
   beforeEach(() => {
     setGlobalConfig(DEFAULT_CONFIG)
@@ -102,6 +104,7 @@ describe('Quasar preset: tabs and collapsibles', () => {
     expect(billing.attributes('aria-selected')).toBe('true')
     expect(isShown(wrapper.findAll('[role="tabpanel"]')[1].element)).toBe(true)
     expect(scrolledName()).toBe('iban')
+    expect(focusedName()).toBe('iban')
     const badge = billing.find('.q-badge')
     expect(badge.classes()).toContain('bg-negative')
     expect(badge.find('[aria-hidden="true"]').text()).toBe('2')
@@ -121,6 +124,7 @@ describe('Quasar preset: tabs and collapsibles', () => {
 
     expect(isShown(content().element)).toBe(true)
     expect(scrolledName()).toBe('vat')
+    expect(focusedName()).toBe('vat')
   })
 
   it('opens and closes the collapsible with its header, which holds the description', async () => {
@@ -134,6 +138,16 @@ describe('Quasar preset: tabs and collapsibles', () => {
     await header.trigger('click')
     await flushPromises()
     expect(header.attributes('aria-expanded')).toBe('true')
+  })
+
+  it("gives a field's id to QInput's native input, which its label points at", async () => {
+    const wrapper = mountForm()
+    await flushPromises()
+    const input = wrapper.find('[name="name"]')
+    const id = input.attributes('id')
+
+    expect(id).toMatch(/^field_name_/)
+    expect(wrapper.find(`label[for="${id}"]`).exists()).toBe(true)
   })
 
   it('lays vertical tabs beside their panels', async () => {
