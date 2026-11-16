@@ -107,6 +107,8 @@ const submitHandler = async function (data, formController) {
 }
 ```
 
+Errors set this way stay until the field's value changes or the form is submitted again (or reset, or committed). Checking the field's rules doesn't remove them, such as when the user leaves the field without changing it: they show after the rules' own errors, and `validate()` says `false` while they show.
+
 ## Access Forms from Outside
 
 Most of the times forms are self-contained, meaning that whatever happens in a form (clicking on fields, submitting etc) is triggered by elements inside the form.

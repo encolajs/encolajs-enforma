@@ -33,6 +33,8 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `reset()` | - | `void` | Resets form to initial state |
 | `commit(values?)` | `values?: object` | `void` | The current values, or `values`, become the saved ones: those `reset()` returns to and `$isChanged` compares with. Call it after a successful save, so Discard brings back what was saved. The fields' states clear, as `reset()` clears them. `values` only become the saved copy: set them on the form too to show them |
 
+The controller also gives a field's value as `controller[path]` (`controller.email`, `controller['address.city']`). For a field named like one of its methods (`track`, `commit`, `reset`, `values`, `submit`…) that gives the method: read values with `getFieldValue(path)`, which is right for every name.
+
 ## Validation Methods
 
 | Method | Parameters | Returns | Description |
@@ -40,9 +42,9 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `validate()` | - | `Promise<boolean>` | Validates all fields |
 | `validateField(path)` | `path: string` | `Promise<boolean>` | Validates a specific field |
 | `errors()` | - | `object` | Gets all form errors by field path |
-| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field |
+| `setFieldErrors(path, errors)` | `path: string, errors: string[]` | `void` | Sets errors for a specific field, such as the server's, replacing those it shows (`[]` clears them). They stay until the field's value changes or the form is submitted again, reset or committed: a check of the field's rules shows the rules' errors before them, and says the field is invalid while they last |
 | `getFieldErrors(path)` | `path: string` | `string[]` | Gets errors for a specific field |
-| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields |
+| `setErrors(errors)` | `errors: Record<string, string[]>` | `void` | Sets errors for multiple fields, as `setFieldErrors()` does for each |
 
 ## Pending Work
 
@@ -60,7 +62,7 @@ Work the form waits for before it submits, such as an upload. [See Pending Work]
 | `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
 | `removeField(path)` | `path: string` | `void` | Removes a field from the form |
 | `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
-| `focusField(path)` | `path: string` | `boolean` | Goes to the field at `path`: opens the tabs and collapsibles holding it, scrolls it into view and focuses its input (Enforma's fields find it by its id). Says whether something on the page answered |
+| `focusField(path)` | `path: string` | `boolean` | Goes to the field at `path`: opens the tabs and collapsibles holding it, scrolls it into view and focuses its input: the element with the field's id, else the one its label names, else the first element in the field that takes focus. Says whether something on the page answered |
 | `focusFirstError()` | | `boolean` | Goes to the first field with errors, in the order they are on the page, as a refused submit does: after `setErrors()`, for instance. Says whether there was one |
 | `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
 | `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |

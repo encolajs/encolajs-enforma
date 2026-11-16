@@ -24,7 +24,13 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
-import { elementById, rootElementOf, useFocusTarget } from './useFocusTarget'
+import { fieldValue } from '@/utils/fieldValue'
+import {
+  elementById,
+  inputIn,
+  rootElementOf,
+  useFocusTarget,
+} from './useFocusTarget'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -105,8 +111,20 @@ function getFieldProps<T>(
   return result
 }
 
+export interface EnformaFieldOptions {
+  /**
+   * The input `focusField()` focuses, for a field component that knows it better. Without
+   * it, the element with the field's id, the one its label names, or the first in the field
+   * that takes focus
+   */
+  input?: () => HTMLElement | null | undefined
+}
+
 // return fieldController and props
-export function useEnformaField(originalProps: EnformaFieldProps) {
+export function useEnformaField(
+  originalProps: EnformaFieldProps,
+  options: EnformaFieldOptions = {}
+) {
   // Get injected dependencies
   const formCtrl = inject<FormController>(formControllerKey) as FormController
   // The schema and the context may be refs (Enforma provides computeds): read where they're
@@ -127,7 +145,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Replace event listener with watchEffect for automatic dependency tracking
   watchEffect(() => {
     // Automatically track relevant form state changes
-    const fieldValue = formCtrl[originalProps.name]
+    const value = fieldValue(formCtrl, originalProps.name)
     const fieldErrors = formCtrl[`${originalProps.name}.$errors`]
     const fieldState = {
       isDirty: formCtrl[`${originalProps.name}.$isDirty`]?.value,
@@ -152,14 +170,15 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   const fieldController = useField(fieldProps.value.name, formCtrl, {})
 
   // focusField(path) opens the panels holding this field, scrolls its wrapper (label, input,
-  // error) into view and focuses its input, found by its id
+  // error) into view and focuses its input
   const instance = getCurrentInstance()
   const wrapperElement = (): Element | null =>
     rootElementOf(instance) ?? elementById(null, `wrapper-${fieldId.value}`)
   useFocusTarget(formCtrl, {
     path: () => fieldProps.value.name,
     element: wrapperElement,
-    input: () => elementById(wrapperElement(), String(fieldId.value)),
+    input: () =>
+      options.input?.() ?? inputIn(wrapperElement(), String(fieldId.value)),
     hasError: () => !!fieldController.value.error,
   })
 

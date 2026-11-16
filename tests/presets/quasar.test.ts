@@ -146,7 +146,7 @@ describe('Quasar preset: tabs and collapsibles', () => {
     const input = wrapper.find('[name="name"]')
     const id = input.attributes('id')
 
-    expect(id).toMatch(/^field_name_/)
+    expect(id).toMatch(/__name$/)
     expect(wrapper.find(`label[for="${id}"]`).exists()).toBe(true)
   })
 

@@ -1,4 +1,13 @@
-import { computed, ComputedRef, ref, shallowRef, watch, watchEffect } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  getCurrentInstance,
+  onBeforeUnmount,
+  ref,
+  shallowRef,
+  watch,
+  watchEffect,
+} from 'vue'
 import {
   FieldController,
   FieldControllerExport,
@@ -6,6 +15,7 @@ import {
   PendingHandle,
 } from '@/types'
 import { debounce } from '@/utils/debounce'
+import { fieldValue } from '@/utils/fieldValue'
 import { pathUtils } from '@/utils/helpers'
 
 export type fieldValidateOnOption =
@@ -40,8 +50,14 @@ export function useField(
   // Create a reference to track focus state
   const isFocused = ref(false)
 
+  // Whether the field's component has unmounted (@see onBeforeUnmount below)
+  let unmounted = false
+
+  // The field's state, made as the field is: the form checks the fields it has a state for
+  form.getField(name)
+
   // Get initial value
-  const initialValue = form[name]
+  const initialValue = fieldValue(form, name)
 
   // Use shallowRef for complex objects, ref for primitives
   const isComplex =
@@ -53,7 +69,7 @@ export function useField(
 
   // Use watchEffect for automatic dependency tracking of form value changes
   watchEffect(() => {
-    const formValue = form[name]
+    const formValue = fieldValue(form, name)
     if (modelValue.value !== formValue) {
       if (isComplex) {
         // For complex objects, replace entire reference
@@ -71,7 +87,7 @@ export function useField(
     const isDirty = form[`${name}.$isDirty`]?.value
 
     // Only update form if the value has actually changed
-    if (form[name] !== currentValue) {
+    if (fieldValue(form, name) !== currentValue) {
       if (isDirty) {
         handleChange(currentValue, 'input')
       } else {
@@ -90,6 +106,8 @@ export function useField(
     value: any,
     trigger: 'input' | 'change' | 'blur' = 'input'
   ): Promise<void> {
+    if (unmounted) return
+
     // Update the form directly through the proxy
     const stateChanges = {
       $isTouched: true,
@@ -100,6 +118,8 @@ export function useField(
     }
 
     await form.setFieldValue(name, value, false, stateChanges)
+    // Gone while its value was set: it isn't checked any more
+    if (unmounted) return
 
     if (trigger === 'change' && options.validateOn === 'change') {
       debouncedValidate()
@@ -116,6 +136,7 @@ export function useField(
    * Handle blur events
    */
   function handleBlur(): void {
+    if (unmounted) return
     isFocused.value = false
     // Notify the form about field blur
     if (form.setFieldBlurred) {
@@ -131,6 +152,7 @@ export function useField(
    * Handle focus events
    */
   function handleFocus(): void {
+    if (unmounted) return
     isFocused.value = true
 
     // Notify the form about field focus
@@ -148,6 +170,17 @@ export function useField(
   }
 
   const debouncedValidate = debounce(validate, 200)
+
+  // Once the field's component unmounts (hidden by its `if`, its row removed), the field is
+  // out of the form: its pending check is dropped, and its input's events (the browser blurs
+  // a focused input as it's removed) are ignored. Either would give it a state again, which
+  // the form would then check
+  if (getCurrentInstance()) {
+    onBeforeUnmount(() => {
+      unmounted = true
+      debouncedValidate.cancel()
+    })
+  }
 
   /** Registers work the form waits for, for this field (@see FormController.beginPending) */
   function beginPending(): PendingHandle {
@@ -184,7 +217,7 @@ export function useField(
     // Get the latest field state
     const fieldController = getFieldController()
 
-    const value = form[name]
+    const value = fieldValue(form, name)
     const error =
       fieldController?.$errors.value.length > 0
         ? fieldController.$errors.value[0]
