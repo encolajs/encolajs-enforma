@@ -74,6 +74,7 @@ export default defineConfig({
               link: '/schema-forms/',
               items: [
                 { text: 'Schema Reference', link: '/schema-forms/schema-reference' },
+                { text: 'Tabs and Collapsibles', link: '/schema-forms/tabs-and-collapsibles' },
                 { text: 'Field Slots', link: '/schema-forms/field-slots' },
                 { text: 'Dynamic Props', link: '/schema-forms/dynamic-props' },
                 { text: 'Expressions', link: '/schema-forms/expressions' },

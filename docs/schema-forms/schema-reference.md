@@ -152,7 +152,9 @@ A section's component gets the same props at the root of the form as inside anot
 
 A name is looked up in the form's config first (`components.card`), then among the components registered in the Vue app (`app.component('CardSection', …)`, named `'card-section'` or `'CardSection'`). `component` may also be the component itself. When nothing has the name, Enforma warns once and draws the section with the section component. The section's component gets the section's schema as props, but `component`.
 
-### Tabs and collapsible sections
+## Tabs and Collapsible Sections
+
+See them at work in the [Tabs and Collapsibles](/schema-forms/tabs-and-collapsibles) live example.
 
 Every preset draws two more kinds of section, with its UI library's own widgets (Enforma's plain ones in the default preset):
 
