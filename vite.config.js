@@ -1,7 +1,40 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
-import path from 'path'
+import path, { sep } from 'path'
+
+// Always the app's own
+const external = [
+  'vue',
+  '@encolajs/validator',
+  'zod',
+  'yup',
+  'valibot',
+  '@andreasnicolaou/typescript-expression-language',
+]
+
+// The UI libraries the presets draw with: the app's own, with its config and theme, never a
+// copy inside a preset
+const uiLibraries = [
+  /^primevue(\/|$)/,
+  /^@primevue\//,
+  /^@primeuix\//,
+  /^vuetify(\/|$)/,
+  /^quasar(\/|$)/,
+  /^reka-ui(\/|$)/,
+  /^@nuxt\/ui(\/|$)/,
+]
+
+/**
+ * Whether an import stays an import. The schema builder, in the main entry, brings its own
+ * PrimeVue, as it always has: an app without PrimeVue imports the main entry
+ */
+function isExternal(id, importer) {
+  if (external.includes(id)) return true
+  if (!uiLibraries.some((library) => library.test(id))) return false
+  const path = (importer || '').split(sep).join('/')
+  return !path.includes('/src/schema-builder/') && !path.includes('/node_modules/')
+}
 
 export default defineConfig({
   plugins: [vue(), dts()],
@@ -46,14 +79,7 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      external: [
-        'vue',
-        '@encolajs/validator',
-        'zod',
-        'yup',
-        'valibot',
-        '@andreasnicolaou/typescript-expression-language',
-      ],
+      external: isExternal,
       output: {
         globals: {
           vue: 'Vue',

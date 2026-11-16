@@ -41,7 +41,8 @@ const submitHandler = async function (formData, formController) {
         // you have access to the formController
         //---------------------------------------
         formController.setErrors(errorData.errors)
-        alert('Validation failed. Fix the errors and try again')
+        // go to the first of them, opening the tab holding it
+        formController.focusFirstError()
       } else {
         alert('Validation failed, but no error details provided.')
       }

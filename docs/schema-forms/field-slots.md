@@ -83,6 +83,8 @@ The slot provides the following props that you can use in your custom implementa
 - `formController`: The form controller instance that provides methods to manipulate the form state
 - `config`: The current form configuration
 
+The form checks a field its slot draws against the field's rules, as it checks a field whose component is drawn, from the moment the slot is drawn until it goes (the field hidden by its `if`). A refused submit goes to it when it fails first, scrolling what the slot draws into view and focusing the element whose `id` is the field's (`formController.getField(path)._id`), when there is one.
+
 ## Supported Field Types
 
 You can use field slots for any field type in your schema:

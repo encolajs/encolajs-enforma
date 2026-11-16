@@ -103,8 +103,8 @@ All schema types share these base properties:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `title` | string | No | Title of the section. A section that only groups fields (tabs, a field group) needs none |
-| `titleComponent` | string | No | Tag/component used for title |
+| `title` | string | No | Title of the section, drawn with its `titleComponent`. A section that only groups fields (a field group, a grid) needs none |
+| `titleComponent` | string | No | Tag/component drawing the title (`h2`, `h3`…). Without it the section shows no title. A collapsible section's title labels its toggle either way, in a heading only with it |
 | `titleProps` | object | No | Props to be passed to the title |
 | `description` | string | No | A line under the title, saying what the section is for |
 | `descriptionComponent` | string | No | Tag/component used for the description (`p` by default) |
@@ -151,6 +151,37 @@ const config = { components: { card: CardSection } }
 A section's component gets the same props at the root of the form as inside another section.
 
 A name is looked up in the form's config first (`components.card`), then among the components registered in the Vue app (`app.component('CardSection', …)`, named `'card-section'` or `'CardSection'`). `component` may also be the component itself. When nothing has the name, Enforma warns once and draws the section with the section component. The section's component gets the section's schema as props, but `component`.
+
+## Tabs and Collapsible Sections
+
+See them at work in the [Tabs and Collapsibles](/schema-forms/tabs-and-collapsibles) live example.
+
+Every preset draws two more kinds of section, with its UI library's own widgets (Enforma's plain ones in the default preset):
+
+- `component: 'tabs'`: its sub-sections are the tabs. Each tab is titled by its sub-section's `title` (its name without one), which the panel doesn't repeat; the panel starts with the sub-section's `description`. The tabs section's own fields and content are drawn above the tabs.
+- `component: 'collapsible'`: the section opens and closes with its title, its `description` under the title, read while it is closed.
+
+```js
+const schema = {
+  account: { type: 'section', component: 'tabs', props: { orientation: 'vertical' } },
+  profile: { type: 'section', section: 'account', title: 'Profile' },
+  name: { label: 'Name', section: 'profile', rules: 'required' },
+  billing: { type: 'section', section: 'account', title: 'Billing' },
+  iban: { label: 'IBAN', section: 'billing', rules: 'required' },
+  extra: { type: 'section', section: 'billing', component: 'collapsible', title: 'Company', props: { open: false } },
+  vat: { label: 'VAT number', section: 'extra' },
+}
+```
+
+| Prop (in `props`) | Section | Description |
+|-------------------|---------|-------------|
+| `active` | tabs | The sub-section whose tab is open at first. The first tab without it |
+| `orientation` | tabs | `'horizontal'` (by default) or `'vertical'`, the tabs beside their panels |
+| `open` | collapsible | Whether it is open at first. It is, unless `open` is `false` |
+
+A sub-section hidden by its `if` loses its tab; when the open tab hides, the first one opens. Every panel is drawn and the hidden ones are only hidden, so their fields are checked with the rest of the form (see [Which fields are checked](/core-concepts/validation#which-fields-are-checked)).
+
+Each tab and collapsible shows how many of the fields inside it have errors, as a badge that screen readers hear as "2 errors" (translated through the form's translation function, `'1 error'` and `'{count} errors'`). A refused submit opens the tabs and collapsibles holding the first field with errors, before going to it (see [Going to the first field with errors](/core-concepts/validation#going-to-the-first-field-with-errors)).
 
 ## Content Schema
 
@@ -220,8 +251,8 @@ const formProps = {
   },
   schema,
   // rules prop is not needed when using schema-based validation
-  customMessages: {
-    'age.gte': 'Must be at least 18 years old'
+  messages: {
+    'age:gte': 'Must be at least 18 years old'
   }
 }
 ```

@@ -55,7 +55,7 @@ Then configure Enforma with the Nuxt UI preset in a plugin. Nuxt UI components a
 // plugins/enforma.ts
 import { EnformaPlugin } from '@encolajs/enforma'
 import useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
-import { UInput, USelect, USwitch, UButton } from '#components'
+import { UInput, USelect, USwitch, UButton, UTabs, UCollapsible, UBadge } from '#components'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(EnformaPlugin)
@@ -67,6 +67,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     switch: USwitch,
     toggle: USwitch,
     button: UButton,
+    // for tabs and collapsible sections
+    tabs: UTabs,
+    collapsible: UCollapsible,
+    badge: UBadge,
   })
 })
 ```
@@ -105,6 +109,9 @@ import UInput from '@nuxt/ui/components/Input.vue'
 import USelect from '@nuxt/ui/components/Select.vue'
 import USwitch from '@nuxt/ui/components/Switch.vue'
 import UButton from '@nuxt/ui/components/Button.vue'
+import UTabs from '@nuxt/ui/components/Tabs.vue'
+import UCollapsible from '@nuxt/ui/components/Collapsible.vue'
+import UBadge from '@nuxt/ui/components/Badge.vue'
 import App from './App.vue'
 
 const app = createApp(App)
@@ -119,6 +126,10 @@ useNuxtUIPreset({
   switch: USwitch,
   toggle: USwitch,
   button: UButton,
+  // for tabs and collapsible sections
+  tabs: UTabs,
+  collapsible: UCollapsible,
+  badge: UBadge,
 })
 
 app.mount('#app')
@@ -212,6 +223,16 @@ The preset also configures styled button components:
 | EnformaRepeatableRemoveButton | Error ghost button with trash icon |
 | EnformaRepeatableMoveUpButton | Neutral ghost button with up arrow |
 | EnformaRepeatableMoveDownButton | Neutral ghost button with down arrow |
+
+## Tabs and Collapsible Sections
+
+Given `tabs`, `collapsible`, `button` and `badge`, the preset draws the schema's [tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections) with Nuxt UI:
+
+- `component: 'tabs'` with `UTabs`, `unmount-on-hide` turned off so the fields of the hidden tabs are checked; `props.orientation` goes to its `orientation`
+- `component: 'collapsible'` with `UCollapsible`, also kept mounted, opened and closed by a `UButton` holding its title
+- the count of errors of each with a `UBadge` (`color: 'error'`)
+
+Without them, Enforma's own tabs and collapsible are used. Change the props they get through the config's `pt.tabs.list` (UTabs: `color`, `variant`…), `pt.tabs.badge`, `pt.collapsible.toggle` and `pt.collapsible.badge`.
 
 ## Styling with Tailwind
 

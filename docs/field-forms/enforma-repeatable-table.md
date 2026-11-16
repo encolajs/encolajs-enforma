@@ -15,7 +15,7 @@ It's almost identical with the `EnformaRepeatable` component with the exception 
 
 ```vue
 <template>
-  <Enforma :data="formData" :submitHandler="submit">
+  <Enforma :data="formData" :validator="validator" :submitHandler="submit">
     <EnformaRepeatableTable 
       name="products" 
       :subfields="productFields"
@@ -29,6 +29,7 @@ It's almost identical with the `EnformaRepeatable` component with the exception 
 <script setup>
 import { ref } from 'vue';
 import { Enforma, EnformaRepeatableTable, EnformaSubmitButton } from '@encolajs/enforma';
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola';
 
 const formData = ref({
   products: [
@@ -40,21 +41,25 @@ const productFields = {
   name: {
     type: 'text',
     label: 'Product Name',
-    validators: ['required']
   },
   quantity: {
     type: 'number',
     label: 'Quantity',
-    validators: ['required', 'min:1'],
     props: { min: 1 }
   },
   price: {
     type: 'number',
     label: 'Price',
-    validators: ['required', 'min:0'],
     props: { min: 0, step: 0.01 }
   }
 };
+
+// Validation is set up for the whole form: `*` stands for each product
+const validator = createEncolaValidator({
+  'products.*.name': 'required',
+  'products.*.quantity': 'required|gte:1',
+  'products.*.price': 'required|gte:0',
+});
 
 function submit(data) {
   console.log('Form submitted:', data);

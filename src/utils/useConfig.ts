@@ -77,6 +77,26 @@ export interface FieldPassThroughConfig {
   section: ComponentProps
   schema: ComponentProps
 
+  // for EnformaTabs
+  tabs?: {
+    root?: ComponentProps
+    list?: ComponentProps
+    tab?: ComponentProps
+    badge?: ComponentProps
+    panel?: ComponentProps
+  }
+
+  // for EnformaCollapsible
+  collapsible?: {
+    root?: ComponentProps
+    header?: ComponentProps
+    title?: ComponentProps
+    toggle?: ComponentProps
+    badge?: ComponentProps
+    description?: ComponentProps
+    body?: ComponentProps
+  }
+
   submit: ComponentProps
   reset: ComponentProps
 
@@ -90,6 +110,11 @@ export interface FieldPassThroughConfig {
 export interface BehaviorConfig {
   validateOn: 'input' | 'change' | 'blur' | 'submit'
   cloneFn: (data: any) => any
+  /**
+   * Whether a refused submit goes to the first field with errors: opens the tabs and panels
+   * holding it, scrolls to it and focuses it (`focusFirstError()`). True by default
+   */
+  focusFirstError?: boolean
 
   [key: string]: any
 }
@@ -137,6 +162,10 @@ export interface ComponentsConfig {
   submitButton: any
   resetButton: any
   schema: any
+  /** A section drawn as tabs (`component: 'tabs'`): its sub-sections are the tabs */
+  tabs?: any
+  /** A section that opens and closes (`component: 'collapsible'`) */
+  collapsible?: any
 }
 
 /**

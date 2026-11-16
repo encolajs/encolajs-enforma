@@ -1,10 +1,11 @@
 // src/core/useEnformaRepeatable.ts
-import { computed, inject, onBeforeUnmount } from 'vue'
+import { computed, getCurrentInstance, inject, onBeforeUnmount } from 'vue'
 import { formControllerKey } from '@/constants/symbols'
 import { FormController } from '@/types'
 import { useFormConfig } from '@/utils/useFormConfig'
 import { FieldSchema } from '@/types'
 import applyTransformers from '@/utils/applyTransformers'
+import { hasErrorsAt, rootElementOf, useFocusTarget } from './useFocusTarget'
 
 /**
  * Repeatable field schema with subfields
@@ -76,6 +77,16 @@ export function useEnformaRepeatable(
       {} as Record<string, any>
     )
   )
+
+  // focusField(path) for the repeatable itself (an error on the list, such as too few items)
+  // opens the panels holding it and scrolls it into view: it has no input to focus. The panels
+  // count that error; its items' fields register themselves
+  const instance = getCurrentInstance()
+  useFocusTarget(formState, {
+    path: () => transformedFieldConfig.value.name,
+    element: () => rootElementOf(instance),
+    hasError: () => hasErrorsAt(formState, transformedFieldConfig.value.name),
+  })
 
   // Clean up on unmount
   onBeforeUnmount(() => {

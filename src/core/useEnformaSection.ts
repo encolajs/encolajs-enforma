@@ -71,7 +71,10 @@ export interface EnformaSectionState {
    * stands for all of its items' fields
    */
   fields: ComputedRef<string[]>
-  /** How many of those fields have errors: a tab's count */
+  /**
+   * How many of those fields have errors: a tab's count. A repeatable counts each of its
+   * items' fields that has errors, and one more for an error on the list itself
+   */
   errorCount: ComputedRef<number>
 }
 
@@ -430,14 +433,16 @@ export function useEnformaSection(
     void formCtrl.$isValidating?.value
     void formCtrl.$formVersion
     const errors = formCtrl.errors() as Record<string, string[]>
-    return insideFields.value.filter(({ path, repeatable }) =>
-      repeatable
-        ? Object.entries(errors).some(
-            ([errorPath, messages]) =>
-              errorPath.startsWith(`${path}.`) && messages.length > 0
-          )
-        : formCtrl.getField(path).$errors.value.length > 0
-    ).length
+    return insideFields.value.reduce((count, { path, repeatable }) => {
+      const own = formCtrl.getField(path).$errors.value.length > 0 ? 1 : 0
+      if (!repeatable) return count + own
+      // Each of its items' fields with errors, and the list itself
+      const items = Object.entries(errors).filter(
+        ([errorPath, messages]) =>
+          errorPath.startsWith(`${path}.`) && messages.length > 0
+      ).length
+      return count + own + items
+    }, 0)
   })
 
   return { schema, shown, items, fields, errorCount }

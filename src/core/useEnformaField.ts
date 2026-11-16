@@ -1,6 +1,7 @@
 // src/core/useEnformaField.ts
 import {
   computed,
+  getCurrentInstance,
   inject,
   mergeProps,
   onBeforeUnmount,
@@ -15,7 +16,6 @@ import {
   formContextKey,
   formControllerKey,
   formSchemaKey,
-  fieldRulesCollectorKey,
 } from '@/constants/symbols'
 import { FormController, FormSchema } from '@/types'
 import { useField } from '@/headless/useField'
@@ -24,6 +24,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
+import { elementById, rootElementOf, useFocusTarget } from './useFocusTarget'
 
 // Define the props interface
 export interface EnformaFieldProps {
@@ -112,7 +113,6 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // used, so a changed schema entry reaches the field
   const schema = inject<FormSchema | Ref<FormSchema>>(formSchemaKey, {})
   const formContext = inject<any>(formContextKey)
-  const fieldRulesCollector = inject<any>(fieldRulesCollectorKey, null)
   const { formConfig, getConfig } = useFormConfig()
 
   // Validate form context
@@ -151,32 +151,21 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Initialize field with useField composable
   const fieldController = useField(fieldProps.value.name, formCtrl, {})
 
-  // Register field rules and messages with parent form if collector is available
-  if (fieldRulesCollector && (originalProps.rules || originalProps.messages)) {
-    fieldRulesCollector.registerField(
-      originalProps.name,
-      originalProps.rules,
-      originalProps.messages
-    )
-  }
-
-  // focusField(path) focuses this field's input, found by its id
-  const focusRequested = ({ path }: { path: string }) => {
-    if (path !== fieldProps.value.name || typeof document === 'undefined')
-      return
-    const input = document.getElementById(fieldId.value) as HTMLElement | null
-    input?.focus()
-  }
-  formCtrl?.on('field_focus_requested', focusRequested)
+  // focusField(path) opens the panels holding this field, scrolls its wrapper (label, input,
+  // error) into view and focuses its input, found by its id
+  const instance = getCurrentInstance()
+  const wrapperElement = (): Element | null =>
+    rootElementOf(instance) ?? elementById(null, `wrapper-${fieldId.value}`)
+  useFocusTarget(formCtrl, {
+    path: () => fieldProps.value.name,
+    element: wrapperElement,
+    input: () => elementById(wrapperElement(), String(fieldId.value)),
+    hasError: () => !!fieldController.value.error,
+  })
 
   // Set up cleanup
   onBeforeUnmount(() => {
-    formCtrl?.off('field_focus_requested', focusRequested)
     formCtrl?.removeField(fieldProps.value.name)
-    // Unregister field rules and messages
-    if (fieldRulesCollector) {
-      fieldRulesCollector.unregisterField(originalProps.name)
-    }
   })
 
   // First, apply transformers to the field options

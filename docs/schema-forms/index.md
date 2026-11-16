@@ -13,11 +13,9 @@ Schema-based forms in Enforma allow you to define your entire form structure usi
 - **Server-driven UIs** - Forms can be defined on the server and rendered by the client
 - **Embedded Validation** - Define validation rules directly in the schema alongside field definitions
 
-## The Schema Component
+## Rendering a Schema
 
-Enforma provides a simple [EnformaSchema](/field-forms/enforma-schema.md) component for rendering schema-based forms. You don't really need to concern with it because it is automatically used if a form receives a `schema` prop.
-
-This is how you render a schema-based form
+Give the schema to `<Enforma>` through its `schema` prop:
 
 ```vue
 <template>
@@ -37,14 +35,12 @@ const validator = createEncolaValidator(formRules)
 ```
 
 ::: tip
-You can also define validation rules directly in the schema at the field level. See [Schema-Based Validation](/core-concepts/validation.md#field-level-validation) for more details.
+You can also define validation rules directly in the schema at the field level. See [Form-Level Validation](/core-concepts/validation.md#form-level-validation) for more details.
 :::
 
 ::: warning DEPRECATED
 The `:rules` prop is deprecated in v1.3.0. Use the `:validator` prop instead. See the [Migration Guide](/migration-guide-1_3) for details.
 :::
-
-> [!INFO] This component can be customized via the configuration
 
 ## Schema Features
 

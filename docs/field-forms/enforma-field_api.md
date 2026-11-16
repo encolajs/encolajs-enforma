@@ -23,8 +23,6 @@
 | `props` | `Object` | Additional props to pass to the wrapper element                                          |
 | `inputProps` | `Object` | Additional props to pass to the input component                                          |
 | `inputEvents` | `Object` | Event handlers for the input component (input, change, blur, focus, update:modelValue)   |
-| `rules` | `String` | Validation rules using pipe notation (e.g., `required\|email`)                            |
-| `messages` | `Object` | Custom error messages for validation rules (e.g., `{ required: "This field is required" }`) |
 | `section` | `String` | Name of the section this field belongs to (used in schema-based forms)                   |
 | `position` | `Number` | Position of the field within its section (used in schema-based forms)                    |
 

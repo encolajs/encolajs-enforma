@@ -86,4 +86,33 @@ describe("a section's errors", () => {
     await flushPromises()
     expect(section().attributes('data-errors')).toBe('0')
   })
+
+  it("counts each failing field of a repeatable's items, and an error on the list itself", async () => {
+    const wrapper = mountTestComponent(Enforma, {
+      data: { jobs: [{ title: '' }, { title: 'Cook' }, { title: '' }] },
+      schema: {
+        work: { type: 'section', component: 'counted' },
+        jobs: {
+          type: 'repeatable',
+          section: 'work',
+          subfields: {
+            title: { inputComponent: 'input', rules: 'required' },
+          },
+        },
+      } as FormSchema,
+      config: { components: { counted: Counted } },
+    })
+    await flushPromises()
+    const section = () => wrapper.find('.counted')
+
+    // @ts-expect-error vm is a form
+    await wrapper.vm.submit()
+    await flushPromises()
+    expect(section().attributes('data-errors')).toBe('2')
+
+    // @ts-expect-error vm is a form
+    wrapper.vm.setFieldErrors('jobs', ['Add at most two jobs'])
+    await flushPromises()
+    expect(section().attributes('data-errors')).toBe('3')
+  })
 })

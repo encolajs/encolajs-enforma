@@ -8,18 +8,18 @@
  * repeatable injects is provided here: the controller, the schema, the context and the form's
  * config, which is the global one with `config` on top.
  *
- * The controller is used as it is: its validator holds the rules, so the rules in the schema and
- * on `<EnformaField>`s are left to the host, and nothing here creates, submits or destroys it.
+ * The controller is used as it is: its validator holds the rules, so the rules in the schema are
+ * left to the host, and nothing here creates, submits or destroys it.
  */
 import {
   computed,
+  onBeforeUnmount,
   provide,
   toValue,
   type ComputedRef,
   type MaybeRefOrGetter,
 } from 'vue'
 import {
-  fieldRulesCollectorKey,
   formConfigKey,
   formContextKey,
   formControllerKey,
@@ -32,6 +32,7 @@ import {
   type DeepPartial,
   type EnformaConfig,
 } from '@/utils/useConfig'
+import { goToFirstError } from './useFocusTarget'
 
 export interface ProvideEnformaFormOptions {
   /** The form controller, from `useForm()`. */
@@ -59,13 +60,14 @@ export function provideEnformaForm(options: ProvideEnformaFormOptions): {
     computed(() => toValue(options.context) ?? {})
   )
   provide(formConfigKey, config)
-  // The host's validator holds the rules: a field gives its rules to nothing here, and no
-  // `<Enforma>` further up hears of them.
-  provide(fieldRulesCollectorKey, {
-    registerField() {},
-    unregisterField() {},
-  })
-  // Nor are the slots of an `<Enforma>` further up used for this form's fields
+  // The slots of an `<Enforma>` further up aren't used for this form's fields
   provide(formFieldSlotsKey, null)
+  // A refused submit goes to the first field with errors, as in an `<Enforma>`
+  const onValidationFail = () =>
+    goToFirstError(options.controller, config.value)
+  options.controller.on('validation_fail', onValidationFail)
+  onBeforeUnmount(() =>
+    options.controller.off('validation_fail', onValidationFail)
+  )
   return { config }
 }

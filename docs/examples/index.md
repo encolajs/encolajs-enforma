@@ -16,6 +16,7 @@ component).
 ## Feature Examples
 - [Fields with dynamic props](dynamic-props.md)
 - [Server-side errors on submit](server-side-errors.md)
+- [Tabs and collapsible sections](tabs-and-collapsibles.md)
 
 ## Preset Examples
 - [Form using the Vuetify preset](vuetify-preset.md)

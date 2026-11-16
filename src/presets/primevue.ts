@@ -1,5 +1,7 @@
 import { Component } from 'vue'
 import RepeatableAddButton from './primevue/RepeatableAddButton.vue'
+import PrimeVueTabs from './primevue/Tabs.vue'
+import PrimeVueCollapsible from './primevue/Collapsible.vue'
 import {
   InputText,
   Select,
@@ -7,6 +9,7 @@ import {
   DatePicker,
   ToggleSwitch,
   Button,
+  Badge,
 } from 'primevue'
 import { FieldController, FieldControllerExport, FormController } from '@/types'
 import {
@@ -91,6 +94,9 @@ export default function usePrimeVuePreset(
       // we're using the `pass-through` for most of the customization
       // this component is needed because of PrimeVue uses `label` for the prop
       repeatableAddButton: RepeatableAddButton,
+      // sections drawn as PrimeVue tabs and as a toggleable Panel
+      tabs: PrimeVueTabs,
+      collapsible: PrimeVueCollapsible,
     },
     /**
      * Pass-Through configuration
@@ -144,6 +150,17 @@ export default function usePrimeVuePreset(
           content: null,
           type: 'button',
         },
+      },
+      tabs: {
+        root: { class: 'primevue-tabs' },
+        tab: { class: 'flex items-center gap-2' },
+        badge: { as: Badge, severity: 'danger' },
+      },
+      collapsible: {
+        root: { class: 'primevue-collapsible' },
+        title: { class: 'flex items-center gap-2 m-0 text-base font-semibold' },
+        badge: { as: Badge, severity: 'danger' },
+        description: { class: 'm-0 text-sm' },
       },
     },
     /**

@@ -31,11 +31,6 @@ export const formSchemaKey = Symbol('formSchema')
 export const formFieldSlotsKey = Symbol('formFieldSlots')
 
 /**
- * Symbol for providing/injecting field rules collector
- */
-export const fieldRulesCollectorKey = Symbol('fieldRulesCollector')
-
-/**
  * Symbol for providing/injecting the Enforma plugin configuration
  */
 export const enformaConfigKey = Symbol('enformaConfig')
@@ -46,3 +41,15 @@ export const enformaConfigKey = Symbol('enformaConfig')
  * component's own properties (`$el`, `$props`, `$emit`…) to what the component exposes.
  */
 export const formControllerSelfKey = Symbol('formControllerSelf')
+
+/**
+ * Key of the form controller's method that registers a focus target: what answers
+ * `focusField(path)` for a path, and places the path on the page (an Enforma field)
+ */
+export const formFocusTargetsKey = Symbol('formFocusTargets')
+
+/**
+ * Symbol for providing/injecting the panel (a tab, a collapsible) around a field, with the
+ * panels around it
+ */
+export const enformaPanelScopeKey = Symbol('enformaPanelScope')

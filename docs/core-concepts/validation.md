@@ -15,7 +15,7 @@ Enforma's validation approach focuses on:
 
 Starting with v1.3.0, Enforma supports multiple validation libraries. Choose the one that best fits your project needs:
 
-- **@encolajs/validator** - Laravel-style validation rules with pipe notation (`required|email|min:8`)
+- **@encolajs/validator** - Laravel-style validation rules with pipe notation (`required|email|min_length:8`)
 - **Zod** - TypeScript-first schema validation with excellent type inference
 - **Yup** - Object schema validation with powerful conditional logic
 - **Valibot** - Lightweight, modular validation library for optimal bundle size
@@ -57,15 +57,43 @@ const form = useForm(formData, validator)
 
 A form checks the fields it has a state for: those whose component is mounted, and those the form was asked about (`validateField(path)`, `getField(path)`). A field's state goes with its component when it unmounts. So `validate()` and `submit()` don't check a field whose component never mounts, or no longer is: a field hidden by its `if`, but also one inside a closed tab or a collapsed panel whose content unmounts.
 
-Keep the content of tabs and panels mounted, and hide it (`v-show`, the `hidden` attribute, CSS), so their fields are checked with the rest of the form. A kit's section component drawing tabs (see [Custom Section Components](/extensibility/custom-components#custom-section-components)) renders every panel and shows one.
+Keep the content of tabs and panels mounted, and hide it (`v-show`, the `hidden` attribute, CSS), so their fields are checked with the rest of the form. The tabs and collapsible sections the presets draw (see [Tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections)) do. A UI library's tabs or accordion of your own may unmount hidden content by default: turn that off (Nuxt UI's and Reka UI's `unmount-on-hide`, Vuetify's `eager`, PrimeVue's `lazy` left off).
+
+### Going to the first field with errors
+
+When a submit is refused, the form goes to the first field with errors: it opens the tabs and collapsibles holding it, the outermost first, scrolls the field (its label, input and error) to the middle of the view, and focuses its input. It goes after the `validation_fail` listeners have heard of it.
+
+"First" is first on the page: the fields are taken in the order they are on the page, the schema's order standing in for those not on it. `validation_fail`'s `paths` follow the same order.
+
+The scroll is smooth, unless the user asks for less motion (`prefers-reduced-motion`). A header that stays at the top of the page can cover the field: give the fields room under it with CSS.
+
+```css
+.enforma-field-wrapper { scroll-margin-top: 4rem; }
+```
+
+To leave the page as it is, turn it off for every form, or for one in its `config`:
+
+```js
+app.use(EnformaPlugin, { behavior: { focusFirstError: false } })
+```
+
+Errors set by your code, such as the server's (`setErrors()`), don't move the page. Go to the first of them with `focusFirstError()`, which says whether there was one:
+
+```js
+formController.setErrors(response.errors)
+formController.focusFirstError()
+```
+
+`focusField(path)` goes to one field the same way. Both say whether something on the page answered: a path no field on the page has is skipped by `focusFirstError()`.
+
+Tabs and panels of your own open too, when their content is wrapped in an `<EnformaPanel>` (see [Panels of your own](/extensibility/custom-components#panels-of-your-own)). In a headless form, which draws its own inputs, the controller emits `field_focus_requested` with the path: a listener showing the field sets `handled` to `true` on the event, so `focusField()` says it was found.
 
 ### Form-Level Validation
 
 Enforma supports validation at multiple levels:
 
 1. **Form-level validation** - Validator passed to the form component
-2. **Field-level validation** - Rules specified on individual fields
-3. **Schema-level validation** - Rules defined in form schemas
+2. **Schema-level validation** - Rules defined on the fields of the form's schema (`rules`, `messages`), which the form reads
 
 **Using with form components:**
 
@@ -87,13 +115,13 @@ const formData = {
 const validator = createEncolaValidator(
   {
     email: 'required|email',
-    password: 'required|min:8|same_as:@password_confirmation',
+    password: 'required|min_length:8|same_as:@password_confirmation',
     password_confirmation: 'required'
   },
   {
-    'email.required': 'Please provide your email address',
-    'password.min': 'Password must be at least 8 characters',
-    'password.same_as': 'Passwords must match',
+    'email:required': 'Please provide your email address',
+    'password:min_length': 'Password must be at least 8 characters',
+    'password:same_as': 'Passwords must match',
   }
 )
 
@@ -104,40 +132,9 @@ const formProps = {
 </script>
 ```
 
-### Field-Level Validation
-
-You can specify validation rules directly on individual `<EnformaField>` components:
-
-```vue
-<template>
-  <Enforma :data="formData" :submitHandler="submit">
-    <EnformaField
-      name="email"
-      label="Email"
-      inputComponent="input"
-      rules="required|email"
-      :messages="{
-        required: 'Email is required',
-        email: 'Please enter a valid email address'
-      }"
-    />
-    <EnformaField
-      name="phone"
-      label="Phone"
-      inputComponent="input"
-      rules="required|phone"
-      :messages="{
-        required: 'Phone number is required',
-        phone: 'Please enter a valid phone number'
-      }"
-    />
-  </Enforma>
-</template>
-```
-
 ### Custom Messages
 
-Customize error messages by passing a second parameter to `createEncolaValidator`:
+Customize error messages by passing a second parameter to `createEncolaValidator`. Each key is a field's path and a rule's name, joined by a colon (`'email:required'`); `*` stands for any item of a list (`'jobs.*.title:required'`):
 
 ```vue
 <script setup>
@@ -149,9 +146,9 @@ const validator = createEncolaValidator(
     password: 'required|min_length:8'
   },
   {
-    'email.required': 'Please enter your email address',
-    'email.email': 'Please enter a valid email',
-    'password.min_length': 'Password must be at least 8 characters'
+    'email:required': 'Please enter your email address',
+    'email:email': 'Please enter a valid email',
+    'password:min_length': 'Password must be at least 8 characters'
   }
 )
 </script>
@@ -206,7 +203,7 @@ EncolaJS Validator supports validators that reference other field values using t
 
 ```js
 const validator = createEncolaValidator({
-  password: 'required|min:8|same_as:@password_confirmation',
+  password: 'required|min_length:8|same_as:@password_confirmation',
   password_confirmation: 'required'
 })
 ```

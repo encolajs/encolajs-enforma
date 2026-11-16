@@ -1,7 +1,9 @@
 import { Component } from 'vue'
 import Field from '@/presets/quasar/Field.vue'
+import QuasarTabs from '@/presets/quasar/Tabs.vue'
+import QuasarCollapsible from '@/presets/quasar/Collapsible.vue'
 import { FieldControllerExport, FormController } from '@/types'
-import { QInput, QSelect, QToggle, QBtn } from 'quasar'
+import { QInput, QSelect, QToggle, QBtn, QBadge } from 'quasar'
 import {
   DeepPartial,
   EnformaConfig,
@@ -56,8 +58,10 @@ function setQuasarSpecificProps(
   // Setup Quasar-specific props
   fieldProps.inputProps = fieldProps.inputProps || {}
 
-  // Ensure we have an id for the field
+  // Ensure we have an id for the field. QInput gives its native input the id in `for`, which
+  // the label, the ARIA attributes and focusField() point at
   fieldProps.inputProps.id = field.value.id
+  fieldProps.inputProps.for = field.value.id
 
   // Set modelValue for v-model binding
   fieldProps.inputProps.modelValue = field.value.value
@@ -163,12 +167,24 @@ export default function useQuasarPreset(
           color: 'info',
         },
       },
+      tabs: {
+        root: { class: 'quasar-tabs' },
+        list: { class: 'text-primary', align: 'left' },
+        badge: { as: QBadge, color: 'negative', floating: true },
+      },
+      collapsible: {
+        root: { class: 'quasar-collapsible' },
+        badge: { as: QBadge, color: 'negative', class: 'q-ml-sm' },
+      },
     },
     /**
      * Default components to be used inside Enforma forms
      */
     components: {
       field: Field,
+      // sections drawn as Quasar tabs and as an expansion item
+      tabs: QuasarTabs,
+      collapsible: QuasarCollapsible,
     },
     /**
      * Functions to transform props of Enforma components before rendering

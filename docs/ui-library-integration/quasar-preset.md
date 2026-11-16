@@ -116,5 +116,13 @@ The preset also includes styled button components:
 | EnformaRepeatableMoveUpButton | QBtn (icon="arrow_upward") |
 | EnformaRepeatableMoveDownButton | QBtn (icon="arrow_downward") |
 
+## Tabs and Collapsible Sections
+
+The preset draws the schema's [tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections) with Quasar:
+
+- `component: 'tabs'` with `QTabs` (`vertical` for `props.orientation: 'vertical'`, beside the panels). `QTabPanels` draws the open panel only, so the preset draws the panels itself, all of them, one shown: the fields of the hidden tabs are checked
+- `component: 'collapsible'` with a `QExpansionItem`, its description as the item's caption
+- the count of errors of each with a `QBadge` (`color: 'negative'`)
+
 > [!NOTE]
 > This preset takes advantage of Quasar's UI components and styling conventions. If you need to customize it further, you can modify the preset files or create your own custom components based on them.

@@ -15,6 +15,8 @@ import EnformaRepeatableMoveDownButton from '@/core/EnformaRepeatableMoveDownBut
 import EnformaSubmitButton from '@/core/EnformaSubmitButton.vue'
 import EnformaResetButton from '@/core/EnformaResetButton.vue'
 import EnformaSchema from '@/core/EnformaSchema.vue'
+import EnformaTabs from '@/core/EnformaTabs.vue'
+import EnformaCollapsible from '@/core/EnformaCollapsible.vue'
 import { deepMerge } from '@/utils/configUtils'
 
 /**
@@ -110,6 +112,22 @@ export default function useDefaultPreset(
       section: {
         class: 'enforma-section',
       },
+      tabs: {
+        root: { class: 'enforma-tabs' },
+        list: { class: 'enforma-tabs-list' },
+        tab: { class: 'enforma-tab' },
+        badge: { class: 'enforma-error-badge' },
+        panel: { class: 'enforma-tabs-panel' },
+      },
+      collapsible: {
+        root: { class: 'enforma-collapsible' },
+        header: { class: 'enforma-collapsible-header' },
+        title: { class: 'enforma-collapsible-title' },
+        toggle: { class: 'enforma-collapsible-toggle' },
+        badge: { class: 'enforma-error-badge' },
+        description: { class: 'enforma-collapsible-description' },
+        body: { class: 'enforma-collapsible-body' },
+      },
       submit: {
         content: 'Submit',
         loadingContent: 'Submitting...',
@@ -131,6 +149,8 @@ export default function useDefaultPreset(
       submitButton: EnformaSubmitButton,
       resetButton: EnformaResetButton,
       schema: EnformaSchema,
+      tabs: EnformaTabs,
+      collapsible: EnformaCollapsible,
       ...options.components,
     },
   }

@@ -1,8 +1,9 @@
 <template>
   <div v-bind="mergeProps($attrs, getPassThroughProps('pt.section'))">
+    <!-- A section without a titleComponent shows no title: a group of fields, a grid -->
     <component
       :is="section.titleComponent"
-      v-if="section.title"
+      v-if="section.title && section.titleComponent"
       v-bind="section.titleProps"
     >
       {{ section.title }}

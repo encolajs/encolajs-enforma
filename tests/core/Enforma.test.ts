@@ -11,7 +11,6 @@ import {
   formContextKey,
   formConfigKey,
   formSchemaKey,
-  fieldRulesCollectorKey,
 } from '../../src/constants/symbols'
 import { mountTestComponent } from '../utils/testSetup'
 
@@ -368,91 +367,11 @@ describe('Enforma', () => {
     expect(headlessForm.props().validator.validate).toBeDefined()
   })
 
-  it('collects and merges field-level rules and messages', async () => {
-    const data = { email: '', name: '', phone: '' }
-    const submitHandler = vi.fn()
-
-    // Test component that includes EnformaField components with field-level validation
-    const TestComponent = {
-      name: 'TestComponent',
-      template: `
-        <Enforma :data="data" :submit-handler="submitHandler">
-          <EnformaField 
-            name="email" 
-            label="Email" 
-            rules="required|email"
-            :messages="{ required: 'Email is required', email: 'Invalid email format' }"
-          />
-          <EnformaField 
-            name="name" 
-            label="Name" 
-            rules="required|min:2"
-            :messages="{ required: 'Name is required', min: 'Name must be at least 2 characters' }"
-          />
-          <EnformaField 
-            name="phone" 
-            label="Phone"
-          />
-        </Enforma>
-      `,
-      props: ['data', 'submitHandler'],
-      components: {
-        Enforma,
-        EnformaField,
-      },
-    }
-
-    const wrapper = mount(TestComponent, {
-      props: {
-        data,
-        submitHandler,
-      },
-      global: {
-        components: {
-          SubmitButton: SubmitButtonStub,
-          ResetButton: ResetButtonStub,
-        },
-      },
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    // Get the HeadlessForm component
-    const headlessForm = wrapper.findComponent(HeadlessForm)
-
-    // Verify that field-level rules were collected and merged
-    const effectiveRules = headlessForm.props().rules
-    expect(effectiveRules).toHaveProperty('email', 'required|email')
-    expect(effectiveRules).toHaveProperty('name', 'required|min:2')
-    expect(effectiveRules).not.toHaveProperty('phone') // No rules for phone field
-
-    // Verify that field-level messages were collected and merged (flat format)
-    const effectiveMessages = headlessForm.props().customMessages
-    expect(effectiveMessages).toHaveProperty(
-      'email:required',
-      'Email is required'
-    )
-    expect(effectiveMessages).toHaveProperty(
-      'email:email',
-      'Invalid email format'
-    )
-    expect(effectiveMessages).toHaveProperty(
-      'name:required',
-      'Name is required'
-    )
-    expect(effectiveMessages).toHaveProperty(
-      'name:min',
-      'Name must be at least 2 characters'
-    )
-    expect(effectiveMessages).not.toHaveProperty('phone:required') // No messages for phone field
-  })
-
-  it('gives precedence to form-level rules over field-level rules', async () => {
+  it("takes its rules and messages from the form, a field's being ignored", async () => {
     const data = { email: '' }
     const submitHandler = vi.fn()
-    const formRules = { email: 'required|min:5' } // Form-level rule that should override field-level
-    const formMessages = { 'email:required': 'Form-level required message' } // Form-level message in flat format
+    const formRules = { email: 'required|min:5' }
+    const formMessages = { 'email:required': 'Form-level required message' }
 
     const TestComponent = {
       name: 'TestComponent',
@@ -494,15 +413,8 @@ describe('Enforma', () => {
     // Get the HeadlessForm component
     const headlessForm = wrapper.findComponent(HeadlessForm)
 
-    // Verify that form-level rules take precedence
-    const effectiveRules = headlessForm.props().rules
-    expect(effectiveRules.email).toBe('required|min:5') // Form-level rule should win
-
-    // Verify that form-level messages take precedence but field-level messages are still available
-    const effectiveMessages = headlessForm.props().customMessages
-    expect(effectiveMessages['email:required']).toBe(
-      'Form-level required message'
-    ) // Form-level should win
-    expect(effectiveMessages['email:email']).toBe('Invalid email') // Field-level should still be available if not overridden
+    // Validation is set up for the whole form: the field's rules and messages aren't used
+    expect(headlessForm.props().rules).toEqual(formRules)
+    expect(headlessForm.props().customMessages).toEqual(formMessages)
   })
 })

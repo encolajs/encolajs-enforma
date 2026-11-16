@@ -10,6 +10,28 @@ What changes:
 - A field with `section: null` (or empty) is now rendered at the root. It used to be rendered nowhere.
 - `<EnformaSchema>` renders the root as one section, `default`, so the root sections are inside its element rather than beside it, and their component gets all their keys as props, as a sub-section's does, rather than only `name`.
 
+## `EnformaField` takes no rules or messages
+
+Validation is set up for the whole form: a validator, `<Enforma>`'s `rules` and `messages`, or the rules in its schema. The `rules` and `messages` props of `<EnformaField>` are no longer read, and `fieldRulesCollectorKey` is no longer exported. They were read after the form had made its validator, so a field's rules were never checked: move them to the form.
+
+```vue
+<!-- Before -->
+<Enforma :data="data">
+  <EnformaField name="email" rules="required|email" :messages="{ email: 'Invalid email' }" />
+</Enforma>
+
+<!-- After -->
+<Enforma :data="data" :rules="{ email: 'required|email' }" :messages="{ 'email:email': 'Invalid email' }">
+  <EnformaField name="email" />
+</Enforma>
+```
+
+A field of the schema keeps its `rules` and `messages`: the form reads them from the schema.
+
+## A refused submit goes to the first field with errors
+
+A refused submit used to leave the page as it was. It now goes to the first field with errors: it opens the tabs and collapsibles holding it, scrolls it into view and focuses its input (see [Going to the first field with errors](https://encolajs.com/enforma/core-concepts/validation#going-to-the-first-field-with-errors)). To keep the page where it is, set `behavior.focusFirstError: false` in the plugin's options or in a form's `config`.
+
 ## `useGlobalEvents` and `globalFormEmitter` are removed
 
 Since 1.6.0, `<Enforma>` and `HeadlessForm` no longer emitted on `globalFormEmitter`; only a `useForm()` made with `useGlobalEvents: true` did. Both are now gone: every form has its own emitter. Listen to a form's events on the form itself (`@submit_success`, `@field_changed`…) or on its controller (`formController.on(…)`).
@@ -193,8 +215,8 @@ const form = useForm(data, createEncolaValidator({
 <script setup>
 const form = useForm(data, rules, {
   customMessages: {
-    'email.required': 'Please enter your email',
-    'email.email': 'Email format is invalid'
+    'email:required': 'Please enter your email',
+    'email:email': 'Email format is invalid'
   }
 })
 </script>
@@ -208,8 +230,8 @@ import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 const validator = createEncolaValidator(
   { email: 'required|email' },
   {
-    'email.required': 'Please enter your email',
-    'email.email': 'Email format is invalid'
+    'email:required': 'Please enter your email',
+    'email:email': 'Email format is invalid'
   }
 )
 

@@ -219,9 +219,9 @@ const rules = {
 
 // Custom error messages
 const messages = {
-  'email.required': 'Email address is required when email is selected as contact method',
-  'phone.required': 'Phone number is required when phone is selected as contact method',
-  'experienceDetails.required': 'Please provide details about your experience',
+  'email:required': 'Email address is required when email is selected as contact method',
+  'phone:required': 'Phone number is required when phone is selected as contact method',
+  'experienceDetails:required': 'Please provide details about your experience',
   'relocationPreference.validation_failed': 'Please indicate your relocation preference'
 }
 
@@ -235,8 +235,9 @@ const submitHandler = (values) => {
 }
 </script>
 
-<style>
-.example .enforma-section {
+<style scoped>
+/* This form's sections only: a two-column grid */
+.example :deep(.enforma-section) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;

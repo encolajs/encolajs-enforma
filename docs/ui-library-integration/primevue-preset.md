@@ -94,6 +94,16 @@ The preset also includes a set of PrimeVue-styled components:
 | EnformaRepeatableMoveUpButton | Button (icon="pi pi-arrow-up") |
 | EnformaRepeatableMoveDownButton | Button (icon="pi pi-arrow-down") |
 
+## Tabs and Collapsible Sections
+
+The preset draws the schema's [tabs and collapsible sections](/schema-forms/schema-reference#tabs-and-collapsible-sections) with PrimeVue:
+
+- `component: 'tabs'` with `Tabs`, `TabList`, `Tab`, `TabPanels` and `TabPanel`, never `lazy`, so the fields of the hidden tabs are checked
+- `component: 'collapsible'` with a toggleable `Panel`, its header holding the title, the count of errors and the description
+- the count of errors of each with a `Badge` (`severity: 'danger'`)
+
+PrimeVue's tabs are horizontal only. With `props.orientation: 'vertical'` the preset lays them out itself: the tabs in a column beside the panels, without the bar under the active tab, the up and down arrows moving between them as left and right do.
+
 > [!INFO] 
 > These can be customized by changing the Enforma configuration **AFTER** applying the preset. <br>
 > Alternatively, you can make your own PrimeVue preset based on the one provided by the library

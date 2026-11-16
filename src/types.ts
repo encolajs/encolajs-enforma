@@ -102,6 +102,19 @@ export interface FieldControllerExport {
   id: string
 }
 
+/**
+ * What answers `focusField(path)` for a path, and places it on the page: an Enforma field.
+ * Registered with the form controller (@see formFocusTargetsKey)
+ */
+export interface FocusTarget {
+  /** The path it answers for, read as it's needed */
+  path(): string
+  /** Its element, which places it on the page; none before it mounts */
+  element(): Element | null | undefined
+  /** Opens what hides it, scrolls to it and focuses its input */
+  focus(): void | Promise<void>
+}
+
 /** Work registered with beginPending() */
 export interface PendingHandle {
   /** Stops counting the work; a second call does nothing */
@@ -193,8 +206,18 @@ export interface FormController {
   ): FormController
 
   // Focus/Blur handling
-  /** Asks the field at `path` to focus its input: Enforma's fields do (`field_focus_requested`) */
-  focusField(path: string): void
+  /**
+   * Asks the field at `path` to show itself: an Enforma field opens the tabs and panels
+   * holding it, scrolls into view and focuses its input. Also emits
+   * `field_focus_requested`. Whether something on the page answered
+   */
+  focusField(path: string): boolean
+
+  /**
+   * Goes to the first field with errors (focusField()), in the order they are on the page,
+   * skipping those nothing on the page answers for. Whether there was one
+   */
+  focusFirstError(): boolean
 
   setFieldFocused(path: string): void
 

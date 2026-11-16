@@ -80,7 +80,7 @@ You can add validation at the form level:
 
 <script setup>
 const validators = {
-  username: 'required|min:3',
+  username: 'required|min_length:3',
   email: 'required|email'
 };
 </script>

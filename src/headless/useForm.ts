@@ -1,4 +1,5 @@
 import {
+  FocusTarget,
   FormController,
   FormOptions,
   PendingHandle,
@@ -25,7 +26,11 @@ import moveArrayItem from '@/utils/moveArrayItem'
 import type { FormValidator } from '@/validators/types'
 import { NoopValidator } from '@/validators/NoopValidator'
 import { isFormValidator, isRulesObject } from '@/validators/helpers'
-import { enformaConfigKey, formControllerSelfKey } from '@/constants/symbols'
+import {
+  enformaConfigKey,
+  formControllerSelfKey,
+  formFocusTargetsKey,
+} from '@/constants/symbols'
 import { warnRulesDeprecation } from '@/utils/deprecationWarnings'
 
 export interface FieldController {
@@ -424,20 +429,53 @@ export function useForm<T extends object>(
     return false
   }
 
+  /** The focus targets of the form's fields (@see formFocusTargetsKey) */
+  const focusTargets = new Set<FocusTarget>()
+
+  /** The target answering for `path`: the last one registered for it */
+  function focusTargetFor(path: string): FocusTarget | undefined {
+    let found: FocusTarget | undefined
+    for (const target of focusTargets) {
+      if (target.path() === path) found = target
+    }
+    return found
+  }
+
+  /** The paths of the targets that have an element, in the order they are on the page */
+  function pathsInPageOrder(): string[] {
+    const placed: Array<{ path: string; element: Element }> = []
+    for (const target of focusTargets) {
+      const element = target.element()
+      if (element && typeof element.compareDocumentPosition === 'function') {
+        placed.push({ path: target.path(), element })
+      }
+    }
+    return placed
+      .sort((a, b) => {
+        if (a.element === b.element) return 0
+        // DOCUMENT_POSITION_FOLLOWING: b comes after a (also when a contains b)
+        return a.element.compareDocumentPosition(b.element) & 4 ? -1 : 1
+      })
+      .map(({ path }) => path)
+  }
+
   /**
-   * The fields that have errors, in the order they render (`fieldOrder`), a repeatable's
-   * items where the repeatable is; those it doesn't list last, in the order the form got them
+   * The fields that have errors, in the order they are on the page (those whose field has an
+   * element), then in the order they render (`fieldOrder`), a repeatable's items where the
+   * repeatable is; those neither lists last, in the order the form got them
    */
   function failingPaths(): string[] {
     const failing = Array.from(fieldManager.all().entries())
       .filter(([, state]) => state.$errors.value.length > 0)
       .map(([path]) => path)
-    const order = options.fieldOrder?.() ?? []
+    const order = [...pathsInPageOrder(), ...(options.fieldOrder?.() ?? [])]
     if (order.length === 0) return failing
+    // Where the path is listed, or else the repeatable holding it: an item's field placed on
+    // the page goes where it is, not where its repeatable starts
     const rank = (path: string) => {
-      const at = order.findIndex(
-        (listed) => path === listed || path.startsWith(`${listed}.`)
-      )
+      const exact = order.indexOf(path)
+      if (exact !== -1) return exact
+      const at = order.findIndex((listed) => path.startsWith(`${listed}.`))
       return at === -1 ? order.length : at
     }
     return failing
@@ -828,11 +866,29 @@ export function useForm<T extends object>(
         return fieldManager.has(path)
       },
 
-      focusField(path: string): void {
-        formEmitter.emit('field_focus_requested', {
+      focusField(path: string): boolean {
+        const request = {
           path,
-          formController: this,
-        })
+          formController: formController as FormController,
+          handled: false,
+        }
+        formEmitter.emit('field_focus_requested', request)
+        const target = focusTargetFor(path)
+        if (target) void target.focus()
+        return !!target || request.handled
+      },
+
+      focusFirstError(): boolean {
+        return failingPaths().some((path) => formController.focusField(path))
+      },
+
+      // Registers what answers focusField() for a path and places it on the page: an Enforma
+      // field. Gives the function that removes it
+      [formFocusTargetsKey](target: FocusTarget): () => void {
+        focusTargets.add(target)
+        return () => {
+          focusTargets.delete(target)
+        }
       },
 
       setFieldFocused(path: string): void {

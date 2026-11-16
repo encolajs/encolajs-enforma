@@ -43,6 +43,9 @@ import USelect from '@nuxt/ui/components/Select.vue'
 import USwitch from '@nuxt/ui/components/Switch.vue'
 import UTextarea from '@nuxt/ui/components/Textarea.vue'
 import UButton from '@nuxt/ui/components/Button.vue'
+import UTabs from '@nuxt/ui/components/Tabs.vue'
+import UCollapsible from '@nuxt/ui/components/Collapsible.vue'
+import UBadge from '@nuxt/ui/components/Badge.vue'
 import NuxtUIDatePicker from '../../examples/nuxtui/DatePicker.vue'
 
 const props = defineProps({
@@ -142,6 +145,9 @@ onMounted(() => {
       toggle: USwitch,
       datepicker: NuxtUIDatePicker,
       button: UButton,
+      tabs: UTabs,
+      collapsible: UCollapsible,
+      badge: UBadge,
     })
   }
 
