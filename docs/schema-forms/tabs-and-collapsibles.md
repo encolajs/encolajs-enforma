@@ -83,4 +83,6 @@ Each preset's page says what it needs: the Nuxt UI preset, for one, uses Nuxt UI
 ## Your Own
 
 - To draw `tabs` and `collapsible` sections with other widgets, register components of your own under those names: `useEnformaTabs()` and `useEnformaCollapsible()` give them what they need. See [Tabs and collapsibles of your own](/extensibility/custom-components#tabs-and-collapsibles-of-your-own).
-- In a form written by hand, wrap the content of your own tabs and panels in `<EnformaPanel>`: a refused submit opens them, and they count their errors. See [Panels of your own](/extensibility/custom-components#panels-of-your-own).
+- In a form written by hand, wrap the content of your own tabs and panels in `<EnformaPanel>`: a refused submit opens them, and they count their errors. See [Tabs and Collapsibles in forms with fields](/field-forms/tabs-and-collapsibles).
+
+A larger form, with a tab shown on a condition, a repeatable in a tab, tabs inside a tab and errors from the server, is in the [examples](/examples/tabs-and-collapsibles).

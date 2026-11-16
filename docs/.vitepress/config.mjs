@@ -67,6 +67,7 @@ export default defineConfig({
                 { text: 'EnformaField', link: '/field-forms/enforma-field' },
                 { text: 'EnformaRepeatable', link: '/field-forms/enforma-repeatable' },
                 { text: 'EnformaRepeatableTable', link: '/field-forms/enforma-repeatable-table' },
+                { text: 'Tabs and Collapsibles', link: '/field-forms/tabs-and-collapsibles' },
               ]
             },
             {
@@ -165,6 +166,7 @@ export default defineConfig({
           items: [
             { text: 'Dynamic Props', link: '/examples/dynamic-props' },
             { text: 'Server-side Errors', link: '/examples/server-side-errors' },
+            { text: 'Tabs and Collapsibles', link: '/examples/tabs-and-collapsibles' },
           ],
         },
         {

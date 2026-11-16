@@ -9,7 +9,6 @@
     :validator="validator"
     :schema="schema"
     :submit-handler="submitHandler"
-    class="example"
   />
 </template>
 

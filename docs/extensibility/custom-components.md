@@ -292,7 +292,7 @@ const { tabs, active, labelOf, panelFor } = useEnformaTabs(() => props.name, () 
 
 ### Panels of your own
 
-A panel is what hides fields until it is opened: a tab, a collapsible, an accordion's item. When its content is wrapped in an `<EnformaPanel>`, `focusField()` and a refused submit open it before going to a field inside it, the outermost panel first, and it counts the fields inside it that have errors. This works in hand-written forms as in a schema's sections.
+A panel is what hides fields until it is opened: a tab, a collapsible, an accordion's item. When its content is wrapped in an `<EnformaPanel>`, `focusField()` and a refused submit open it before going to a field inside it, the outermost panel first, and it counts the fields inside it that have errors. This works in hand-written forms as in a schema's sections; [Tabs and Collapsibles](/field-forms/tabs-and-collapsibles) in forms with fields walks through it with a live example.
 
 The component drawing the panels makes one for each with `useEnformaPanel({ reveal })`, `reveal` opening it, and reads its `errorCount`: a tab's header sits outside the tab's content, so the component holding both holds the panel.
 
