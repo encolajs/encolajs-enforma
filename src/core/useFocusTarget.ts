@@ -78,9 +78,37 @@ export function hasErrorsAt(
 }
 
 /**
- * Opens the panels, the outermost first, a tick after each so what they show is drawn, then
- * scrolls the element to the middle of the view (smoothly, unless the user asks for less
- * motion) and focuses the input without scrolling again
+ * Whether an element is hidden: it, or an element around it, has the `hidden` attribute (Reka
+ * UI's and Nuxt UI's closed panels) or `display: none` in its style (`v-show`)
+ */
+function isHidden(element: Element): boolean {
+  for (let node: Element | null = element; node; node = node.parentElement) {
+    if ((node as HTMLElement).hidden) return true
+    if ((node as HTMLElement).style?.display === 'none') return true
+  }
+  return false
+}
+
+/**
+ * Waits 16ms: a timer rather than an animation frame, which a browser doesn't give a tab in the
+ * background
+ */
+const nextFrame = (): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, 16))
+
+/**
+ * Waits until the element shows, 16ms at a time, for a second at most: a UI library's panel
+ * may show what it holds some ticks after it is opened
+ */
+async function shown(element: Element): Promise<void> {
+  const until = Date.now() + 1000
+  while (isHidden(element) && Date.now() < until) await nextFrame()
+}
+
+/**
+ * Opens the panels, the outermost first, a tick after each so what they show is drawn, waits
+ * until the element shows, then scrolls it to the middle of the view (smoothly, unless the
+ * user asks for less motion) and focuses the input without scrolling again
  */
 export async function revealAndFocus(
   panels: EnformaPanelState[],
@@ -93,6 +121,7 @@ export async function revealAndFocus(
   }
   const target = element()
   if (!target) return
+  if (isHidden(target)) await shown(target)
   const lessMotion =
     typeof window !== 'undefined' &&
     !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches

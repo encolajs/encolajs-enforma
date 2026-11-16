@@ -27,7 +27,7 @@ import { formFocusTargetsKey } from '@/constants/symbols'
 import type { FormController } from '@/types'
 
 // jsdom has no scrollIntoView: record what was scrolled to, and how
-let scrolls: Array<{ element: Element; options: any }>
+let scrolls: Array<{ element: Element; options: any; hiddenThen?: boolean }>
 
 beforeEach(() => {
   setGlobalConfig(DEFAULT_CONFIG)
@@ -37,7 +37,11 @@ beforeEach(() => {
     this: Element,
     options?: any
   ) {
-    scrolls.push({ element: this, options })
+    scrolls.push({
+      element: this,
+      options,
+      hiddenThen: !!this.closest('[hidden]'),
+    })
   })
 })
 
@@ -272,6 +276,40 @@ describe('panels', () => {
     form.value!.setFieldErrors('b', [])
     await flushPromises()
     expect(header('two')).toBe('Two 0')
+  })
+
+  it('waits for a panel that shows its content some time after it opens', async () => {
+    // As a UI library's tabs may: the content loses its `hidden` attribute later
+    const Slow = defineComponent({
+      setup() {
+        const open = ref(false)
+        const panel = useEnformaPanel({
+          reveal: () => {
+            setTimeout(() => (open.value = true), 50)
+          },
+        })
+        return () =>
+          h('div', { 'data-panel': 'slow', hidden: !open.value }, [
+            h(EnformaPanel, { panel }, () => [
+              h(EnformaField, { name: 'late' }),
+            ]),
+          ])
+      },
+    })
+    const { form } = mountWithContent(
+      { late: '' },
+      { late: 'required' },
+      () => [h(Slow)]
+    )
+    await flushPromises()
+
+    await form.value!.submit()
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
+    expect(focusedName()).toBe('late')
+    // Scrolled to once shown: a hidden element doesn't scroll, nor take focus in a browser
+    expect(scrolls).toHaveLength(1)
+    expect(scrolls[0].hiddenThen).toBe(false)
   })
 
   it('open the outermost first, and count the fields of the panels inside them', async () => {

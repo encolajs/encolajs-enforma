@@ -1,7 +1,7 @@
 // The Reka UI preset draws tabs and collapsible sections with Reka UI's tabs and collapsible:
 // every panel stays drawn (unmount-on-hide off), each counts its errors, and a refused submit
 // opens the one holding the first field with errors.
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import Enforma from '@/core/Enforma.vue'
 import { DEFAULT_CONFIG } from '@/constants/defaults'
@@ -83,7 +83,8 @@ describe('Reka UI preset: tabs and collapsibles', () => {
     expect(
       wrapper.findAll('[role="tabpanel"]')[1].attributes('hidden')
     ).toBeUndefined()
-    expect(focusedName()).toBe('iban')
+    // Reka UI shows the tab's content some ticks after it opens: the form waits for it
+    await vi.waitFor(() => expect(focusedName()).toBe('iban'))
     const badge = billing.find('.rekaui-error-badge')
     expect(badge.find('[aria-hidden="true"]').text()).toBe('2')
     expect(badge.text()).toContain('2 errors')
@@ -100,7 +101,8 @@ describe('Reka UI preset: tabs and collapsibles', () => {
     await flushPromises()
 
     expect(content().attributes('hidden')).toBeUndefined()
-    expect(focusedName()).toBe('vat')
+    // Reka UI shows the tab's content some ticks after it opens: the form waits for it
+    await vi.waitFor(() => expect(focusedName()).toBe('vat'))
   })
 
   it('opens and closes the collapsible with its title, its description outside the trigger', async () => {
