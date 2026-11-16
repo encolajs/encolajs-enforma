@@ -72,6 +72,29 @@ describe('EnformaSection', () => {
     expect(wrapper.find('h2').text()).toBe('Test Section')
   })
 
+  it('draws no title without a titleComponent', async () => {
+    const schema = createMockSchema({
+      grid: { type: 'section', section: 'root', title: 'A grid' },
+    })
+
+    const wrapper = mountTestComponent(
+      EnformaSection,
+      { name: 'grid' },
+      {
+        global: {
+          provide: {
+            [formSchemaKey]: schema,
+            [formControllerKey]: formState,
+          },
+        },
+      }
+    )
+
+    await flushPromises()
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('A grid')
+  })
+
   it('renders fields in the correct order based on position', async () => {
     const schema = createMockSchema({
       section1: {

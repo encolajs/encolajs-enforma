@@ -103,8 +103,8 @@ All schema types share these base properties:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `title` | string | No | Title of the section. A section that only groups fields (tabs, a field group) needs none |
-| `titleComponent` | string | No | Tag/component used for title |
+| `title` | string | No | Title of the section, drawn with its `titleComponent`. A section that only groups fields (a field group, a grid) needs none |
+| `titleComponent` | string | No | Tag/component drawing the title (`h2`, `h3`…). Without it the section shows no title. A collapsible section's title labels its toggle either way, in a heading only with it |
 | `titleProps` | object | No | Props to be passed to the title |
 | `description` | string | No | A line under the title, saying what the section is for |
 | `descriptionComponent` | string | No | Tag/component used for the description (`p` by default) |

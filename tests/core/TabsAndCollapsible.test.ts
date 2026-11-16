@@ -218,6 +218,28 @@ describe('tabs', () => {
     expect(tabs(wrapper)[0].attributes('aria-selected')).toBe('true')
   })
 
+  it('draws its own title with its titleComponent only', async () => {
+    const titled = mountForm(
+      {
+        ...schema,
+        account: { ...schema.account, title: 'Account', titleComponent: 'h3' },
+      },
+      { intro: '', name: '', iban: '', vat: '' }
+    )
+    await flushPromises()
+    expect(titled.wrapper.find('.enforma-tabs > h3').text()).toBe('Account')
+    titled.wrapper.unmount()
+
+    const untitled = mountForm(
+      { ...schema, account: { ...schema.account, title: 'Account' } },
+      { intro: '', name: '', iban: '', vat: '' }
+    )
+    await flushPromises()
+    expect(untitled.wrapper.find('.enforma-tabs').text()).not.toContain(
+      'Account'
+    )
+  })
+
   it('draws no tabs without sub-sections shown, but its own fields', async () => {
     const { wrapper } = mountForm(
       {
@@ -265,6 +287,23 @@ describe('collapsible', () => {
     expect(wrapper.find('.enforma-collapsible').attributes('data-state')).toBe(
       'closed'
     )
+  })
+
+  it('wraps its title in a heading with its titleComponent only, the title labelling its toggle either way', async () => {
+    const { wrapper } = mountForm(schema, { nickname: '' })
+    await flushPromises()
+    expect(wrapper.find('.enforma-collapsible-header h3').exists()).toBe(false)
+    expect(toggle(wrapper).text()).toContain('Extra')
+    wrapper.unmount()
+
+    const headed = mountForm(
+      { ...schema, extra: { ...schema.extra, titleComponent: 'h3' } },
+      { nickname: '' }
+    )
+    await flushPromises()
+    expect(
+      headed.wrapper.find('.enforma-collapsible-header h3 button').text()
+    ).toContain('Extra')
   })
 
   it('shows its description under the title, outside the body', async () => {

@@ -18,7 +18,7 @@
       <template #header>
         <div v-bind="getPassThroughProps('pt.collapsible.header')">
           <component
-            :is="section.titleComponent || 'h2'"
+            :is="section.titleComponent || 'div'"
             v-bind="
               mergeProps(
                 section.titleProps || {},

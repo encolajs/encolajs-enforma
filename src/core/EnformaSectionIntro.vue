@@ -1,7 +1,7 @@
 <template>
   <component
-    :is="section.titleComponent || 'h2'"
-    v-if="section.title && !hideTitle"
+    :is="section.titleComponent"
+    v-if="section.title && section.titleComponent && !hideTitle"
     v-bind="section.titleProps"
   >
     {{ section.title }}
@@ -16,8 +16,9 @@
 </template>
 
 <script setup lang="ts">
-// A section's title (`h2` unless its `titleComponent` names another) and description (`p`
-// unless its `descriptionComponent` does), for the tabs and collapsibles drawing a section
+// A section's title, drawn with its `titleComponent` (a section without one shows no title, as
+// EnformaSection's), and its description (`p` unless its `descriptionComponent` names another),
+// for the tabs drawing a section
 defineOptions({ name: 'EnformaSectionIntro' })
 
 defineProps<{
