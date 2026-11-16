@@ -7,6 +7,12 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Vuetify's components import their CSS, which only Vite can load
+    server: {
+      deps: {
+        inline: ['vuetify'],
+      },
+    },
     coverage: {
       include: [
         'src/**'

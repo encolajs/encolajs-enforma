@@ -1,7 +1,9 @@
 import { Component } from 'vue'
 import Field from '@/presets/vuetify/Field.vue'
+import VuetifyTabs from '@/presets/vuetify/Tabs.vue'
+import VuetifyCollapsible from '@/presets/vuetify/Collapsible.vue'
 import { FieldControllerExport, FormController } from '@/types'
-import { VTextField, VSelect, VSwitch, VBtn } from 'vuetify/components'
+import { VTextField, VSelect, VSwitch, VBtn, VChip } from 'vuetify/components'
 import {
   DeepPartial,
   EnformaConfig,
@@ -160,12 +162,39 @@ export default function useVuetifyPreset(
           color: 'info',
         },
       },
+      tabs: {
+        root: { class: 'vuetify-tabs' },
+        list: { color: 'primary' },
+        badge: {
+          as: VChip,
+          class: 'ms-2',
+          size: 'x-small',
+          color: 'error',
+          variant: 'flat',
+        },
+      },
+      collapsible: {
+        root: { class: 'vuetify-collapsible' },
+        header: { class: 'd-flex flex-column ga-1' },
+        title: { class: 'text-subtitle-1' },
+        badge: {
+          as: VChip,
+          class: 'ms-2',
+          size: 'x-small',
+          color: 'error',
+          variant: 'flat',
+        },
+        description: { class: 'text-body-2 text-medium-emphasis' },
+      },
     },
     /**
      * Default components to be used inside Enforma forms
      */
     components: {
       field: Field,
+      // sections drawn as Vuetify tabs and as an expansion panel
+      tabs: VuetifyTabs,
+      collapsible: VuetifyCollapsible,
     },
     /**
      * Functions to transform props of Enforma components before rendering
