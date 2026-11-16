@@ -223,6 +223,15 @@ const requiredIndicator = getConfig('pt.required.text', '*')
 </style>
 ```
 
+`focusField()` and a refused submit focus the field's input: the element with the field's id (`fieldController.id`), else the one the field's label names (`for`), else the first element in the field that takes focus. A field component whose input carries an id of its own, and has no label naming it, says which one it is:
+
+```js
+const input = ref(null) // <input ref="input">
+const { fieldController, props } = useEnformaField(originalProps, {
+  input: () => input.value,
+})
+```
+
 ### Custom Section Components
 
 A section of the schema can be drawn by a component of your own, which the section names with `component` (see [Section components](/schema-forms/schema-reference#section-components)). Register it in the form's config under that name, or in the Vue app:

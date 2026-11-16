@@ -61,6 +61,33 @@ export function elementById(
   return typeof document === 'undefined' ? null : document.getElementById(id)
 }
 
+// What takes focus in a field, the input first found being focused
+const FOCUSABLE = [
+  'input:not([type="hidden"]):not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  'button:not([disabled])',
+  '[contenteditable="true"]',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ')
+
+/**
+ * A field's input, found as a user would find it: the element with the field's `id`, else
+ * the one the field's label names (a kit's field may give its input an id of its own), else
+ * the first element in the field that takes focus
+ */
+export function inputIn(
+  root: Element | null | undefined,
+  id?: string | null
+): HTMLElement | null {
+  const byId = elementById(root, id)
+  if (byId) return byId
+  if (!root) return null
+  const label = root.querySelector<HTMLLabelElement>('label[for]')
+  const named = label?.htmlFor ? elementById(root, label.htmlFor) : null
+  return named ?? root.querySelector<HTMLElement>(FOCUSABLE)
+}
+
 /**
  * Whether the field at `path` has errors, without giving it a state where it has none (the
  * form would then check it). Read again as validate() ends and as array items move

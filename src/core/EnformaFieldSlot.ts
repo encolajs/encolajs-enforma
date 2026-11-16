@@ -12,8 +12,8 @@ import {
 import { formControllerKey } from '@/constants/symbols'
 import type { FormController } from '@/types'
 import {
-  elementById,
   hasErrorsAt,
+  inputIn,
   rootElementOf,
   useFocusTarget,
 } from './useFocusTarget'
@@ -42,7 +42,7 @@ export default defineComponent({
       element,
       input: () =>
         formCtrl?.hasField(props.name)
-          ? elementById(element(), formCtrl.getField(props.name)._id)
+          ? inputIn(element(), formCtrl.getField(props.name)._id)
           : null,
       hasError: () => hasErrorsAt(formCtrl, props.name),
     })

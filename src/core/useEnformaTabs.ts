@@ -11,8 +11,11 @@ import {
   type MaybeRefOrGetter,
   type WritableComputedRef,
 } from 'vue'
-import { generateId } from '@/utils/helpers'
-import { useEnformaSection, type EnformaSectionItem } from './useEnformaSection'
+import {
+  sectionIdBase,
+  useEnformaSection,
+  type EnformaSectionItem,
+} from './useEnformaSection'
 import { useEnformaPanel, type EnformaPanelState } from './useEnformaPanel'
 
 /** A tabs section, from `useEnformaTabs()`. Reactive */
@@ -86,7 +89,7 @@ export function useEnformaTabs(
     return panel
   }
 
-  const idBase = generateId('tabs', String(schema.value.name ?? ''))
+  const idBase = sectionIdBase('tabs', String(schema.value.name ?? ''))
   const idPart = (tab: string) => tab.replace(/[^a-zA-Z0-9_-]/g, '_')
 
   return {

@@ -92,11 +92,17 @@ class FieldManager {
   private _fieldScopes: Map<string, EffectScope>
   // Called with a field's state as it leaves its path: deleted, or moved to another one
   private _onLeave: (state: FieldController) => void
+  // Gives the id of a field made at a path
+  private _idFor: (path: string) => string
 
-  constructor(onLeave: (state: FieldController) => void = () => {}) {
+  constructor(
+    onLeave: (state: FieldController) => void = () => {},
+    idFor: (path: string) => string = (path) => generateId('field', path)
+  ) {
     this._fields = new Map<string, FieldController>()
     this._fieldScopes = new Map<string, EffectScope>()
     this._onLeave = onLeave
+    this._idFor = idFor
   }
 
   all(): Map<string, FieldController> {
@@ -133,7 +139,7 @@ class FieldManager {
           $isTouched: ref(false),
           $isValidating: ref(false),
           $isPending: ref(false),
-          _id: generateId('field', path),
+          _id: this._idFor(path),
         }
 
         // Field-specific reactive effects can be added here in the future
@@ -274,6 +280,18 @@ export function useForm<T extends object>(
   // The form's id, which is the <form>'s, set once
   const formId = options.id || makeFormId()
 
+  // The ids given to the form's fields. A field's id is the form's and its path, so the
+  // server and the browser make it alike. A row moved keeps its fields' ids: a field made
+  // later on a path whose id is taken gets a number after it
+  const fieldIds = new Set<string>()
+  const fieldIdFor = (path: string): string => {
+    const base = `${formId}__${path.replace(/\s/g, '_')}`
+    let id = base
+    for (let n = 2; fieldIds.has(id); n++) id = `${base}-${n}`
+    fieldIds.add(id)
+    return id
+  }
+
   // Create main form scope for form-level effects
   const formScope = effectScope()
 
@@ -329,7 +347,7 @@ export function useForm<T extends object>(
     cloneFn = config.behavior.cloneFn
     valuesCopy = cloneFn(values)
     // A field's work is dropped as the field leaves its path: removed, or its row moved
-    fieldManager = new FieldManager(dropFieldWork)
+    fieldManager = new FieldManager(dropFieldWork, fieldIdFor)
     // Use shallowRef for performance with large/complex data
     valuesRef = shallowRef(values)
     formVersion = ref(0) // Manual reactivity trigger

@@ -62,7 +62,7 @@ Work the form waits for before it submits, such as an upload. [See Pending Work]
 | `getField(path)` | `path: string` | `FieldController` | Gets a field's state |
 | `removeField(path)` | `path: string` | `void` | Removes a field from the form |
 | `hasField(path)` | `path: string` | `boolean` | Checks if a field exists |
-| `focusField(path)` | `path: string` | `boolean` | Goes to the field at `path`: opens the tabs and collapsibles holding it, scrolls it into view and focuses its input (Enforma's fields find it by its id). Says whether something on the page answered |
+| `focusField(path)` | `path: string` | `boolean` | Goes to the field at `path`: opens the tabs and collapsibles holding it, scrolls it into view and focuses its input: the element with the field's id, else the one its label names, else the first element in the field that takes focus. Says whether something on the page answered |
 | `focusFirstError()` | | `boolean` | Goes to the first field with errors, in the order they are on the page, as a refused submit does: after `setErrors()`, for instance. Says whether there was one |
 | `setFieldFocused(path)` | `path: string` | `void` | Marks a field as focused |
 | `setFieldBlurred(path)` | `path: string` | `void` | Marks a field as blurred |

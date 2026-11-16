@@ -17,7 +17,7 @@ A form component that provides no UI, just the form state and logic.
 | `submitHandler` | `Function` | No | Form submission handler |
 | `validateOn` | `String` | No | When to validate fields |
 | `fieldOrder` | `Function` | No | Gives the fields' paths in the order they render (`() => fieldsInRenderOrder(schema)`): `validation_fail`'s `paths` follow it, after the fields Enforma's components place on the page, which come in page order. `<Enforma>` gives its schema's |
-| `id` | `String` | No | The `<form>`'s id, read once, as the form is made. Without it, one is made up |
+| `id` | `String` | No | The `<form>`'s id, read once, as the form is made. Without it, one is made up: on Vue 3.5+ the same on the server and in the browser (give a server-rendered form an `id` on older Vue). Its fields' ids start with it (`<id>__<path>`) |
 | ~~`rules`~~ | ~~`Object`~~ | No | **DEPRECATED:** Use `validator` prop instead |
 | ~~`customMessages`~~ | ~~`Object`~~ | No | **DEPRECATED:** Use `validator` prop instead |
 

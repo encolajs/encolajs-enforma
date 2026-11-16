@@ -22,6 +22,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateCondition } from '@/utils/evaluateCondition'
 import { evaluateSchema } from '@/utils/evaluateSchema'
+import { generateId } from '@/utils/helpers'
 import EnformaField from './EnformaField.vue'
 import EnformaRepeatable from './EnformaRepeatable.vue'
 import EnformaRepeatableTable from './EnformaRepeatableTable.vue'
@@ -202,6 +203,18 @@ function kindOf(entry: Record<string, any>): EnformaSectionItemKind {
     return 'repeatable'
   }
   return 'field'
+}
+
+/**
+ * What the ids of a section's parts (a tab, a panel) start with: the form's id, the kind and
+ * the section's name, so the server and the browser make them alike. Call it in `setup()`
+ */
+export function sectionIdBase(kind: string, name: string): string {
+  const formCtrl = inject<FormController | null>(formControllerKey, null)
+  const formId = formCtrl?.$formId
+  return formId
+    ? `${formId}__${kind}-${name.replace(/\s/g, '_')}`
+    : generateId(kind, name)
 }
 
 /**

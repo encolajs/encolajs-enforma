@@ -16,7 +16,7 @@
 | `submitHandler`    | `Function`  | Function to be called on submit                                                                                    |
 | `config`           | `Object`    | Form configuration options                                                                                         |
 | `context`          | `Object`    | What expressions read as `context`: data and functions                                                             |
-| `id`               | `String`    | The `<form>`'s id, read once, as the form is made. Without it, one is made up. A button outside the form names the form by it |
+| `id`               | `String`    | The `<form>`'s id, read once, as the form is made. Without it, one is made up: on Vue 3.5+ the same on the server and in the browser (give a server-rendered form an `id` on older Vue). A button outside the form names the form by it, and its fields' ids start with it (`<id>__<path>`) |
 | `showResetButton`  | `Boolean` | To show the reset button (default `true`)                                                                          |
 | `showSubmitButton` | `Boolean` | To show the submit and reset buttons (default `true`). Hide them to place the buttons outside the form ([recipe](/recipes/form-in-modal.md)) |
 | ~~`rules`~~        | ~~`Object`~~ | **DEPRECATED:** Use `validator` prop instead                                                                      |

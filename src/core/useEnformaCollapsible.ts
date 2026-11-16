@@ -10,8 +10,7 @@ import {
   type MaybeRefOrGetter,
   type Ref,
 } from 'vue'
-import { generateId } from '@/utils/helpers'
-import { useEnformaSection } from './useEnformaSection'
+import { sectionIdBase, useEnformaSection } from './useEnformaSection'
 import { useEnformaPanel, type EnformaPanelState } from './useEnformaPanel'
 
 /** A collapsible section, from `useEnformaCollapsible()`. Reactive */
@@ -45,7 +44,7 @@ export function useEnformaCollapsible(
       open.value = true
     },
   })
-  const idBase = generateId('collapsible', String(schema.value.name ?? ''))
+  const idBase = sectionIdBase('collapsible', String(schema.value.name ?? ''))
   return {
     schema,
     title: computed(() =>
