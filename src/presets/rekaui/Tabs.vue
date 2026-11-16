@@ -16,9 +16,9 @@
       v-if="tabs.length > 0"
       :model-value="active ?? tabs[0].name"
       :orientation="orientation"
-      @update:model-value="(value: string | number) => (active = String(value))"
       :unmount-on-hide="false"
       :style="vertical ? { display: 'flex', gap: '1rem' } : undefined"
+      @update:model-value="(value: string | number) => (active = String(value))"
     >
       <TabsList
         v-bind="getPassThroughProps('pt.tabs.list')"
