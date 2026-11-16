@@ -6,6 +6,7 @@ import {
   PendingHandle,
 } from '@/types'
 import { debounce } from '@/utils/debounce'
+import { fieldValue } from '@/utils/fieldValue'
 import { pathUtils } from '@/utils/helpers'
 
 export type fieldValidateOnOption =
@@ -40,8 +41,11 @@ export function useField(
   // Create a reference to track focus state
   const isFocused = ref(false)
 
+  // The field's state, made as the field is: the form checks the fields it has a state for
+  form.getField(name)
+
   // Get initial value
-  const initialValue = form[name]
+  const initialValue = fieldValue(form, name)
 
   // Use shallowRef for complex objects, ref for primitives
   const isComplex =
@@ -53,7 +57,7 @@ export function useField(
 
   // Use watchEffect for automatic dependency tracking of form value changes
   watchEffect(() => {
-    const formValue = form[name]
+    const formValue = fieldValue(form, name)
     if (modelValue.value !== formValue) {
       if (isComplex) {
         // For complex objects, replace entire reference
@@ -71,7 +75,7 @@ export function useField(
     const isDirty = form[`${name}.$isDirty`]?.value
 
     // Only update form if the value has actually changed
-    if (form[name] !== currentValue) {
+    if (fieldValue(form, name) !== currentValue) {
       if (isDirty) {
         handleChange(currentValue, 'input')
       } else {
@@ -184,7 +188,7 @@ export function useField(
     // Get the latest field state
     const fieldController = getFieldController()
 
-    const value = form[name]
+    const value = fieldValue(form, name)
     const error =
       fieldController?.$errors.value.length > 0
         ? fieldController.$errors.value[0]

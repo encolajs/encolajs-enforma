@@ -33,6 +33,8 @@ The FormController is the object returned by the `useForm` composable, which is 
 | `reset()` | - | `void` | Resets form to initial state |
 | `commit(values?)` | `values?: object` | `void` | The current values, or `values`, become the saved ones: those `reset()` returns to and `$isChanged` compares with. Call it after a successful save, so Discard brings back what was saved. The fields' states clear, as `reset()` clears them. `values` only become the saved copy: set them on the form too to show them |
 
+The controller also gives a field's value as `controller[path]` (`controller.email`, `controller['address.city']`). For a field named like one of its methods (`track`, `commit`, `reset`, `values`, `submit`…) that gives the method: read values with `getFieldValue(path)`, which is right for every name.
+
 ## Validation Methods
 
 | Method | Parameters | Returns | Description |

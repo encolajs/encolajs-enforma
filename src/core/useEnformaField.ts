@@ -24,6 +24,7 @@ import { useFormConfig } from '@/utils/useFormConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import { evaluateSchema } from '@/utils/evaluateSchema'
 import isNonEmptyObject from '@/utils/isNonEmptyObject'
+import { fieldValue } from '@/utils/fieldValue'
 import { elementById, rootElementOf, useFocusTarget } from './useFocusTarget'
 
 // Define the props interface
@@ -127,7 +128,7 @@ export function useEnformaField(originalProps: EnformaFieldProps) {
   // Replace event listener with watchEffect for automatic dependency tracking
   watchEffect(() => {
     // Automatically track relevant form state changes
-    const fieldValue = formCtrl[originalProps.name]
+    const value = fieldValue(formCtrl, originalProps.name)
     const fieldErrors = formCtrl[`${originalProps.name}.$errors`]
     const fieldState = {
       isDirty: formCtrl[`${originalProps.name}.$isDirty`]?.value,

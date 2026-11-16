@@ -1,6 +1,7 @@
 import { computed, ComputedRef, onMounted, ref } from 'vue'
 
 import { FormController } from '@/types'
+import { fieldValue } from '@/utils/fieldValue'
 
 export interface RepeatableOptions {
   min?: number
@@ -43,7 +44,7 @@ export function useRepeatable(
     form.getField(name)
 
     // Initialize array or convert single value to array if needed
-    const currentValues = form[name]
+    const currentValues = fieldValue(form, name)
     if (currentValues === undefined) {
       // No values yet - initialize with empty array
       form[name] = []
@@ -101,8 +102,7 @@ export function useRepeatable(
   // Access array value through form proxy
   const value = computed(() => {
     // Explicitly depend on formVersion to ensure reactivity
-    const _ = form.$formVersion
-    const val = form[name]
+    const val = fieldValue(form, name)
     return Array.isArray(val) ? val : val ? [val] : []
   })
 
