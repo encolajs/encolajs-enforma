@@ -588,3 +588,62 @@ describe('the failing fields of a repeatable', () => {
     expect(failed).toEqual([['jobs.1.title', 'jobs.0.title']])
   })
 })
+
+describe("a field drawn by the form's slot", () => {
+  const schema = { city: { rules: 'required' }, name: { rules: 'required' } }
+
+  it('is checked untouched, and gone to first when it fails first', async () => {
+    const form = ref<FormController | null>(null)
+    mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            Enforma,
+            { ref: form, data: reactive({ city: '', name: '' }), schema },
+            { 'field(city)': () => h('select', { name: 'city' }) }
+          ),
+      }),
+      { attachTo: document.body }
+    )
+    await flushPromises()
+
+    expect(await form.value!.submit()).toBe(false)
+    await flushPromises()
+
+    expect(form.value!.errors()).toMatchObject({
+      city: ['This field is required'],
+    })
+    expect(scrolls[0].element.getAttribute('name')).toBe('city')
+  })
+
+  it('is no longer checked once its slot is gone', async () => {
+    const form = ref<FormController | null>(null)
+    const data = reactive({ city: '', name: 'Ana', moving: true })
+    mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            Enforma,
+            {
+              ref: form,
+              data,
+              schema: {
+                ...schema,
+                city: { ...schema.city, if: '${form.values().moving}' },
+              },
+            },
+            { 'field(city)': () => h('select', { name: 'city' }) }
+          ),
+      }),
+      { attachTo: document.body }
+    )
+    await flushPromises()
+    expect(form.value!.hasField('city')).toBe(true)
+
+    data.moving = false
+    await flushPromises()
+
+    expect(form.value!.hasField('city')).toBe(false)
+    expect(await form.value!.submit()).toBe(true)
+  })
+})
