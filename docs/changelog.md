@@ -2,6 +2,22 @@
 
 The changes of each version since 1.3.0, the latest first. A version marked ⚠️ changes something your forms may rely on: read its breaking changes before you upgrade.
 
+## 1.7.1
+
+_2026-11-16_
+
+### Fixes
+
+- **A field named like one of the form controller's methods has its value.** A field named `track`, `commit`, `reset`, `values` or after any other method got the method as its value: a "track" switch stayed on whatever the user did, and a text field showed the method's code. Fields read their values with `getFieldValue()`. `controller[path]` still gives the method for such a name: read values with `getFieldValue(path)`.
+- **A field that hides stays out of the form.** A field hidden by its `if` just after the user left it, or while its input had focus, came back to the form: its scheduled check, or the blur the browser fires as a focused input is removed, gave it a state again. `validate()` then checked a field nobody saw and refused the form.
+- **Server-rendered forms hydrate.** Field ids were random, so they differed between the server and the browser. A field's id is now the form's id and its path (`signup__address.city`); a form's made-up id is the same on both on Vue 3.5+. Tabs' and collapsibles' ids start with the form's id too.
+- **`focusField()` finds an input that has an id of its own.** It looks for the element with the field's id, then the one the field's label names, then the first element in the field that takes focus. `useEnformaField()` takes an `input` option for a field component that knows its input.
+- **Errors set by `setErrors()` stay until the field changes.** A server's error went as soon as the field was checked again, when the user left it without changing anything, or when a check that began before the reply ended after it. Errors set by code are now kept apart from the rules' own: they go as the field's value changes, or as the form is submitted again, reset or committed. A check of the rules shows its errors before them, and `validate()` says `false` while they show. `setFieldErrors(path, [])` still clears a field's errors.
+
+### Changes
+
+- Field ids are `<form id>__<path>` instead of `field_<path>_<random>`. A field made on a path whose id another field took (a row moved there) gets `-2`, `-3`… after it.
+
 ## 1.7.0 ⚠️
 
 _2026-11-16_
