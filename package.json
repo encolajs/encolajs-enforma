@@ -7,69 +7,144 @@
     "module": "dist/index.js",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
         },
         "./presets/primevue": {
-            "import": "./dist/presets/primevue.js",
-            "require": "./dist/presets/primevue.cjs"
+            "import": {
+                "types": "./dist/presets/primevue.d.ts",
+                "default": "./dist/presets/primevue.js"
+            },
+            "require": {
+                "types": "./dist/presets/primevue.d.cts",
+                "default": "./dist/presets/primevue.cjs"
+            }
         },
         "./presets/vuetify": {
-            "import": "./dist/presets/vuetify.js",
-            "require": "./dist/presets/vuetify.cjs"
+            "import": {
+                "types": "./dist/presets/vuetify.d.ts",
+                "default": "./dist/presets/vuetify.js"
+            },
+            "require": {
+                "types": "./dist/presets/vuetify.d.cts",
+                "default": "./dist/presets/vuetify.cjs"
+            }
         },
         "./presets/quasar": {
-            "import": "./dist/presets/quasar.js",
-            "require": "./dist/presets/quasar.cjs"
+            "import": {
+                "types": "./dist/presets/quasar.d.ts",
+                "default": "./dist/presets/quasar.js"
+            },
+            "require": {
+                "types": "./dist/presets/quasar.d.cts",
+                "default": "./dist/presets/quasar.cjs"
+            }
         },
         "./presets/rekaui": {
-            "import": "./dist/presets/rekaui.js",
-            "require": "./dist/presets/rekaui.cjs"
+            "import": {
+                "types": "./dist/presets/rekaui.d.ts",
+                "default": "./dist/presets/rekaui.js"
+            },
+            "require": {
+                "types": "./dist/presets/rekaui.d.cts",
+                "default": "./dist/presets/rekaui.cjs"
+            }
         },
         "./presets/nuxtui": {
-            "import": "./dist/presets/nuxtui.js",
-            "require": "./dist/presets/nuxtui.cjs"
+            "import": {
+                "types": "./dist/presets/nuxtui.d.ts",
+                "default": "./dist/presets/nuxtui.js"
+            },
+            "require": {
+                "types": "./dist/presets/nuxtui.d.cts",
+                "default": "./dist/presets/nuxtui.cjs"
+            }
         },
         "./presets/vuetify/Field": {
-            "types": "./dist/presets/vuetify/Field.vue.d.ts",
-            "import": "./dist/presets/vuetify/Field.js",
-            "require": "./dist/presets/vuetify/Field.cjs"
+            "import": {
+                "types": "./dist/presets/vuetify/Field.vue.d.ts",
+                "default": "./dist/presets/vuetify/Field.js"
+            },
+            "require": {
+                "types": "./dist/presets/vuetify/Field.vue.d.cts",
+                "default": "./dist/presets/vuetify/Field.cjs"
+            }
         },
         "./presets/quasar/Field": {
-            "types": "./dist/presets/quasar/Field.vue.d.ts",
-            "import": "./dist/presets/quasar/Field.js",
-            "require": "./dist/presets/quasar/Field.cjs"
+            "import": {
+                "types": "./dist/presets/quasar/Field.vue.d.ts",
+                "default": "./dist/presets/quasar/Field.js"
+            },
+            "require": {
+                "types": "./dist/presets/quasar/Field.vue.d.cts",
+                "default": "./dist/presets/quasar/Field.cjs"
+            }
         },
         "./presets/rekaui/Field": {
-            "types": "./dist/presets/rekaui/Field.vue.d.ts",
-            "import": "./dist/presets/rekaui/Field.js",
-            "require": "./dist/presets/rekaui/Field.cjs"
+            "import": {
+                "types": "./dist/presets/rekaui/Field.vue.d.ts",
+                "default": "./dist/presets/rekaui/Field.js"
+            },
+            "require": {
+                "types": "./dist/presets/rekaui/Field.vue.d.cts",
+                "default": "./dist/presets/rekaui/Field.cjs"
+            }
         },
         "./presets/nuxtui/Field": {
-            "types": "./dist/presets/nuxtui/Field.vue.d.ts",
-            "import": "./dist/presets/nuxtui/Field.js",
-            "require": "./dist/presets/nuxtui/Field.cjs"
+            "import": {
+                "types": "./dist/presets/nuxtui/Field.vue.d.ts",
+                "default": "./dist/presets/nuxtui/Field.js"
+            },
+            "require": {
+                "types": "./dist/presets/nuxtui/Field.vue.d.cts",
+                "default": "./dist/presets/nuxtui/Field.cjs"
+            }
         },
         "./validators/encola": {
-            "types": "./dist/validators/encolaValidator.d.ts",
-            "import": "./dist/validators/encola.js",
-            "require": "./dist/validators/encola.cjs"
+            "import": {
+                "types": "./dist/validators/encolaValidator.d.ts",
+                "default": "./dist/validators/encola.js"
+            },
+            "require": {
+                "types": "./dist/validators/encolaValidator.d.cts",
+                "default": "./dist/validators/encola.cjs"
+            }
         },
         "./validators/zod": {
-            "types": "./dist/validators/zod.d.ts",
-            "import": "./dist/validators/zod.js",
-            "require": "./dist/validators/zod.cjs"
+            "import": {
+                "types": "./dist/validators/zod.d.ts",
+                "default": "./dist/validators/zod.js"
+            },
+            "require": {
+                "types": "./dist/validators/zod.d.cts",
+                "default": "./dist/validators/zod.cjs"
+            }
         },
         "./validators/yup": {
-            "types": "./dist/validators/yup.d.ts",
-            "import": "./dist/validators/yup.js",
-            "require": "./dist/validators/yup.cjs"
+            "import": {
+                "types": "./dist/validators/yup.d.ts",
+                "default": "./dist/validators/yup.js"
+            },
+            "require": {
+                "types": "./dist/validators/yup.d.cts",
+                "default": "./dist/validators/yup.cjs"
+            }
         },
         "./validators/valibot": {
-            "types": "./dist/validators/valibot.d.ts",
-            "import": "./dist/validators/valibot.js",
-            "require": "./dist/validators/valibot.cjs"
+            "import": {
+                "types": "./dist/validators/valibot.d.ts",
+                "default": "./dist/validators/valibot.js"
+            },
+            "require": {
+                "types": "./dist/validators/valibot.d.cts",
+                "default": "./dist/validators/valibot.cjs"
+            }
         }
     },
     "types": "dist/index.d.ts",
@@ -95,7 +170,7 @@
         "version": "npm run format && git add -A src",
         "postversion": "git push && git push --tags",
         "type-check": "tsc --noEmit",
-        "check:package": "attw --pack . --profile esm-only --ignore-rules false-esm",
+        "check:package": "attw --pack . --profile node16",
         "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:coverage && npm run check:package"
     },
     "repository": {

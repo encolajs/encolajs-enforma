@@ -38,8 +38,8 @@ jobs:
       - name: Run tests
         run: npm run test:coverage
 
-      # Packs the package and checks its types resolve as an app would import them (issue #20).
-      # CommonJS consumers are not checked yet (false-esm, node16-cjs): issue #24
+      # Packs the package and checks its types are those of what an app imports or requires
+      # (issues #20 and #24). "moduleResolution": "node10" is not supported
       - name: Check the package's types
         run: npm run check:package
 

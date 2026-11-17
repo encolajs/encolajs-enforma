@@ -2,7 +2,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import path, { sep } from 'path'
-import { addImportExtensionsToEmitted } from './scripts/dtsImportExtensions.js'
+import { completeDeclarations } from './scripts/declarations.js'
+import pkg from './package.json'
 
 // Always the app's own
 const external = [
@@ -40,8 +41,11 @@ function isExternal(id, importer) {
 export default defineConfig({
   plugins: [
     vue(),
-    // the declarations' relative imports, completed for "moduleResolution": "node16" and "nodenext"
-    dts({ afterBuild: addImportExtensionsToEmitted }),
+    // the declarations' relative imports completed for "moduleResolution": "node16" and "nodenext",
+    // and their CommonJS twins (.d.cts) for the `require` conditions of package.json's exports
+    dts({
+      afterBuild: completeDeclarations({ root: __dirname, exports: pkg.exports }),
+    }),
   ],
   resolve: {
     alias: {
