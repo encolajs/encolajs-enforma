@@ -95,7 +95,8 @@
         "version": "npm run format && git add -A src",
         "postversion": "git push && git push --tags",
         "type-check": "tsc --noEmit",
-        "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:coverage"
+        "check:package": "attw --pack . --profile esm-only --ignore-rules false-esm",
+        "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:coverage && npm run check:package"
     },
     "repository": {
         "type": "git",
@@ -121,6 +122,7 @@
     },
     "homepage": "https://encolajs.com/enforma/",
     "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.5",
         "@encolajs/validator": "^1.3.3",
         "@eslint/js": "^9.21.0",
         "@testing-library/vue": "^8.1.0",

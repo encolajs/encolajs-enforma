@@ -38,6 +38,11 @@ jobs:
       - name: Run tests
         run: npm run test:coverage
 
+      # Packs the package and checks its types resolve as an app would import them (issue #20).
+      # CommonJS consumers are not checked yet (false-esm, node16-cjs): issue #24
+      - name: Check the package's types
+        run: npm run check:package
+
       # Optional: Upload coverage reports
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
