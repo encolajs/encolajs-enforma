@@ -2,6 +2,19 @@
 
 The changes of each version since 1.3.0, the latest first. A version marked ⚠️ changes something your forms may rely on: read its breaking changes before you upgrade.
 
+## 1.7.2
+
+_2026-11-17_
+
+### Fixes
+
+- **The types work under `"moduleResolution": "node16"` and `"nodenext"`**, which `tsc --init` sets up since TypeScript 5.9. The declarations imported each other without file extensions, which these modes can't resolve: `isPlainObject`, `resolveValue` and the other helpers were missing, and `Enforma`, `useForm`, `FormSchema`, the validators and almost everything else were `any`. Apps using `"moduleResolution": "bundler"` (Vite, Nuxt) already had the right types.
+- **CommonJS apps get types for what `require()` loads.** An app compiled to CommonJS under `node16` or `nodenext` was given the types of the ES module build: under `node16` TypeScript refused to import the package and the validators, and it found no types for the presets. Each entry now has declarations of its own for `require()`. A preset and a preset's `Field` are typed as what `require()` gives, the function and the component themselves, so importing them by default works.
+
+### Changes
+
+- Code that compiled only because those types were `any` may now report type errors.
+
 ## 1.7.1
 
 _2026-11-16_
