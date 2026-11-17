@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import path, { sep } from 'path'
+import { addImportExtensionsToEmitted } from './scripts/dtsImportExtensions.js'
 
 // Always the app's own
 const external = [
@@ -37,7 +38,11 @@ function isExternal(id, importer) {
 }
 
 export default defineConfig({
-  plugins: [vue(), dts()],
+  plugins: [
+    vue(),
+    // the declarations' relative imports, completed for "moduleResolution": "node16" and "nodenext"
+    dts({ afterBuild: addImportExtensionsToEmitted }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
