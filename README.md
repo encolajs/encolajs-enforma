@@ -152,6 +152,14 @@ For detailed usage, examples, and migration guides, see the [Validation document
 - [Official Documentation](https://encolajs.com/enforma/) - Complete guide and API reference
 - [Examples](https://encolajs.com/enforma/examples/) - Real-world examples and demos
 
+### Docs for AI Coding Agents
+
+The Enforma docs are available to coding agents (Claude Code, Cursor, Copilot, etc.) through [Context7](https://context7.com/encolajs/encolajs-enforma). With the [Context7 MCP server](https://github.com/upstash/context7) installed, add `use context7` to your prompt, or reference the library directly:
+
+```text
+Build a schema form with a repeatable list of addresses. use library /encolajs/encolajs-enforma for API and docs
+```
+
 ## Contributing
 
 We'd love your help improving @encolajs/enforma! Check out our [Contributing Guide](./CONTRIBUTING.md) to get started.

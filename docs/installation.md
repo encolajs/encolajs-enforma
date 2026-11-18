@@ -74,3 +74,13 @@ For more detailed information about configuring Enforma:
 
 - See [Configuration](/core-concepts/configuration.md) for a complete reference of all configuration options
 - Learn about [UI Presets](/ui-library-integration/index.md) to integrate with various UI libraries
+
+## Docs for AI Coding Agents
+
+The Enforma documentation is available to coding agents (Claude Code, Cursor, Copilot, etc.) through [Context7](https://context7.com/encolajs/encolajs-enforma), so they can work from the current docs instead of outdated training data.
+
+After [installing the Context7 MCP server](https://github.com/upstash/context7), add `use context7` to your prompt, or point the agent straight at Enforma with its library ID:
+
+```text
+Build a schema form with a repeatable list of addresses. use library /encolajs/encolajs-enforma for API and docs
+```
