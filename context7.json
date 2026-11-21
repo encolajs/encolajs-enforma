@@ -1,4 +1,33 @@
 {
+  "$schema": "https://context7.com/schema/context7.json",
   "url": "https://context7.com/encolajs/encolajs-enforma",
-  "public_key": "pk_QT2v7oC2hPfwzf2Wg68Ce"
+  "public_key": "pk_QT2v7oC2hPfwzf2Wg68Ce",
+  "projectTitle": "EncolaJS Enforma",
+  "description": "Vue 3 form library. Build forms with headless components (HeadlessForm, HeadlessField), field components (Enforma, EnformaField) or a schema object. Validation through @encolajs/validator, Zod, Yup or Valibot. UI presets for PrimeVue, Vuetify, Quasar, Reka UI and Nuxt UI. Repeatable fields and tables, sections, tabs, collapsibles, dynamic props, i18n.",
+  "excludeFolders": [
+    "src",
+    "tests",
+    "builder",
+    "scripts",
+    "coverage",
+    "dist",
+    "docs/node_modules",
+    "docs/public"
+  ],
+  "excludeFiles": [
+    "CONTRIBUTING.md",
+    "contribution-guide.md",
+    "structure.md",
+    "discord-community.md"
+  ],
+  "rules": [
+    "Import from '@encolajs/enforma', '@encolajs/enforma/presets/<kit>' and '@encolajs/enforma/validators/<encola|zod|yup|valibot>'. Never import from '@/...' paths: that alias exists only inside Enforma's own source.",
+    "Register the plugin with app.use(EnformaPlugin), then call the preset for the UI kit: usePrimeVuePreset(), useVuetifyPreset(), useQuasarPreset(), useRekauiPreset() or useNuxtUIPreset().",
+    "Give a form its validation through the validator prop of <Enforma> or <HeadlessForm>, built with createEncolaValidator, createZodValidator, createYupValidator or createValibotValidator. The rules prop is deprecated.",
+    "A schema is a flat object keyed by field path ('name', 'address.city'). Each entry has a type: 'field' (the default), 'repeatable', 'repeatable_table', 'section' or 'content'.",
+    "In a schema, a repeatable lists its fields in 'subfields', and an entry joins a section through its 'section' key.",
+    "A schema section shows its title only when it also has a titleComponent, for example titleComponent: 'h3'.",
+    "The 'rules' and 'messages' keys inside a schema work only with @encolajs/validator. With Zod, Yup or Valibot, build the validator separately and pass it to the form.",
+    "Validation rules for the items of a repeatable use a '*' wildcard path, for example 'addresses.*.street': 'required'."
+  ]
 }

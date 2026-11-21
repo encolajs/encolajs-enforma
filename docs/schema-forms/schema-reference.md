@@ -218,6 +218,8 @@ As an alternative to providing validation rules through the `rules` prop, Enform
 > The `rules` and `messages` attributes work only when using Encola Validator.
 > If you are using Zod, Yup or Valibot you have to pass the validator object to the form that you have to construct separately.
 > You might want to create your own `createXYZValidatorFromSchema()` function if the form schema is passed from the server as a JSON
+>
+> A form given a `validator` is checked by it alone: the schema's `rules` are left out, and Enforma warns about it in development.
 
 ### Defining Rules in Schema
 

@@ -84,3 +84,9 @@ After [installing the Context7 MCP server](https://github.com/upstash/context7),
 ```text
 Build a schema form with a repeatable list of addresses. use library /encolajs/encolajs-enforma for API and docs
 ```
+
+Enforma also ships an [agent skill](https://github.com/encolajs/encolajs-enforma/blob/master/skills/enforma/SKILL.md) covering setup, the form modes, validation and the common gotchas. Your agent loads it on its own when it works on your forms. Install it into Claude Code, Cursor, Codex, Copilot and other agents with [`npx skills`](https://github.com/vercel-labs/skills):
+
+```shell
+npx skills add encolajs/encolajs-enforma
+```

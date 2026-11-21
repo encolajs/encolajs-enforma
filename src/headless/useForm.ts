@@ -5,7 +5,6 @@ import {
   PendingHandle,
   ValidationRules,
 } from '@/types'
-import { useValidation } from '@/utils/useValidation'
 import {
   computed,
   Ref,
@@ -26,6 +25,7 @@ import moveArrayItem from '@/utils/moveArrayItem'
 import type { FormValidator } from '@/validators/types'
 import { NoopValidator } from '@/validators/NoopValidator'
 import { isFormValidator, isRulesObject } from '@/validators/helpers'
+import { validatorFromRules } from '@/validators/fromRules'
 import {
   enformaConfigKey,
   formControllerSelfKey,
@@ -334,21 +334,12 @@ export function useForm<T extends object>(
         // Show deprecation warning
         warnRulesDeprecation('useForm')
 
-        if (options.validatorFactory) {
-          validator = options.validatorFactory.make(validatorOrRules, {
-            ...(options.customMessages || {}),
-          })
-        } else if (enformaConfig?.createEncolaValidation) {
-          validator = enformaConfig.createEncolaValidation(
-            validatorOrRules,
-            options.customMessages
-          )
-        } else {
-          const validationFactory = useValidation().factory
-          validator = validationFactory.make(validatorOrRules, {
-            ...(options.customMessages || {}),
-          })
-        }
+        validator = validatorFromRules(
+          validatorOrRules,
+          options.customMessages,
+          enformaConfig,
+          options.validatorFactory
+        )
       }
     } else {
       validator = new NoopValidator()
