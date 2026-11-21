@@ -36,47 +36,35 @@ pnpm add @encolajs/enforma
 
 ```vue
 <template>
-  <HeadlessForm :schema="schema" v-model="formData">
-    <HeadlessField name="email" #default="{ field, error }">
-      <input v-bind="field" placeholder="Email" />
-      <span v-if="error">{{ error }}</span>
-    </HeadlessField>
-    
-    <HeadlessField name="name" #default="{ field, error }">
-      <input v-bind="field" placeholder="Full Name" />
-      <span v-if="error">{{ error }}</span>
-    </HeadlessField>
-    
-    <button @click="submit">Submit</button>
-  </HeadlessForm>
+  <Enforma :data="formData" :validator="validator" :submit-handler="handleSubmit">
+    <EnformaField name="name" label="Full Name" required />
+    <EnformaField name="email" label="Email Address" required />
+  </Enforma>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { HeadlessForm, HeadlessField } from '@encolajs/enforma'
+import { Enforma, EnformaField } from '@encolajs/enforma'
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
-const formData = ref({})
+const formData = ref({
+  name: '',
+  email: '',
+})
 
-const schema = {
-  fields: {
-    email: {
-      type: 'email',
-      validation: 'required|email',
-      label: 'Email Address'
-    },
-    name: {
-      type: 'text',
-      validation: 'required|min_length:2',
-      label: 'Full Name'
-    }
-  }
-}
+const validator = createEncolaValidator({
+  name: 'required|min_length:2',
+  email: 'required|email',
+})
 
-const submit = () => {
-  console.log('Form data:', formData.value)
+const handleSubmit = async (data) => {
+  console.log('Form submitted:', data)
+  return true
 }
 </script>
 ```
+
+`<Enforma>` renders the labels, inputs, error messages and the submit and reset buttons. The validator above uses [@encolajs/validator](https://github.com/encolajs/encolajs-validator) (`npm install @encolajs/validator`); Zod, Yup and Valibot work the same way through `@encolajs/enforma/validators/zod`, `/yup` and `/valibot`.
 
 ## Amazing Features
 
@@ -88,50 +76,92 @@ Skip the styling and use our pre-built components for popular UI frameworks:
 // main.js
 import { EnformaPlugin } from '@encolajs/enforma'
 import usePrimeVuePreset from '@encolajs/enforma/presets/primevue'
-// or: import useVuetifyPreset from '@encolajs/enforma/presets/vuetify'
+// or: useVuetifyPreset from '@encolajs/enforma/presets/vuetify'
+// or: useQuasarPreset from '@encolajs/enforma/presets/quasar'
+// or: useRekauiPreset from '@encolajs/enforma/presets/rekaui'
+// or: useNuxtUIPreset from '@encolajs/enforma/presets/nuxtui'
 
 app.use(EnformaPlugin)
-usePrimeVuePreset() // or: useVuetifyPreset()
+usePrimeVuePreset()
 ```
 
-### Dynamic Schema Building
+### Schema Forms
 
-Create complex forms with nested objects and arrays:
+Describe the whole form as an object, with nested paths, sections and repeatable groups:
 
-```typescript
-const schema = {
-  fields: {
-    user: {
-      type: 'object',
-      fields: {
-        name: { type: 'text', validation: 'required' },
-        email: { type: 'email', validation: 'required|email' }
-      }
-    },
-    hobbies: {
-      type: 'repeatable',
-      itemSchema: {
-        type: 'text',
-        validation: 'required'
-      }
-    }
-  }
-}
-```
+```vue
+<template>
+  <Enforma
+    :data="formData"
+    :validator="validator"
+    :schema="schema"
+    :submit-handler="handleSubmit"
+  />
+</template>
 
-### Composable Architecture
+<script setup>
+import { ref } from 'vue'
+import { Enforma } from '@encolajs/enforma'
+import { createEncolaValidator } from '@encolajs/enforma/validators/encola'
 
-Use our composables for maximum flexibility:
-
-```typescript
-import { useEnformaField, useEnformaSchema } from '@encolajs/enforma'
-
-const { field, error, validate } = useEnformaField('email', {
-  validation: 'required|email'
+const formData = ref({
+  name: '',
+  address: { city: '' },
+  addresses: [],
 })
 
-const { schema, formData, isValid } = useEnformaSchema(mySchema)
+const schema = {
+  name: { type: 'field', label: 'Name', required: true },
+  'address.city': { type: 'field', label: 'City' },
+  addresses_section: {
+    type: 'section',
+    title: 'Other addresses',
+    titleComponent: 'h3',
+  },
+  addresses: {
+    type: 'repeatable',
+    section: 'addresses_section',
+    subfields: {
+      street: { label: 'Street' },
+      city: { label: 'City' },
+    },
+  },
+}
+
+const validator = createEncolaValidator({
+  name: 'required',
+  'addresses.*.street': 'required',
+  'addresses.*.city': 'required',
+})
+
+const handleSubmit = async (data) => {
+  console.log('Form submitted:', data)
+  return true
+}
+</script>
 ```
+
+### Headless Components
+
+For full control over the markup, `HeadlessForm` and `HeadlessField` give you the form's state and leave the rendering to you:
+
+```vue
+<template>
+  <HeadlessForm :data="formData" :validator="validator" :submit-handler="handleSubmit">
+    <HeadlessField name="email">
+      <template #default="{ id, attrs, events, error }">
+        <label :for="id">Email</label>
+        <input :id="id" v-bind="attrs" v-on="events" />
+        <div v-if="error" :id="attrs['aria-errormessage']">{{ error }}</div>
+      </template>
+    </HeadlessField>
+
+    <button type="submit">Submit</button>
+  </HeadlessForm>
+</template>
+```
+
+The same state is available from the `useForm`, `useField` and `useRepeatable` composables.
 
 ## Validation
 
