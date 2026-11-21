@@ -13,7 +13,7 @@ Written for `@encolajs/enforma` 1.7. For anything this file doesn't cover, look 
 1. **Read the project's setup.** Find the UI kit and validator in `package.json`, the `app.use(EnformaPlugin)` and `use<Kit>Preset(...)` calls (in `main.ts`, or a Nuxt plugin), and an existing form. Done when you know the kit, the validator and the mode the project's forms already use.
 2. **Pick the mode** from the table below. Match the project's existing forms unless the task calls for another mode.
 3. **Write the form** with the reference below.
-4. **Check it in the running app or a test.** Done when the form renders, an invalid submit shows errors on the right fields and calls no `submitHandler`, a valid submit reaches `submitHandler`, and the console has no `[Enforma]` message besides the known one under Gotchas.
+4. **Check it in the running app or a test.** Done when the form renders, an invalid submit shows errors on the right fields and calls no `submitHandler`, a valid submit reaches `submitHandler`, and the console has no `[Enforma]` message.
 
 ## Modes
 
@@ -99,8 +99,7 @@ const schema = {
 
 - A section shows its `title` only when it also has a `titleComponent`. Tabs and collapsibles show theirs without one.
 - `required: true` on a field draws the required marker; the validator decides what is required.
-- Schema `rules` and `messages` keys work only with @encolajs/validator, and only on a form without a `validator` prop: a `validator` replaces them.
+- Schema `rules` and `messages` keys work only with @encolajs/validator, and only on a form without a `validator` prop: a `validator` replaces them, and Enforma warns that the schema's rules are left out.
 - Vuetify, Quasar, Reka UI and Nuxt UI inputs emit `update:modelValue`; their kit field components already set `useModelValue`. A custom input that emits only `update:modelValue` needs `useModelValue: true`.
 - `<HeadlessField>` belongs inside `<HeadlessForm>` or `<Enforma>`. Its slot gives `{ id, value, attrs, events, error, model }`: bind `v-bind="attrs" v-on="events"`.
-- In 1.7, an `<Enforma>` without a `validator` logs "`:rules` prop on HeadlessForm is deprecated" in development, even with no `rules` prop. It's a false alarm: leave the form as it is.
 - Import from `@encolajs/enforma` and its subpaths. Some docs pages embed Enforma's own source, which imports from `@/...`; that alias exists only inside Enforma.

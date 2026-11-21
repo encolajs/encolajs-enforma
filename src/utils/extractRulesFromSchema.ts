@@ -1,4 +1,4 @@
-import type { FormSchema, FieldSchema, ValidationRules } from '@/types'
+import type { FormSchema, FieldSchema } from '@/types'
 import type { CustomMessagesConfig } from '@encolajs/validator'
 
 /**
@@ -10,8 +10,8 @@ import type { CustomMessagesConfig } from '@encolajs/validator'
 export function extractRulesFromSchema(
   schema: FormSchema,
   fieldNamePrefix: string = ''
-): ValidationRules {
-  const rules: ValidationRules = {}
+): Record<string, string> {
+  const rules: Record<string, string> = {}
 
   for (const [fieldName, fieldConfig] of Object.entries(schema)) {
     const fullFieldName = fieldNamePrefix

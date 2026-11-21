@@ -3,7 +3,8 @@
     :id="id"
     ref="form"
     :data="data"
-    :rules="effectiveRules"
+    :validator="formValidator"
+    :rules="deprecatedRules"
     :custom-messages="effectiveMessages"
     :submit-handler="submitHandler"
     :validate-on="config.validateOn"
@@ -38,6 +39,7 @@
 
 <script setup lang="ts">
 import {
+  inject,
   provide,
   ref,
   PropType,
@@ -59,9 +61,15 @@ import {
   formSchemaKey,
   formFieldSlotsKey,
   formControllerSelfKey,
+  enformaConfigKey,
 } from '@/constants/symbols'
 import { FormController, FormSchema } from '@/types'
 import { ValidationRules } from '@/types'
+import type { FormValidator } from '@/validators/types'
+import {
+  validatorFromRules,
+  warnSchemaRulesLeftOut,
+} from '@/validators/fromRules'
 import { useConfig } from '@/utils/useConfig'
 import applyTransformers from '@/utils/applyTransformers'
 import {
@@ -79,6 +87,10 @@ const props = defineProps({
   schema: {
     type: Object as unknown as PropType<FormSchema>,
     default: null,
+  },
+  validator: {
+    type: Object as PropType<FormValidator>,
+    default: undefined,
   },
   rules: {
     type: Object as unknown as PropType<ValidationRules>,
@@ -159,16 +171,7 @@ const formConfig = useConfig(props.config)
 const getConfig = <T = any>(path: string, defaultValue?: T) =>
   pathUtils.get<T>(formConfig, path, defaultValue)
 
-// The form's rules and messages: its schema's, or those it is given. Validation is set up
-// for the whole form; a field gives none
-const effectiveRules = computed(() => {
-  const schemaRules = extractRulesFromSchema(props.schema || {})
-  if (Object.keys(schemaRules).length > 0) {
-    return schemaRules
-  }
-  return props.rules || {}
-})
-
+// The form's messages: its schema's, or those it is given
 const effectiveMessages = computed(() => {
   const schemaMessages = extractMessagesFromSchema(props.schema || {})
   if (Object.keys(schemaMessages).length > 0) {
@@ -176,6 +179,32 @@ const effectiveMessages = computed(() => {
   }
   return props.messages || {}
 })
+
+// What checks the form, settled once, as the form is made: the validator it is given, else
+// one made from its schema's `rules` and `messages` (those of @encolajs/validator). Validation
+// is set up for the whole form; a field gives none. The deprecated `rules` prop alone is
+// handed on as rules, which warn of their deprecation
+const schemaRules = extractRulesFromSchema(props.schema || {})
+const schemaRulePaths = Object.keys(schemaRules)
+
+if (props.validator && schemaRulePaths.length > 0) {
+  warnSchemaRulesLeftOut(schemaRulePaths)
+}
+
+const formValidator: FormValidator | undefined =
+  props.validator ??
+  (schemaRulePaths.length > 0
+    ? validatorFromRules(
+        schemaRules,
+        effectiveMessages.value,
+        inject(enformaConfigKey, null)
+      )
+    : undefined)
+
+const deprecatedRules =
+  schemaRulePaths.length === 0 && isNonEmptyObject(props.rules)
+    ? props.rules
+    : undefined
 
 // Apply form props transformers to handle schema, context, and config in a single pipeline
 const transformedProps = computed(() => {
