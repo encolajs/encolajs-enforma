@@ -190,6 +190,12 @@ The Enforma docs are available to coding agents (Claude Code, Cursor, Copilot, e
 Build a schema form with a repeatable list of addresses. use library /encolajs/encolajs-enforma for API and docs
 ```
 
+Enforma also ships an [agent skill](./skills/enforma/SKILL.md) covering setup, the form modes, validation and the common gotchas. Your agent loads it on its own when it works on your forms. Install it with [`npx skills`](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add encolajs/encolajs-enforma
+```
+
 ## Contributing
 
 We'd love your help improving @encolajs/enforma! Check out our [Contributing Guide](./CONTRIBUTING.md) to get started.
